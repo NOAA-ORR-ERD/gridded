@@ -5,20 +5,18 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import os
 import sys
-import pytest
-import datetime as dt
-import numpy as np
-from gridded import pysgrid
 import datetime
-from gridded.time import Time
+
+import pytest
+import numpy as np
+import netCDF4 as nc
+
 from gridded.grid_property import Variable, VectorVariable
 # from gnome.environment.environment_objects import (VelocityGrid,
 #                                                    VelocityTS,
 #                                                    Bathymetry,
 #                                                    S_Depth_T1)
-from gridded.gridded import PyGrid, PyGrid_S, PyGrid_U
-import netCDF4 as nc
-import pprint as pp
+from gridded.gridded import PyGrid
 
 base_dir = os.path.dirname(__file__)
 sys.path.append(os.path.join(base_dir, 'sample_data'))
@@ -39,43 +37,6 @@ sinusoid = nc.Dataset(sinusoid)
 
 tri_ring = os.path.join(s_data, 'tri_ring.nc')
 tri_ring = nc.Dataset(tri_ring)
-
-
-# class TestTime:
-#     time_var = circular_3D['time']
-#     time_arr = nc.num2date(time_var[:], units=time_var.units)
-#
-#     def test_construction(self):
-#
-#         t1 = Time(TestTime.time_var)
-#         assert all(TestTime.time_arr == t1.time)
-#
-#         t2 = Time(TestTime.time_arr)
-#         assert all(TestTime.time_arr == t2.time)
-#
-#         t = Time(TestTime.time_var, tz_offset=dt.timedelta(hours=1))
-#         print TestTime.time_arr
-#         print t.time
-#         print TestTime.time_arr[0] + dt.timedelta(hours=1)
-#         assert t.time[0] == (TestTime.time_arr[0] + dt.timedelta(hours=1))
-#
-#         t = Time(TestTime.time_arr.copy(), tz_offset=dt.timedelta(hours=1))
-#         assert t.time[0] == TestTime.time_arr[0] + dt.timedelta(hours=1)
-#
-#     def test_extrapolation(self):
-#         ts = Time(TestTime.time_var)
-#         before = TestTime.time_arr[0] - dt.timedelta(hours=1)
-#         after = TestTime.time_arr[-1] + dt.timedelta(hours=1)
-#         assert ts.index_of(before, True) == 0
-#         assert ts.index_of(after, True) == 11
-#         assert ts.index_of(ts.time[-1], True) == 10
-#         assert ts.index_of(ts.time[0], True) == 0
-#         with pytest.raises(ValueError):
-#             ts.index_of(before, False)
-#         with pytest.raises(ValueError):
-#             ts.index_of(after, False)
-#         assert ts.index_of(ts.time[-1], True) == 10
-#         assert ts.index_of(ts.time[0], True) == 0
 
 
 # class TestS_Depth_T1:
