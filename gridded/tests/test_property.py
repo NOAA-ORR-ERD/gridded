@@ -11,7 +11,7 @@ import numpy as np
 from gridded import pysgrid
 import datetime
 from gridded.time import Time
-from gridded.grid_property import Variable, VectorVariable
+from gridded.variable import Variable, VectorVariable
 # from gnome.environment.environment_objects import (VelocityGrid,
 #                                                    VelocityTS,
 #                                                    Bathymetry,

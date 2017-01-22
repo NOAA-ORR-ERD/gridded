@@ -9,7 +9,6 @@ from .gridded import PyGrid, PyGrid_U, PyGrid_S
 from .depth import Depth
 from .time import Time
 
-raise Exception("stopping")
 import hashlib
 from functools import wraps
 
