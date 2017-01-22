@@ -3,4 +3,5 @@
 __version__ = "0.0.1"
 
 from .gridded import Dataset
+from .gridded import Grid
 
