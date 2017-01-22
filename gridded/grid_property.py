@@ -1,3 +1,5 @@
+from __future__ import (absolute_import)
+
 import netCDF4 as nc4
 import numpy as np
 import collections
@@ -12,8 +14,20 @@ import hashlib
 from functools import wraps
 
 
-class GriddedProp(object):
+class Variable(object):
+    """
+    Variable object: represents a field of values associated with the grid.
 
+    Abstractly, it is usually a scalar physical property such a temperature,
+    salinity that varies over a the domain of the model.
+
+
+    This more or less maps to a variable in a netcdf file, but does not have
+    to come form a netcdf file, and this provides and abstraction where the
+    user can access the value in world coordinates, interpolated from the grid.
+
+    It holds a reference to its own grid object, and its data.
+    """
     default_names = []
     _def_count = 0
 
@@ -93,7 +107,7 @@ class GriddedProp(object):
                     **kwargs
                     ):
         '''
-        Allows one-function creation of a GriddedProp from a file.
+        Allows one-function creation of a Variable from a file.
 
         :param filename: Default data source. Parameters below take precedence
         :param varname: Name of the variable in the data source file
@@ -307,7 +321,7 @@ class GriddedProp(object):
         based on the object properties and data shape.
 
         For example, if the data has 4 dimensions and is represented by a PyGrid_S (structured grid), and the
-        GriddedProp has a depth and time assigned, then the assumed ordering is ['time','depth','lon','lat']
+        Variable has a depth and time assigned, then the assumed ordering is ['time','depth','lon','lat']
 
         If the data has 3 dimensions, self.grid is a PyGrid_S, and self.time is None, then the ordering is
         ['depth','lon','lat']
@@ -514,7 +528,7 @@ class GriddedProp(object):
         raise ValueError("Default names not found.")
 
 
-class GridVectorProp(object):
+class VectorVariable(object):
 
     default_names = []
 
@@ -537,7 +551,7 @@ class GridVectorProp(object):
 
         self.name = name
 
-        if all([isinstance(v, GriddedProp) for v in variables]):
+        if all([isinstance(v, Variable) for v in variables]):
             if time is not None and not isinstance(time, Time):
                 time = Time(time)
             units = variables[0].units if units is None else units
@@ -552,7 +566,7 @@ class GridVectorProp(object):
         unused_args = kwargs.keys() if kwargs is not None else None
         if len(unused_args) > 0:
             kwargs = {}
-        if isinstance(self.variables[0], GriddedProp):
+        if isinstance(self.variables[0], Variable):
             self.grid = self.variables[0].grid if grid is None else grid
             self.depth = self.variables[0].depth if depth is None else depth
             self.grid_file = self.variables[0].grid_file if grid_file is None else grid_file
@@ -578,7 +592,7 @@ class GridVectorProp(object):
                     **kwargs
                     ):
         '''
-        Allows one-function creation of a GridVectorProp from a file.
+        Allows one-function creation of a VectorVariable from a file.
 
         :param filename: Default data source. Parameters below take precedence
         :param varnames: Names of the variables in the data source file
@@ -655,7 +669,7 @@ class GridVectorProp(object):
 #                                             **kwargs)
         variables = []
         for vn in varnames:
-            variables.append(GriddedProp.from_netCDF(filename=filename,
+            variables.append(Variable.from_netCDF(filename=filename,
                                                      varname=vn,
                                                      grid_topology=grid_topology,
                                                      units=units,
