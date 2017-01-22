@@ -1,19 +1,23 @@
+#!/usr/bin/env python
+
+# py2/3 compatibility
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import os
 import sys
 import pytest
 import datetime as dt
 import numpy as np
-import pysgrid
+from gridded import pysgrid
 import datetime
-from ..property import Time
-from ..grid_property import GriddedProp, GridVectorProp
+# from ..property import Time
+from gridded.grid_property import GriddedProp, GridVectorProp
 # from gnome.environment.environment_objects import (VelocityGrid,
 #                                                    VelocityTS,
 #                                                    Bathymetry,
 #                                                    S_Depth_T1)
-from ..gridded import PyGrid, PyGrid_S, PyGrid_U
+from gridded import PyGrid, PyGrid_S, PyGrid_U
 import netCDF4 as nc
-import unit_conversion
 import pprint as pp
 
 base_dir = os.path.dirname(__file__)
@@ -153,8 +157,8 @@ Triangular
                      - interpolation elsewhere
                  2D surface (time=t, depth=None)
                      - as above, validate time interpolation
-                 
-    
+
+
 
 Quad
     grid shape: (nodes:(x,y))
@@ -207,7 +211,7 @@ class TestGriddedProp:
         time = datetime.datetime.now()
 
         assert all(u.at(points, time) == [1, 1, 1])
-        print np.cos(points[:, 0] / 2) / 2
+        print(np.cos(points[:, 0] / 2) / 2)
         assert all(np.isclose(v.at(points, time), np.cos(points[:, 0] / 2) / 2))
 
 class TestGridVectorProp:

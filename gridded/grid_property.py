@@ -1,14 +1,27 @@
+#!/usr/bin/env python
+
+# py2/3 compatibility
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+
 import netCDF4 as nc4
 import numpy as np
 import collections
-
 from collections import OrderedDict
-from .gridded import _get_dataset
-from .property import EnvProp, VectorProp, Time
+
+from .utilities import get_dataset
+from .property import EnvProp, VectorProp
+from .time import Time
 from .gridded import PyGrid, PyGrid_U, PyGrid_S
 
+#from . import gridded
+
+print(dir(gridded))
+
+raise Exception("stopping")
 import hashlib
 from functools import wraps
+
 
 class GriddedProp(EnvProp):
 
@@ -60,7 +73,7 @@ class GriddedProp(EnvProp):
         self.data_file = data_file
         self.grid_file = grid_file
         self.varname = varname
-        self._result_memo = OrderedDict()
+        self._result_memo = collections.OrderedDict()
         self.fill_value = fill_value
 
 #     def __repr__(self):
@@ -119,13 +132,13 @@ class GriddedProp(EnvProp):
         dg = None
         if dataset is None:
             if grid_file == data_file:
-                ds = dg = _get_dataset(grid_file)
+                ds = dg = get_dataset(grid_file)
             else:
-                ds = _get_dataset(data_file)
-                dg = _get_dataset(grid_file)
+                ds = get_dataset(data_file)
+                dg = get_dataset(grid_file)
         else:
             if grid_file is not None:
-                dg = _get_dataset(grid_file)
+                dg = get_dataset(grid_file)
             else:
                 dg = dataset
             ds = dataset
@@ -473,7 +486,7 @@ class GriddedProp(EnvProp):
         if dataset is not None:
             df = dataset
         else:
-            df = _get_dataset(filename)
+            df = get_dataset(filename)
         for n in cls.default_names:
             if n in df.variables.keys():
                 return n
@@ -555,13 +568,13 @@ class GridVectorProp(VectorProp):
         dg = None
         if dataset is None:
             if grid_file == data_file:
-                ds = dg = _get_dataset(grid_file)
+                ds = dg = get_dataset(grid_file)
             else:
-                ds = _get_dataset(data_file)
-                dg = _get_dataset(grid_file)
+                ds = get_dataset(data_file)
+                dg = get_dataset(grid_file)
         else:
             if grid_file is not None:
-                dg = _get_dataset(grid_file)
+                dg = get_dataset(grid_file)
             else:
                 dg = dataset
             ds = dataset
@@ -644,7 +657,7 @@ class GridVectorProp(VectorProp):
         if dataset is not None:
             df = dataset
         else:
-            df = _get_dataset(filename)
+            df = get_dataset(filename)
         for n in cls.default_names:
             if all([sn in df.variables.keys() for sn in n]):
                 return n
@@ -749,14 +762,14 @@ class GridVectorProp(VectorProp):
                 if _mod('dataset'):
                     if 'grid_file' in kws and 'data_file' in kws:
                         if kws['grid_file'] == kws['data_file']:
-                            ds = dg = _get_dataset(kws['grid_file'])
+                            ds = dg = get_dataset(kws['grid_file'])
                         else:
-                            ds = _get_dataset(kws['data_file'])
-                            dg = _get_dataset(kws['grid_file'])
+                            ds = get_dataset(kws['data_file'])
+                            dg = get_dataset(kws['grid_file'])
                     kws['dataset'] = ds
                 else:
                     if 'grid_file' in kws and kws['grid_file'] is not None:
-                        dg = _get_dataset(kws['grid_file'])
+                        dg = get_dataset(kws['grid_file'])
                     else:
                         dg = kws['dataset']
                     ds = kws['dataset']

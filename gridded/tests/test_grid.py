@@ -12,7 +12,7 @@ from gridded import Grid
 
 
 def test_init():
-    """ tests you can intitize a basic datset"""
+    """ tests you can intitilze a basic dataset"""
     G = Grid.from_netCDF(os.path.join('test_data', 'staggered_sine_channel.nc'))
     print G.node_lon
 
