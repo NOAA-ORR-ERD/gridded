@@ -4,13 +4,15 @@ import collections
 
 from collections import OrderedDict
 from .gridded import _get_dataset
-from .property import EnvProp, VectorProp, Time
 from .gridded import PyGrid, PyGrid_U, PyGrid_S
+from .depth import Depth
+from .time import Time
 
 import hashlib
 from functools import wraps
 
-class GriddedProp(EnvProp):
+
+class GriddedProp(object):
 
     default_names = []
     _def_count = 0
@@ -56,12 +58,19 @@ class GriddedProp(EnvProp):
                 raise ValueError('Data must be able to fit to the grid')
         self.grid = grid
         self.depth = depth
-        super(GriddedProp, self).__init__(name=name, units=units, time=time, data=data)
+        self.name = self._units = self._time = self._data = None
+
+        self.name = name
+        self.units = units
+        self.data = data
+        self.time = time
         self.data_file = data_file
         self.grid_file = grid_file
         self.varname = varname
         self._result_memo = OrderedDict()
         self.fill_value = fill_value
+        for k in kwargs:
+            setattr(self, k, kwargs[k])
 
 #     def __repr__(self):
 #         return str(self.serialize())
@@ -155,9 +164,7 @@ class GriddedProp(EnvProp):
         if depth is None:
             if (isinstance(grid, PyGrid_S) and len(data.shape) == 4 or
                     isinstance(grid, PyGrid_U) and len(data.shape) == 3):
-                return 5 / 0
-#                 from gnome.environment.environment_objects import Depth
-#                 depth = Depth(surface_index=-1)
+                depth = Depth(surface_index=-1)
 #             if len(data.shape) == 4 or (len(data.shape) == 3 and time is None):
 #                 from gnome.environment.environment_objects import S_Depth
 #                 depth = S_Depth.from_netCDF(grid=grid,
@@ -178,6 +185,17 @@ class GriddedProp(EnvProp):
                    fill_value=fill_value,
                    varname=varname,
                    **kwargs)
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return ('{0.__class__.__module__}.{0.__class__.__name__}('
+                'name="{0.name}", '
+                'time="{0.time}", '
+                'units="{0.units}", '
+                'data="{0.data}", '
+                ')').format(self)
 
     @property
     def time(self):
@@ -208,6 +226,22 @@ class GriddedProp(EnvProp):
         if self.grid is not None and self.grid.infer_location(d) is None:
             raise ValueError("Data/grid shape mismatch. Data shape is {0}, Grid shape is {1}".format(d.shape, self.grid.node_lon.shape))
         self._data = d
+
+    @property
+    def units(self):
+        '''
+        Units of underlying data
+
+        :rtype: string
+        '''
+        return self._units
+
+    @units.setter
+    def units(self, unit):
+#         if unit is not None:
+#             if not unit_conversion.is_supported(unit):
+#                 raise ValueError('Units of {0} are not supported'.format(unit))
+        self._units = unit
 
     @property
     def grid_shape(self):
@@ -480,13 +514,17 @@ class GriddedProp(EnvProp):
         raise ValueError("Default names not found.")
 
 
-class GridVectorProp(VectorProp):
+class GridVectorProp(object):
 
     default_names = []
 
     _def_count = 0
 
     def __init__(self,
+                 name=None,
+                 units=None,
+                 time=None,
+                 variables=None,
                  grid=None,
                  depth=None,
                  grid_file=None,
@@ -495,7 +533,25 @@ class GridVectorProp(VectorProp):
                  varnames=None,
                  **kwargs):
 
-        super(GridVectorProp, self).__init__(**kwargs)
+        self.name = self._units = self._time = self._variables = None
+
+        self.name = name
+
+        if all([isinstance(v, GriddedProp) for v in variables]):
+            if time is not None and not isinstance(time, Time):
+                time = Time(time)
+            units = variables[0].units if units is None else units
+            time = variables[0].time if time is None else time
+        if units is None:
+            units = variables[0].units
+        self._units = units
+        if variables is None or len(variables) < 2:
+            raise ValueError('Variables must be an array-like of 2 or more Property objects')
+        self.variables = variables
+        self._time = time
+        unused_args = kwargs.keys() if kwargs is not None else None
+        if len(unused_args) > 0:
+            kwargs = {}
         if isinstance(self.variables[0], GriddedProp):
             self.grid = self.variables[0].grid if grid is None else grid
             self.depth = self.variables[0].depth if depth is None else depth
@@ -583,11 +639,14 @@ class GridVectorProp(VectorProp):
                                     datavar=data)
         if depth is None:
             if (isinstance(grid, PyGrid_S) and len(data.shape) == 4 or
-                        (len(data.shape) == 3 and time is None) or
-                    (isinstance(grid, PyGrid_U) and len(data.shape) == 3 or
-                        (len(data.shape) == 2 and time is None))):
-                return 5 / 0
-#             if len(data.shape) == 4 or (len(data.shape) == 3 and time is None):
+                    isinstance(grid, PyGrid_U) and len(data.shape) == 3):
+                depth = Depth(surface_index=-1)
+
+#         if depth is None:
+#             if (isinstance(grid, PyGrid_S) and len(data.shape) == 4 or
+#                         (len(data.shape) == 3 and time is None) or
+#                     (isinstance(grid, PyGrid_U) and len(data.shape) == 3 or
+#                         (len(data.shape) == 2 and time is None))):
 #                 from gnome.environment.environment_objects import S_Depth
 #                 depth = S_Depth.from_netCDF(grid=grid,
 #                                             depth=1,
@@ -650,6 +709,17 @@ class GridVectorProp(VectorProp):
                 return n
         raise ValueError("Default names not found.")
 
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return ('{0.__class__.__module__}.{0.__class__.__name__}('
+                'name="{0.name}", '
+                'time="{0.time}", '
+                'units="{0.units}", '
+                'variables="{0.variables}", '
+                ')').format(self)
+
     @property
     def is_data_on_nodes(self):
         return self.grid.infer_location(self.variables[0].data) == 'node'
@@ -674,6 +744,37 @@ class GridVectorProp(VectorProp):
             self._time = Time(t)
         else:
             raise ValueError("Time must be set with an iterable container or netCDF variable")
+
+    @property
+    def units(self):
+        '''
+        Units of underlying data
+
+        :rtype: string
+        '''
+        if hasattr(self._units, '__iter__'):
+            if len(set(self._units) > 1):
+                return self._units
+            else:
+                return self._units[0]
+        else:
+            return self._units
+
+    @units.setter
+    def units(self, unit):
+        self._units = unit
+        if self.variables is not None:
+            for v in self.variables:
+                v.units = unit
+
+    @property
+    def varnames(self):
+        '''
+        Names of underlying variables
+
+        :rtype: [] of strings
+        '''
+        return [v.varname if hasattr(v, 'varname') else v.name for v in self.variables ]
 
     @property
     def data_shape(self):
@@ -716,13 +817,13 @@ class GridVectorProp(VectorProp):
             if res is not None:
                 return res
 
-        value = super(GridVectorProp, self).at(points=points,
-                                               time=time,
-                                               units=units,
-                                               extrapolate=extrapolate,
-                                               memoize=memoize,
-                                               _hash=_hash,
-                                               **kwargs)
+        value = np.column_stack([var.at(points=points,
+                                        time=time,
+                                        units=units,
+                                        extrapolate=extrapolate,
+                                        memoize=memoize,
+                                        _hash=_hash,
+                                        **kwargs) for var in self.variables])
 
         if mem:
             self._memoize_result(points, time, value, self._result_memo, _hash=_hash)

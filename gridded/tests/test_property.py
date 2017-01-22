@@ -5,15 +5,14 @@ import datetime as dt
 import numpy as np
 import pysgrid
 import datetime
-from ..property import Time
-from ..grid_property import GriddedProp, GridVectorProp
+from gridded.time import Time
+from gridded.grid_property import GriddedProp, GridVectorProp
 # from gnome.environment.environment_objects import (VelocityGrid,
 #                                                    VelocityTS,
 #                                                    Bathymetry,
 #                                                    S_Depth_T1)
-from ..gridded import PyGrid, PyGrid_S, PyGrid_U
+from gridded import PyGrid, PyGrid_S, PyGrid_U
 import netCDF4 as nc
-import unit_conversion
 import pprint as pp
 
 base_dir = os.path.dirname(__file__)
