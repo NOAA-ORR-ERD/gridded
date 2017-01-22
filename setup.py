@@ -1,6 +1,7 @@
 
 from setuptools import setup
 
+
 def get_version():
     with open("gridded/__init__.py") as initfile:
         for line in initfile:
@@ -9,18 +10,19 @@ def get_version():
     return ""
 
 
-config = {
-        'name': 'gridded',
-        'description': open('README.rst').read(),
-        'author': 'Chris Barker, Jay Hennen',
-        'url': "https://github.com/NOAA-ORR-ERD/gridded",
-        'download_url': "https://github.com/NOAA-ORR-ERD/gridded",
-        'author_email': 'chris.barker@noaa.gov',
-        'version': get_version(),
-        'install_requires': [],
-        'packages': ['gridded'],
-        'scripts': [],
-}
+config = {'name': 'gridded',
+          'description': "Unified API for working with results from (Met/Ocean) models on"
+                         "various grid types",
+          'long_description': open('README.rst').read(),
+          'author': 'Chris Barker, Jay Hennen',
+          'url': "https://github.com/NOAA-ORR-ERD/gridded",
+          'download_url': "https://github.com/NOAA-ORR-ERD/gridded",
+          'author_email': 'chris.barker@noaa.gov',
+          'version': get_version(),
+          'install_requires': [],
+          'packages': ['gridded'],
+          'scripts': [],
+          }
 
 # Add in any extra build steps for cython, etc.
 

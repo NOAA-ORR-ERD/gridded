@@ -1,0 +1,7 @@
+# requirements for the gridded package
+# the goal is to have it work accross as wide a range of verions as possible
+
+python>=2.7.*
+numpy>=1.11.*
+netcdf4
+

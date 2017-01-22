@@ -2,7 +2,7 @@
 
 import pytest
 
-from gridded import Dataset
+from ..gridded import Dataset
 
 
 def test_init():

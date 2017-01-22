@@ -1,21 +1,188 @@
 #!/usr/bin/env python
 
+# py2/3 compatibility
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import copy
 
 import numpy as np
 import netCDF4 as nc4
-import pysgrid
-import pyugrid
+#from . import pysgrid
+#from . import pyugrid
 
 """
-the main gridded.Dataset code
+The main gridded.Dataset code
 """
+
+import netCDF4
+
 
 class Dataset():
-    pass
+    """
+    An object that represent an entire complete dataset -- a collection of Variable,
+    and the grid that they are stored on.
+    """
+
+    def __init__(self, ncfile=None, grid=None, variables=None):
+        """
+        Construct a gridded.Dataset object. Can be constructed from a data file,
+        or also raw grid and variable objects.
+
+        :param ncfile: a file to load the Dataset from.
+        :type param: filename of netcdf file or opendap url or open netCDF4 Dataset object
+                     (could be other file types in the future)
+
+        :param grid: a dataset.Grid object or anything that presents the same API.
+
+        :param variables: a dict of dataset.Variable objects -- or anything that
+                          presents the same API.
+
+        Either a filename or grid and variable objects should be provided -- not both.
+        """
+        if file is not None:
+            self.nc_dataset = _get_dataset(ncfile)
+            self.filename = self.nc_dataset.filepath
+            self.grid = None
+            self.variables = {}
+        else:  # no file passed in -- create from grid and variables
+            self.filename = None
+            self.grid = grid
+            self.variables = variables
+
 
 class Variable():
-    pass
+    """
+    Variable object: represents a field of values associated with the grid.
+
+    Abstractly, it is usually a scalar physical property such a temperature,
+    salinity that varies over a the domain of the model.
+
+
+    This more or less maps to a variable in a netcdf file, but does not have
+    to come form a netcdf file, and this provides and abstraction where the
+    user can access the value in world coordinates, interpolated from the grid.
+
+    It holds a reference to its own grid object, and its data.
+    """
+    def __init__(self, ):
+        pass
+
+# # pulled from pyugrid
+# class UVar(object):
+#     """
+#     A class to hold a variable associated with the UGrid. Data can be on the
+#     nodes, edges, etc. -- "UGrid Variable"
+
+#     It holds an array of the data, as well as the attributes associated
+#     with that data  -- this is mapped to a netcdf variable with
+#     attributes(attributes get stored in the netcdf file)
+#     """
+
+#     def __init__(self, name, location, data=None, attributes=None):
+#         """
+#         create a UVar object
+#         :param name: the name of the variable (depth, u_velocity, etc.)
+#         :type name: string
+
+#         :param location: the type of grid element the data is associated with:
+#                          'node', 'edge', or 'face'
+
+#         :param data: The data itself
+#         :type data: 1-d numpy array or array-like object ().
+#                     If you have a list or tuple, it should be something that can be
+#                     converted to a numpy array (list, etc.)
+#         """
+#         self.name = name
+
+#         if location not in ['node', 'edge', 'face', 'boundary']:
+#             raise ValueError("location must be one of: "
+#                              "'node', 'edge', 'face', 'boundary'")
+
+#         self.location = location
+
+#         if data is None:
+#             # Could be any data type, but we'll default to float
+#             self._data = np.zeros((0,), dtype=np.float64)
+#         else:
+#             self._data = asarraylike(data)
+
+#         # FixMe: we need a separate attribute dict -- we really do'nt want all this
+#         #        getting mixed up with the python object attributes
+#         self.attributes = {} if attributes is None else attributes
+#         # if the data is a netcdf variable, pull the attributes from there
+#         try:
+#             for attr in data.ncattrs():
+#                 self.attributes[attr] = data.getncattr(attr)
+#         except AttributeError:  # must not be a netcdf variable
+#             pass
+
+#         self._cache = OrderedDict()
+
+#     # def update_attrs(self, attrs):
+#     #     """
+#     #     update the attributes of the UVar object
+
+#     #     :param attr: Dict containing attributes to be added to the object
+#     #     """
+#     #     for key, val in attrs.items():
+#     #         setattr(self, key, val)
+
+#     @property
+#     def data(self):
+#         return self._data
+
+#     @data.setter
+#     def data(self, data):
+#         self._data = asarraylike(data)
+
+#     @data.deleter
+#     def data(self):
+#         self._data = self._data = np.zeros((0,), dtype=np.float64)
+
+#     @property
+#     def shape(self):
+#         return self.data.shape
+
+#     @property
+#     def max(self):
+#         return np.max(self._data)
+
+#     @property
+#     def min(self):
+#         return np.min(self._data)
+
+#     @property
+#     def dtype(self):
+#         return self.data.dtype
+
+#     @property
+#     def ndim(self):
+#         return self.data.ndim
+
+#     def __getitem__(self, item):
+#         """
+#         Transfers responsibility to the data's __getitem__ if not cached
+#         """
+#         rv = None
+#         if str(item) in self._cache:
+#             rv = self._cache[str(item)]
+#         else:
+#             rv = self._data.__getitem__(item)
+#             self._cache[str(item)] = rv
+#             if len(self._cache) > 3:
+#                 self._cache.popitem(last=False)
+#         return rv
+
+#     def __str__(self):
+#         print("in __str__, data is:", self.data)
+#         msg = ("UVar object: {0:s}, on the {1:s}s, and {2:d} data "
+#                "points\nAttributes: {3}").format
+#         return msg(self.name, self.location, len(self.data), self.attributes)
+
+#     def __len__(self):
+#         return len(self.data)
+
+
 
 class PyGrid(object):
     _def_count = 0
@@ -90,7 +257,7 @@ class PyGrid(object):
         '''
         This function is the top level 'search for attributes' function. If there are any
         common attributes to all potential grid types, they will be sought here.
-        
+
         This function returns a dict, which maps an attribute name to a netCDF4
         Variable or numpy array object extracted from the dataset. When called from
         PyGrid_U or PyGrid_S, this function should provide all the kwargs needed to
@@ -298,14 +465,18 @@ class PyGrid_S(PyGrid, pysgrid.SGrid):
                     init_args[n] = gf_vars[v][:]
         return init_args, gf_vars
 
-def _get_dataset(filename, dataset=None):
-    if dataset is not None:
-        return dataset
-    df = None
-    if isinstance(filename, basestring):
-        df = nc4.Dataset(filename)
+
+def _get_dataset(ncfile, dataset=None):
+    """
+    Utility to create a netCDF4 Dataset from a filename, list of filenames,
+    or jsut pass it through if it's already a Dataset
+    """
+    if isinstance(ncfile, nc4.Dataset):
+        return ncfile
+    elif isinstance(ncfile, basestring):
+        return nc4.Dataset(ncfile)
     else:
-        df = nc4.MFDataset(filename)
-    return df
+        return nc4.MFDataset(ncfile)
+
 
 Grid = PyGrid
