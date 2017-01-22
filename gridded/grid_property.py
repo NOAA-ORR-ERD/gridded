@@ -8,12 +8,11 @@ import netCDF4 as nc4
 import numpy as np
 import collections
 from collections import OrderedDict
-from .gridded import _get_dataset
+from .utilities import get_dataset
 from .gridded import PyGrid, PyGrid_U, PyGrid_S
 from .depth import Depth
 from .time import Time
 
-raise Exception("stopping")
 import hashlib
 from functools import wraps
 
