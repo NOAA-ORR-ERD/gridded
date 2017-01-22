@@ -14,7 +14,6 @@ from . import pysgrid
 from .gridded import _get_dataset
 import collections
 from collections import OrderedDict
-from gnome.gnomeobject import GnomeId
 
 
 class EnvProp(object):
