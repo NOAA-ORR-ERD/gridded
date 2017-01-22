@@ -1,7 +1,7 @@
 import numpy as np
 import netCDF4 as nc4
 
-from pysgrid import SGrid
+from ..pysgrid import SGrid
 from gnome.environment.grid_property import GriddedProp
 
 import os
@@ -71,7 +71,7 @@ def gen_vortex_3D(filename=None):
 
     lin_tdvx = np.array([lin_dvx * t for t in t_scale])
     lin_tdvy = np.array([lin_dvy * t for t in t_scale])
-    
+
     ds = None
     if filename is not None:
         ds = nc4.Dataset(filename, 'w', diskless=True, persist=True)
@@ -105,7 +105,7 @@ def gen_vortex_3D(filename=None):
         for v in ds.variables:
             if 'v' in v:
                 ds[v].units = 'm/s'
-        
+
         ds.createDimension('nv', lin_nodes.shape[0])
         ds.createDimension('nele', lin_faces.shape[0])
         ds.createDimension('two', 2)
@@ -147,14 +147,14 @@ def gen_vortex_3D(filename=None):
         sgc2 = GridCurrent.from_netCDF(dataset=ds, varnames=['tvx', 'tvy'], grid_topology=sgt)
         sgc3 = GridCurrent.from_netCDF(dataset=ds, varnames=['dvx', 'dvy'], grid_topology=sgt)
         sgc4 = GridCurrent.from_netCDF(dataset=ds, varnames=['tdvx', 'tdvy'], grid_topology=sgt)
-        
+
         ugt = {'nodes': 'nodes', 'faces': 'faces'}
 #         ug = PyGrid_U(nodes=ds['nodes'][:], faces=ds['faces'][:])
         ugc1 = GridCurrent.from_netCDF(dataset=ds, varnames=['lin_vx', 'lin_vy'], grid_topology=ugt)
         ugc2 = GridCurrent.from_netCDF(dataset=ds, varnames=['lin_tvx', 'lin_tvy'], grid_topology=ugt)
         ugc3 = GridCurrent.from_netCDF(dataset=ds, varnames=['lin_dvx', 'lin_dvy'], grid_topology=ugt)
         ugc4 = GridCurrent.from_netCDF(dataset=ds, varnames=['lin_tdvx', 'lin_tdvy'], grid_topology=ugt)
-        
+
         ds.close()
     return {'sgrid': (x, y),
             'sgrid_vel': (dvx, dvy),
@@ -180,7 +180,7 @@ def gen_sinusoid(filename=None):
     y, x = np.mgrid[-1:1:5j, 0:(6 * np.pi):25j]
     y = y + np.sin(x / 2)
     Z = np.zeros_like(x)
-    # abs(np.sin(x / 2)) + 
+    # abs(np.sin(x / 2)) +
     vx = np.ones_like(x)
     vy = np.cos(x / 2) / 2
     vz = np.zeros_like(x)
@@ -266,7 +266,7 @@ def gen_sinusoid(filename=None):
         sgc2 = GridCurrent.from_netCDF(dataset=ds, varnames=['u_psi', 'v_psi'], grid=sg)
         sgc2.angle = None
         sgc3 = GridCurrent.from_netCDF(dataset=ds, grid=sg)
-        
+
         ds.close()
 
 #     plt.show()
