@@ -10,7 +10,7 @@ def test_init():
     """
     can one even be initialized?
     """
-    t = time.Time()
+    t = Time()
 
 
 ## this needs a big data file -- could use some refactoring
