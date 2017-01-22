@@ -7,8 +7,8 @@ import copy
 
 import numpy as np
 import netCDF4 as nc4
-#from . import pysgrid
-#from . import pyugrid
+from . import pysgrid
+from . import pyugrid
 
 """
 The main gridded.Dataset code
@@ -39,7 +39,7 @@ class Dataset():
 
         Either a filename or grid and variable objects should be provided -- not both.
         """
-        if file is not None:
+        if ncfile is not None:
             self.nc_dataset = _get_dataset(ncfile)
             self.filename = self.nc_dataset.filepath
             self.grid = None
@@ -374,10 +374,6 @@ class PyGrid(object):
                     return False
         return True
 
-    def serialize(self, json_='webapi'):
-        pass
-        return Serializable.serialize(self, json_=json_)
-
     def _write_grid_to_file(self, pth):
         self.save_as_netcdf(pth)
 
@@ -469,8 +465,13 @@ class PyGrid_S(PyGrid, pysgrid.SGrid):
 def _get_dataset(ncfile, dataset=None):
     """
     Utility to create a netCDF4 Dataset from a filename, list of filenames,
-    or jsut pass it through if it's already a Dataset
+    or just pass it through if it's already a netCDF4.Dataset
+
+    if dataset is not None, it should be a valid netCDF4 Dataset object,
+    and it will simiply be returned
     """
+    if dataset is not None:
+        return dataset
     if isinstance(ncfile, nc4.Dataset):
         return ncfile
     elif isinstance(ncfile, basestring):
