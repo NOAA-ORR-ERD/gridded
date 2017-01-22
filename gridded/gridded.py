@@ -4,8 +4,8 @@ import copy
 
 import numpy as np
 import netCDF4 as nc4
-import pysgrid
-import pyugrid
+from . import pysgrid
+from . import pyugrid
 
 """
 the main gridded.Dataset code
@@ -206,10 +206,6 @@ class PyGrid(object):
                 if s.shape != s2.shape or np.any(s != s2):
                     return False
         return True
-
-    def serialize(self, json_='webapi'):
-        pass
-        return Serializable.serialize(self, json_=json_)
 
     def _write_grid_to_file(self, pth):
         self.save_as_netcdf(pth)
