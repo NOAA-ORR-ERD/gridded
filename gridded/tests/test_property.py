@@ -10,7 +10,7 @@ import datetime as dt
 import numpy as np
 from gridded import pysgrid
 import datetime
-# from ..property import Time
+from gridded.time import Time
 from gridded.grid_property import GriddedProp, GridVectorProp
 # from gnome.environment.environment_objects import (VelocityGrid,
 #                                                    VelocityTS,
