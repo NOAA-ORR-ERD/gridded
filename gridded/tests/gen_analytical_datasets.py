@@ -2,7 +2,7 @@ import numpy as np
 import netCDF4 as nc4
 
 from ..pysgrid import SGrid
-from gnome.environment.grid_property import GriddedProp
+from gnome.environment.grid_property import Variable
 
 import os
 from datetime import datetime, timedelta
@@ -140,7 +140,7 @@ def gen_vortex_3D(filename=None):
     if ds is not None:
         # Need to test the dataset...
         from gnome.environment import GridCurrent
-        from gnome.environment.grid_property import GriddedProp
+        from gnome.environment.grid_property import Variable
         sgt = {'node_lon': 'x', 'node_lat': 'y'}
         sg = PyGrid.from_netCDF(dataset=ds, grid_topology=sgt, grid_type='sgrid')
         sgc1 = GridCurrent.from_netCDF(dataset=ds, varnames=['vx', 'vy'], grid_topology=sgt)
