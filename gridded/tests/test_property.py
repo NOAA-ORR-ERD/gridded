@@ -16,7 +16,7 @@ from gridded.grid_property import Variable, VectorVariable
 #                                                    VelocityTS,
 #                                                    Bathymetry,
 #                                                    S_Depth_T1)
-from gridded import PyGrid, PyGrid_S, PyGrid_U
+from gridded.gridded import PyGrid, PyGrid_S, PyGrid_U
 import netCDF4 as nc
 import pprint as pp
 
