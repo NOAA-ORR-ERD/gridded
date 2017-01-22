@@ -12,10 +12,7 @@ import numpy as np
 import netCDF4 as nc
 
 from gridded.grid_property import Variable, VectorVariable
-# from gnome.environment.environment_objects import (VelocityGrid,
-#                                                    VelocityTS,
-#                                                    Bathymetry,
-#                                                    S_Depth_T1)
+
 from gridded.gridded import PyGrid
 
 base_dir = os.path.dirname(__file__)
