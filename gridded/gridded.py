@@ -10,6 +10,9 @@ import netCDF4 as nc4
 from . import pysgrid
 from . import pyugrid
 
+from .utilities import asarraylike
+
+
 """
 The main gridded.Dataset code
 """
@@ -59,15 +62,55 @@ class Variable():
 
 
     This more or less maps to a variable in a netcdf file, but does not have
-    to come form a netcdf file, and this provides and abstraction where the
+    to come from a netcdf file, and this provides and abstraction where the
     user can access the value in world coordinates, interpolated from the grid.
 
     It holds a reference to its own grid object, and its data.
-    """
-    def __init__(self, ):
-        pass
 
-# # pulled from pyugrid
+    most common methods:
+
+
+
+    object attributes:
+
+    .data = array-like object holding the actual data
+    .attrs = attribures  of the variable -- the netdf variable attributes if they exist
+
+    """
+    def __init__(self, name, data, attributes=None):
+        """
+        create a Variable object
+
+        :param name: the name of the variable (depth, u_velocity, etc.).
+                     Matches the variable name when loaded from a netcdf file.
+        :type name: string
+
+        # :param location: the type of grid element the data is associated with:
+        #                  'node', 'edge', or 'face'
+
+        :param data: The data itself
+        :type data: an array-like object: e.g. numpy array, netCDF4 variable object, etc.
+        """
+
+        self.name = name
+
+        self.attrs = {} if attributes is None else attributes
+        # if the data is a netcdf variable, pull the attributes from there
+        try:
+            for attr in data.ncattrs():
+                self.attrs[attr] = data.getncattr(attr)
+        except AttributeError:  # must not be a netcdf variable
+            pass
+
+        if data is None:
+            # Could be any data type, but we'll default to float
+            self._data = np.zeros((0,), dtype=np.float64)
+        else:
+            self._data = asarraylike(data)
+
+
+
+# # pulled from pyugrid -- for example code
 # class UVar(object):
 #     """
 #     A class to hold a variable associated with the UGrid. Data can be on the
