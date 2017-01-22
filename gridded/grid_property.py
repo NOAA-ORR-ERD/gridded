@@ -3,7 +3,7 @@ import numpy as np
 import collections
 
 from collections import OrderedDict
-from gnome.utilities.file_tools.data_helpers import _get_dataset
+from .gridded import _get_dataset
 from .property import EnvProp, VectorProp, Time
 from .gridded import PyGrid, PyGrid_U, PyGrid_S
 
