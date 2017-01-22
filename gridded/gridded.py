@@ -10,6 +10,9 @@ import netCDF4 as nc4
 from . import pysgrid
 from . import pyugrid
 
+from .utilities import asarraylike, get_dataset
+
+
 """
 The main gridded.Dataset code
 """
@@ -40,7 +43,7 @@ class Dataset():
         Either a filename or grid and variable objects should be provided -- not both.
         """
         if ncfile is not None:
-            self.nc_dataset = _get_dataset(ncfile)
+            self.nc_dataset = get_dataset(ncfile)
             self.filename = self.nc_dataset.filepath
             self.grid = None
             self.variables = {}
@@ -108,7 +111,7 @@ class PyGrid(object):
         :param **kwargs: All kwargs to SGrid or UGrid are valid, and take precedence over all.
         :returns: Instance of PyGrid_U, PyGrid_S, or PyGrid_R
         '''
-        gf = dataset if filename is None else _get_dataset(filename, dataset)
+        gf = dataset if filename is None else get_dataset(filename, dataset)
         if gf is None:
             raise ValueError('No filename or dataset provided')
 
@@ -129,7 +132,7 @@ class PyGrid(object):
         PyGrid_U or PyGrid_S, this function should provide all the kwargs needed to
         create a valid instance.
         '''
-        gf_vars = dataset.variables if dataset is not None else _get_dataset(filename).variables
+        gf_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
         init_args = {}
         init_args['filename'] = filename
         node_attrs = ['node_lon', 'node_lat']
@@ -214,7 +217,7 @@ class PyGrid(object):
     @staticmethod
     def _find_topology_var(filename,
                            dataset=None):
-        gf = _get_dataset(filename, dataset)
+        gf = get_dataset(filename, dataset)
         gts = []
         for v in gf.variables:
             if hasattr(v, 'cf_role') and 'topology' in v.cf_role:
@@ -326,24 +329,6 @@ class PyGrid_S(PyGrid, pysgrid.SGrid):
                 if n in center_attrs + edge1_attrs + edge2_attrs and v in gf_vars:
                     init_args[n] = gf_vars[v][:]
         return init_args, gf_vars
-
-
-def _get_dataset(ncfile, dataset=None):
-    """
-    Utility to create a netCDF4 Dataset from a filename, list of filenames,
-    or just pass it through if it's already a netCDF4.Dataset
-
-    if dataset is not None, it should be a valid netCDF4 Dataset object,
-    and it will simiply be returned
-    """
-    if dataset is not None:
-        return dataset
-    if isinstance(ncfile, nc4.Dataset):
-        return ncfile
-    elif isinstance(ncfile, basestring):
-        return nc4.Dataset(ncfile)
-    else:
-        return nc4.MFDataset(ncfile)
 
 
 Grid = PyGrid
