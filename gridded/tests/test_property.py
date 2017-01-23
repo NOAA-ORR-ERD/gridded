@@ -13,7 +13,7 @@ import netCDF4 as nc
 
 from gridded.grid_property import Variable, VectorVariable
 
-from gridded.gridded import PyGrid
+from gridded.gridded import Grid
 
 base_dir = os.path.dirname(__file__)
 sys.path.append(os.path.join(base_dir, 'sample_data'))
@@ -141,7 +141,7 @@ class TestGriddedProp:
     def test_construction(self):
 
         data = sinusoid['u'][:]
-        grid = PyGrid.from_netCDF(dataset=sinusoid)
+        grid = Grid.from_netCDF(dataset=sinusoid)
         time = None
 
         u = Variable(name='u',
