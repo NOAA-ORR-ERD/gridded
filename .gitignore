@@ -1,3 +1,11 @@
+# generated test files
+*noncompliant_sgrid.nc
+*sgrid_deltares.nc
+*sgrid_deltares_no_opt_attr.nc
+*sgrid_roms.nc
+*sgrid_wrf.nc
+*sgrid_wrf_2.nc
+
 # OS-X stuff
 .DS_Store
 
