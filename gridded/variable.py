@@ -5,7 +5,7 @@ import numpy as np
 import collections
 from collections import OrderedDict
 from .utilities import get_dataset
-from .grids import PyGrid, PyGrid_U, PyGrid_S
+from .grids import Grid, Grid_U, Grid_S
 from .depth import Depth
 from .time import Time
 
@@ -85,8 +85,120 @@ class Variable(object):
         for k in kwargs:
             setattr(self, k, kwargs[k])
 
-#     def __repr__(self):
-#         return str(self.serialize())
+# # pulled from pyugrid
+# class UVar(object):
+#     """
+#     A class to hold a variable associated with the UGrid. Data can be on the
+#     nodes, edges, etc. -- "UGrid Variable"
+
+#     It holds an array of the data, as well as the attributes associated
+#     with that data  -- this is mapped to a netcdf variable with
+#     attributes(attributes get stored in the netcdf file)
+#     """
+
+#     def __init__(self, name, location, data=None, attributes=None):
+#         """
+#         create a UVar object
+#         :param name: the name of the variable (depth, u_velocity, etc.)
+#         :type name: string
+
+#         :param location: the type of grid element the data is associated with:
+#                          'node', 'edge', or 'face'
+
+#         :param data: The data itself
+#         :type data: 1-d numpy array or array-like object ().
+#                     If you have a list or tuple, it should be something that can be
+#                     converted to a numpy array (list, etc.)
+#         """
+#         self.name = name
+
+#         if location not in ['node', 'edge', 'face', 'boundary']:
+#             raise ValueError("location must be one of: "
+#                              "'node', 'edge', 'face', 'boundary'")
+
+#         self.location = location
+
+#         if data is None:
+#             # Could be any data type, but we'll default to float
+#             self._data = np.zeros((0,), dtype=np.float64)
+#         else:
+#             self._data = asarraylike(data)
+
+#         # FixMe: we need a separate attribute dict -- we really do'nt want all this
+#         #        getting mixed up with the python object attributes
+#         self.attributes = {} if attributes is None else attributes
+#         # if the data is a netcdf variable, pull the attributes from there
+#         try:
+#             for attr in data.ncattrs():
+#                 self.attributes[attr] = data.getncattr(attr)
+#         except AttributeError:  # must not be a netcdf variable
+#             pass
+
+#         self._cache = OrderedDict()
+
+#     # def update_attrs(self, attrs):
+#     #     """
+#     #     update the attributes of the UVar object
+
+#     #     :param attr: Dict containing attributes to be added to the object
+#     #     """
+#     #     for key, val in attrs.items():
+#     #         setattr(self, key, val)
+
+#     @property
+#     def data(self):
+#         return self._data
+
+#     @data.setter
+#     def data(self, data):
+#         self._data = asarraylike(data)
+
+#     @data.deleter
+#     def data(self):
+#         self._data = self._data = np.zeros((0,), dtype=np.float64)
+
+#     @property
+#     def shape(self):
+#         return self.data.shape
+
+#     @property
+#     def max(self):
+#         return np.max(self._data)
+
+#     @property
+#     def min(self):
+#         return np.min(self._data)
+
+#     @property
+#     def dtype(self):
+#         return self.data.dtype
+
+#     @property
+#     def ndim(self):
+#         return self.data.ndim
+
+#     def __getitem__(self, item):
+#         """
+#         Transfers responsibility to the data's __getitem__ if not cached
+#         """
+#         rv = None
+#         if str(item) in self._cache:
+#             rv = self._cache[str(item)]
+#         else:
+#             rv = self._data.__getitem__(item)
+#             self._cache[str(item)] = rv
+#             if len(self._cache) > 3:
+#                 self._cache.popitem(last=False)
+#         return rv
+
+#     def __str__(self):
+#         print("in __str__, data is:", self.data)
+#         msg = ("UVar object: {0:s}, on the {1:s}s, and {2:d} data "
+#                "points\nAttributes: {3}").format
+#         return msg(self.name, self.location, len(self.data), self.attributes)
+
+#     def __len__(self):
+#         return len(self.data)
 
     @classmethod
     def from_netCDF(cls,
@@ -153,7 +265,7 @@ class Variable(object):
             ds = dataset
 
         if grid is None:
-            grid = PyGrid.from_netCDF(grid_file,
+            grid = Grid.from_netCDF(grid_file,
                                       dataset=dg,
                                       grid_topology=grid_topology)
         if varname is None:
@@ -175,8 +287,8 @@ class Variable(object):
                                     dataset=ds,
                                     datavar=data)
         if depth is None:
-            if (isinstance(grid, PyGrid_S) and len(data.shape) == 4 or
-                    isinstance(grid, PyGrid_U) and len(data.shape) == 3):
+            if (isinstance(grid, Grid_S) and len(data.shape) == 4 or
+                    isinstance(grid, Grid_U) and len(data.shape) == 3):
                 depth = Depth(surface_index=-1)
 #             if len(data.shape) == 4 or (len(data.shape) == 3 and time is None):
 #                 from gnome.environment.environment_objects import S_Depth
@@ -302,7 +414,7 @@ class Variable(object):
             self.time.valid_time(time)
         if len(self.time) == 1:
             if len(self.data.shape) == 2:
-                if isinstance(self.grid, PyGrid_S):
+                if isinstance(self.grid, Grid_S):
                     # curv grid
                     value = self.data[0:1:-2, 1:-2]
                 else:
@@ -319,19 +431,19 @@ class Variable(object):
         it will continue to use that. If no dimension_ordering is set, then a default ordering will be generated
         based on the object properties and data shape.
 
-        For example, if the data has 4 dimensions and is represented by a PyGrid_S (structured grid), and the
+        For example, if the data has 4 dimensions and is represented by a Grid_S (structured grid), and the
         Variable has a depth and time assigned, then the assumed ordering is ['time','depth','lon','lat']
 
-        If the data has 3 dimensions, self.grid is a PyGrid_S, and self.time is None, then the ordering is
+        If the data has 3 dimensions, self.grid is a Grid_S, and self.time is None, then the ordering is
         ['depth','lon','lat']
-        If the data has 3 dimensions, self.grid is a PyGrid_U, the ordering is ['time','depth','ele']
+        If the data has 3 dimensions, self.grid is a Grid_U, the ordering is ['time','depth','ele']
         '''
         if not hasattr(self, '_order'):
             self._order = None
         if self._order is not None:
             return self._order
         else:
-            if isinstance(self.grid, PyGrid_S):
+            if isinstance(self.grid, Grid_S):
                 order = ['time', 'depth', 'lon', 'lat']
             else:
                 order = ['time', 'depth', 'ele']
@@ -636,7 +748,7 @@ class VectorVariable(object):
             ds = dataset
 
         if grid is None:
-            grid = PyGrid.from_netCDF(grid_file,
+            grid = Grid.from_netCDF(grid_file,
                                       dataset=dg,
                                       grid_topology=grid_topology)
         if varnames is None:
@@ -651,14 +763,14 @@ class VectorVariable(object):
                                     dataset=ds,
                                     datavar=data)
         if depth is None:
-            if (isinstance(grid, PyGrid_S) and len(data.shape) == 4 or
-                    isinstance(grid, PyGrid_U) and len(data.shape) == 3):
+            if (isinstance(grid, Grid_S) and len(data.shape) == 4 or
+                    isinstance(grid, Grid_U) and len(data.shape) == 3):
                 depth = Depth(surface_index=-1)
 
 #         if depth is None:
-#             if (isinstance(grid, PyGrid_S) and len(data.shape) == 4 or
+#             if (isinstance(grid, Grid_S) and len(data.shape) == 4 or
 #                         (len(data.shape) == 3 and time is None) or
-#                     (isinstance(grid, PyGrid_U) and len(data.shape) == 3 or
+#                     (isinstance(grid, Grid_U) and len(data.shape) == 3 or
 #                         (len(data.shape) == 2 and time is None))):
 #                 from gnome.environment.environment_objects import S_Depth
 #                 depth = S_Depth.from_netCDF(grid=grid,
@@ -876,7 +988,7 @@ class VectorVariable(object):
                     ds = kws['dataset']
                 if _mod('grid'):
                     gt = kws.get('grid_topology', None)
-                    kws['grid'] = PyGrid.from_netCDF(kws['grid_file'], dataset=dg, grid_topology=gt)
+                    kws['grid'] = Grid.from_netCDF(kws['grid_file'], dataset=dg, grid_topology=gt)
                 if kws.get('varnames', None) is None:
                     varnames = cls._gen_varnames(kws['data_file'],
                                                  dataset=ds)

@@ -2,26 +2,14 @@ import numpy as np
 import netCDF4 as nc4
 
 from ..pysgrid import SGrid
-from gnome.environment.grid_property import Variable
 
+import gridded
 import os
 from datetime import datetime, timedelta
 
 
-from gnome import scripting
-from gnome import utilities
 
-
-from gnome.model import Model
-
-from gnome.spill import point_line_release_spill
-from gnome.movers import RandomMover, constant_wind_mover, GridCurrentMover
-
-from gnome.environment import GridCurrent
-from gnome.environment import PyGrid, PyGrid_U
-from gnome.movers.py_current_movers import PyCurrentMover
-
-from gnome.outputters import Renderer, NetCDFOutput
+from gridded import Variable
 
 def gen_vortex_3D(filename=None):
     x, y = np.mgrid[-30:30:61j, -30:30:61j]
@@ -29,7 +17,7 @@ def gen_vortex_3D(filename=None):
     x = np.ascontiguousarray(x.T)
     x_size = 61
     y_size = 61
-    g = PyGrid(node_lon=x,
+    g = gridded.Grid(node_lon=x,
                node_lat=y)
     g.build_celltree()
     lin_nodes = g._trees['node'][1]
@@ -75,6 +63,7 @@ def gen_vortex_3D(filename=None):
     ds = None
     if filename is not None:
         ds = nc4.Dataset(filename, 'w', diskless=True, persist=True)
+
         ds.createDimension('y', y.shape[0])
         ds.createDimension('x', x.shape[1])
         ds.createDimension('time', len(tarr))
@@ -134,15 +123,15 @@ def gen_vortex_3D(filename=None):
             ds[k][:] = v
             if 'lin' in k:
                 ds[k].units = 'm/s'
-        PyGrid._get_grid_type(ds, grid_topology={'node_lon': 'x', 'node_lat': 'y'})
-        PyGrid._get_grid_type(ds)
+        Grid._get_grid_type(ds, grid_topology={'node_lon': 'x', 'node_lat': 'y'})
+        Grid._get_grid_type(ds)
         ds.setncattr('grid_type', 'sgrid')
     if ds is not None:
         # Need to test the dataset...
         from gnome.environment import GridCurrent
         from gnome.environment.grid_property import Variable
         sgt = {'node_lon': 'x', 'node_lat': 'y'}
-        sg = PyGrid.from_netCDF(dataset=ds, grid_topology=sgt, grid_type='sgrid')
+        sg = Grid.from_netCDF(dataset=ds, grid_topology=sgt, grid_type='sgrid')
         sgc1 = GridCurrent.from_netCDF(dataset=ds, varnames=['vx', 'vy'], grid_topology=sgt)
         sgc2 = GridCurrent.from_netCDF(dataset=ds, varnames=['tvx', 'tvy'], grid_topology=sgt)
         sgc3 = GridCurrent.from_netCDF(dataset=ds, varnames=['dvx', 'dvy'], grid_topology=sgt)
@@ -260,7 +249,7 @@ def gen_sinusoid(filename=None):
     if ds is not None:
         # Need to test the dataset...
         from gnome.environment import GridCurrent
-        sg = PyGrid.from_netCDF(dataset=ds)
+        sg = Grid.from_netCDF(dataset=ds)
         sgc1 = GridCurrent.from_netCDF(dataset=ds, varnames=['u_rho', 'v_rho'], grid=sg)
         sgc1.angle = None
         sgc2 = GridCurrent.from_netCDF(dataset=ds, varnames=['u_psi', 'v_psi'], grid=sg)

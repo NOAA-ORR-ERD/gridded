@@ -6,7 +6,7 @@ import datetime as dt
 import numpy as np
 import datetime
 import netCDF4 as nc
-from ..gridded import PyGrid, PyGrid_U, PyGrid_S
+from gridded.gridded import Grid, Grid_U, Grid_S
 import pprint as pp
 from gridded import Grid
 
@@ -34,7 +34,7 @@ def sg_topology():
 
 @pytest.fixture()
 def sg():
-    return PyGrid.from_netCDF(sg_data()[0], sg_data()[1], grid_topology=sg_topology())
+    return Grid.from_netCDF(sg_data()[0], sg_data()[1], grid_topology=sg_topology())
 
 @pytest.fixture()
 def ug_data():
@@ -49,21 +49,21 @@ def ug_topology():
 
 @pytest.fixture()
 def ug():
-    return PyGrid.from_netCDF(ug_data()[0], ug_data()[1], grid_topology=ug_topology())
+    return Grid.from_netCDF(ug_data()[0], ug_data()[1], grid_topology=ug_topology())
 
 class TestPyGrid_S:
     def test_construction(self, sg_data, sg_topology):
         filename = sg_data[0]
         dataset = sg_data[1]
         grid_topology = sg_topology
-        sg = PyGrid_S.from_netCDF(filename, dataset, grid_topology=grid_topology)
+        sg = Grid_S.from_netCDF(filename, dataset, grid_topology=grid_topology)
         assert sg.filename == filename
 
-        sg2 = PyGrid_S.from_netCDF(filename)
+        sg2 = Grid_S.from_netCDF(filename)
         assert sg2.filename == filename
 
-        sg3 = PyGrid.from_netCDF(filename, dataset, grid_topology=grid_topology)
-        sg4 = PyGrid.from_netCDF(filename)
+        sg3 = Grid.from_netCDF(filename, dataset, grid_topology=grid_topology)
+        sg4 = Grid.from_netCDF(filename)
         print sg3.shape
         print sg4.shape
         assert sg == sg3
@@ -75,18 +75,18 @@ class TestPyGrid_U:
         filename = ug_data[0]
         dataset = ug_data[1]
         grid_topology = ug_topology
-        ug = PyGrid_U.from_netCDF(filename, dataset, grid_topology=grid_topology)
+        ug = Grid_U.from_netCDF(filename, dataset, grid_topology=grid_topology)
 #         assert ug.filename == filename
 #         assert isinstance(ug.node_lon, nc.Variable)
 #         assert ug.node_lon.name == 'lonc'
 
-        ug2 = PyGrid_U.from_netCDF(filename)
+        ug2 = Grid_U.from_netCDF(filename)
         assert ug2.filename == filename
 #         assert isinstance(ug2.node_lon, nc.Variable)
 #         assert ug2.node_lon.name == 'lon'
 
-        ug3 = PyGrid.from_netCDF(filename, dataset, grid_topology=grid_topology)
-        ug4 = PyGrid.from_netCDF(filename)
+        ug3 = Grid.from_netCDF(filename, dataset, grid_topology=grid_topology)
+        ug4 = Grid.from_netCDF(filename)
         print ug3.shape
         print ug4.shape
         assert ug == ug3

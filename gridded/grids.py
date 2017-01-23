@@ -2,20 +2,19 @@
 from . import pyugrid
 from . import pysgrid
 
-
-class PyGrid(object):
+class Grid(object):
     _def_count = 0
 
     def __new__(cls, *args, **kwargs):
         '''
-        If you construct a PyGrid object directly, you will always
+        If you construct a Grid object directly, you will always
         get one of the child types based on your input
         '''
-        if cls is not PyGrid_U and cls is not PyGrid_S:
+        if cls is not Grid_U and cls is not Grid_S:
             if 'faces' in kwargs:
-                cls = PyGrid_U
+                cls = Grid_U
             else:
-                cls = PyGrid_S
+                cls = Grid_S
 #         cls.obj_type = c.obj_type
         return super(type(cls), cls).__new__(cls, *args, **kwargs)
 
@@ -24,12 +23,12 @@ class PyGrid(object):
                  *args,
                  **kwargs):
         '''
-        Init common to all PyGrid types. This constructor will take all the kwargs of both
+        Init common to all Grid types. This constructor will take all the kwargs of both
         pyugrid.UGrid and pysgrid.SGrid. See their documentation for details
 
         :param filename: Name of the file this grid was constructed from, if available.
         '''
-        super(PyGrid, self).__init__(**kwargs)
+        super(Grid, self).__init__(**kwargs)
         if 'name' in kwargs:
             self.name = kwargs['name']
         else:
@@ -44,29 +43,28 @@ class PyGrid(object):
         Redirect to grid-specific loading routine.
         '''
         if hasattr(topology_var, 'face_node_connectivity') or isinstance(topology_var, dict) and 'faces' in topology_var.keys():
-            cls = PyGrid_U
+            cls = Grid_U
             return cls.from_ncfile(filename)
         else:
-            cls = PyGrid_S
+            cls = Grid_S
             return cls.load_grid(filename)
         pass
 
     @classmethod
     def from_netCDF(cls, filename=None, dataset=None, grid_type=None, grid_topology=None, *args, **kwargs):
-        ## fixme: this doesn't find UGRID compliant files!
         '''
         :param filename: File containing a grid
         :param dataset: Takes precedence over filename, if provided.
         :param grid_type: Must be provided if Dataset does not have a 'grid_type' attribute, or valid topology variable
         :param grid_topology: A dictionary mapping of grid attribute to variable name. Takes precendence over discovered attributes
         :param **kwargs: All kwargs to SGrid or UGrid are valid, and take precedence over all.
-        :returns: Instance of PyGrid_U, PyGrid_S, or PyGrid_R
+        :returns: Instance of Grid_U, Grid_S, or PyGrid_R
         '''
         gf = dataset if filename is None else get_dataset(filename, dataset)
         if gf is None:
             raise ValueError('No filename or dataset provided')
 
-        cls = PyGrid._get_grid_type(gf, grid_topology, grid_type)
+        cls = Grid._get_grid_type(gf, grid_topology, grid_type)
         init_args, gf_vars = cls._find_required_grid_attrs(filename,
                                                            dataset=dataset,
                                                            grid_topology=grid_topology)
@@ -80,7 +78,7 @@ class PyGrid(object):
 
         This function returns a dict, which maps an attribute name to a netCDF4
         Variable or numpy array object extracted from the dataset. When called from
-        PyGrid_U or PyGrid_S, this function should provide all the kwargs needed to
+        Grid_U or Grid_S, this function should provide all the kwargs needed to
         create a valid instance.
         '''
         gf_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
@@ -130,40 +128,40 @@ class PyGrid(object):
         ugrid_names = ['ugrid', 'pygrid_u', 'triangular', 'unstructured']
         if grid_type is not None:
             if grid_type.lower() in sgrid_names:
-                return PyGrid_S
+                return Grid_S
             elif grid_type.lower() in ugrid_names:
-                return PyGrid_U
+                return Grid_U
             else:
                 raise ValueError('Specified grid_type not recognized/supported')
         if grid_topology is not None:
             if 'faces' in grid_topology.keys() or grid_topology.get('grid_type', 'notype').lower() in ugrid_names:
-                return PyGrid_U
+                return Grid_U
             else:
-                return PyGrid_S
+                return Grid_S
         else:
             # no topology, so search dataset for grid_type variable
             if hasattr(dataset, 'grid_type') and dataset.grid_type in sgrid_names + ugrid_names:
                 if dataset.grid_type.lower() in ugrid_names:
-                    return PyGrid_U
+                    return Grid_U
                 else:
-                    return PyGrid_S
+                    return Grid_S
             else:
                 # no grid type explicitly specified. is a topology variable present?
-                topology = PyGrid._find_topology_var(None, dataset=dataset)
+                topology = Grid._find_topology_var(None, dataset=dataset)
                 if topology is not None:
                     if hasattr(topology, 'node_coordinates') and not hasattr(topology, 'node_dimensions'):
-                        return PyGrid_U
+                        return Grid_U
                     else:
-                        return PyGrid_S
+                        return Grid_S
                 else:
                     # no topology variable either, so generate and try again.
                     # if no defaults are found, _gen_topology will raise an error
                     try:
-                        u_init_args, u_gf_vars = PyGrid_U._find_required_grid_attrs(None, dataset)
-                        return PyGrid_U
+                        u_init_args, u_gf_vars = Grid_U._find_required_grid_attrs(None, dataset)
+                        return Grid_U
                     except ValueError:
-                        s_init_args, s_gf_vars = PyGrid_S._find_required_grid_attrs(None, dataset)
-                        return PyGrid_S
+                        s_init_args, s_gf_vars = Grid_S._find_required_grid_attrs(None, dataset)
+                        return Grid_S
 
     @staticmethod
     def _find_topology_var(filename,
@@ -197,36 +195,14 @@ class PyGrid(object):
     def _write_grid_to_file(self, pth):
         self.save_as_netcdf(pth)
 
-    def save(self, saveloc, references=None, name=None):
-        '''
-        INCOMPLETE
-        Write Wind timeseries to file or to zip,
-        then call save method using super
-        '''
-#         name = self.name
-#         saveloc = os.path.splitext(name)[0] + '_grid.GRD'
 
-        if zipfile.is_zipfile(saveloc):
-            if self.filename is None:
-                self._write_grid_to_file(saveloc)
-                self._write_grid_to_zip(saveloc, saveloc)
-                self.filename = saveloc
-#             else:
-#                 self._write_grid_to_zip(saveloc, self.filename)
-        else:
-            if self.filename is None:
-                self._write_grid_to_file(saveloc)
-                self.filename = saveloc
-        return super(PyGrid, self).save(saveloc, references, name)
-
-
-class PyGrid_U(PyGrid, pyugrid.UGrid):
+class Grid_U(Grid, pyugrid.UGrid):
 
     @classmethod
     def _find_required_grid_attrs(cls, filename, dataset=None, grid_topology=None):
 
         # Get superset attributes
-        init_args, gf_vars = super(PyGrid_U, cls)._find_required_grid_attrs(filename=filename,
+        init_args, gf_vars = super(Grid_U, cls)._find_required_grid_attrs(filename=filename,
                                                                             dataset=dataset,
                                                                             grid_topology=grid_topology)
 
@@ -248,14 +224,14 @@ class PyGrid_U(PyGrid, pyugrid.UGrid):
             raise ValueError('Unable to find faces variable')
 
 
-class PyGrid_S(PyGrid, pysgrid.SGrid):
+class Grid_S(Grid, pysgrid.SGrid):
 
     @classmethod
     def _find_required_grid_attrs(cls, filename, dataset=None, grid_topology=None):
 
         # THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional attributes are dealt with
         # Get superset attributes
-        init_args, gf_vars = super(PyGrid_S, cls)._find_required_grid_attrs(filename,
+        init_args, gf_vars = super(Grid_S, cls)._find_required_grid_attrs(filename,
                                                                             dataset=dataset,
                                                                             grid_topology=grid_topology)
 
@@ -280,6 +256,3 @@ class PyGrid_S(PyGrid, pysgrid.SGrid):
                 if n in center_attrs + edge1_attrs + edge2_attrs and v in gf_vars:
                     init_args[n] = gf_vars[v][:]
         return init_args, gf_vars
-
-
-Grid = PyGrid
