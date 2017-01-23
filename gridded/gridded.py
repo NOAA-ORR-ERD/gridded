@@ -7,7 +7,6 @@ import copy
 
 import numpy as np
 import netCDF4 as nc4
-from .variable import Variable
 from . import pysgrid
 from . import pyugrid
 
@@ -333,3 +332,5 @@ class Grid_S(Grid, pysgrid.SGrid):
                 if n in center_attrs + edge1_attrs + edge2_attrs and v in gf_vars:
                     init_args[n] = gf_vars[v][:]
         return init_args, gf_vars
+
+from .variable import Variable

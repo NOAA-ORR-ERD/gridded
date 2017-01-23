@@ -2,6 +2,8 @@
 from . import pyugrid
 from . import pysgrid
 
+from .utilities import get_dataset
+
 class Grid(object):
     _def_count = 0
 
@@ -65,6 +67,9 @@ class Grid(object):
             raise ValueError('No filename or dataset provided')
 
         cls = Grid._get_grid_type(gf, grid_topology, grid_type)
+        compliant = cls._find_topology_var(None, gf)
+        if compliant is not None:
+            return cls.load_grid(filename, compliant)
         init_args, gf_vars = cls._find_required_grid_attrs(filename,
                                                            dataset=dataset,
                                                            grid_topology=grid_topology)
@@ -168,7 +173,7 @@ class Grid(object):
                            dataset=None):
         gf = get_dataset(filename, dataset)
         gts = []
-        for v in gf.variables:
+        for k, v in gf.variables.items():
             if hasattr(v, 'cf_role') and 'topology' in v.cf_role:
                 gts.append(v)
 #         gts = gf.get_variables_by_attributes(cf_role=lambda t: t is not None and 'topology' in t)

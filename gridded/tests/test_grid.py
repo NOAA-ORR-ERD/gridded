@@ -6,9 +6,8 @@ import datetime as dt
 import numpy as np
 import datetime
 import netCDF4 as nc
-from gridded.gridded import Grid, Grid_U, Grid_S
 import pprint as pp
-from gridded import Grid
+from gridded.grids import Grid, Grid_U, Grid_S
 
 
 def test_init():
@@ -45,7 +44,7 @@ def ug_data():
 
 @pytest.fixture()
 def ug_topology():
-    pass
+    return None
 
 @pytest.fixture()
 def ug():
