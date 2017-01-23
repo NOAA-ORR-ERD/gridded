@@ -15,8 +15,8 @@ s_data = os.path.join(base_dir, 'test_data')
 
 roms_fn = os.path.join(s_data, 'sgrid_roms.nc')
 # gen_all(path=s_data)
-circular_fn = os.path.join(s_data, 'circular_3D.nc')
-circular = nc.Dataset(circular_fn)
+# circular_fn = os.path.join(s_data, 'circular_3D.nc')
+# circular = nc.Dataset(circular_fn)
 
 sinusoid_fn = os.path.join(s_data, 'staggered_sine_channel.nc')
 sinusoid = nc.Dataset(sinusoid_fn)
