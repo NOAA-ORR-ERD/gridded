@@ -1,3 +1,8 @@
+
+from . import pyugrid
+from . import pysgrid
+
+
 class PyGrid(object):
     _def_count = 0
 

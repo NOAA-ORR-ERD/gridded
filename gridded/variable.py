@@ -5,7 +5,7 @@ import numpy as np
 import collections
 from collections import OrderedDict
 from .utilities import get_dataset
-from .gridded import PyGrid, PyGrid_U, PyGrid_S
+from .grids import PyGrid, PyGrid_U, PyGrid_S
 from .depth import Depth
 from .time import Time
 

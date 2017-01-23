@@ -4,11 +4,10 @@ from __future__ import (absolute_import, division, print_function, unicode_liter
 __version__ = "0.0.1"
 
 from .gridded import Dataset
-from .gridded import Grid
+# from .gridded import Grid
 from .variable import Variable, VectorVariable
 
 
 __all__ = [Dataset,
-           Grid,
            Variable,
            VectorVariable]
