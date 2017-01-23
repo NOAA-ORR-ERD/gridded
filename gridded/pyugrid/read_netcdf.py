@@ -95,6 +95,40 @@ coord_defs = [{'grid_attr': 'nodes',  # Attribute name in UGrid object.
               ]
 
 
+def find_variables(nc, mesh_name):
+    """
+    find thenames of variables that are assocaited with the grid
+
+    this is kind of a kludge, but should be useful
+    """
+    ncvars = nc.variables
+
+    var_names = []
+    # Look for data arrays -- they should have a "location" attribute.
+    # we can add more logic in here for checking compatible array sizes, etc.
+    for name, var in nc.variables.items():
+        # Data Arrays should have "location" and "mesh" attributes.
+        try:
+            location = var.location
+            # The mesh attribute should match the mesh we're loading:
+            if var.mesh != mesh_name:
+                continue
+        except AttributeError:
+            continue
+
+        # Get the attributes.
+        # FIXME: Is there a way to get the attributes a Variable directly?
+        attributes = {n: var.getncattr(n) for n in var.ncattrs()
+                      if n not in ('location', 'coordinates', 'mesh')}
+
+        # Trick with the name: FIXME: Is this a good idea?
+        # name = name.lstrip(mesh_name).lstrip('_')
+        # uvar = UVar(name, data=var[:],
+        #             location=location, attributes=attributes)
+        var_names.append(name)
+    return var_names
+
+
 def load_grid_from_nc_dataset(nc, grid, mesh_name=None, load_data=True):
     """
     loads UGrid object from a netCDF4.DataSet object, adding the data

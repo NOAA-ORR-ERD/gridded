@@ -36,6 +36,16 @@ def asarraylike(obj):
     return obj if isarraylike(obj) else np.array(obj)
 
 
+def isstring(obj):
+    """
+    py2/3 compaitlbie wayto test for a string
+    """
+    try:
+        return isinstance(obj, basestring)
+    except:
+        return isinstance(obj, str)
+
+
 def get_dataset(ncfile, dataset=None):
     """
     Utility to create a netCDF4 Dataset from a filename, list of filenames,
@@ -48,8 +58,7 @@ def get_dataset(ncfile, dataset=None):
         return dataset
     if isinstance(ncfile, nc4.Dataset):
         return ncfile
-    elif isinstance(ncfile, basestring):
+    elif isstring(ncfile):
         return nc4.Dataset(ncfile)
     else:
         return nc4.MFDataset(ncfile)
-
