@@ -69,11 +69,15 @@ class Grid(object):
         cls = Grid._get_grid_type(gf, grid_topology, grid_type)
         compliant = cls._find_topology_var(None, gf)
         if compliant is not None:
-            return cls.load_grid(filename, compliant)
-        init_args, gf_vars = cls._find_required_grid_attrs(filename,
-                                                           dataset=dataset,
-                                                           grid_topology=grid_topology)
-        return cls(**init_args)
+            c = cls.load_grid(filename, compliant)
+            c.grid_topology = compliant.__dict__
+        else:
+            init_args, gf_vars = cls._find_required_grid_attrs(filename,
+                                                               dataset=dataset,
+                                                               grid_topology=grid_topology)
+            c = cls(**init_args)
+            c.grid_topology = grid_topology
+        return c
 
     @classmethod
     def _find_required_grid_attrs(cls, filename, dataset=None, grid_topology=None,):

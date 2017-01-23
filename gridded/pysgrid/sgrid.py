@@ -491,7 +491,7 @@ class SGrid(object):
         """
 
         var = var[:]
-        
+
         if isinstance(var, np.ma.MaskedArray) or isinstance(index, np.ma.MaskedArray):
             rv = np.ma.empty((index.shape[0], 4), dtype=np.float64)
             if index.mask is not np.bool_():  # because False is not False. Thanks numpy
@@ -515,11 +515,11 @@ class SGrid(object):
     def get_variable_at_index(self, var, index):
         var = var[:]
 
-        rv = np.zeros((index.shape[0],1), dtype=np.float64)
-        mask = np.zeros((index.shape[0],1), dtype=bool)
+        rv = np.zeros((index.shape[0], 1), dtype=np.float64)
+        mask = np.zeros((index.shape[0], 1), dtype=bool)
         raw = np.ravel_multi_index(index.T, var.shape, mode='clip')
         rv[:, 0] = np.take(var, raw)
-        mask[:,0] = np.take(var.mask, raw)
+        mask[:, 0] = np.take(var.mask, raw)
         return np.ma.array(rv, mask=mask)
 
     def build_kdtree(self, grid='node'):
@@ -691,7 +691,11 @@ class SGrid(object):
         Assuming default is psi grid, check variable dimensions to determine which grid
         it is on.
         """
-        shape = np.array(variable.shape)
+        shape = None
+        try:
+            shape = np.array(variable.shape)
+        except:
+            return None  # Variable has no shape attribute!
         difference = (shape[-2:] - self.node_lon.shape).tolist()
         if difference == [1, 1]:
             return 'center'
@@ -740,11 +744,11 @@ class SGrid(object):
 
                 det = np.ma.sqrt(k)
                 m1 = (-bb - det) / (2 * aa)
-                l1 = (x[t] - a[0][t] - a[2][t] * 
+                l1 = (x[t] - a[0][t] - a[2][t] *
                       m1) / (a[1][t] + a[3][t] * m1)
 
                 m2 = (-bb + det) / (2 * aa)
-                l2 = (x[t] - a[0][t] - a[2][t] * 
+                l2 = (x[t] - a[0][t] - a[2][t] *
                       m2) / (a[1][t] + a[3][t] * m2)
 
 #                 m[t] = m1

@@ -357,7 +357,11 @@ class UGrid(object):
         Returns 'nodes' if data will fit to the nodes, 'faces' if the data will fit to the faces,
         and None otherwise.
         """
-        size = data.shape[-1]
+        size = None
+        try:
+            size = data.shape[-1]
+        except:
+            return None  # Variable has no shape attribute!
         if size == self.nodes.shape[0]:
             return 'nodes'
         if size == self.faces.shape[0]:
