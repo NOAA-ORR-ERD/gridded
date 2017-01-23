@@ -14,14 +14,15 @@ from __future__ import (absolute_import, division, print_function)
 import numpy as np
 from netCDF4 import Dataset
 
+import pytest
+
 from gridded.pysgrid.lookup import (LON_GRID_CELL_CENTER_LONG_NAME,
                                     LAT_GRID_CELL_CENTER_LONG_NAME,
                                     LON_GRID_CELL_NODE_LONG_NAME,
                                     LAT_GRID_CELL_NODE_LONG_NAME)
 
 
-@pytest.yield_fixture
-def deltares_sgrid_no_optional_attr(fname='tmp_sgrid_deltares_no_opt_attr.nc'):
+def deltares_sgrid_no_optional_attr(fname='sgrid_deltares_no_opt_attr.nc'):
     nc = Dataset(fname, 'w')
     # Define dimensions.
     nc.createDimension('MMAXZ', 4)
@@ -73,13 +74,10 @@ def deltares_sgrid_no_optional_attr(fname='tmp_sgrid_deltares_no_opt_attr.nc'):
     v1[:] = np.random.random((2, 2, 4, 4))
     times[:] = np.random.random((2,))
     nc.sync()
-    yield nc
     nc.close()
-    #os.remove(fname)
 
 
-@pytest.yield_fixture
-def deltares_sgrid(fname='tmp_sgrid_deltares.nc'):
+def deltares_sgrid(fname='sgrid_deltares.nc'):
     """
     Create a netCDF file that is structurally similar to
     deltares output. Dimension and variable names may differ
@@ -154,13 +152,10 @@ def deltares_sgrid(fname='tmp_sgrid_deltares.nc'):
     w[:] = np.random.random((2, 3, 4, 4))
     fake_w[:] = np.random.random((2, 4, 4))
     nc.sync()
-    yield nc
     nc.close()
-    # os.remove(fname)
 
 
-@pytest.yield_fixture
-def roms_sgrid(fname='tmp_sgrid_roms.nc'):
+def roms_sgrid(fname='sgrid_roms.nc'):
     """
     Create a netCDF file that is structurally similar to
     ROMS output. Dimension and variable names may differ
@@ -263,13 +258,10 @@ def roms_sgrid(fname='tmp_sgrid_roms.nc'):
     lon_v[:] = np.random.random(size=(3, 4))
     salt[:] = np.random.random(size=(2, 2, 4, 4))
     nc.sync()
-    yield nc
     nc.close()
-    # os.remove(fname)
 
 
-@pytest.yield_fixture
-def wrf_sgrid_2d(fname='tmp_sgrid_wrf_2.nc'):
+def wrf_sgrid_2d(fname='sgrid_wrf_2.nc'):
     nc = Dataset(fname, 'w')
     nc.createDimension('Time', 2)
     nc.createDimension('DateStrLen', 3)
@@ -326,13 +318,10 @@ def wrf_sgrid_2d(fname='tmp_sgrid_wrf_2.nc'):
     znus[:, :] = np.random.random(size=(2, 3))
     znws[:, :] = np.random.random(size=(2, 4))
     nc.sync()
-    yield nc
     nc.close()
-    # os.remove(fname)
 
 
-@pytest.yield_fixture
-def wrf_sgrid(fname='tmp_sgrid_wrf.nc'):
+def wrf_sgrid(fname='sgrid_wrf.nc'):
     """
     Write an SGrid file using 3D conventions.
 
@@ -387,13 +376,10 @@ def wrf_sgrid(fname='tmp_sgrid_wrf.nc'):
     znus[:, :] = np.random.random(size=(2, 3))
     znws[:, :] = np.random.random(size=(2, 4))
     nc.sync()
-    yield nc
     nc.close()
-    # os.remove(fname)
 
 
-@pytest.yield_fixture
-def non_compliant_sgrid(fname='tmp_noncompliant_sgrid.nc'):
+def non_compliant_sgrid(fname='noncompliant_sgrid.nc'):
     """
     Create a netCDF file that is structurally similar to
     ROMS output. Dimension and variable names may differ
@@ -471,6 +457,21 @@ def non_compliant_sgrid(fname='tmp_noncompliant_sgrid.nc'):
     lat_v[:] = np.random.random(size=(3, 4))
     lon_v[:] = np.random.random(size=(3, 4))
     nc.sync()
-    yield nc
     nc.close()
-    # os.remove(fname)
+
+
+def make_all():
+    """
+    make all the sample files
+    """
+
+    deltares_sgrid_no_optional_attr()
+    deltares_sgrid()
+    roms_sgrid()
+    wrf_sgrid_2d()
+    wrf_sgrid()
+    non_compliant_sgrid()
+
+
+if __name__ == "__main__":
+    make_all()
