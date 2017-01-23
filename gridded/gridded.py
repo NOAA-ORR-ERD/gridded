@@ -45,37 +45,45 @@ class Dataset():
         if ncfile is not None:
             self.nc_dataset = get_dataset(ncfile)
             self.filename = self.nc_dataset.filepath
-#            self.grid = self._load_grid(self.nc_dataset)
-            self.grid = Grid.from_netCDF(dataset=self.nc_dataset, grid_topology=grid_topology)
-            var_names = pyugrid.read_netcdf.find_variables(self.nc_dataset, grid.mesh_name)
-            self.variables = {}
-            for name in var_names:
-                v = Variable(self.nc_dataset, name)
-                self.variables[name] = v
+            self.grid = self._load_grid(self.nc_dataset)
+            var_names = pyugrid.read_netcdf.find_variables(self.nc_dataset,
+                                                           self.grid.mesh_name)
+            self.variables = self._load_variables(self.nc_dataset)
         else:  # no file passed in -- create from grid and variables
             self.filename = None
             self.grid = grid
             self.variables = variables
-
-        # # Generate variables
-        # if self.nc_dataset is not None:
-        #     for varname, v in self.nc_dataset.variables.items():
-        #         name = v.long_name if hasattr(v, 'long_name') else v.name
-        #         self.variables[varname] = Variable.from_netCDF(dataset=self.nc_dataset,
-        #                                                        name=name,
-        #                                                        varname=varname,
-        #                                                        grid=self.grid,
-        #                                                        )
 
     def _load_grid(self, ds):
         """
         load a grid from an open netCDF4 Dataset
         """
         # fixme: we may want to move the "magic" into here, rther than the GRid constructor
-        # try to load it as a compliant UGRID
+        # # try to load it as a compliant UGRID
+
         grid = pyugrid.UGrid.from_nc_dataset(ds)
-        # grid = Grid.from_netCDF(filename=self.filename, dataset=ds)
+        # grid = Grid.from_netCDF(dataset=ds,
+        #                         # grid_topology=grid_topology  # where is this supposed to come from?
+        #                         )
+
+        print("loaded the grid:", grid)
         return grid
+
+    def _load_variables(self, ds):
+        # fixme: need a way to do this for non-compliant files
+
+        var_names = pyugrid.read_netcdf.find_variables(ds,
+                                                       self.grid.mesh_name)
+        variables = {}
+        for name in var_names:
+            v = Variable(dataset=ds,
+                         name=name,
+                         varname=name,  # ????
+                         grid=self.grid,
+                         )
+            variables[name] = v
+
+        return variables
 
 
 class Grid(object):
