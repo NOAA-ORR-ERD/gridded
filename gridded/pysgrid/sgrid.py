@@ -1,7 +1,7 @@
 '''
 Created on Apr 20, 2015
 
-@author: ayan 
+@author: ayan
 '''
 
 from __future__ import (absolute_import, division, print_function)
@@ -148,6 +148,16 @@ class SGrid(object):
                     vertical_padding=vertical_padding)
         sa.get_variable_attributes(sgrid)
         return sgrid
+
+    @property
+    def info(self):
+        """
+        summary of information about the grid
+
+        this needs to be implimented -- see UGrid for example
+        """
+        msg = ["SGrid object:"]
+        return "\n".join(msg)
 
     def get_all_face_padding(self):
         if self.face_padding is not None:
@@ -363,7 +373,7 @@ class SGrid(object):
         """
         given minimum and maximum longitudes and latitudes, find
         the most efficient slice for the specified grid that covers the
-        entire specified area. 
+        entire specified area.
         """
         if indices is None:
             indices = self.locate_faces(points, grid, _memo, _copy, _hash)
@@ -632,17 +642,17 @@ class SGrid(object):
         :param mask: under development.
 
 
-        - With a numpy array:  
-        sgrid.interpolate_var_to_points(points, sgrid.u[time_idx, depth_idx])  
-        - With a raw netCDF Variable:  
-        sgrid.interpolate_var_to_points(points, nc.variables['u'], slices=[time_idx, depth_idx])  
+        - With a numpy array:
+        sgrid.interpolate_var_to_points(points, sgrid.u[time_idx, depth_idx])
+        - With a raw netCDF Variable:
+        sgrid.interpolate_var_to_points(points, nc.variables['u'], slices=[time_idx, depth_idx])
 
         If you have pre-computed information, you can pass it in to avoid unnecessary
-        computation and increase performance.  
-        - ind = # precomputed indices of points  
-        - alphas = # precomputed alphas (useful if interpolating to the same points frequently)  
+        computation and increase performance.
+        - ind = # precomputed indices of points
+        - alphas = # precomputed alphas (useful if interpolating to the same points frequently)
 
-        sgrid.interpolate_var_to_points(points, sgrid.u, indices=ind, alphas=alphas, 
+        sgrid.interpolate_var_to_points(points, sgrid.u, indices=ind, alphas=alphas,
         slices=[time_idx, depth_idx])
 
         """

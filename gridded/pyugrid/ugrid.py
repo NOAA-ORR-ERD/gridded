@@ -188,6 +188,25 @@ class UGrid(object):
         read_netcdf.load_grid_from_nc_dataset(nc, grid, mesh_name, load_data)
         return grid
 
+    @property
+    def info(self):
+        """
+        summary of information about the grid
+        """
+        msg = ["UGrid object:"]
+
+        msg.append("Number of nodes: %i" % len(self.nodes))
+        msg.append("Number of faces: %i with %i vertices per face" %
+                   (len(self.faces), self.num_vertices))
+        if self.boundaries is not None:
+            msg.append("Number of boundaries: %i" % len(self.boundaries))
+
+        if self._data:
+            msg.append("Variables: " + ", ".join([str(v) for v in self._data.keys()]))
+
+        return "\n".join(msg)
+
+
     def check_consistent(self):
         """
         Check if the various data is consistent: the edges and faces reference
@@ -495,7 +514,7 @@ class UGrid(object):
         :type point: array-like containing one or more points: shape (2,) for one point, shape (N, 2)
                      for more than one point.
 
-        :param method='celltree': method to use. Options are 'celltree', 'simple'. 
+        :param method='celltree': method to use. Options are 'celltree', 'simple'.
                                   for 'celltree' the celltree2d pacakge must be installed:
                                   https://github.com/NOAA-ORR-ERD/cell_tree2d/
                                   'simple' is very, very slow for large grids.
