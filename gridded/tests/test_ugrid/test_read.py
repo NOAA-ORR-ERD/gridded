@@ -20,6 +20,7 @@ from gridded import Dataset
 from gridded.variable import Variable
 from gridded.tests.utilities import chdir, get_test_file_dir
 from gridded.pyugrid.ugrid import UGrid
+from gridded.pysgrid.sgrid import SGrid
 # from pyugrid import read_netcdf
 
 test_data_dir = get_test_file_dir()
@@ -55,17 +56,28 @@ def test_read_variable_attributes():
     assert ds.variables['Mesh2_depth'].attributes['units'] == 'm'
 
 
-def test_read_GOM():
+def test_read_FVCOM():
     '''Optional test to make sure that files from TAMU and NGOFS are read correctly.'''
     with chdir(test_data_dir):
         if os.path.exists('COOPS_NGOFS.nc'):
             ds = Dataset('COOPS_NGOFS.nc')
-            print("variables are:", ds.variables.keys())
+            print("COOPS_NGOFS variables are:", ds.variables.keys())
             assert isinstance(ds, Dataset)
             assert isinstance(ds.grid, UGrid)
             assert isinstance(ds.variables, dict)
             assert 'u' in ds.variables.keys()
             assert 'v' in ds.variables.keys()
+
+def test_read_TAMU():
+    with chdir(test_data_dir):
+        if os.path.exists('TAMU.nc'):
+            ds = Dataset('TAMU.nc')
+            print("TAMU variables are:", ds.variables.keys())
+            assert isinstance(ds, Dataset)
+            assert isinstance(ds.grid, SGrid)
+            assert isinstance(ds.variables, dict)
+            assert 'water_u' in ds.variables.keys()
+            assert 'water_v' in ds.variables.keys()
 
 # def test_get_mesh_names():
 #     """
@@ -230,4 +242,5 @@ def test_read_GOM():
 if __name__ == "__main__":
     test_simple_read()
     test_read_variables()
-    test_read_GOM()
+    test_read_FVCOM()
+    test_read_TAMU()

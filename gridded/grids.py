@@ -259,7 +259,7 @@ class Grid_S(Grid, pysgrid.SGrid):
         edge1_attrs = ['edge1_lon', 'edge1_lat']
         edge2_attrs = ['edge2_lon', 'edge2_lat']
 
-        center_coord_names = [['center_lon', 'center_lat'], ['lon_rho', 'lat_rho']]
+        center_coord_names = [['center_lon', 'center_lat'], ['lon_rho', 'lat_rho'], ['lonc', 'latc']]
         edge1_coord_names = [['edge1_lon', 'edge1_lat'], ['lon_u', 'lat_u']]
         edge2_coord_names = [['edge2_lon', 'edge2_lat'], ['lon_v', 'lat_v']]
 
