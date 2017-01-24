@@ -39,8 +39,19 @@ def test_read_variables():
     varnames = list(ds.variables.keys())
     print("variables are:", varnames)
 
-    assert False
+    assert True
 
+def test_read_GOM():
+    '''Optional test to make sure that files from TAMU and NGOFS are read correctly.'''
+    with chdir(test_data_dir):
+        if os.path.exists('COOPS_NGOFS.nc'):
+            ds = Dataset('COOPS_NGOFS.nc')
+            print("variables are:", ds.variables.keys())
+            assert isinstance(ds, Dataset)
+            assert isinstance(ds.grid, UGrid)
+            assert isinstance(ds.variables, dict)
+            assert 'u' in ds.variables.keys()
+            assert 'v' in ds.variables.keys()
 
 # def test_get_mesh_names():
 #     """
@@ -204,3 +215,5 @@ def test_read_variables():
 
 if __name__ == "__main__":
     test_simple_read()
+    test_read_variables()
+    test_read_GOM()

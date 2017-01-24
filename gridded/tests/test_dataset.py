@@ -29,7 +29,7 @@ tri_ring = nc.Dataset(tri_ring_fn)
 
 def test_init():
     """ tests you can intitize a basic datset"""
-    D = Dataset(roms_fn)
+    D = Dataset(sinusoid_fn)
     return D
 
 if __name__ == '__main__':

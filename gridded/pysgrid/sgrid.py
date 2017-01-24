@@ -696,6 +696,8 @@ class SGrid(object):
             shape = np.array(variable.shape)
         except:
             return None  # Variable has no shape attribute!
+        if len(variable.shape) < 2:
+            return None
         difference = (shape[-2:] - self.node_lon.shape).tolist()
         if difference == [1, 1]:
             return 'center'

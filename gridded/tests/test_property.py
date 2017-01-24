@@ -11,9 +11,9 @@ import pytest
 import numpy as np
 import netCDF4 as nc
 
-from gridded.grid_property import Variable, VectorVariable
+from gridded.variable import Variable, VectorVariable
 
-from gridded.gridded import Grid
+from gridded.grids import Grid
 
 base_dir = os.path.dirname(__file__)
 sys.path.append(os.path.join(base_dir, 'sample_data'))

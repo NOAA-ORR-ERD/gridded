@@ -47,8 +47,6 @@ class Dataset():
             self.nc_dataset = get_dataset(ncfile)
             self.filename = self.nc_dataset.filepath()
             self.grid = Grid.from_netCDF(filename=self.filename, dataset=self.nc_dataset)
-            var_names = pyugrid.read_netcdf.find_variables(self.nc_dataset,
-                                                           self.grid.mesh_name)
             self.variables = self._load_variables(self.nc_dataset)
         else:  # no file passed in -- create from grid and variables
             self.filename = None
@@ -75,8 +73,10 @@ class Dataset():
 
         variables = {}
         for k in ds.variables.keys():
+            # check if the variable is a grid attribute
             is_not_grid_attr = all([k not in str(v).split() for v in self.grid.grid_topology.values()])
-            if is_not_grid_attr and self.grid.infer_location(ds[k]) is not None:
+            shape_is_compatible = self.grid.infer_location(ds[k]) is not None
+            if is_not_grid_attr and shape_is_compatible:
                 try:
                     ln = ds[k].long_name
                 except:
