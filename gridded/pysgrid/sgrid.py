@@ -699,13 +699,13 @@ class SGrid(object):
         if len(variable.shape) < 2:
             return None
         difference = (shape[-2:] - self.node_lon.shape).tolist()
-        if difference == [1, 1]:
+        if (difference == [1, 1] or  difference == [-1, -1]) and self.center_lon is not None:
             return 'center'
-        elif difference == [1, 0]:
+        elif difference == [1, 0] and self.edge1_lon is not None:
             return 'edge1'
-        elif difference == [0, 1]:
+        elif difference == [0, 1] and self.edge2_lon is not None:
             return 'edge2'
-        elif difference == [0, 0]:
+        elif difference == [0, 0] and self.node_lon is not None:
             return 'node'
         else:
             return None
