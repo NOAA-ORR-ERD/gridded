@@ -410,7 +410,8 @@ class Variable(object):
         """
         Returns a SHA1 hash of the array of points passed in
         """
-        return (hashlib.sha1(points.tobytes()).hexdigest(), hashlib.sha1(str(time)).hexdigest())
+        return (hashlib.sha1(points.tobytes()).hexdigest(),
+                hashlib.sha1(str(time).encode('utf-8')).hexdigest())
 
     def _memoize_result(self, points, time, result, D, _copy=False, _hash=None):
         if _copy:
@@ -901,7 +902,7 @@ class VectorVariable(object):
         :rtype: string
         '''
         if hasattr(self._units, '__iter__'):
-            if len(set(self._units) > 1):
+            if len(set(self._units)) > 1:
                 return self._units
             else:
                 return self._units[0]
@@ -935,7 +936,8 @@ class VectorVariable(object):
         """
         Returns a SHA1 hash of the array of points passed in
         """
-        return (hashlib.sha1(points.tobytes()).hexdigest(), hashlib.sha1(str(time)).hexdigest())
+        return (hashlib.sha1(points.tobytes()).hexdigest(),
+                hashlib.sha1(str(time).encode('utf-8')).hexdigest())
 
     def _memoize_result(self, points, time, result, D, _copy=True, _hash=None):
         if _copy:

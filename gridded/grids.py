@@ -1,10 +1,11 @@
-import sys
+#!/usr/bin/env python
 
 from . import pyugrid
 from . import pysgrid
 import numpy as np
 
 from .utilities import get_dataset
+
 
 class Grid(object):
     _def_count = 0

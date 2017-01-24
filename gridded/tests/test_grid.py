@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import (absolute_import, division, print_function, unicode_literals)
+
 import os
 import pytest
 import datetime as dt
@@ -13,11 +15,11 @@ from gridded.grids import Grid, Grid_U, Grid_S
 def test_init():
     """ tests you can intitilze a basic dataset"""
     G = Grid.from_netCDF(os.path.join('test_data', 'staggered_sine_channel.nc'))
-    print G.node_lon
+    print(G.node_lon)
 
 if __name__ == '__main__':
     test_init()
-    print 'success'
+    print('success')
 
 
 @pytest.fixture()
@@ -63,8 +65,8 @@ class TestPyGrid_S:
 
         sg3 = Grid.from_netCDF(filename, dataset, grid_topology=grid_topology)
         sg4 = Grid.from_netCDF(filename)
-        print sg3.shape
-        print sg4.shape
+        print(sg3.shape)
+        print(sg4.shape)
         assert sg == sg3
         assert sg2 == sg4
 
@@ -86,7 +88,7 @@ class TestPyGrid_U:
 
         ug3 = Grid.from_netCDF(filename, dataset, grid_topology=grid_topology)
         ug4 = Grid.from_netCDF(filename)
-        print ug3.shape
-        print ug4.shape
+        print(ug3.shape)
+        print(ug4.shape)
         assert ug == ug3
         assert ug2 == ug4

@@ -34,7 +34,7 @@ class Dataset():
         or also raw grid and variable objects.
 
         :param ncfile: a file to load the Dataset from.
-        :type param: filename of netcdf file or opendap url or open netCDF4 Dataset object
+        :type ncfile: filename of netcdf file or opendap url or open netCDF4 Dataset object
                      (could be other file types in the future)
 
         :param grid: a dataset.Grid object or anything that presents the same API.
@@ -76,3 +76,31 @@ class Dataset():
 
         return variables
 
+    def load_from_varnames(self, ncfile, topology):
+        """
+        Load a Gridded dataset by specifying the variable names used for the topology
+
+        :param ncfile: a file to load the Dataset from.
+        :type ncfile: filename of netcdf file or opendap url or open netCDF4 Dataset object
+                     (could be other file types in the future)
+
+        :param topology: variables that define the topology
+        :type topology: dict of topology_role keys, and variable name values
+
+        Docs about what is required for each grid type here.
+
+        NOTE: the grid type will be inferered by what topology is provided.
+        """
+
+        raise NotImplementedError
+
+    def save(self, filename, format='netcdf4'):
+        """
+        save the dataset to a file
+
+        :param filename: full path to file to save to.
+
+        :param format: format to save -- 'netcdf3' or 'netcdf4'
+                       are the only options at this point.
+        """
+        raise NotImplementedError
