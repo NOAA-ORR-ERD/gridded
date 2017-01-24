@@ -923,7 +923,7 @@ class VectorVariable(object):
 
         :rtype: [] of strings
         '''
-        return [v.varname if hasattr(v, 'varname') else v.name for v in self.variables ]
+        return [v.varname if hasattr(v, 'varname') else v.name for v in self.variables]
 
     @property
     def data_shape(self):
