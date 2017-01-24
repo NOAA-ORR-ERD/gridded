@@ -10,6 +10,7 @@ import netCDF4 as nc4
 from . import pysgrid
 from . import pyugrid
 from .grids import Grid
+from .variable import Variable
 
 from .utilities import asarraylike, get_dataset
 
@@ -46,30 +47,15 @@ class Dataset():
         if ncfile is not None:
             self.nc_dataset = get_dataset(ncfile)
             self.filename = self.nc_dataset.filepath()
+            # self.grid = pyugrid.UGrid.from_nc_dataset(ds)
             self.grid = Grid.from_netCDF(filename=self.filename, dataset=self.nc_dataset)
-            var_names = pyugrid.read_netcdf.find_variables(self.nc_dataset,
-                                                           self.grid.mesh_name)
+            # var_names = pyugrid.read_netcdf.find_variables(self.nc_dataset,
+            #                                                self.grid.mesh_name)
             self.variables = self._load_variables(self.nc_dataset)
         else:  # no file passed in -- create from grid and variables
             self.filename = None
             self.grid = grid
             self.variables = variables
-
-    def _load_grid(self, ds):
-        """
-        load a grid from an open netCDF4 Dataset
-        """
-        # fixme: we may want to move the "magic" into here, rther than the GRid constructor
-        # # try to load it as a compliant UGRID
-
-        grid = pyugrid.UGrid.from_nc_dataset(ds)
-        # grid = Grid.from_netCDF(dataset=ds,
-        #                         # grid_topology=grid_topology  # where is this supposed to come from?
-        #                         )
-
-        print("loaded the grid:", grid)
-        print("topology", grid.grid_topology)
-        return grid
 
     def _load_variables(self, ds):
         # fixme: need a way to do this for non-compliant files
@@ -90,4 +76,3 @@ class Dataset():
 
         return variables
 
-from .variable import Variable

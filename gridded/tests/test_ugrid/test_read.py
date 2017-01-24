@@ -47,6 +47,26 @@ def test_read_variables():
         assert isinstance(v, Variable)
 
 
+def test_read_variable_attributes():
+    with chdir(test_data_dir):
+        ds = Dataset('UGRIDv0.9_eleven_points.nc')
+    print(ds.variables['Mesh2_depth'].attributes)
+    assert ds.variables['Mesh2_depth'].attributes['standard_name'] == 'sea_floor_depth_below_geoid'
+    assert ds.variables['Mesh2_depth'].attributes['units'] == 'm'
+
+
+def test_read_GOM():
+    '''Optional test to make sure that files from TAMU and NGOFS are read correctly.'''
+    with chdir(test_data_dir):
+        if os.path.exists('COOPS_NGOFS.nc'):
+            ds = Dataset('COOPS_NGOFS.nc')
+            print("variables are:", ds.variables.keys())
+            assert isinstance(ds, Dataset)
+            assert isinstance(ds.grid, UGrid)
+            assert isinstance(ds.variables, dict)
+            assert 'u' in ds.variables.keys()
+            assert 'v' in ds.variables.keys()
+
 # def test_get_mesh_names():
 #     """
 #     Check that it can find the mesh variable names.
@@ -209,3 +229,5 @@ def test_read_variables():
 
 if __name__ == "__main__":
     test_simple_read()
+    test_read_variables()
+    test_read_GOM()

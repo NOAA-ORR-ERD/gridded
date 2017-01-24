@@ -1,6 +1,8 @@
+import sys
 
 from . import pyugrid
 from . import pysgrid
+import numpy as np
 
 from .utilities import get_dataset
 
@@ -17,8 +19,7 @@ class Grid(object):
                 cls = Grid_U
             else:
                 cls = Grid_S
-#         cls.obj_type = c.obj_type
-        return super(type(cls), cls).__new__(cls, *args, **kwargs)
+        return super(type(cls), cls).__new__(cls)
 
     def __init__(self,
                  filename=None,
@@ -40,7 +41,7 @@ class Grid(object):
         type(self)._def_count += 1
 
     @classmethod
-    def load_grid(cls, filename, topology_var):
+    def _load_grid(cls, filename, topology_var):
         '''
         Redirect to grid-specific loading routine.
         '''
@@ -69,14 +70,14 @@ class Grid(object):
         cls = Grid._get_grid_type(gf, grid_topology, grid_type)
         compliant = cls._find_topology_var(None, gf)
         if compliant is not None:
-            c = cls.load_grid(filename, compliant)
+            c = cls._load_grid(filename, compliant)
             c.grid_topology = compliant.__dict__
         else:
-            init_args, gf_vars = cls._find_required_grid_attrs(filename,
-                                                               dataset=dataset,
-                                                               grid_topology=grid_topology)
+            init_args, gt = cls._find_required_grid_attrs(filename,
+                                                          dataset=dataset,
+                                                          grid_topology=grid_topology)
             c = cls(**init_args)
-            c.grid_topology = grid_topology
+            c.grid_topology = gt
         return c
 
     @classmethod
@@ -92,6 +93,7 @@ class Grid(object):
         '''
         gf_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
         init_args = {}
+        gt = {}
         init_args['filename'] = filename
         node_attrs = ['node_lon', 'node_lat']
         node_coord_names = [['node_lon', 'node_lat'], ['lon', 'lat'], ['lon_psi', 'lat_psi']]
@@ -101,6 +103,8 @@ class Grid(object):
                 if n1 in gf_vars and n2 in gf_vars:
                     init_args[node_attrs[0]] = gf_vars[n1][:]
                     init_args[node_attrs[1]] = gf_vars[n2][:]
+                    gt[node_attrs[0]] = n1
+                    gt[node_attrs[1]] = n2
                     break
             if node_attrs[0] not in init_args:
                 for n in composite_node_names:
@@ -108,6 +112,7 @@ class Grid(object):
                         v = gf_vars[n][:].reshape(-1, 2)
                         init_args[node_attrs[0]] = v[:, 0]
                         init_args[node_attrs[1]] = v[:, 1]
+                        grid_topology['node_coordinates'] = n
                         break
             if node_attrs[0] not in init_args:
                 raise ValueError('Unable to find node coordinates.')
@@ -119,7 +124,7 @@ class Grid(object):
                     v = gf_vars[n][:].reshape(-1, 2)
                     init_args[node_attrs[0]] = v[:, 0]
                     init_args[node_attrs[1]] = v[:, 1]
-        return init_args, gf_vars
+        return init_args, gt
 
     @classmethod
     def new_from_dict(cls, dict_):
@@ -210,27 +215,32 @@ class Grid_U(Grid, pyugrid.UGrid):
     @classmethod
     def _find_required_grid_attrs(cls, filename, dataset=None, grid_topology=None):
 
+        gf_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
         # Get superset attributes
-        init_args, gf_vars = super(Grid_U, cls)._find_required_grid_attrs(filename=filename,
-                                                                            dataset=dataset,
-                                                                            grid_topology=grid_topology)
+        init_args, gt = super(Grid_U, cls)._find_required_grid_attrs(filename=filename,
+                                                                     dataset=dataset,
+                                                                     grid_topology=grid_topology)
 
         face_attrs = ['faces']
-        if grid_topology is not None:
-            face_var_names = [grid_topology.get(n) for n in face_attrs]
-        else:
-            face_var_names = ['faces', 'tris', 'nv', 'ele']
+        face_var_names = ['faces', 'tris', 'nv', 'ele']
+        if grid_topology is None:
+            for n in face_var_names:
+                if n in gf_vars:
+                    init_args[face_attrs[0]] = gf_vars[n][:]
+                    gt[face_attrs[0]] = n
+                    break
+            if face_attrs[0] not in init_args:
+                raise ValueError('Unable to find face connectivity array.')
 
-        for n in face_var_names:
-            if n in gf_vars:
-                init_args[face_attrs[0]] = gf_vars[n][:]
-                break
-        if face_attrs[0] in init_args:
-            if init_args[face_attrs[0]].shape[0] == 3:
-                init_args[face_attrs[0]] = np.ascontiguousarray(np.array(init_args[face_attrs[0]]).T - 1)
-            return init_args, gf_vars
         else:
-            raise ValueError('Unable to find faces variable')
+            for n, v in grid_topology.items():
+                if n in face_attrs:
+                    init_args[n] = gf_vars[v][:]
+                    break
+        if init_args['faces'].shape[0] == 3:
+            init_args['faces'] = np.ascontiguousarray(np.array(init_args['faces']).T - 1)
+
+        return init_args, gt
 
 
 class Grid_S(Grid, pysgrid.SGrid):
@@ -240,9 +250,10 @@ class Grid_S(Grid, pysgrid.SGrid):
 
         # THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional attributes are dealt with
         # Get superset attributes
-        init_args, gf_vars = super(Grid_S, cls)._find_required_grid_attrs(filename,
-                                                                            dataset=dataset,
-                                                                            grid_topology=grid_topology)
+        gf_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
+        init_args, gt = super(Grid_S, cls)._find_required_grid_attrs(filename,
+                                                                     dataset=dataset,
+                                                                     grid_topology=grid_topology)
 
         center_attrs = ['center_lon', 'center_lat']
         edge1_attrs = ['edge1_lon', 'edge1_lat']
@@ -259,9 +270,11 @@ class Grid_S(Grid, pysgrid.SGrid):
                     if n1 in gf_vars and n2 in gf_vars:
                         init_args[attr[0]] = gf_vars[n1][:]
                         init_args[attr[1]] = gf_vars[n2][:]
+                        gt[attr[0]] = n1
+                        gt[attr[1]] = n2
                         break
         else:
             for n, v in grid_topology.items():
                 if n in center_attrs + edge1_attrs + edge2_attrs and v in gf_vars:
                     init_args[n] = gf_vars[v][:]
-        return init_args, gf_vars
+        return init_args, gt

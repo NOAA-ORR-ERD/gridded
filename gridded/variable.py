@@ -42,26 +42,40 @@ class Variable(object):
                  dataset=None,
                  varname=None,
                  fill_value=0,
+                 attributes=None,
                  **kwargs):
         '''
         This class represents a phenomenon using gridded data
 
         :param name: Name
-        :param units: Units
-        :param time: Time axis of the data
-        :param data: Underlying data source
-        :param grid: Grid that the data corresponds with
-        :param data_file: Name of data source file
-        :param grid_file: Name of grid source file
-        :param varname: Name of the variable in the data source file
         :type name: string
+
+        :param units: Units
         :type units: string
-        :type time: [] of datetime.datetime, netCDF4 Variable, or Time object
-        :type data: netCDF4.Variable or numpy.array
-        :type grid: pysgrid or pyugrid
+
+        :param time: Time axis of the data
+        :type time: list of datetime.datetime, netCDF4 Variable, or Time object
+
+        :param data: Underlying data source
+        :type data: array-like object such as netCDF4.Variable or numpy.ndarray
+
+        :param grid: Grid that the data corresponds with
+        :type grid: GRid object (pysgrid or pyugrid or )
+
+        :param data_file: Name of data source file
         :type data_file: string
+
+        :param grid_file: Name of grid source file
         :type grid_file: string
+
+        :param varname: Name of the variable in the data source file
         :type varname: string
+
+        :param fill_value: the fill value used for undefined data
+
+        :param attributes: attributes associated with the VAriable
+                           (analogous to netcdf variable attributes)
+        :type attributes: dict of key:value pairs
         '''
 
         if any([grid is None, data is None]):
@@ -82,6 +96,15 @@ class Variable(object):
         self.varname = varname
         self._result_memo = collections.OrderedDict()
         self.fill_value = fill_value
+
+        self.attributes = {} if attributes is None else attributes
+        # if the data is a netcdf variable, pull the attributes from there
+        try:
+            for attr in self.data.ncattrs():
+                self.attributes[attr] = data.getncattr(attr)
+        except AttributeError:  # must not be a netcdf variable
+            pass                # so just use what was passed in.
+
         for k in kwargs:
             setattr(self, k, kwargs[k])
 
