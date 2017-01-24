@@ -17,11 +17,13 @@ import numpy as np
 import netCDF4
 
 from gridded import Dataset
+from gridded.variable import Variable
 from gridded.tests.utilities import chdir, get_test_file_dir
 from gridded.pyugrid.ugrid import UGrid
 # from pyugrid import read_netcdf
 
 test_data_dir = get_test_file_dir()
+
 
 def test_simple_read():
     """Can it be read at all?"""
@@ -30,6 +32,7 @@ def test_simple_read():
     assert isinstance(ds, Dataset)
     assert isinstance(ds.grid, UGrid)
 
+
 def test_read_variables():
     """
     It should get the test_read_variables
@@ -37,9 +40,11 @@ def test_read_variables():
     with chdir(test_data_dir):
         ds = Dataset('UGRIDv0.9_eleven_points.nc')
     varnames = list(ds.variables.keys())
+    varnames.sort()
     print("variables are:", varnames)
-
-    assert False
+    assert varnames == ['Mesh2_depth', 'Mesh2_face_u', 'Mesh2_face_v']
+    for v in ds.variables.values():
+        assert isinstance(v, Variable)
 
 
 # def test_get_mesh_names():

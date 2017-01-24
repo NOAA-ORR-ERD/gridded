@@ -68,6 +68,7 @@ class Dataset():
         #                         )
 
         print("loaded the grid:", grid)
+        print("topology", grid.grid_topology)
         return grid
 
     def _load_variables(self, ds):
