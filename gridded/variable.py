@@ -30,6 +30,10 @@ class Variable(object):
     default_names = []
     _def_count = 0
 
+    _default_component_types = {'time': Time,
+                                'grid': Grid,
+                                'depth': Depth}
+
     def __init__(self,
                  name=None,
                  units=None,
@@ -78,11 +82,11 @@ class Variable(object):
         :type attributes: dict of key:value pairs
         '''
 
-        if any([grid is None, data is None]):
-            raise ValueError("Grid and Data must be defined")
-        if not hasattr(data, 'shape'):
-            if grid.infer_location is None:
-                raise ValueError('Data must be able to fit to the grid')
+#         if any([grid is None, data is None]):
+#             raise ValueError("Grid and Data must be defined")
+#         if not hasattr(data, 'shape'):
+#             if grid.infer_location is None:
+#                 raise ValueError('Data must be able to fit to the grid')
         self.grid = grid
         self.depth = depth
         self.name = self._units = self._time = self._data = None
@@ -108,120 +112,6 @@ class Variable(object):
         for k in kwargs:
             setattr(self, k, kwargs[k])
 
-# # pulled from pyugrid
-# class UVar(object):
-#     """
-#     A class to hold a variable associated with the UGrid. Data can be on the
-#     nodes, edges, etc. -- "UGrid Variable"
-
-#     It holds an array of the data, as well as the attributes associated
-#     with that data  -- this is mapped to a netcdf variable with
-#     attributes(attributes get stored in the netcdf file)
-#     """
-
-#     def __init__(self, name, location, data=None, attributes=None):
-#         """
-#         create a UVar object
-#         :param name: the name of the variable (depth, u_velocity, etc.)
-#         :type name: string
-
-#         :param location: the type of grid element the data is associated with:
-#                          'node', 'edge', or 'face'
-
-#         :param data: The data itself
-#         :type data: 1-d numpy array or array-like object ().
-#                     If you have a list or tuple, it should be something that can be
-#                     converted to a numpy array (list, etc.)
-#         """
-#         self.name = name
-
-#         if location not in ['node', 'edge', 'face', 'boundary']:
-#             raise ValueError("location must be one of: "
-#                              "'node', 'edge', 'face', 'boundary'")
-
-#         self.location = location
-
-#         if data is None:
-#             # Could be any data type, but we'll default to float
-#             self._data = np.zeros((0,), dtype=np.float64)
-#         else:
-#             self._data = asarraylike(data)
-
-#         # FixMe: we need a separate attribute dict -- we really do'nt want all this
-#         #        getting mixed up with the python object attributes
-#         self.attributes = {} if attributes is None else attributes
-#         # if the data is a netcdf variable, pull the attributes from there
-#         try:
-#             for attr in data.ncattrs():
-#                 self.attributes[attr] = data.getncattr(attr)
-#         except AttributeError:  # must not be a netcdf variable
-#             pass
-
-#         self._cache = OrderedDict()
-
-#     # def update_attrs(self, attrs):
-#     #     """
-#     #     update the attributes of the UVar object
-
-#     #     :param attr: Dict containing attributes to be added to the object
-#     #     """
-#     #     for key, val in attrs.items():
-#     #         setattr(self, key, val)
-
-#     @property
-#     def data(self):
-#         return self._data
-
-#     @data.setter
-#     def data(self, data):
-#         self._data = asarraylike(data)
-
-#     @data.deleter
-#     def data(self):
-#         self._data = self._data = np.zeros((0,), dtype=np.float64)
-
-#     @property
-#     def shape(self):
-#         return self.data.shape
-
-#     @property
-#     def max(self):
-#         return np.max(self._data)
-
-#     @property
-#     def min(self):
-#         return np.min(self._data)
-
-#     @property
-#     def dtype(self):
-#         return self.data.dtype
-
-#     @property
-#     def ndim(self):
-#         return self.data.ndim
-
-#     def __getitem__(self, item):
-#         """
-#         Transfers responsibility to the data's __getitem__ if not cached
-#         """
-#         rv = None
-#         if str(item) in self._cache:
-#             rv = self._cache[str(item)]
-#         else:
-#             rv = self._data.__getitem__(item)
-#             self._cache[str(item)] = rv
-#             if len(self._cache) > 3:
-#                 self._cache.popitem(last=False)
-#         return rv
-
-#     def __str__(self):
-#         print("in __str__, data is:", self.data)
-#         msg = ("UVar object: {0:s}, on the {1:s}s, and {2:d} data "
-#                "points\nAttributes: {3}").format
-#         return msg(self.name, self.location, len(self.data), self.attributes)
-
-#     def __len__(self):
-#         return len(self.data)
 
     @classmethod
     def from_netCDF(cls,
@@ -268,6 +158,9 @@ class Variable(object):
         :type data_file: string
         :type grid_file: string
         '''
+        Grid = cls._default_component_types['grid']
+        Time = cls._default_component_types['time']
+        Depth = cls._default_component_types['depth']
         if filename is not None:
             data_file = filename
             grid_file = filename
@@ -351,6 +244,7 @@ class Variable(object):
 
     @time.setter
     def time(self, t):
+        Time = self.__class__._default_component_types['time']
         if t is None:
             self._time = None
             return
@@ -668,7 +562,10 @@ class VectorVariable(object):
     default_names = []
 
     _def_count = 0
-
+    _default_component_types = {'time': Time,
+                                'grid': Grid,
+                                'depth': Depth,
+                                'variable': Variable}
     def __init__(self,
                  name=None,
                  units=None,
@@ -752,6 +649,10 @@ class VectorVariable(object):
         :type data_file: string
         :type grid_file: string
         '''
+        Grid = cls._default_component_types['grid']
+        Time = cls._default_component_types['time']
+        Variable = cls._default_component_types['variable']
+        Depth = cls._default_component_types['depth']
         if filename is not None:
             data_file = filename
             grid_file = filename
@@ -867,6 +768,7 @@ class VectorVariable(object):
                 'time="{0.time}", '
                 'units="{0.units}", '
                 'variables="{0.variables}", '
+                'grid="{0.grid}", '
                 ')').format(self)
 
     @property
@@ -879,6 +781,7 @@ class VectorVariable(object):
 
     @time.setter
     def time(self, t):
+        Time = self.__class__._default_component_types['time']
         if self.variables is not None:
             for v in self.variables:
                 try:

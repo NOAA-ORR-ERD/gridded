@@ -15,7 +15,7 @@ class Time(object):
     _const_time = None
 
     def __init__(self,
-                 time=None,
+                 data=(datetime.now(),),
                  filename=None,
                  varname=None,
                  tz_offset=None,
@@ -30,12 +30,12 @@ class Time(object):
         :type tz_offset: datetime.timedelta
 
         '''
-        if isinstance(time, (nc4.Variable, nc4._netCDF4._Variable)):
-            self.time = nc4.num2date(time[:], units=time.units)
-        elif time is None:
-            self.time = [datetime.now()]
+        if isinstance(data, (nc4.Variable, nc4._netCDF4._Variable)):
+            self.data = nc4.num2date(data[:], units=data.units)
+        elif data is None:
+            self.data = [datetime.now()]
         else:
-            self.time = time
+            self.data = data
 
         self.filename = filename
         self.varname = varname
@@ -44,14 +44,14 @@ class Time(object):
 #             self.filename = self.id + '_time.txt'
 
         if tz_offset is not None:
-            self.time += tz_offset
+            self.data += tz_offset
 
-        if not self._timeseries_is_ascending(self.time):
+        if not self._timeseries_is_ascending(self.data):
             raise ValueError("Time sequence is not ascending")
-        if self._has_duplicates(self.time):
+        if self._has_duplicates(self.data):
             raise ValueError("Time sequence has duplicate entries")
 
-        self.name = time.name if hasattr(time, 'name') else None
+        self.name = data.name if hasattr(data, 'name') else None
 
     @classmethod
     def from_netCDF(cls,
@@ -69,7 +69,7 @@ class Time(object):
             else:
                 varname = datavar.dimensions[0] if 'time' in datavar.dimensions[0] else None
                 if varname is None:
-                    return None
+                    return cls.constant_time()
         time = cls(time=dataset[varname],
                    filename=filename,
                    varname=varname,
@@ -78,27 +78,20 @@ class Time(object):
                        )
         return time
 
-    @staticmethod
-    def constant_time():
-        if Time._const_time is None:
-            Time._const_time = Time([datetime.now()])
-        return Time._const_time
-
-    @property
-    def data(self):
-        if self.filename is None:
-            return self.time
-        else:
-            return None
+    @classmethod
+    def constant_time(cls):
+        if cls._const_time is None:
+            cls._const_time = cls([datetime.now()])
+        return cls._const_time
 
     def __len__(self):
-        return len(self.time)
+        return len(self.data)
 
     def __iter__(self):
-        return self.time.__iter__()
+        return self.data.__iter__()
 
     def __eq__(self, other):
-        r = self.time == other.time
+        r = self.data == other.time
         return all(r) if hasattr(r, '__len__') else r
 
     def __ne__(self, other):
@@ -117,7 +110,7 @@ class Time(object):
 
         :rtype: datetime.datetime
         '''
-        return self.time[0]
+        return self.data[0]
 
     @property
     def max_time(self):
@@ -126,10 +119,10 @@ class Time(object):
 
         :rtype: datetime.datetime
         '''
-        return self.time[-1]
+        return self.data[-1]
 
     def get_time_array(self):
-        return self.time[:]
+        return self.data[:]
 
     def time_in_bounds(self, time):
         '''
@@ -157,9 +150,9 @@ class Time(object):
         :return: index of first time before specified time
         :rtype: integer
         '''
-        if not (extrapolate or len(self.time) == 1):
+        if not (extrapolate or len(self.data) == 1):
             self.valid_time(time)
-        index = np.searchsorted(self.time, time)
+        index = np.searchsorted(self.data, time)
         return index
 
     def interp_alpha(self, time, extrapolate=False):
@@ -173,14 +166,13 @@ class Time(object):
         :return: interpolation alpha
         :rtype: double (0 <= r <= 1)
         '''
-        if not len(self.time) == 1 or not extrapolate:
+        if not len(self.data) == 1 or not extrapolate:
             self.valid_time(time)
         i0 = self.index_of(time, extrapolate)
-        if i0 > len(self.time) - 1:
+        if i0 > len(self.data) - 1:
             return 1
         if i0 == 0:
             return 0
-        t0 = self.time[i0 - 1]
-        t1 = self.time[i0]
+        t0 = self.data[i0 - 1]
+        t1 = self.data[i0]
         return (time - t0).total_seconds() / (t1 - t0).total_seconds()
-

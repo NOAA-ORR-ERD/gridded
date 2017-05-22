@@ -4,6 +4,7 @@
 assorted utility functions needed by gridded
 """
 
+import collections
 import numpy as np
 import netCDF4 as nc4
 
@@ -58,6 +59,8 @@ def get_dataset(ncfile, dataset=None):
         return dataset
     if isinstance(ncfile, nc4.Dataset):
         return ncfile
+    elif isinstance(ncfile, collections.Iterable) and len(ncfile) == 1:
+        return nc4.Dataset(ncfile[0])
     elif isstring(ncfile):
         return nc4.Dataset(ncfile)
     else:
