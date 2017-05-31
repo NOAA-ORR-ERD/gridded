@@ -7,7 +7,6 @@ from .gridded import Dataset
 # from .gridded import Grid
 from .variable import Variable, VectorVariable
 
-
 __all__ = [Dataset,
            Variable,
            VectorVariable]

@@ -562,6 +562,13 @@ class VectorVariable(object):
     default_names = []
 
     _def_count = 0
+
+    ''''
+    These are the classes which are used when internal components are created
+    by default, such as automatically from a file or other python data structure.
+    Subclasses of this type may override this to use different classes for it's
+    components
+    '''
     _default_component_types = {'time': Time,
                                 'grid': Grid,
                                 'depth': Depth,
