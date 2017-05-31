@@ -121,6 +121,7 @@ class Variable(object):
                     name=None,
                     units=None,
                     time=None,
+                    time_origin=None,
                     grid=None,
                     depth=None,
                     dataset=None,
@@ -202,6 +203,8 @@ class Variable(object):
             time = Time.from_netCDF(filename=data_file,
                                     dataset=ds,
                                     datavar=data)
+            if time_origin is not None:
+                time = Time(time=time.data, filename=time.filename, varname=time.varname, origin=time_origin)
         if depth is None:
             if (isinstance(grid, Grid_S) and len(data.shape) == 4 or
                     isinstance(grid, Grid_U) and len(data.shape) == 3):
@@ -559,7 +562,9 @@ class Variable(object):
 
 class VectorVariable(object):
 
-    default_names = []
+    default_names = {}
+    cf_names = {}
+    comp_order=[]
 
     _def_count = 0
 
@@ -599,7 +604,7 @@ class VectorVariable(object):
             units = variables[0].units
         self._units = units
         if variables is None or len(variables) < 2:
-            raise ValueError('Variables must be an array-like of 2 or more Property objects')
+            raise ValueError('Variables must be an array-like of 2 or more Variable objects')
         self.variables = variables
         self._time = time
         unused_args = kwargs.keys() if kwargs is not None else None
@@ -611,8 +616,9 @@ class VectorVariable(object):
             self.grid_file = self.variables[0].grid_file if grid_file is None else grid_file
             self.data_file = self.variables[0].data_file if data_file is None else data_file
 
-#         self._check_consistency()
         self._result_memo = OrderedDict()
+        for i, comp in enumerate(self.__class__.comp_order):
+            setattr(self, comp, self.variables[i])
 
     @classmethod
     def from_netCDF(cls,
@@ -622,6 +628,7 @@ class VectorVariable(object):
                     name=None,
                     units=None,
                     time=None,
+                    time_origin=None,
                     grid=None,
                     depth=None,
                     data_file=None,
@@ -694,6 +701,8 @@ class VectorVariable(object):
             time = Time.from_netCDF(filename=data_file,
                                     dataset=ds,
                                     datavar=data)
+            if time_origin is not None:
+                time = Time(time=time.data, filename=data_file, varname=time.varname, origin=time_origin)
         if depth is None:
             if (isinstance(grid, Grid_S) and len(data.shape) == 4 or
                     isinstance(grid, Grid_U) and len(data.shape) == 3):
@@ -746,7 +755,9 @@ class VectorVariable(object):
     @classmethod
     def _gen_varnames(cls,
                       filename=None,
-                      dataset=None):
+                      dataset=None,
+                      names_dict=None,
+                      std_names_dict=None):
         """
         Function to find the default variable names if they are not provided.
 
@@ -761,10 +772,29 @@ class VectorVariable(object):
             df = dataset
         else:
             df = get_dataset(filename)
-        for n in cls.default_names:
-            if all([sn in df.variables.keys() for sn in n]):
-                return n
-        raise ValueError("Default names not found.")
+        if names_dict is None:
+            names_dict = cls.default_names
+        if std_names_dict is None:
+            std_names_dict = cls.cf_names
+        rd = {}
+        for k in cls.comp_order:
+            v = names_dict[k] if k in names_dict else []
+            for n in v:
+                if n in df.variables.keys():
+                    rd[k] = n
+                    continue
+            if k not in rd.keys():
+                rd[k] = None
+        for k in cls.comp_order:
+            v = std_names_dict[k] if k in std_names_dict else []
+            if rd[k] is None:
+                for n in v:
+                    for var in df.variables.values():
+                        if (hasattr(var, 'standard_name') and var.standard_name == n or
+                                hasattr(var, 'long_name') and var.long_name == n):
+                            rd[k] = var.name
+                            break
+        return collections.namedtuple('varnames', cls.comp_order)(**rd)
 
     def __str__(self):
         return self.__repr__()

@@ -1,15 +1,11 @@
 import numpy as np
 import netCDF4 as nc4
-
-from ..pysgrid import SGrid
-
-import gridded
 import os
 from datetime import datetime, timedelta
 
 
 
-from gridded import Variable
+from gridded import Variable, Grid
 
 def gen_vortex_3D(filename=None):
     x, y = np.mgrid[-30:30:61j, -30:30:61j]
@@ -17,7 +13,7 @@ def gen_vortex_3D(filename=None):
     x = np.ascontiguousarray(x.T)
     x_size = 61
     y_size = 61
-    g = gridded.Grid(node_lon=x,
+    g = Grid(node_lon=x,
                node_lat=y)
     g.build_celltree()
     lin_nodes = g._trees['node'][1]
@@ -128,21 +124,11 @@ def gen_vortex_3D(filename=None):
         ds.setncattr('grid_type', 'sgrid')
     if ds is not None:
         # Need to test the dataset...
-        from gnome.environment import GridCurrent
-        from gnome.environment.grid_property import Variable
         sgt = {'node_lon': 'x', 'node_lat': 'y'}
         sg = Grid.from_netCDF(dataset=ds, grid_topology=sgt, grid_type='sgrid')
-        sgc1 = GridCurrent.from_netCDF(dataset=ds, varnames=['vx', 'vy'], grid_topology=sgt)
-        sgc2 = GridCurrent.from_netCDF(dataset=ds, varnames=['tvx', 'tvy'], grid_topology=sgt)
-        sgc3 = GridCurrent.from_netCDF(dataset=ds, varnames=['dvx', 'dvy'], grid_topology=sgt)
-        sgc4 = GridCurrent.from_netCDF(dataset=ds, varnames=['tdvx', 'tdvy'], grid_topology=sgt)
 
         ugt = {'nodes': 'nodes', 'faces': 'faces'}
 #         ug = PyGrid_U(nodes=ds['nodes'][:], faces=ds['faces'][:])
-        ugc1 = GridCurrent.from_netCDF(dataset=ds, varnames=['lin_vx', 'lin_vy'], grid_topology=ugt)
-        ugc2 = GridCurrent.from_netCDF(dataset=ds, varnames=['lin_tvx', 'lin_tvy'], grid_topology=ugt)
-        ugc3 = GridCurrent.from_netCDF(dataset=ds, varnames=['lin_dvx', 'lin_dvy'], grid_topology=ugt)
-        ugc4 = GridCurrent.from_netCDF(dataset=ds, varnames=['lin_tdvx', 'lin_tdvy'], grid_topology=ugt)
 
         ds.close()
     return {'sgrid': (x, y),
@@ -153,19 +139,6 @@ def gen_vortex_3D(filename=None):
 
 
 def gen_sinusoid(filename=None):
-    from mpl_toolkits.mplot3d import axes3d
-    import matplotlib.pyplot as plt
-    import numpy as np
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d', zlim=[-2, 2], xlim=[0, 25], ylim=[-2, 2])
-    ax.autoscale(False)
-
-#     import matplotlib.pyplot as plt
-#     import numpy as np
-#     import math
-#     fig = plt.figure()
-#     ax = fig.add_subplot(111)
-
     y, x = np.mgrid[-1:1:5j, 0:(6 * np.pi):25j]
     y = y + np.sin(x / 2)
     Z = np.zeros_like(x)
@@ -173,8 +146,6 @@ def gen_sinusoid(filename=None):
     vx = np.ones_like(x)
     vy = np.cos(x / 2) / 2
     vz = np.zeros_like(x)
-    ax.plot_wireframe(x, y, Z, rstride=1, cstride=1, color='blue')
-    ax.quiver(x, y, Z, vx, vy, vz, length=0.5, arrow_length_ratio=0.2, color='darkblue', pivot='tail')
 #     ax.quiver(x, y, vx, vy, color='darkblue', pivot='tail', angles='xy', scale=1.5, scale_units='xy', width=0.0025)
 #     ax.plot(x[2], y[2])
     rho = {'r_grid': (x, y, Z),
@@ -186,8 +157,6 @@ def gen_sinusoid(filename=None):
     vxc = np.ones_like(xc)
     vyc = np.cos(xc / 2) / 2
     vzc = np.zeros_like(xc)
-    ax.plot_wireframe(xc, yc, zc, rstride=1, cstride=1, color="red")
-    ax.quiver(xc, yc, zc, vxc, vyc, vzc, length=0.3, arrow_length_ratio=0.2, color='darkred', pivot='tail')
     psi = {'p_grid': (xc, yc, zc),
            'p_vel': (vxc, vyc, vzc)}
 
@@ -197,8 +166,6 @@ def gen_sinusoid(filename=None):
     vxu = np.ones_like(xu) * 2
     vyu = np.zeros_like(xu)
     vzu = np.zeros_like(xu)
-    ax.plot_wireframe(xu, yu, zu, rstride=1, cstride=1, color="purple")
-    ax.quiver(xu, yu, zu, vxu, vyu, vzu, length=0.3, arrow_length_ratio=0.2, color='indigo', pivot='tail')
     u = {'u_grid': (xu, yu, zu),
          'u_vel': (vzu, vxu, vzu)}
 
@@ -208,8 +175,6 @@ def gen_sinusoid(filename=None):
     vxv = np.zeros_like(xv)
     vyv = np.cos(xv / 2) / 2
     vzv = np.zeros_like(xv)
-    ax.plot_wireframe(xv, yv, zv, rstride=1, cstride=1, color="y")
-    ax.quiver(xv, yv, zv, vxv, vyv, vzv, length=0.3, arrow_length_ratio=0.2, color='olive', pivot='tail')
     v = {'v_grid': (xv, yv, zv),
          'v_vel': (vyv, vzv, vzv)}
 
@@ -248,21 +213,12 @@ def gen_sinusoid(filename=None):
         ds['angle'][:] = angle
     if ds is not None:
         # Need to test the dataset...
-        from gnome.environment import GridCurrent
         sg = Grid.from_netCDF(dataset=ds)
-        sgc1 = GridCurrent.from_netCDF(dataset=ds, varnames=['u_rho', 'v_rho'], grid=sg)
-        sgc1.angle = None
-        sgc2 = GridCurrent.from_netCDF(dataset=ds, varnames=['u_psi', 'v_psi'], grid=sg)
-        sgc2.angle = None
-        sgc3 = GridCurrent.from_netCDF(dataset=ds, grid=sg)
-
         ds.close()
 
-#     plt.show()
 
 
 def gen_ring(filename=None):
-    import matplotlib.pyplot as plt
     import matplotlib.tri as tri
     import math
 
@@ -306,17 +262,6 @@ def gen_ring(filename=None):
             ds[k][:] = v[-1]
             ds[k].units = 'm/s'
 
-    if ds is not None:
-        gc = GridCurrent.from_netCDF(dataset=ds)
-        print gc.grid.node_lon.shape
-        print gc.grid.faces.shape
-
-    # tripcolor plot.
-    plt.figure()
-    plt.gca().set_aspect('equal')
-    plt.triplot(triang, 'bo-')
-    plt.quiver(x, y, vy, vx)
-    plt.title('triplot of Delaunay triangulation')
 
 
 def gen_all(path=None):

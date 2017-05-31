@@ -19,23 +19,34 @@ class Time(object):
                  filename=None,
                  varname=None,
                  tz_offset=None,
-                 offset=None,
+                 origin=None,
+                 displacement=timedelta(seconds=0),
                  **kwargs):
         '''
         Representation of a time axis. Provides interpolation alphas and indexing.
 
         :param time: Ascending list of times to use
         :param tz_offset: offset to compensate for time zone shifts
+        :param origin: shifts the time interval to begin at the time specified
+        :param displacement: displacement to apply to the time data. Allows shifting entire time interval into future or past
         :type time: netCDF4.Variable or [] of datetime.datetime
         :type tz_offset: datetime.timedelta
-
+        :type origin: datetime.timedelta
+        :type displacement: datetime.timedelta
         '''
+
         if isinstance(data, (nc4.Variable, nc4._netCDF4._Variable)):
             self.data = nc4.num2date(data[:], units=data.units)
         elif data is None:
             self.data = [datetime.now()]
         else:
             self.data = data
+
+        if origin is not None:
+            diff = self.data[0] - origin
+            self.data -= diff
+
+        self.data += displacement
 
         self.filename = filename
         self.varname = varname
