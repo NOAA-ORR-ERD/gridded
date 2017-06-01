@@ -38,9 +38,9 @@ class Time(object):
         if isinstance(data, (nc4.Variable, nc4._netCDF4._Variable)):
             self.data = nc4.num2date(data[:], units=data.units)
         elif data is None:
-            self.data = [datetime.now()]
+            self.data = np.array([datetime.now()])
         else:
-            self.data = data
+            self.data = np.asarray(data)
 
         if origin is not None:
             diff = self.data[0] - origin
@@ -92,7 +92,7 @@ class Time(object):
     @classmethod
     def constant_time(cls):
         if cls._const_time is None:
-            cls._const_time = cls([datetime.now()])
+            cls._const_time = cls(np.array([datetime.now()]))
         return cls._const_time
 
     def __len__(self):
@@ -102,7 +102,7 @@ class Time(object):
         return self.data.__iter__()
 
     def __eq__(self, other):
-        r = self.data == other.time
+        r = self.data == other.data
         return all(r) if hasattr(r, '__len__') else r
 
     def __ne__(self, other):

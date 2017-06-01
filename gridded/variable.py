@@ -28,6 +28,7 @@ class Variable(object):
     It holds a reference to its own grid object, and its data.
     """
     default_names = []
+    cf_names = []
     _def_count = 0
 
     _default_component_types = {'time': Time,
@@ -109,8 +110,8 @@ class Variable(object):
         except AttributeError:  # must not be a netcdf variable
             pass                # so just use what was passed in.
 
-        for k in kwargs:
-            setattr(self, k, kwargs[k])
+#         for k in kwargs:
+#             setattr(self, k, kwargs[k])
 
 
     @classmethod
@@ -539,7 +540,9 @@ class Variable(object):
     @classmethod
     def _gen_varname(cls,
                      filename=None,
-                     dataset=None):
+                     dataset=None,
+                     names_list=None,
+                     std_names_list=None):
         """
         Function to find the default variable names if they are not provided.
 
@@ -554,9 +557,18 @@ class Variable(object):
             df = dataset
         else:
             df = get_dataset(filename)
-        for n in cls.default_names:
+        if names_list is None:
+            names_list = cls.default_names
+        if std_names_list is None:
+            std_names_list = cls.cf_names
+        for n in names_list:
             if n in df.variables.keys():
                 return n
+        for n in std_names_list:
+            for var in df.variables.values():
+                if hasattr(var, 'standard_name') or hasattr(var, 'long_name'):
+                    if var.name == n:
+                        return n
         raise ValueError("Default names not found.")
 
 
@@ -721,18 +733,19 @@ class VectorVariable(object):
 #                                             **kwargs)
         variables = []
         for vn in varnames:
-            variables.append(Variable.from_netCDF(filename=filename,
-                                                     varname=vn,
-                                                     grid_topology=grid_topology,
-                                                     units=units,
-                                                     time=time,
-                                                     grid=grid,
-                                                     depth=depth,
-                                                     data_file=data_file,
-                                                     grid_file=grid_file,
-                                                     dataset=ds,
-                                                     load_all=load_all,
-                                                     **kwargs))
+            if vn is not None:
+                variables.append(Variable.from_netCDF(filename=filename,
+                                                      varname=vn,
+                                                      grid_topology=grid_topology,
+                                                      units=units,
+                                                      time=time,
+                                                      grid=grid,
+                                                       depth=depth,
+                                                      data_file=data_file,
+                                                      grid_file=grid_file,
+                                                      dataset=ds,
+                                                      load_all=load_all,
+                                                      **kwargs))
         if units is None:
             units = [v.units for v in variables]
             if all(u == units[0] for u in units):
@@ -765,7 +778,7 @@ class VectorVariable(object):
         :param dataset: Existing instance of a netCDF4.Dataset
         :type filename: string
         :type dataset: netCDF.Dataset
-        :return: List of default variable names, or None if none are found
+        :return: dict of component to name mapping (eg {'u': 'water_u', 'v': 'water_v', etc})
         """
         df = None
         if dataset is not None:
@@ -918,7 +931,6 @@ class VectorVariable(object):
         if mem:
             self._memoize_result(points, time, value, self._result_memo, _hash=_hash)
         return value
-
 
     @classmethod
     def _get_shared_vars(cls, *sh_args):

@@ -350,7 +350,7 @@ class SGrid(object):
             self._m_coeffs = {}
         lon, lat = self._get_grid_vars(grid)
         l_coeffs = self._l_coeffs[grid] = np.zeros((lon[0:-1, 0:-1].shape + (4,)), dtype=np.float64)
-        m_coeffs = self._m_coeffs[grid] = self._l_coeffs[grid].copy(0)
+        m_coeffs = self._m_coeffs[grid] = self._l_coeffs[grid].copy('C')
 
         indices = np.stack(np.indices(lon[0:-1, 0:-1].shape), axis=-1).reshape(-1, 2)
         polyx = self.get_variable_by_index(lon, indices)
