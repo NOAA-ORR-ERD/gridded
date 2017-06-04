@@ -205,7 +205,7 @@ class Variable(object):
                                     dataset=ds,
                                     datavar=data)
             if time_origin is not None:
-                time = Time(time=time.data, filename=time.filename, varname=time.varname, origin=time_origin)
+                time = Time(data=time.data, filename=time.filename, varname=time.varname, origin=time_origin)
         if depth is None:
             if (isinstance(grid, Grid_S) and len(data.shape) == 4 or
                     isinstance(grid, Grid_U) and len(data.shape) == 3):
@@ -714,7 +714,7 @@ class VectorVariable(object):
                                     dataset=ds,
                                     datavar=data)
             if time_origin is not None:
-                time = Time(time=time.data, filename=data_file, varname=time.varname, origin=time_origin)
+                time = Time(data=time.data, filename=data_file, varname=time.varname, origin=time_origin)
         if depth is None:
             if (isinstance(grid, Grid_S) and len(data.shape) == 4 or
                     isinstance(grid, Grid_U) and len(data.shape) == 3):

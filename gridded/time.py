@@ -81,7 +81,7 @@ class Time(object):
                 varname = datavar.dimensions[0] if 'time' in datavar.dimensions[0] else None
                 if varname is None:
                     return cls.constant_time()
-        time = cls(time=dataset[varname],
+        time = cls(data=dataset[varname],
                    filename=filename,
                    varname=varname,
                    tz_offset=tz_offset,

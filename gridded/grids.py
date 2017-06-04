@@ -69,7 +69,7 @@ class GridBase(object):
                         v = gf_vars[n][:].reshape(-1, 2)
                         init_args[node_attrs[0]] = v[:, 0]
                         init_args[node_attrs[1]] = v[:, 1]
-                        grid_topology['node_coordinates'] = n
+                        gt['node_coordinates'] = n
                         break
             if node_attrs[0] not in init_args:
                 raise ValueError('Unable to find node coordinates.')
@@ -222,7 +222,7 @@ class Grid(object):
             raise ValueError('No filename or dataset provided')
 
         cls = grid_type
-        if grid_type is None or not issubclass(grid_type, GridBase):
+        if grid_type is None or isinstance(grid_type, basestring) or not issubclass(grid_type, GridBase):
             cls = Grid._get_grid_type(gf, grid_type, grid_topology, _default_types)
         compliant = Grid._find_topology_var(None, gf)
         if compliant is not None:
