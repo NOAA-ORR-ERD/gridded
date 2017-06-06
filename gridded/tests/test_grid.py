@@ -12,16 +12,6 @@ import pprint as pp
 from gridded.grids import Grid, Grid_U, Grid_S
 
 
-def test_init():
-    """ tests you can intitilze a basic dataset"""
-    G = Grid.from_netCDF(os.path.join('test_data', 'staggered_sine_channel.nc'))
-    print(G.node_lon)
-
-if __name__ == '__main__':
-    test_init()
-    print('success')
-
-
 @pytest.fixture()
 def sg_data():
     base_dir = os.path.dirname(__file__)
