@@ -4,7 +4,8 @@ from gridded.pysgrid.sgrid import SGrid
 from gridded.pyugrid.ugrid import UGrid
 import numpy as np
 
-from .utilities import get_dataset
+from gridded.utilities import get_dataset
+from six import string_types
 
 
 class GridBase(object):
@@ -222,7 +223,7 @@ class Grid(object):
             raise ValueError('No filename or dataset provided')
 
         cls = grid_type
-        if grid_type is None or isinstance(grid_type, basestring) or not issubclass(grid_type, GridBase):
+        if grid_type is None or isinstance(grid_type, string_types) or not issubclass(grid_type, GridBase):
             cls = Grid._get_grid_type(gf, grid_type, grid_topology, _default_types)
         compliant = Grid._find_topology_var(None, gf)
         if compliant is not None:
