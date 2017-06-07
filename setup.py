@@ -1,5 +1,6 @@
 
 from setuptools import setup
+from setuptools import find_packages
 
 
 def get_version():
@@ -20,7 +21,7 @@ config = {'name': 'gridded',
           'author_email': 'chris.barker@noaa.gov',
           'version': get_version(),
           'install_requires': [],
-          'packages': ['gridded'],
+          'packages': find_packages(),
           'scripts': [],
           }
 
