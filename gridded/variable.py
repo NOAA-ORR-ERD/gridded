@@ -4,10 +4,10 @@ import netCDF4 as nc4
 import numpy as np
 import collections
 from collections import OrderedDict
-from .utilities import get_dataset
-from .grids import Grid, Grid_U, Grid_S
-from .depth import Depth
-from .time import Time
+from gridded.utilities import get_dataset
+from gridded.grids import Grid, Grid_U, Grid_S
+from gridded.depth import Depth
+from gridded.time import Time
 
 import hashlib
 from functools import wraps

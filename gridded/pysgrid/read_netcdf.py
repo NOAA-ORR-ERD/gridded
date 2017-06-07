@@ -8,8 +8,8 @@ from __future__ import (absolute_import, division, print_function)
 
 import re
 
-from .lookup import X_COORDINATES, Y_COORDINATES
-from .utils import GridPadding
+from gridded.pysgrid.lookup import X_COORDINATES, Y_COORDINATES
+from gridded.pysgrid.utils import GridPadding
 
 
 def find_grid_topology_var(nc):

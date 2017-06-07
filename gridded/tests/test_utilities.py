@@ -5,7 +5,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 
 import numpy as np
-from .. import utilities
+from gridded import utilities
 
 
 class DummyArrayLike(object):

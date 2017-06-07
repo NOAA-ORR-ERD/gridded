@@ -11,9 +11,9 @@ import numpy as np
 import hashlib
 from collections import OrderedDict
 
-from .read_netcdf import NetCDFDataset, parse_padding, find_grid_topology_var
-from .utils import calculate_angle_from_true_east, pair_arrays
-from .variables import SGridVariable
+from gridded.pysgrid.read_netcdf import NetCDFDataset, parse_padding, find_grid_topology_var
+from gridded.pysgrid.utils import calculate_angle_from_true_east, pair_arrays
+from gridded.pysgrid.variables import SGridVariable
 
 
 class SGrid(object):

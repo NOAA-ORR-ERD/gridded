@@ -7,12 +7,10 @@ import copy
 
 import numpy as np
 import netCDF4 as nc4
-from . import pysgrid
-from . import pyugrid
-from .grids import Grid
-from .variable import Variable
+from gridded.grids import Grid
+from gridded.variable import Variable
 
-from .utilities import asarraylike, get_dataset
+from gridded.utilities import asarraylike, get_dataset
 
 
 """

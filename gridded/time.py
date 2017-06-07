@@ -8,7 +8,7 @@ import numpy as np
 
 from datetime import datetime, timedelta
 
-from .utilities import get_dataset
+from gridded.utilities import get_dataset
 
 
 class Time(object):

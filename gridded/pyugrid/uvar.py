@@ -14,7 +14,7 @@ import numpy as np
 from collections import OrderedDict
 
 try:
-    from .util import asarraylike, isarraylike
+    from gridded.pyugrid.util import asarraylike, isarraylike
 except ValueError:
     from util import asarraylike, isarraylike
 

@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+from __future__ import absolute_import, division, print_function, unicode_literals
 
-from . import pyugrid
-from . import pysgrid
+from gridded.pysgrid.sgrid import SGrid
+from gridded.pyugrid.ugrid import UGrid
 import numpy as np
 
 from .utilities import get_dataset
@@ -102,7 +102,7 @@ class GridBase(object):
         self.save_as_netcdf(pth)
 
 
-class Grid_U(GridBase, pyugrid.UGrid):
+class Grid_U(GridBase, UGrid):
 
     @classmethod
     def _find_required_grid_attrs(cls, filename, dataset=None, grid_topology=None):
@@ -135,7 +135,7 @@ class Grid_U(GridBase, pyugrid.UGrid):
         return init_args, gt
 
 
-class Grid_S(GridBase, pysgrid.SGrid):
+class Grid_S(GridBase, SGrid):
 
     @classmethod
     def _find_required_grid_attrs(cls, filename, dataset=None, grid_topology=None):
@@ -192,7 +192,7 @@ class Grid(object):
         '''
         Redirect to grid-specific loading routine.
         '''
-        if issubclass(grid_type, pyugrid.UGrid):
+        if issubclass(grid_type, UGrid):
             return grid_type.from_ncfile(filename)
         else:
             ds = get_dataset(filename, dataset)

@@ -13,7 +13,7 @@ from __future__ import (absolute_import, division, print_function)
 import netCDF4
 import numpy as np
 
-from ..ugrid import UGrid
+from gridded.pyugrid.ugrid import UGrid
 
 
 def load_from_varnames(filename, names_mapping, attribute_check=None):

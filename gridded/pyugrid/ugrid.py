@@ -23,9 +23,9 @@ from collections import OrderedDict
 
 import numpy as np
 
-from . import read_netcdf
-from .util import point_in_tri
-from .uvar import UVar
+import gridded.pyugrid.read_netcdf as read_netcdf
+from gridded.pyugrid.util import point_in_tri
+from gridded.pyugrid.uvar import UVar
 
 __all__ = ['UGrid',
            'UVar']
