@@ -24,9 +24,10 @@ Need to hook this up to existing test data infrastructure
 '''
 @pytest.fixture()
 def sg_data():
-    base_dir = os.path.dirname(__file__)
-    s_data = os.path.join(base_dir, 'test_data')
+    s_data = get_test_file_dir()
+    print(s_data)
     filename = os.path.join(s_data, 'staggered_sine_channel.nc')
+    print(filename)
     return filename, nc.Dataset(filename)
 
 
