@@ -12,27 +12,25 @@ import numpy as np
 import netCDF4 as nc
 
 from gridded.variable import Variable, VectorVariable
+from gridded.tests.utilities import get_test_file_dir
 
 from gridded.grids import Grid
 
-base_dir = os.path.dirname(__file__)
-sys.path.append(os.path.join(base_dir, 'sample_data'))
+test_dir = get_test_file_dir()
 
 
 '''
 Need to hook this up to existing test data infrastructure
 '''
 
-s_data = os.path.join(base_dir, 'test_data')
-# gen_all(path=s_data)
 
-sinusoid = os.path.join(s_data, 'staggered_sine_channel.nc')
+sinusoid = os.path.join(test_dir, 'staggered_sine_channel.nc')
 sinusoid = nc.Dataset(sinusoid)
 
 # circular_3D = os.path.join(s_data, '3D_circular.nc')
 # circular_3D = nc.Dataset(circular_3D)
 
-tri_ring = os.path.join(s_data, 'tri_ring.nc')
+tri_ring = os.path.join(test_dir, 'tri_ring.nc')
 tri_ring = nc.Dataset(tri_ring)
 
 
@@ -152,7 +150,7 @@ class TestGriddedProp:
                         data_file='staggered_sine_channel.nc',
                         grid_file='staggered_sine_channel.nc')
 
-        curr_file = os.path.join(s_data, 'staggered_sine_channel.nc')
+        curr_file = os.path.join(test_dir, 'staggered_sine_channel.nc')
         k = Variable.from_netCDF(filename=curr_file, varname='u', name='u')
         assert k.name == u.name
         assert k.units == 'm/s'
@@ -161,7 +159,7 @@ class TestGriddedProp:
         assert k.data[0, 0] == u.data[0, 0]
 
     def test_at(self):
-        curr_file = os.path.join(s_data, 'staggered_sine_channel.nc')
+        curr_file = os.path.join(test_dir, 'staggered_sine_channel.nc')
         u = Variable.from_netCDF(filename=curr_file, varname='u_rho')
         v = Variable.from_netCDF(filename=curr_file, varname='v_rho')
 
@@ -175,7 +173,7 @@ class TestGriddedProp:
 class TestGridVectorProp:
 
     def test_construction(self):
-        curr_file = os.path.join(s_data, 'staggered_sine_channel.nc')
+        curr_file = os.path.join(test_dir, 'staggered_sine_channel.nc')
         u = Variable.from_netCDF(filename=curr_file, varname='u_rho')
         v = Variable.from_netCDF(filename=curr_file, varname='v_rho')
         gvp = VectorVariable(name='velocity', units='m/s', time=u.time, variables=[u, v])
@@ -185,7 +183,7 @@ class TestGridVectorProp:
 #         pytest.set_trace()
 
     def test_at(self):
-        curr_file = os.path.join(s_data, 'staggered_sine_channel.nc')
+        curr_file = os.path.join(test_dir, 'staggered_sine_channel.nc')
         gvp = VectorVariable.from_netCDF(filename=curr_file,
                                          varnames=['u_rho', 'v_rho'])
         points = np.array(([0, 0, 0], [np.pi, 1, 0], [2 * np.pi, 0, 0]))
