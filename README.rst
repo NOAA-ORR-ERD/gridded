@@ -1,8 +1,12 @@
-# gridded
+#######
+gridded
+#######
+
 A single API for accessing / working with gridded model results on multiple grid types
 
 
-## Goal
+Goal
+====
 
 The goal of this pacakge is to present a single way to work with restuls from ANY model -- regardless of what type of grid it was computed on. IN particular:
 
@@ -13,7 +17,8 @@ The goal of this pacakge is to present a single way to work with restuls from AN
 
 * Staggered Grids (CF + [SGRID Conventions](https://publicwiki.deltares.nl/display/NETCDF/Deltares+proposal+for+Staggered+Grid+data+model)) with nascent API in [pysgrid](https://github.com/sgrid/pysgrid)
 
-## Why gridded?
+Why gridded?
+============
 
 ``gridded`` has been developed because a number of us need to work with multiple model types, and have found ourselves writing a lot of custom code for each type. In particular, intercomparison of results is an ugly process. To preserve the integrity of the results, it's best to NOT interpolate on to a common grid. ``gridded`` lets one work with multiple model types with the same API, while preserving the native grid as much as possible.
 
@@ -22,7 +27,8 @@ Other solutions have (so far) built assumptions about the underlying grid type i
 Iris: http://scitools.org.uk/iris/  and Xray: https://github.com/xray/xray
 
 
-## Data standards
+Data standards
+==============
 
 ``gridded`` seeks to support data standards such as:
 
@@ -33,12 +39,3 @@ Iris: http://scitools.org.uk/iris/  and Xray: https://github.com/xray/xray
 * SGRID Conventions: https://publicwiki.deltares.nl/display/NETCDF/Deltares+proposal+for+Staggered+Grid+data+model
 
 ``gridded`` also provided APIs for reading results that do not conform to the conventions, allowing one to work with non-confirming datasets with the same API, as well as providing tools to convert non-confirming files to conforming files.
-
-
-
-
-
-
-
-
-
