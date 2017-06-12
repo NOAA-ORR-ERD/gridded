@@ -11,6 +11,7 @@ numpy>=1.11.*
 scipy
 netcdf4
 cell_tree2d
+six
 
 ## extra stuff you'll want for development / testing / demoing
 pytest
