@@ -20,8 +20,8 @@ def get_test_file_dir():
     """
     returns the test file dir path
     """
-    test_file_dir = os.path.split(os.path.abspath(__file__))[0]
-    test_file_dir = os.path.join(test_file_dir, 'test_data')
+    test_file_dir = os.path.join(os.path.dirname(__file__))
+    test_file_dir = os.path.join(test_file_dir, 'data')
     return test_file_dir
 
 

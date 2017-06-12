@@ -262,6 +262,8 @@ def gen_ring(filename=None):
             ds[k][:] = v[-1]
             ds[k].units = 'm/s'
 
+        ds.close()
+
 
 
 def gen_all(path=None):

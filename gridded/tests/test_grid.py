@@ -15,7 +15,7 @@ from gridded.grids import Grid, Grid_U, Grid_S
 @pytest.fixture()
 def sg_data():
     base_dir = os.path.dirname(__file__)
-    s_data = os.path.join(base_dir, 'test_data')
+    s_data = os.path.join(base_dir, 'data')
     filename = os.path.join(s_data, 'staggered_sine_channel.nc')
     return filename, nc.Dataset(filename)
 
@@ -30,7 +30,7 @@ def sg():
 @pytest.fixture()
 def ug_data():
     base_dir = os.path.dirname(__file__)
-    s_data = os.path.join(base_dir, 'test_data')
+    s_data = os.path.join(base_dir, 'data')
     filename = os.path.join(s_data, 'tri_ring.nc')
     return filename, nc.Dataset(filename)
 
