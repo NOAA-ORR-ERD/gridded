@@ -10,6 +10,8 @@ def get_version():
                 return line.split('=', 1)[1].strip().strip('"')
     return ""
 
+install_requires = [line.strip() for line in open('conda_requirements.txt')]
+tests_require = [line.strip() for line in open('conda_requirements_dev.txt')]
 
 config = {'name': 'gridded',
           'description': "Unified API for working with results from (Met/Ocean) models on"
@@ -20,8 +22,10 @@ config = {'name': 'gridded',
           'download_url': "https://github.com/NOAA-ORR-ERD/gridded",
           'author_email': 'chris.barker@noaa.gov',
           'version': get_version(),
-          'install_requires': [],
+          'install_requires': install_requires,
+          'tests_require': tests_require,
           'packages': find_packages(),
+          'package_data': {'gridded': ['tests/data/*',]},
           'scripts': [],
           }
 
