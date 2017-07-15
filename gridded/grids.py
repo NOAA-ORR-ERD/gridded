@@ -34,7 +34,7 @@ class GridBase(object):
         type(self)._def_count += 1
 
     @classmethod
-    def from_netCDF(cls,*args,**kwargs):
+    def from_netCDF(cls, *args, **kwargs):
         kwargs['grid_type'] = cls
         return Grid.from_netCDF(*args, **kwargs)
 
@@ -92,7 +92,9 @@ class GridBase(object):
         if self is o:
             return True
         for n in ('nodes', 'faces'):
-            if hasattr(self, n) and hasattr(o, n) and getattr(self, n) is not None and getattr(o, n) is not None:
+            if (hasattr(self, n) and
+                hasattr(o, n) and
+                getattr(self, n) is not None and getattr(o, n) is not None:
                 s = getattr(self, n)
                 s2 = getattr(o, n)
                 if s.shape != s2.shape or np.any(s != s2):
@@ -213,8 +215,10 @@ class Grid(object):
         '''
         :param filename: File containing a grid
         :param dataset: Takes precedence over filename, if provided.
-        :param grid_type: Must be provided if Dataset does not have a 'grid_type' attribute, or valid topology variable
-        :param grid_topology: A dictionary mapping of grid attribute to variable name. Takes precendence over discovered attributes
+        :param grid_type: Must be provided if Dataset does not have a 'grid_type' attribute,
+                          or valid topology variable
+        :param grid_topology: A dictionary mapping of grid attribute to variable name.
+                              Takes precedence over discovered attributes
         :param **kwargs: All kwargs to SGrid or UGrid are valid, and take precedence over all.
         :returns: Instance of Grid_U, Grid_S, or PyGrid_R
         '''
@@ -223,7 +227,8 @@ class Grid(object):
             raise ValueError('No filename or dataset provided')
 
         cls = grid_type
-        if grid_type is None or isinstance(grid_type, string_types) or not issubclass(grid_type, GridBase):
+        if (grid_type is None or isinstance(grid_type, string_types) or
+                                 not issubclass(grid_type, GridBase)):
             cls = Grid._get_grid_type(gf, grid_type, grid_topology, _default_types)
         compliant = Grid._find_topology_var(None, gf)
         if compliant is not None:
@@ -258,13 +263,15 @@ class Grid(object):
             else:
                 raise ValueError('Specified grid_type not recognized/supported')
         if grid_topology is not None:
-            if 'faces' in grid_topology.keys() or grid_topology.get('grid_type', 'notype').lower() in ugrid_names:
+            if ('faces' in grid_topology.keys() or
+                grid_topology.get('grid_type', 'notype').lower() in ugrid_names):
                 return Grid_U
             else:
                 return Grid_S
         else:
             # no topology, so search dataset for grid_type variable
-            if hasattr(dataset, 'grid_type') and dataset.grid_type in sgrid_names + ugrid_names:
+            if (hasattr(dataset, 'grid_type') and
+                dataset.grid_type in sgrid_names + ugrid_names):
                 if dataset.grid_type.lower() in ugrid_names:
                     return Grid_U
                 else:
@@ -273,7 +280,8 @@ class Grid(object):
                 # no grid type explicitly specified. is a topology variable present?
                 topology = Grid._find_topology_var(None, dataset=dataset)
                 if topology is not None:
-                    if hasattr(topology, 'node_coordinates') and not hasattr(topology, 'node_dimensions'):
+                    if (hasattr(topology, 'node_coordinates') and
+                        not hasattr(topology, 'node_dimensions'):
                         return Grid_U
                     else:
                         return Grid_S

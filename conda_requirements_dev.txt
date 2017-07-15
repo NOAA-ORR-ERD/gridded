@@ -17,4 +17,4 @@ six
 pytest
 matplotlib
 jupyter
-
+cartopy
