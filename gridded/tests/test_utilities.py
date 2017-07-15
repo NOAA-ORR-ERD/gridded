@@ -5,8 +5,71 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 
 import numpy as np
+import pytest
 from gridded import utilities
 
+
+def test_reorganize_spatial_data():
+    #1-dimensional data
+    sample_1 = [1,2,3]
+    sample_2 = [(1,),(2,),(3,)]
+    sample_3 = [(1,2,3),]
+    a1 = utilities._reorganize_spatial_data(sample_1)
+    a2 = utilities._reorganize_spatial_data(sample_2)
+    a3 = utilities._reorganize_spatial_data(sample_3)
+    assert np.all(a1 == a2)
+    assert np.all(a3 == np.array([(1,2,3),]))
+    assert np.all(a2 == a3)
+
+    #impossible cases
+    sample_1 = np.array([[1,2,3],[4,5,6]])
+    sample_2 = np.array([[1,2],[3,4],[5,6]])
+    a1 = utilities._reorganize_spatial_data(sample_1)
+    a2 = utilities._reorganize_spatial_data(sample_2)
+    assert np.all(sample_2 == a2)
+    assert np.all(sample_1 == a1)
+
+    #dim 0 > dim 1
+    sample_1 = np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
+    a1 = utilities._reorganize_spatial_data(sample_1)
+    assert np.all(a1 == sample_1)
+
+    #dim 1 > dim 0
+    sample_2 = [[1,4,7,10],[2,5,8,11],[3,6,9,12]]
+    a2 = utilities._reorganize_spatial_data(sample_2)
+    assert np.all(a2 == sample_1)
+
+
+def test_spatial_data_metadata():
+    pts_1 = [1,2,3]
+    pts_2 = [(1,),(2,),(3,)]
+    pts_3 = np.array([[1,2,3],[4,5,6]])
+    pts_4 = [[1,4,7,10],[2,5,8,11],[3,6,9,12]]
+
+    res_1 = np.array([[1,],])
+    res_2 = np.array([[1,2,3,4,5,6],])
+    res_3 = np.array([[1,2,3,4,5,6],
+                      [2,3,4,5,6,7]])
+    res_4 = np.array([[1,2,3,4,5,6],
+                      [7,8,9,10,11,12],
+                      [13,14,15,16,17,18],
+                      [19,20,21,22,23,24]])
+    res_5 = np.array([[1,],
+                      [2,],
+                      [3,],
+                      [4,]])
+
+    a1 = utilities._align_results_to_spatial_data(res_1, pts_1)
+    assert np.all(a1 == res_1)
+    a2 = utilities._align_results_to_spatial_data(res_2, pts_2)
+    assert np.all(a2 == res_2)
+    a3 = utilities._align_results_to_spatial_data(res_3, pts_3)
+    assert np.all(a3 == res_3)
+
+    a4 = utilities._align_results_to_spatial_data(res_4, pts_4)
+    a5 = utilities._align_results_to_spatial_data(res_5, pts_4)
+    assert np.all(a4.T == res_4)
+    assert np.all(a5.T == res_5)
 
 class DummyArrayLike(object):
     """
