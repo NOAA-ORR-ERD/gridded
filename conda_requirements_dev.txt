@@ -18,3 +18,5 @@ pytest
 matplotlib
 jupyter
 cartopy
+sphinx
+
