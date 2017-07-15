@@ -93,8 +93,9 @@ class GridBase(object):
             return True
         for n in ('nodes', 'faces'):
             if (hasattr(self, n) and
-                hasattr(o, n) and
-                getattr(self, n) is not None and getattr(o, n) is not None:
+                  hasattr(o, n) and
+                  getattr(self, n) is not None and
+                  getattr(o, n) is not None):
                 s = getattr(self, n)
                 s2 = getattr(o, n)
                 if s.shape != s2.shape or np.any(s != s2):
@@ -281,7 +282,7 @@ class Grid(object):
                 topology = Grid._find_topology_var(None, dataset=dataset)
                 if topology is not None:
                     if (hasattr(topology, 'node_coordinates') and
-                        not hasattr(topology, 'node_dimensions'):
+                          not hasattr(topology, 'node_dimensions')):
                         return Grid_U
                     else:
                         return Grid_S
