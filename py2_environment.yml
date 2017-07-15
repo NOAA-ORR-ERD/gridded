@@ -1,8 +1,9 @@
-name: noaa-gridded3
+name: noaa-gridded2
 channels:
   - conda-forge
   - defaults
 dependencies:
+  - python=2
   - numpy>=1.11.*
   - scipy
   - cartopy
