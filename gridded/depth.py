@@ -6,7 +6,6 @@ from datetime import datetime
 from gridded.time import Time
 from gridded.grids import Grid
 from gridded.utilities import get_dataset
-from gridded.variable import Variable
 
 class Depth(object):
 
@@ -37,7 +36,7 @@ class S_Depth(Depth):
                      ('zeta', 'free-surface')]
     _default_component_types = {'time': Time,
                                 'grid': Grid,
-                                'variable': Variable}
+                                'variable': None}
     def __init__(self,
                  filename=None,
                  dataset=None,
@@ -56,7 +55,7 @@ class S_Depth(Depth):
                                            dataset=ds,
                                            names_list=['h'],
                                            std_names_list=['bathymetry at RHO-points'])
-            bathymetry = Variable.from_netCDF(dataset=ds,
+            bathymetry = self.__class__._default_component_type['variable'].from_netCDF(dataset=ds,
                                   grid=grid,
                                   varname=bathy_name,
                                   name='Bathymetry'

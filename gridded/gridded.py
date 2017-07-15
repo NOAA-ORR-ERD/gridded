@@ -8,7 +8,7 @@ import copy
 import numpy as np
 import netCDF4 as nc4
 from gridded.grids import Grid
-from gridded import Variable
+from gridded.variable import Variable
 
 from gridded.utilities import asarraylike, get_dataset
 
