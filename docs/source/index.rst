@@ -3,13 +3,22 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to gridded's documentation!
-===================================
+Welcome to ``gridded``'s documentation!
+=======================================
+
+``gridded`` is a single API for accessing / working with gridded model results on multiple grid types
+
+
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
+   overview
+   tutorial
+   installing
+   api_reference
 
 
 Indices and tables

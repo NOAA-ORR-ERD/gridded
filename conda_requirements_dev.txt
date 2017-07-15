@@ -19,4 +19,6 @@ matplotlib
 jupyter
 cartopy
 sphinx
+sphinx-rtd-theme
+
 
