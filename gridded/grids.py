@@ -18,13 +18,12 @@ class GridBase(object):
                  filename=None,
                  *args,
                  **kwargs):
-        '''
-        Init common to all Grid types. This constructor will take all the kwargs of both
+        """
+        Init common to all Grid types. This initializer will take all the kwargs of both
         pyugrid.UGrid and pysgrid.SGrid. See their documentation for details
 
         :param filename: Name of the file this grid was constructed from, if available.
-        '''
-        super(GridBase, self).__init__(**kwargs)
+        """
         if 'name' in kwargs:
             self.name = kwargs['name']
         else:
