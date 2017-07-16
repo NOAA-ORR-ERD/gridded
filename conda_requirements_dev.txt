@@ -17,6 +17,7 @@ six
 pytest
 matplotlib
 jupyter
+nb_conda_kernels
 cartopy
 sphinx
 sphinx-rtd-theme

@@ -6,6 +6,10 @@
 Welcome to ``gridded``'s documentation!
 =======================================
 
+.. figure::  _static/nifty_grid.png
+   :align:   center
+
+
 ``gridded`` is a single API for accessing / working with gridded model results on multiple grid types
 
 
@@ -16,8 +20,8 @@ Contents
    :maxdepth: 2
 
    overview
-   tutorial
    installing
+   tutorial
    api_reference
 
 
