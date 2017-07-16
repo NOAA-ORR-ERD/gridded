@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gridded.pyugrid.util &mdash; gridded 0.0.8 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="gridded 0.0.8 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> gridded
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../overview.html#goals">Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../overview.html#why-gridded">Why gridded?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../overview.html#data-standards">Data standards</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing.html">Installing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installing.html#pip">pip</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../installing.html#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installing.html#conda">conda</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../installing.html#conda-forge">conda-forge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../installing.html#environments">Environments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#grid-objects">Grid objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#variable-objects">Variable objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#time-object">Time object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#depth-object">Depth object</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html#design-principles">Design Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#grid-independence">Grid Independence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#duck-typing">Duck Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#lazy-loading-data-arrays">Lazy loading / data arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html#reference">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../gridded.html">gridded package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.depth">gridded.depth module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.gridded">gridded.gridded module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.grids">gridded.grids module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.time">gridded.time module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.utilities">gridded.utilities module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.variable">gridded.variable module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">gridded</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>gridded.pyugrid.util</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for gridded.pyugrid.util</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Miscellaneous util functions.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.e-5</span>
+
+
+<div class="viewcode-block" id="point_in_tri"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.util.point_in_tri">[docs]</a><span class="k">def</span> <span class="nf">point_in_tri</span><span class="p">(</span><span class="n">face_points</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">return_weights</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates whether point is internal/external</span>
+<span class="sd">    to element by comparing summed area of sub triangles with area of triangle</span>
+<span class="sd">    element.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sub_tri_areas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">sub_tri_areas</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_signed_area_tri</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">face_points</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">:],</span>
+                                                   <span class="n">point</span><span class="p">)))</span>
+    <span class="n">sub_tri_areas</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">_signed_area_tri</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">face_points</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">:],</span>
+                                                   <span class="n">point</span><span class="p">)))</span>
+    <span class="n">sub_tri_areas</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">_signed_area_tri</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">face_points</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">:],</span>
+                                                   <span class="n">point</span><span class="p">)))</span>
+    <span class="n">tri_area</span> <span class="o">=</span> <span class="n">_signed_area_tri</span><span class="p">(</span><span class="n">face_points</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">sub_tri_areas</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">-</span><span class="n">tri_area</span><span class="p">)</span><span class="o">/</span><span class="n">tri_area</span> <span class="o">&lt;=</span> <span class="n">epsilon</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">return_weights</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+            <span class="c1"># weights = sub_tri_areas/tri_area</span>
+            <span class="c1"># weights[1] = max(0., min(1., weights[1]))</span>
+            <span class="c1"># weights[2] = max(0., min(1., weights[2]))</span>
+            <span class="c1"># if (weights[0]+weights[1]&gt;1):</span>
+            <span class="c1">#     weights[2] = 0</span>
+            <span class="c1">#     weights[1] = 1-weights[0]</span>
+            <span class="c1"># else:</span>
+            <span class="c1">#     weights[2] = 1-weights[0]-weights[1]</span>
+            <span class="c1">#</span>
+            <span class="c1"># return weights</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="k">def</span> <span class="nf">_signed_area_tri</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    points : the coordinates of the triangle vertices -- (3x2) float array</span>
+<span class="sd">    returns signed area of the triangle.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">x3</span><span class="p">,</span> <span class="n">y3</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="k">return</span><span class="p">(((</span><span class="n">x1</span><span class="o">-</span><span class="n">x3</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">y2</span><span class="o">-</span><span class="n">y3</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">x2</span><span class="o">-</span><span class="n">x3</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">y1</span><span class="o">-</span><span class="n">y3</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+
+<span class="n">must_have</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dtype&#39;</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="s1">&#39;ndim&#39;</span><span class="p">,</span><span class="s1">&#39;__len__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getitem__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattribute__&#39;</span><span class="p">]</span>
+<div class="viewcode-block" id="isarraylike"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.util.isarraylike">[docs]</a><span class="k">def</span> <span class="nf">isarraylike</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    tests if obj acts enough like an array to be used in pyugrid.</span>
+
+<span class="sd">    This should catch netCDF4 variables, etc.</span>
+
+<span class="sd">    Note: these won&#39;t check if the attributes required actually work right.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">must_have</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="asarraylike"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.util.asarraylike">[docs]</a><span class="k">def</span> <span class="nf">asarraylike</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    If it satisfies the requirements of pyugrid the object is returned as is. If not, then numpy&#39;s</span>
+<span class="sd">    array() will be called on it.</span>
+
+<span class="sd">    :param obj: The object to check if it&#39;s like an array</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">obj</span> <span class="k">if</span> <span class="n">isarraylike</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
+
+
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright .
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.8',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

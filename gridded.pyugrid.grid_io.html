@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gridded.pyugrid.grid_io package &mdash; gridded 0.0.8 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="gridded 0.0.8 documentation" href="index.html"/>
+        <link rel="up" title="gridded.pyugrid package" href="gridded.pyugrid.html"/>
+        <link rel="next" title="gridded.tests package" href="gridded.tests.html"/>
+        <link rel="prev" title="gridded.pyugrid package" href="gridded.pyugrid.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> gridded
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#goals">Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#why-gridded">Why gridded?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#data-standards">Data standards</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installing.html#pip">pip</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installing.html#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installing.html#conda">conda</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installing.html#conda-forge">conda-forge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installing.html#environments">Environments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#grid-objects">Grid objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#variable-objects">Variable objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#time-object">Time object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#depth-object">Depth object</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html#design-principles">Design Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#grid-independence">Grid Independence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#duck-typing">Duck Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#lazy-loading-data-arrays">Lazy loading / data arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="api_reference.html#reference">Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="gridded.html">gridded package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="gridded.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.depth">gridded.depth module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.gridded">gridded.gridded module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.grids">gridded.grids module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.time">gridded.time module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.utilities">gridded.utilities module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.variable">gridded.variable module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">gridded</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a> &raquo;</li>
+        
+          <li><a href="gridded.html">gridded package</a> &raquo;</li>
+        
+          <li><a href="gridded.pyugrid.html">gridded.pyugrid package</a> &raquo;</li>
+        
+      <li>gridded.pyugrid.grid_io package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/gridded.pyugrid.grid_io.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gridded-pyugrid-grid-io-package">
+<h1>gridded.pyugrid.grid_io package<a class="headerlink" href="#gridded-pyugrid-grid-io-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gridded.pyugrid.grid_io.utils">
+<span id="gridded-pyugrid-grid-io-utils-module"></span><h2>gridded.pyugrid.grid_io.utils module<a class="headerlink" href="#module-gridded.pyugrid.grid_io.utils" title="Permalink to this headline">¶</a></h2>
+<p>Utilities to help with grid io</p>
+<p>NOTE: this isn’t used yet, but should be useful for loading non
+UGRID-compliant files.</p>
+<dl class="function">
+<dt id="gridded.pyugrid.grid_io.utils.load_from_varnames">
+<code class="descclassname">gridded.pyugrid.grid_io.utils.</code><code class="descname">load_from_varnames</code><span class="sig-paren">(</span><em>filename</em>, <em>names_mapping</em>, <em>attribute_check=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/grid_io/utils.html#load_from_varnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.grid_io.utils.load_from_varnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a UGrid from a netcdf file where the roles are defined by the
+names of the variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> – names of the file to load (or OPeNDAP URL).</li>
+<li><strong>names_mapping</strong> – dict that maps the variable names to UGrid components</li>
+<li><strong>attribute_check=None</strong> – list of global attributes that are expected</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The names_mapping dict has to contain at least: ‘nodes_lon’, ‘nodes_lat’</p>
+<p>Optionally (and mostly required), it can contain: face_face_connectivity’,
+‘face_coordinates_lon’, ‘face_coordinates_lat’, and ‘faces’</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gridded.pyugrid.grid_io">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gridded.pyugrid.grid_io" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gridded.pyugrid.grid_io.load_from_varnames">
+<code class="descclassname">gridded.pyugrid.grid_io.</code><code class="descname">load_from_varnames</code><span class="sig-paren">(</span><em>filename</em>, <em>names_mapping</em>, <em>attribute_check=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/grid_io/utils.html#load_from_varnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.grid_io.load_from_varnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a UGrid from a netcdf file where the roles are defined by the
+names of the variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> – names of the file to load (or OPeNDAP URL).</li>
+<li><strong>names_mapping</strong> – dict that maps the variable names to UGrid components</li>
+<li><strong>attribute_check=None</strong> – list of global attributes that are expected</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The names_mapping dict has to contain at least: ‘nodes_lon’, ‘nodes_lat’</p>
+<p>Optionally (and mostly required), it can contain: face_face_connectivity’,
+‘face_coordinates_lon’, ‘face_coordinates_lat’, and ‘faces’</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="gridded.tests.html" class="btn btn-neutral float-right" title="gridded.tests package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="gridded.pyugrid.html" class="btn btn-neutral" title="gridded.pyugrid package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright .
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.8',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

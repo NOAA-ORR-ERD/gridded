@@ -1,0 +1,543 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gridded.tests.gen_analytical_datasets &mdash; gridded 0.0.8 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="gridded 0.0.8 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> gridded
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../overview.html#goals">Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../overview.html#why-gridded">Why gridded?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../overview.html#data-standards">Data standards</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing.html">Installing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installing.html#pip">pip</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../installing.html#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installing.html#conda">conda</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../installing.html#conda-forge">conda-forge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../installing.html#environments">Environments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#grid-objects">Grid objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#variable-objects">Variable objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#time-object">Time object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#depth-object">Depth object</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html#design-principles">Design Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#grid-independence">Grid Independence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#duck-typing">Duck Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#lazy-loading-data-arrays">Lazy loading / data arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html#reference">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../gridded.html">gridded package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.depth">gridded.depth module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.gridded">gridded.gridded module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.grids">gridded.grids module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.time">gridded.time module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.utilities">gridded.utilities module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.variable">gridded.variable module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">gridded</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>gridded.tests.gen_analytical_datasets</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for gridded.tests.gen_analytical_datasets</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">netCDF4</span> <span class="k">as</span> <span class="nn">nc4</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+
+
+
+<span class="kn">from</span> <span class="nn">gridded</span> <span class="k">import</span> <span class="n">Variable</span><span class="p">,</span> <span class="n">Grid</span>
+
+<div class="viewcode-block" id="gen_vortex_3D"><a class="viewcode-back" href="../../../gridded.tests.html#gridded.tests.gen_analytical_datasets.gen_vortex_3D">[docs]</a><span class="k">def</span> <span class="nf">gen_vortex_3D</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="o">-</span><span class="mi">30</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">61</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mi">30</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">61</span><span class="n">j</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">x_size</span> <span class="o">=</span> <span class="mi">61</span>
+    <span class="n">y_size</span> <span class="o">=</span> <span class="mi">61</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">node_lon</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>
+               <span class="n">node_lat</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">build_celltree</span><span class="p">()</span>
+    <span class="n">lin_nodes</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">_trees</span><span class="p">[</span><span class="s1">&#39;node&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">lin_faces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([([</span><span class="n">lx</span><span class="p">,</span> <span class="n">lx</span> <span class="o">+</span> <span class="n">x_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">lx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">lx</span><span class="p">,</span> <span class="n">lx</span> <span class="o">+</span> <span class="n">x_size</span><span class="p">,</span> <span class="n">lx</span> <span class="o">+</span> <span class="n">x_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">lx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">+</span> <span class="n">ly</span> <span class="o">*</span> <span class="n">x_size</span> <span class="k">for</span> <span class="n">ly</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>
+    <span class="n">lin_faces</span> <span class="o">=</span> <span class="n">lin_faces</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="c1"># y += np.sin(x) / 1</span>
+    <span class="c1"># x += np.sin(x) / 5</span>
+
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2001</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">tarr</span> <span class="o">=</span> <span class="p">[</span><span class="n">t0</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">11</span><span class="p">)]</span>
+    <span class="n">angs</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">vx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angs</span><span class="p">)</span> <span class="o">*</span> <span class="n">mag</span>
+    <span class="n">vy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angs</span><span class="p">)</span> <span class="o">*</span> <span class="n">mag</span>
+    <span class="n">vx</span> <span class="o">=</span> <span class="n">vx</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="mi">20</span>
+    <span class="n">vy</span> <span class="o">=</span> <span class="n">vy</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="mi">20</span>
+    <span class="n">vw</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.001</span>
+
+    <span class="n">d_scale</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">t_scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+
+    <span class="n">tvx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">vx</span> <span class="o">*</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">t_scale</span><span class="p">])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+    <span class="n">tvy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">vy</span> <span class="o">*</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">t_scale</span><span class="p">])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+
+    <span class="n">dvx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">vx</span> <span class="o">*</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">d_scale</span><span class="p">])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+    <span class="n">dvy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">vy</span> <span class="o">*</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">d_scale</span><span class="p">])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+
+    <span class="n">tdvx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dvx</span> <span class="o">*</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">t_scale</span><span class="p">])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+    <span class="n">tdvy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dvy</span> <span class="o">*</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">t_scale</span><span class="p">])</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+
+    <span class="n">lin_vx</span> <span class="o">=</span> <span class="n">vx</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">lin_vy</span> <span class="o">=</span> <span class="n">vy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">lin_tvx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">lin_vx</span> <span class="o">*</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">t_scale</span><span class="p">])</span>
+    <span class="n">lin_tvy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">lin_vy</span> <span class="o">*</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">t_scale</span><span class="p">])</span>
+
+    <span class="n">lin_dvx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">lin_vx</span> <span class="o">*</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">d_scale</span><span class="p">])</span>
+    <span class="n">lin_dvy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">lin_vy</span> <span class="o">*</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">d_scale</span><span class="p">])</span>
+
+    <span class="n">lin_tdvx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">lin_dvx</span> <span class="o">*</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">t_scale</span><span class="p">])</span>
+    <span class="n">lin_tdvy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">lin_dvy</span> <span class="o">*</span> <span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">t_scale</span><span class="p">])</span>
+
+    <span class="n">ds</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">diskless</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">persist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">ds</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tarr</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">d_scale</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">nc4</span><span class="o">.</span><span class="n">date2num</span><span class="p">(</span><span class="n">tarr</span><span class="p">,</span> <span class="s1">&#39;hours since </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t0</span><span class="p">))</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">setncattr</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;hours since </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t0</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;vx&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;vy&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;vx&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">vx</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;vy&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">vy</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;tvx&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;tvy&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;tvx&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">tvx</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;tvy&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">tvy</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;dvx&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;dvy&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;dvx&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">dvx</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;dvy&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">dvy</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;tdvx&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;tdvy&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;tdvx&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">tdvx</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;tdvy&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">tdvy</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;v&#39;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="s1">&#39;m/s&#39;</span>
+
+        <span class="n">ds</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;nv&#39;</span><span class="p">,</span> <span class="n">lin_nodes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;nele&#39;</span><span class="p">,</span> <span class="n">lin_faces</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;two&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;three&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;nodes&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;nv&#39;</span><span class="p">,</span> <span class="s1">&#39;two&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;faces&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;nele&#39;</span><span class="p">,</span> <span class="s1">&#39;three&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;lin_vx&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;nv&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;lin_vy&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;nv&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;lin_tvx&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;nv&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;lin_tvy&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;nv&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;lin_dvx&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;nv&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;lin_dvy&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;nv&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;lin_tdvx&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;nv&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;lin_tdvy&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;depth&#39;</span><span class="p">,</span> <span class="s1">&#39;nv&#39;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="n">lin_nodes</span><span class="p">,</span>
+                     <span class="s1">&#39;faces&#39;</span><span class="p">:</span> <span class="n">lin_faces</span><span class="p">,</span>
+                     <span class="s1">&#39;lin_vx&#39;</span><span class="p">:</span> <span class="n">lin_vx</span><span class="p">,</span>
+                     <span class="s1">&#39;lin_vy&#39;</span><span class="p">:</span> <span class="n">lin_vy</span><span class="p">,</span>
+                     <span class="s1">&#39;lin_tvx&#39;</span><span class="p">:</span> <span class="n">lin_tvx</span><span class="p">,</span>
+                     <span class="s1">&#39;lin_tvy&#39;</span><span class="p">:</span> <span class="n">lin_tvy</span><span class="p">,</span>
+                     <span class="s1">&#39;lin_dvx&#39;</span><span class="p">:</span> <span class="n">lin_dvx</span><span class="p">,</span>
+                     <span class="s1">&#39;lin_dvy&#39;</span><span class="p">:</span> <span class="n">lin_dvy</span><span class="p">,</span>
+                     <span class="s1">&#39;lin_tdvx&#39;</span><span class="p">:</span> <span class="n">lin_tdvx</span><span class="p">,</span>
+                     <span class="s1">&#39;lin_tdvy&#39;</span><span class="p">:</span> <span class="n">lin_tdvy</span>
+                     <span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">if</span> <span class="s1">&#39;lin&#39;</span> <span class="ow">in</span> <span class="n">k</span><span class="p">:</span>
+                <span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="s1">&#39;m/s&#39;</span>
+        <span class="n">Grid</span><span class="o">.</span><span class="n">_get_grid_type</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">grid_topology</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;node_lon&#39;</span><span class="p">:</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;node_lat&#39;</span><span class="p">:</span> <span class="s1">&#39;y&#39;</span><span class="p">})</span>
+        <span class="n">Grid</span><span class="o">.</span><span class="n">_get_grid_type</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">setncattr</span><span class="p">(</span><span class="s1">&#39;grid_type&#39;</span><span class="p">,</span> <span class="s1">&#39;sgrid&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Need to test the dataset...</span>
+        <span class="n">sgt</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;node_lon&#39;</span><span class="p">:</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;node_lat&#39;</span><span class="p">:</span> <span class="s1">&#39;y&#39;</span><span class="p">}</span>
+        <span class="n">sg</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span> <span class="n">grid_topology</span><span class="o">=</span><span class="n">sgt</span><span class="p">,</span> <span class="n">grid_type</span><span class="o">=</span><span class="s1">&#39;sgrid&#39;</span><span class="p">)</span>
+
+        <span class="n">ugt</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="s1">&#39;nodes&#39;</span><span class="p">,</span> <span class="s1">&#39;faces&#39;</span><span class="p">:</span> <span class="s1">&#39;faces&#39;</span><span class="p">}</span>
+<span class="c1">#         ug = PyGrid_U(nodes=ds[&#39;nodes&#39;][:], faces=ds[&#39;faces&#39;][:])</span>
+
+        <span class="n">ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;sgrid&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
+            <span class="s1">&#39;sgrid_vel&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">dvx</span><span class="p">,</span> <span class="n">dvy</span><span class="p">),</span>
+            <span class="s1">&#39;sgrid_depth_vel&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">tdvx</span><span class="p">,</span> <span class="n">tdvy</span><span class="p">),</span>
+            <span class="s1">&#39;ugrid&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">lin_nodes</span><span class="p">,</span> <span class="n">lin_faces</span><span class="p">),</span>
+            <span class="s1">&#39;ugrid_depth_vel&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">lin_tdvx</span><span class="p">,</span> <span class="n">lin_tdvy</span><span class="p">)}</span></div>
+
+
+<div class="viewcode-block" id="gen_sinusoid"><a class="viewcode-back" href="../../../gridded.tests.html#gridded.tests.gen_analytical_datasets.gen_sinusoid">[docs]</a><span class="k">def</span> <span class="nf">gen_sinusoid</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">:(</span><span class="mi">6</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">):</span><span class="mi">25</span><span class="n">j</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="c1"># abs(np.sin(x / 2)) +</span>
+    <span class="n">vx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">vy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">vz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="c1">#     ax.quiver(x, y, vx, vy, color=&#39;darkblue&#39;, pivot=&#39;tail&#39;, angles=&#39;xy&#39;, scale=1.5, scale_units=&#39;xy&#39;, width=0.0025)</span>
+<span class="c1">#     ax.plot(x[2], y[2])</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;r_grid&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Z</span><span class="p">),</span>
+           <span class="s1">&#39;r_vel&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">vx</span><span class="p">,</span> <span class="n">vy</span><span class="p">,</span> <span class="n">vz</span><span class="p">)}</span>
+
+    <span class="n">yc</span><span class="p">,</span> <span class="n">xc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="o">-</span><span class="mf">0.75</span><span class="p">:</span><span class="mf">0.75</span><span class="p">:</span> <span class="mi">4</span><span class="n">j</span><span class="p">,</span> <span class="mf">0.377</span><span class="p">:</span><span class="mf">18.493</span><span class="p">:</span><span class="mi">24</span><span class="n">j</span><span class="p">]</span>
+    <span class="n">yc</span> <span class="o">=</span> <span class="n">yc</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">xc</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">zc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">xc</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.025</span>
+    <span class="n">vxc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">xc</span><span class="p">)</span>
+    <span class="n">vyc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">xc</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">vzc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">xc</span><span class="p">)</span>
+    <span class="n">psi</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;p_grid&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">xc</span><span class="p">,</span> <span class="n">yc</span><span class="p">,</span> <span class="n">zc</span><span class="p">),</span>
+           <span class="s1">&#39;p_vel&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">vxc</span><span class="p">,</span> <span class="n">vyc</span><span class="p">,</span> <span class="n">vzc</span><span class="p">)}</span>
+
+    <span class="n">yu</span><span class="p">,</span> <span class="n">xu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="n">j</span><span class="p">,</span> <span class="mf">0.377</span><span class="p">:</span><span class="mf">18.493</span><span class="p">:</span><span class="mi">24</span><span class="n">j</span><span class="p">]</span>
+    <span class="n">yu</span> <span class="o">=</span> <span class="n">yu</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">xu</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">zu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">xu</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.05</span>
+    <span class="n">vxu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">xu</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="n">vyu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">xu</span><span class="p">)</span>
+    <span class="n">vzu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">xu</span><span class="p">)</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;u_grid&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">xu</span><span class="p">,</span> <span class="n">yu</span><span class="p">,</span> <span class="n">zu</span><span class="p">),</span>
+         <span class="s1">&#39;u_vel&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">vzu</span><span class="p">,</span> <span class="n">vxu</span><span class="p">,</span> <span class="n">vzu</span><span class="p">)}</span>
+
+    <span class="n">yv</span><span class="p">,</span> <span class="n">xv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="o">-</span><span class="mf">0.75</span><span class="p">:</span><span class="mf">0.75</span><span class="p">:</span> <span class="mi">4</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mf">18.87</span><span class="p">:</span><span class="mi">25</span><span class="n">j</span><span class="p">]</span>
+    <span class="n">yv</span> <span class="o">=</span> <span class="n">yv</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">xv</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">zv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">xv</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.075</span>
+    <span class="n">vxv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">xv</span><span class="p">)</span>
+    <span class="n">vyv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">xv</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">vzv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">xv</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;v_grid&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">xv</span><span class="p">,</span> <span class="n">yv</span><span class="p">,</span> <span class="n">zv</span><span class="p">),</span>
+         <span class="s1">&#39;v_vel&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">vyv</span><span class="p">,</span> <span class="n">vzv</span><span class="p">,</span> <span class="n">vzv</span><span class="p">)}</span>
+
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="n">ds</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">diskless</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">persist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;eta_psi&#39;</span><span class="p">:</span> <span class="mi">24</span><span class="p">,</span>
+                     <span class="s1">&#39;xi_psi&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+                     <span class="s1">&#39;eta_rho&#39;</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+                     <span class="s1">&#39;xi_rho&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ds</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;lon_rho&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;xi_rho&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_rho&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span>
+                     <span class="s1">&#39;lat_rho&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;xi_rho&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_rho&#39;</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
+                     <span class="s1">&#39;lon_psi&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;xi_psi&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_psi&#39;</span><span class="p">,</span> <span class="n">xc</span><span class="p">),</span>
+                     <span class="s1">&#39;lat_psi&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;xi_psi&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_psi&#39;</span><span class="p">,</span> <span class="n">yc</span><span class="p">),</span>
+                     <span class="s1">&#39;lat_u&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;xi_rho&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_psi&#39;</span><span class="p">,</span> <span class="n">xu</span><span class="p">),</span>
+                     <span class="s1">&#39;lon_u&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;xi_rho&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_psi&#39;</span><span class="p">,</span> <span class="n">yu</span><span class="p">),</span>
+                     <span class="s1">&#39;lat_v&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;xi_psi&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_rho&#39;</span><span class="p">,</span> <span class="n">xv</span><span class="p">),</span>
+                     <span class="s1">&#39;lon_v&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;xi_psi&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_rho&#39;</span><span class="p">,</span> <span class="n">yv</span><span class="p">),</span>
+                     <span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;u_rho&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;xi_rho&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_rho&#39;</span><span class="p">,</span> <span class="n">vx</span><span class="p">),</span>
+                     <span class="s1">&#39;v_rho&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;xi_rho&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_rho&#39;</span><span class="p">,</span> <span class="n">vy</span><span class="p">),</span>
+                     <span class="s1">&#39;u_psi&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;xi_psi&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_psi&#39;</span><span class="p">,</span> <span class="n">vxc</span><span class="p">),</span>
+                     <span class="s1">&#39;v_psi&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;xi_psi&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_psi&#39;</span><span class="p">,</span> <span class="n">vyc</span><span class="p">),</span>
+                     <span class="s1">&#39;u&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;xi_rho&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_psi&#39;</span><span class="p">,</span> <span class="n">vxu</span><span class="p">),</span>
+                     <span class="s1">&#39;v&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;xi_psi&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_rho&#39;</span><span class="p">,</span> <span class="n">vyv</span><span class="p">)}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="s1">&#39;m/s&#39;</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">grid_type</span> <span class="o">=</span> <span class="s1">&#39;sgrid&#39;</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;angle&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;xi_rho&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_rho&#39;</span><span class="p">))</span>
+        <span class="n">ds</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">angle</span>
+    <span class="k">if</span> <span class="n">ds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Need to test the dataset...</span>
+        <span class="n">sg</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="gen_ring"><a class="viewcode-back" href="../../../gridded.tests.html#gridded.tests.gen_analytical_datasets.gen_ring">[docs]</a><span class="k">def</span> <span class="nf">gen_ring</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.tri</span> <span class="k">as</span> <span class="nn">tri</span>
+    <span class="kn">import</span> <span class="nn">math</span>
+
+    <span class="n">n_angles</span> <span class="o">=</span> <span class="mi">36</span>
+    <span class="n">n_radii</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">min_radius</span> <span class="o">=</span> <span class="mf">0.25</span>
+    <span class="n">radii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">min_radius</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_radii</span><span class="p">)</span>
+
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">n_angles</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">angles</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">n_radii</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">angles</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">n_angles</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">angles</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">radii</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angles</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">radii</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angles</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">radii</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angles</span> <span class="o">*</span> <span class="mf">3.0</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+    <span class="c1"># Create the Triangulation; no triangles so Delaunay triangulation created.</span>
+    <span class="n">triang</span> <span class="o">=</span> <span class="n">tri</span><span class="o">.</span><span class="n">Triangulation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="c1"># Mask off unwanted triangles.</span>
+    <span class="n">xmid</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">triang</span><span class="o">.</span><span class="n">triangles</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ymid</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">triang</span><span class="o">.</span><span class="n">triangles</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">xmid</span> <span class="o">*</span> <span class="n">xmid</span> <span class="o">+</span> <span class="n">ymid</span> <span class="o">*</span> <span class="n">ymid</span> <span class="o">&lt;</span> <span class="n">min_radius</span> <span class="o">*</span> <span class="n">min_radius</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">triang</span><span class="o">.</span><span class="n">set_mask</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+    <span class="n">faces</span> <span class="o">=</span> <span class="n">triang</span><span class="o">.</span><span class="n">get_masked_triangles</span><span class="p">()</span>
+
+    <span class="n">vx</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">radii</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angles</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">vy</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">radii</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angles</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">diskless</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">persist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;nv&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;nele&#39;</span><span class="p">,</span> <span class="n">faces</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s1">&#39;three&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;node_lon&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;nv&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span>
+                     <span class="s1">&#39;node_lat&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;nv&#39;</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
+                     <span class="s1">&#39;faces&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;nele&#39;</span><span class="p">,</span> <span class="s1">&#39;three&#39;</span><span class="p">,</span> <span class="n">faces</span><span class="p">),</span>
+                     <span class="s1">&#39;u&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;nv&#39;</span><span class="p">,</span> <span class="n">vx</span><span class="p">),</span>
+                     <span class="s1">&#39;v&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;nv&#39;</span><span class="p">,</span> <span class="n">vy</span><span class="p">)}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ds</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="s1">&#39;m/s&#39;</span>
+
+        <span class="n">ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="gen_all"><a class="viewcode-back" href="../../../gridded.tests.html#gridded.tests.gen_analytical_datasets.gen_all">[docs]</a><span class="k">def</span> <span class="nf">gen_all</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;staggered_sine_channel.nc&#39;</span><span class="p">,</span> <span class="s1">&#39;3D_circular.nc&#39;</span><span class="p">,</span> <span class="s1">&#39;tri_ring.nc&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">fn</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="p">(</span><span class="n">gen_sinusoid</span><span class="p">,</span> <span class="n">gen_vortex_3D</span><span class="p">,</span> <span class="n">gen_ring</span><span class="p">)):</span>
+        <span class="n">func</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">gen_sinusoid</span><span class="p">(</span><span class="s1">&#39;staggered_sine_channel.nc&#39;</span><span class="p">)</span>
+    <span class="n">gen_vortex_3D</span><span class="p">(</span><span class="s1">&#39;3D_circular.nc&#39;</span><span class="p">)</span>
+    <span class="n">gen_ring</span><span class="p">(</span><span class="s1">&#39;tri_ring.nc&#39;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright .
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.8',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

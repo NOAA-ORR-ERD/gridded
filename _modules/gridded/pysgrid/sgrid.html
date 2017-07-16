@@ -1,0 +1,1245 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gridded.pysgrid.sgrid &mdash; gridded 0.0.8 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="gridded 0.0.8 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> gridded
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../overview.html#goals">Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../overview.html#why-gridded">Why gridded?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../overview.html#data-standards">Data standards</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing.html">Installing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installing.html#pip">pip</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../installing.html#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installing.html#conda">conda</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../installing.html#conda-forge">conda-forge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../installing.html#environments">Environments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#grid-objects">Grid objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#variable-objects">Variable objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#time-object">Time object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#depth-object">Depth object</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html#design-principles">Design Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#grid-independence">Grid Independence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#duck-typing">Duck Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#lazy-loading-data-arrays">Lazy loading / data arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html#reference">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../gridded.html">gridded package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.depth">gridded.depth module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.gridded">gridded.gridded module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.grids">gridded.grids module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.time">gridded.time module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.utilities">gridded.utilities module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.variable">gridded.variable module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">gridded</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>gridded.pysgrid.sgrid</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for gridded.pysgrid.sgrid</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Created on Apr 20, 2015</span>
+
+<span class="sd">@author: ayan</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">Dataset</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+
+<span class="kn">from</span> <span class="nn">gridded.pysgrid.read_netcdf</span> <span class="k">import</span> <span class="n">NetCDFDataset</span><span class="p">,</span> <span class="n">parse_padding</span><span class="p">,</span> <span class="n">find_grid_topology_var</span>
+<span class="kn">from</span> <span class="nn">gridded.pysgrid.utils</span> <span class="k">import</span> <span class="n">calculate_angle_from_true_east</span><span class="p">,</span> <span class="n">pair_arrays</span>
+<span class="kn">from</span> <span class="nn">gridded.pysgrid.variables</span> <span class="k">import</span> <span class="n">SGridVariable</span>
+
+
+<div class="viewcode-block" id="SGrid"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid">[docs]</a><span class="k">class</span> <span class="nc">SGrid</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="n">padding_slices</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;both&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                      <span class="s1">&#39;none&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                      <span class="s1">&#39;low&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                      <span class="s1">&#39;high&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                      <span class="p">}</span>
+
+    <span class="n">topology_dimension</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">node_lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">node_lat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">center_lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">center_lat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge1_lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge1_lat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge2_lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge2_lat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">node_padding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge1_padding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge2_padding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">grid_topology_var</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">grid_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">node_dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">node_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge1_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge2_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">angles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge1_dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge2_dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">faces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">face_padding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">face_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">face_dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">vertical_padding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">vertical_dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">tree</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span> <span class="o">=</span> <span class="n">node_lon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_lat</span> <span class="o">=</span> <span class="n">node_lat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center_lon</span> <span class="o">=</span> <span class="n">center_lon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center_lat</span> <span class="o">=</span> <span class="n">center_lat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge1_lon</span> <span class="o">=</span> <span class="n">edge1_lon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge1_lat</span> <span class="o">=</span> <span class="n">edge1_lat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge2_lon</span> <span class="o">=</span> <span class="n">edge2_lon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge2_lat</span> <span class="o">=</span> <span class="n">edge2_lat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">edges</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_padding</span> <span class="o">=</span> <span class="n">node_padding</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge1_padding</span> <span class="o">=</span> <span class="n">edge1_padding</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge2_padding</span> <span class="o">=</span> <span class="n">edge2_padding</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid_topology_var</span> <span class="o">=</span> <span class="n">grid_topology_var</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid_variables</span> <span class="o">=</span> <span class="n">grid_variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">dimensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_dimensions</span> <span class="o">=</span> <span class="n">node_dimensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_coordinates</span> <span class="o">=</span> <span class="n">node_coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge1_coordinates</span> <span class="o">=</span> <span class="n">edge1_coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge2_coordinates</span> <span class="o">=</span> <span class="n">edge2_coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge1_dimensions</span> <span class="o">=</span> <span class="n">edge1_dimensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge2_dimensions</span> <span class="o">=</span> <span class="n">edge2_dimensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="o">=</span> <span class="n">faces</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face_padding</span> <span class="o">=</span> <span class="n">face_padding</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face_coordinates</span> <span class="o">=</span> <span class="n">face_coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face_dimensions</span> <span class="o">=</span> <span class="n">face_dimensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertical_padding</span> <span class="o">=</span> <span class="n">vertical_padding</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertical_dimensions</span> <span class="o">=</span> <span class="n">vertical_dimensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span> <span class="o">=</span> <span class="n">tree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_l_coeffs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_m_coeffs</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="SGrid.load_grid"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.load_grid">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load_grid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">nc</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nc</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">topology_var</span> <span class="o">=</span> <span class="n">find_grid_topology_var</span><span class="p">(</span><span class="n">nc</span><span class="p">)</span>
+        <span class="n">sa</span> <span class="o">=</span> <span class="n">SGridAttributes</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">topology_dimension</span><span class="p">,</span> <span class="n">topology_var</span><span class="p">)</span>
+        <span class="n">dimensions</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_dimensions</span><span class="p">()</span>
+        <span class="n">node_dimensions</span><span class="p">,</span> <span class="n">node_coordinates</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_node_coordinates</span><span class="p">()</span>
+        <span class="n">grid_topology_var</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_topology_var</span><span class="p">()</span>
+        <span class="n">edge1_dimensions</span><span class="p">,</span> <span class="n">edge1_padding</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_attr_dimension</span><span class="p">(</span><span class="s1">&#39;edge1_dimensions&#39;</span><span class="p">)</span>  <span class="c1"># noqa</span>
+        <span class="n">edge2_dimensions</span><span class="p">,</span> <span class="n">edge2_padding</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_attr_dimension</span><span class="p">(</span><span class="s1">&#39;edge2_dimensions&#39;</span><span class="p">)</span>  <span class="c1"># noqa</span>
+        <span class="n">edge1_coordinates</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_attr_coordinates</span><span class="p">(</span><span class="s1">&#39;edge1_coordinates&#39;</span><span class="p">)</span>
+        <span class="n">edge2_coordinates</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_attr_coordinates</span><span class="p">(</span><span class="s1">&#39;edge2_coordinates&#39;</span><span class="p">)</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_angles</span><span class="p">()</span>
+        <span class="n">vertical_dimensions</span><span class="p">,</span> <span class="n">vertical_padding</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_attr_dimension</span><span class="p">(</span><span class="s1">&#39;vertical_dimensions&#39;</span><span class="p">)</span>  <span class="c1"># noqa</span>
+        <span class="n">node_lon</span><span class="p">,</span> <span class="n">node_lat</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_cell_node_lat_lon</span><span class="p">()</span>
+        <span class="n">center_lon</span><span class="p">,</span> <span class="n">center_lat</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_cell_center_lat_lon</span><span class="p">()</span>
+        <span class="n">edge1_lon</span><span class="p">,</span> <span class="n">edge1_lat</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_cell_edge1_lat_lon</span><span class="p">()</span>
+        <span class="n">edge2_lon</span><span class="p">,</span> <span class="n">edge2_lat</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_cell_edge2_lat_lon</span><span class="p">()</span>
+        <span class="n">face_dimensions</span><span class="p">,</span> <span class="n">face_padding</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_attr_dimension</span><span class="p">(</span><span class="s1">&#39;face_dimensions&#39;</span><span class="p">)</span>  <span class="c1"># noqa</span>
+        <span class="n">face_coordinates</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">get_attr_coordinates</span><span class="p">(</span><span class="s1">&#39;face_coordinates&#39;</span><span class="p">)</span>
+        <span class="n">sgrid</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">angles</span><span class="o">=</span><span class="n">angles</span><span class="p">,</span>
+                    <span class="n">node_lon</span><span class="o">=</span><span class="n">node_lon</span><span class="p">,</span>
+                    <span class="n">node_lat</span><span class="o">=</span><span class="n">node_lat</span><span class="p">,</span>
+                    <span class="n">center_lon</span><span class="o">=</span><span class="n">center_lon</span><span class="p">,</span>
+                    <span class="n">center_lat</span><span class="o">=</span><span class="n">center_lat</span><span class="p">,</span>
+                    <span class="n">edge1_lon</span><span class="o">=</span><span class="n">edge1_lon</span><span class="p">,</span>
+                    <span class="n">edge1_lat</span><span class="o">=</span><span class="n">edge1_lat</span><span class="p">,</span>
+                    <span class="n">edge2_lon</span><span class="o">=</span><span class="n">edge2_lon</span><span class="p">,</span>
+                    <span class="n">edge2_lat</span><span class="o">=</span><span class="n">edge2_lat</span><span class="p">,</span>
+                    <span class="n">dimensions</span><span class="o">=</span><span class="n">dimensions</span><span class="p">,</span>
+                    <span class="n">edge1_coordinates</span><span class="o">=</span><span class="n">edge1_coordinates</span><span class="p">,</span>
+                    <span class="n">edge1_dimensions</span><span class="o">=</span><span class="n">edge1_dimensions</span><span class="p">,</span>
+                    <span class="n">edge1_padding</span><span class="o">=</span><span class="n">edge1_padding</span><span class="p">,</span>
+                    <span class="n">edge2_coordinates</span><span class="o">=</span><span class="n">edge2_coordinates</span><span class="p">,</span>
+                    <span class="n">edge2_dimensions</span><span class="o">=</span><span class="n">edge2_dimensions</span><span class="p">,</span>
+                    <span class="n">edge2_padding</span><span class="o">=</span><span class="n">edge2_padding</span><span class="p">,</span>
+                    <span class="n">edges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">face_coordinates</span><span class="o">=</span><span class="n">face_coordinates</span><span class="p">,</span>
+                    <span class="n">face_dimensions</span><span class="o">=</span><span class="n">face_dimensions</span><span class="p">,</span>
+                    <span class="n">face_padding</span><span class="o">=</span><span class="n">face_padding</span><span class="p">,</span>
+                    <span class="n">faces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">grid_topology_var</span><span class="o">=</span><span class="n">grid_topology_var</span><span class="p">,</span>
+                    <span class="n">grid_variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">node_coordinates</span><span class="o">=</span><span class="n">node_coordinates</span><span class="p">,</span>
+                    <span class="n">node_dimensions</span><span class="o">=</span><span class="n">node_dimensions</span><span class="p">,</span>
+                    <span class="n">node_padding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">vertical_dimensions</span><span class="o">=</span><span class="n">vertical_dimensions</span><span class="p">,</span>
+                    <span class="n">vertical_padding</span><span class="o">=</span><span class="n">vertical_padding</span><span class="p">)</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">get_variable_attributes</span><span class="p">(</span><span class="n">sgrid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sgrid</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        summary of information about the grid</span>
+
+<span class="sd">        this needs to be implimented -- see UGrid for example</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SGrid object:&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SGrid.get_all_face_padding"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.get_all_face_padding">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_face_padding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_padding</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">all_face_padding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_padding</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">all_face_padding</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">all_face_padding</span></div>
+
+<div class="viewcode-block" id="SGrid.get_all_edge_padding"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.get_all_edge_padding">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_edge_padding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">all_edge_padding</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge1_padding</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">all_edge_padding</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge1_padding</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge2_padding</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">all_edge_padding</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge2_padding</span>
+        <span class="k">return</span> <span class="n">all_edge_padding</span></div>
+
+<div class="viewcode-block" id="SGrid.all_padding"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.all_padding">[docs]</a>    <span class="k">def</span> <span class="nf">all_padding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">all_padding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_face_padding</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_edge_padding</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_padding</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">all_padding</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_padding</span>
+        <span class="k">return</span> <span class="n">all_padding</span></div>
+
+<div class="viewcode-block" id="SGrid.save_as_netcdf"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.save_as_netcdf">[docs]</a>    <span class="k">def</span> <span class="nf">save_as_netcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">nclocal</span><span class="p">:</span>
+            <span class="n">grid_vars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_common_components</span><span class="p">(</span><span class="n">nclocal</span><span class="p">)</span>
+            <span class="c1"># Add attributes to the grid_topology variable.</span>
+            <span class="n">grid_vars</span><span class="o">.</span><span class="n">face_dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_dimensions</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">grid_vars</span><span class="o">.</span><span class="n">vertical_dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_dimensions</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_coordinates</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">grid_vars</span><span class="o">.</span><span class="n">face_coordinates</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face_coordinates</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">non_grid_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">non_grid_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">variable</span> <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="k">if</span>
+                              <span class="n">variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_variables</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">non_grid_variables</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lat</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_save_common_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc_file</span><span class="p">):</span>
+        <span class="n">grid_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_topology_var</span>
+        <span class="c1"># Create dimensions.</span>
+        <span class="k">for</span> <span class="n">grid_dim</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">:</span>
+            <span class="n">dim_name</span><span class="p">,</span> <span class="n">dim_size</span> <span class="o">=</span> <span class="n">grid_dim</span>
+            <span class="n">nc_file</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="n">dim_name</span><span class="p">,</span> <span class="n">dim_size</span><span class="p">)</span>
+        <span class="c1"># Create variables.</span>
+        <span class="n">center_lon</span><span class="p">,</span> <span class="n">center_lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_coordinates</span>
+        <span class="n">center_lon_obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center_lon</span><span class="p">)</span>
+        <span class="n">center_lat_obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center_lat</span><span class="p">)</span>
+        <span class="n">center_lon</span> <span class="o">=</span> <span class="n">nc_file</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">center_lon_obj</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span>
+                                            <span class="n">center_lon_obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                                            <span class="n">center_lon_obj</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">center_lat</span> <span class="o">=</span> <span class="n">nc_file</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">center_lat_obj</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span>
+                                            <span class="n">center_lat_obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                                            <span class="n">center_lat_obj</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">center_lon</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_lon</span><span class="p">[:]</span>
+        <span class="n">center_lat</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_lat</span><span class="p">[:]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">node_lon</span><span class="p">,</span> <span class="n">node_lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_coordinates</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">node_lon_obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_lon</span><span class="p">)</span>
+            <span class="n">grid_node_lon</span> <span class="o">=</span> <span class="n">nc_file</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">node_lon_obj</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span>
+                                                   <span class="n">node_lon_obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                                                   <span class="n">node_lon_obj</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+            <span class="n">node_lat_obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_lat</span><span class="p">)</span>
+            <span class="n">grid_node_lat</span> <span class="o">=</span> <span class="n">nc_file</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">node_lat_obj</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span>
+                                                   <span class="n">node_lat_obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                                                   <span class="n">node_lat_obj</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+            <span class="n">grid_node_lon</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span><span class="p">[:]</span>
+            <span class="n">grid_node_lat</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lat</span><span class="p">[:]</span>
+        <span class="n">grid_var_obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid_var</span><span class="p">)</span>
+        <span class="n">grid_vars</span> <span class="o">=</span> <span class="n">nc_file</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">grid_var_obj</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span>
+                                           <span class="n">grid_var_obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">grid_vars</span><span class="o">.</span><span class="n">cf_role</span> <span class="o">=</span> <span class="s1">&#39;grid_topology&#39;</span>
+        <span class="n">grid_vars</span><span class="o">.</span><span class="n">topology_dimension</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">topology_dimension</span>
+        <span class="n">grid_vars</span><span class="o">.</span><span class="n">node_dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_dimensions</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge1_dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">grid_vars</span><span class="o">.</span><span class="n">edge1_dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge1_dimensions</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge2_dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">grid_vars</span><span class="o">.</span><span class="n">edge2_dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge2_dimensions</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_coordinates</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">grid_vars</span><span class="o">.</span><span class="n">node_coordinates</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_coordinates</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge1_coordinates</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">grid_vars</span><span class="o">.</span><span class="n">edge1_coordinates</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edge1_coordinates</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge2_coordinates</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">grid_vars</span><span class="o">.</span><span class="n">edge2_coordinates</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edge2_coordinates</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">):</span>
+            <span class="n">angle_obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">grid_angle</span> <span class="o">=</span> <span class="n">nc_file</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">angle_obj</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span>
+                                                <span class="n">angle_obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                                                <span class="n">angle_obj</span><span class="o">.</span><span class="n">dimensions</span>
+                                                <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">grid_angle</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">[:]</span>
+        <span class="k">for</span> <span class="n">dataset_variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="n">dataset_var_obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset_variable</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">dataset_grid_var</span> <span class="o">=</span> <span class="n">nc_file</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span>
+                    <span class="n">dataset_var_obj</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span>
+                    <span class="n">dataset_var_obj</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                    <span class="n">dataset_var_obj</span><span class="o">.</span><span class="n">dimensions</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">axes</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">if</span> <span class="n">dataset_var_obj</span><span class="o">.</span><span class="n">grid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">dataset_grid_var</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">grid_var</span>
+                <span class="k">if</span> <span class="n">dataset_var_obj</span><span class="o">.</span><span class="n">standard_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">dataset_grid_var</span><span class="o">.</span><span class="n">standard_name</span> <span class="o">=</span> <span class="n">dataset_var_obj</span><span class="o">.</span><span class="n">standard_name</span>  <span class="c1"># noqa</span>
+                <span class="k">if</span> <span class="n">dataset_var_obj</span><span class="o">.</span><span class="n">coordinates</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">dataset_grid_var</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dataset_var_obj</span><span class="o">.</span><span class="n">coordinates</span><span class="p">)</span>  <span class="c1"># noqa</span>
+                <span class="k">if</span> <span class="n">dataset_var_obj</span><span class="o">.</span><span class="n">x_axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">x_axis</span> <span class="o">=</span> <span class="s1">&#39;X: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset_var_obj</span><span class="o">.</span><span class="n">x_axis</span><span class="p">)</span>
+                    <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_axis</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dataset_var_obj</span><span class="o">.</span><span class="n">y_axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">y_axis</span> <span class="o">=</span> <span class="s1">&#39;Y: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset_var_obj</span><span class="o">.</span><span class="n">y_axis</span><span class="p">)</span>
+                    <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_axis</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dataset_var_obj</span><span class="o">.</span><span class="n">z_axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">z_axis</span> <span class="o">=</span> <span class="s1">&#39;Z: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dataset_var_obj</span><span class="o">.</span><span class="n">z_axis</span><span class="p">)</span>
+                    <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z_axis</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">axes</span><span class="p">:</span>
+                    <span class="n">dataset_grid_var</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">grid_vars</span>
+
+    <span class="k">def</span> <span class="nf">_get_grid_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="s1">&#39;node&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lat</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="ow">is</span> <span class="s1">&#39;center&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center_lon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_lat</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="ow">is</span> <span class="s1">&#39;edge1&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edge1_lon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge1_lat</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="ow">is</span> <span class="s1">&#39;edge2&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edge2_lon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge2_lat</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid grid name </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_hash_of_pts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a SHA1 hash of the array of points passed in</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">tobytes</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_add_memo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param points: List of points to be hashed.</span>
+<span class="sd">        :param item: Result of computation to be stored.</span>
+<span class="sd">        :param location: Name of grid on which computation was done.</span>
+<span class="sd">        :param D: Dict that will store hash -&gt; item mapping.</span>
+<span class="sd">        :param _hash: If hash is already computed it may be passed in here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">_copy</span><span class="p">:</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_hash</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_of_pts</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">D</span><span class="p">[</span><span class="n">location</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="n">location</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="n">D</span><span class="p">[</span><span class="n">location</span><span class="p">]</span><span class="o">.</span><span class="n">popitem</span><span class="p">(</span><span class="n">last</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">D</span><span class="p">[</span><span class="n">location</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">D</span><span class="p">[</span><span class="n">location</span><span class="p">]</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">({</span><span class="n">_hash</span><span class="p">:</span> <span class="n">item</span><span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">D</span><span class="p">[</span><span class="n">location</span><span class="p">][</span><span class="n">_hash</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+        <span class="n">D</span><span class="p">[</span><span class="n">location</span><span class="p">][</span><span class="n">_hash</span><span class="p">]</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_memoed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_hash</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_of_pts</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">D</span><span class="p">[</span><span class="n">location</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_hash</span> <span class="ow">in</span> <span class="n">D</span><span class="p">[</span><span class="n">location</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="n">D</span><span class="p">[</span><span class="n">location</span><span class="p">][</span><span class="n">_hash</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">_copy</span> <span class="k">else</span> <span class="n">D</span><span class="p">[</span><span class="n">location</span><span class="p">][</span><span class="n">_hash</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_compute_transform_coeffs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        https://www.particleincell.com/2012/quad-interpolation/</span>
+
+<span class="sd">        This computes the and b coefficients of the equations</span>
+<span class="sd">        x = a1 + a2*l + a3*m + a4*l*m</span>
+<span class="sd">        y = b1 + b2*l + b3*m + b4*l*m</span>
+
+<span class="sd">        The results are memoized per grid since their geometry is different, and</span>
+<span class="sd">        is not expected to change over the lifetime of the object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_l_coeffs&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_l_coeffs</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_m_coeffs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_grid_vars</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+        <span class="n">l_coeffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l_coeffs</span><span class="p">[</span><span class="n">grid</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">lon</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="p">(</span><span class="mi">4</span><span class="p">,)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">m_coeffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m_coeffs</span><span class="p">[</span><span class="n">grid</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l_coeffs</span><span class="p">[</span><span class="n">grid</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="n">lon</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">polyx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_variable_by_index</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
+        <span class="n">polyy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_variable_by_index</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
+        <span class="c1"># for every cell</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                      <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                      <span class="p">))</span>
+        <span class="n">polyx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">polyx</span><span class="p">)</span>
+        <span class="n">polyy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">polyy</span><span class="p">)</span>
+        <span class="n">AI</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">AI</span><span class="p">,</span> <span class="n">polyx</span><span class="o">.</span><span class="n">getH</span><span class="p">())</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">AI</span><span class="p">,</span> <span class="n">polyy</span><span class="o">.</span><span class="n">getH</span><span class="p">())</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_l_coeffs</span><span class="p">[</span><span class="n">grid</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">l_coeffs</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_m_coeffs</span><span class="p">[</span><span class="n">grid</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">m_coeffs</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SGrid.get_efficient_slice"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.get_efficient_slice">[docs]</a>    <span class="k">def</span> <span class="nf">get_efficient_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                            <span class="n">points</span><span class="p">,</span>
+                            <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">grid</span><span class="o">=</span><span class="s1">&#39;node&#39;</span><span class="p">,</span>
+                            <span class="n">_memo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        given minimum and maximum longitudes and latitudes, find</span>
+<span class="sd">        the most efficient slice for the specified grid that covers the</span>
+<span class="sd">        entire specified area.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">locate_faces</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">_memo</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+        <span class="n">ymin</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint32&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">xmin</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint32&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">y_slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">ymin</span><span class="p">,</span> <span class="n">indices</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">x_slice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">indices</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">y_slice</span><span class="p">,</span> <span class="n">x_slice</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SGrid.locate_faces"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.locate_faces">[docs]</a>    <span class="k">def</span> <span class="nf">locate_faces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">points</span><span class="p">,</span>
+                     <span class="n">grid</span><span class="p">,</span>
+                     <span class="n">_memo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                     <span class="n">_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                     <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the node grid indices, one per point.</span>
+
+<span class="sd">        Points that are not on the node grid will have an index of -1</span>
+
+<span class="sd">        If a single point is passed in, a single index will be returned.</span>
+<span class="sd">        If a sequence of points is passed in an array of indexes will be returned.</span>
+
+<span class="sd">        :param points:  The points that you want to locate -- (lon, lat). If the shape of point</span>
+<span class="sd">                        is 1D, function will return a scalar index. If it is 2D, it will return</span>
+<span class="sd">                        a 1D array of indices.</span>
+<span class="sd">        :type points: array-like containing one or more points: shape (2,) for one point,</span>
+<span class="sd">                      shape (N, 2) for more than one point.</span>
+
+<span class="sd">        :param grid: The grid on which you want to locate the points</span>
+<span class="sd">        :type grid: Name of the grid (&#39;node&#39;, &#39;center&#39;, &#39;edge1&#39;, &#39;edge2)</span>
+
+<span class="sd">        This version utilizes the CellTree data structure.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_ind_memo_dict&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ind_memo_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                 <span class="s1">&#39;edge1&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                 <span class="s1">&#39;edge2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                 <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_cell_trees&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cell_trees</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                <span class="s1">&#39;edge1&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                <span class="s1">&#39;edge2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">_memo</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_hash</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_of_pts</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_memoed</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ind_memo_dict</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">result</span>
+
+        <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">just_one</span> <span class="o">=</span> <span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_trees</span><span class="p">[</span><span class="n">grid</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">build_celltree</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_trees</span><span class="p">[</span><span class="n">grid</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">locate</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_grid_vars</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">indices</span> <span class="o">%</span> <span class="p">(</span><span class="n">lat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">indices</span> <span class="o">//</span> <span class="p">(</span><span class="n">lat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+        <span class="n">ind</span><span class="p">[</span><span class="n">ind</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">just_one</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">res</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_less</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_memo</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_memo</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ind_memo_dict</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="SGrid.locate_nearest"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.locate_nearest">[docs]</a>    <span class="k">def</span> <span class="nf">locate_nearest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                       <span class="n">points</span><span class="p">,</span>
+                       <span class="n">grid</span><span class="p">,</span>
+                       <span class="n">_memo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                       <span class="n">_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                       <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_kd_trees&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_kd_trees</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">&#39;edge1&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">&#39;edge2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kd_trees</span><span class="p">[</span><span class="n">grid</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">build_kdtree</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kd_trees</span><span class="p">[</span><span class="n">grid</span><span class="p">]</span>
+        <span class="n">lin_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">points</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_grid_vars</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">lin_indices</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="n">lon</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">return</span> <span class="n">ind</span></div>
+
+<div class="viewcode-block" id="SGrid.get_variable_by_index"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.get_variable_by_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_variable_by_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        index = index arr of quads (maskedarray only)</span>
+<span class="sd">        var = ndarray/ma.array</span>
+<span class="sd">        returns ndarray/ma.array</span>
+
+<span class="sd">        ordering is idx, idx+[0,1], idx+[1,1], idx+[1,0]</span>
+<span class="sd">        masked values from var remain masked</span>
+
+<span class="sd">        Function to get the node values of a given face index.</span>
+<span class="sd">        Emulates the &#39;self.grid.nodes[self.grid.nodes.faces[index]]&#39;</span>
+<span class="sd">        paradigm of unstructured grids.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">var</span> <span class="o">=</span> <span class="n">var</span><span class="p">[:]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">):</span>
+            <span class="n">rv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">index</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">index</span><span class="o">.</span><span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">():</span>  <span class="c1"># because False is not False. Thanks numpy</span>
+                <span class="n">rv</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+                <span class="n">rv</span><span class="o">.</span><span class="n">mask</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">mask</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">][:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+            <span class="n">rv</span><span class="o">.</span><span class="n">harden_mask</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">index</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel_multi_index</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">var</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;clip&#39;</span><span class="p">)</span>
+        <span class="n">rv</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">raw</span><span class="p">)</span>
+        <span class="n">raw</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">rv</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">raw</span><span class="p">)</span>
+        <span class="n">raw</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">rv</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">raw</span><span class="p">)</span>
+        <span class="n">raw</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="n">rv</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">raw</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rv</span></div>
+
+<div class="viewcode-block" id="SGrid.get_variable_at_index"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.get_variable_at_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_variable_at_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="n">var</span><span class="p">[:]</span>
+
+        <span class="n">rv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">index</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">index</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel_multi_index</span><span class="p">(</span><span class="n">index</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">var</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;clip&#39;</span><span class="p">)</span>
+        <span class="n">rv</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">raw</span><span class="p">)</span>
+        <span class="n">mask</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">raw</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SGrid.build_kdtree"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.build_kdtree">[docs]</a>    <span class="k">def</span> <span class="nf">build_kdtree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="s1">&#39;node&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Builds the kdtree for the specified grid&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">KDTree</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_kd_trees&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_kd_trees</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">&#39;edge1&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">&#39;edge2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_grid_vars</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lon</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">lat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_lon and </span><span class="si">{0}</span><span class="s2">_lat must be defined in order to &quot;</span>
+                             <span class="s2">&quot;create and use KDTree for this grid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">grid</span><span class="p">))</span>
+        <span class="n">lin_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">lon</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">lat</span><span class="o">.</span><span class="n">ravel</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kd_trees</span><span class="p">[</span><span class="n">grid</span><span class="p">]</span> <span class="o">=</span> <span class="n">KDTree</span><span class="p">(</span><span class="n">lin_points</span><span class="p">,</span> <span class="n">leafsize</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SGrid.build_celltree"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.build_celltree">[docs]</a>    <span class="k">def</span> <span class="nf">build_celltree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="s1">&#39;node&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tries to build the celltree for grid defined by the node coordinates of the specified grid.</span>
+
+<span class="sd">        :param grid: which grid to biuld the celltree for. options are:</span>
+<span class="sd">                     &#39;node&#39;, &#39;edge1&#39;, &#39;edge2&#39;, &#39;center&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_ind_memo_dict&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ind_memo_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                   <span class="s1">&#39;edge1&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                   <span class="s1">&#39;edge2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                   <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_cell_trees&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cell_trees</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                <span class="s1">&#39;edge1&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                <span class="s1">&#39;edge2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">cell_tree2d</span> <span class="k">import</span> <span class="n">CellTree</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;the cell_tree2d package must be installed to use the &quot;</span>
+                              <span class="s2">&quot;celltree search:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                              <span class="s2">&quot;https://github.com/NOAA-ORR-ERD/cell_tree2d/&quot;</span><span class="p">)</span>
+
+        <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_grid_vars</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lon</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">lat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_lon and </span><span class="si">{0}</span><span class="s2">_lat must be defined in order to create and &quot;</span>
+                             <span class="s2">&quot;use CellTree for this grid&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">grid</span><span class="p">))</span>
+        <span class="n">lin_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">lon</span><span class="p">[:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                                                          <span class="n">lat</span><span class="p">[:]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">y_size</span> <span class="o">=</span> <span class="n">lon</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">x_size</span> <span class="o">=</span> <span class="n">lon</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">lin_faces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">x_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">x_size</span><span class="p">]</span>
+                              <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">x_size</span>
+                              <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>
+        <span class="n">lin_faces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">lin_faces</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cell_trees</span><span class="p">[</span><span class="n">grid</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">CellTree</span><span class="p">(</span><span class="n">lin_nodes</span><span class="p">,</span> <span class="n">lin_faces</span><span class="p">),</span> <span class="n">lin_nodes</span><span class="p">,</span> <span class="n">lin_faces</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SGrid.nearest_var_to_points"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.nearest_var_to_points">[docs]</a>    <span class="k">def</span> <span class="nf">nearest_var_to_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                              <span class="n">points</span><span class="p">,</span>
+                              <span class="n">variable</span><span class="p">,</span>
+                              <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">alphas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">slices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">_memo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                              <span class="n">slice_grid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                              <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">grid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infer_location</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># ind has to be writable</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">locate_nearest</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">_memo</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">yslice</span><span class="p">,</span> <span class="n">xslice</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_efficient_slice</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">_memo</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">slices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">slices</span> <span class="o">=</span> <span class="n">slices</span> <span class="o">+</span> <span class="p">(</span><span class="n">yslice</span><span class="p">,)</span>
+            <span class="n">slices</span> <span class="o">=</span> <span class="n">slices</span> <span class="o">+</span> <span class="p">(</span><span class="n">xslice</span><span class="p">,)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">slices</span> <span class="o">=</span> <span class="p">(</span><span class="n">yslice</span><span class="p">,</span> <span class="n">xslice</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">infer_location</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="p">[</span><span class="n">slices</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Variable has too many dimensions to </span><span class="se">\</span>
+<span class="s2">            associate with grid. Please specify slices.&quot;</span><span class="p">)</span>
+
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">indices</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="o">-</span> <span class="p">[</span><span class="n">yslice</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">xslice</span><span class="o">.</span><span class="n">start</span><span class="p">]</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_variable_at_index</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">ind</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="SGrid.interpolate_var_to_points"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.interpolate_var_to_points">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate_var_to_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                  <span class="n">points</span><span class="p">,</span>
+                                  <span class="n">variable</span><span class="p">,</span>
+                                  <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">alphas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">slices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">_memo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                  <span class="n">slice_grid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                  <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Interpolates a variable on one of the grids to an array of points.</span>
+<span class="sd">        :param points: Nx2 Array of points to be interpolated to.</span>
+<span class="sd">        :param variable: Variable data array with the same shape as one of the grids.</span>
+<span class="sd">        :param indices: If computed already, array of Nx2 indices can be passed in to increase speed. # noqa</span>
+<span class="sd">        :param alphas: If computed already, array of Nx4 alphas can be passed in to increase speed. # noqua</span>
+<span class="sd">        :param mask: under development.</span>
+
+
+<span class="sd">        - With a numpy array:</span>
+<span class="sd">        sgrid.interpolate_var_to_points(points, sgrid.u[time_idx, depth_idx])</span>
+<span class="sd">        - With a raw netCDF Variable:</span>
+<span class="sd">        sgrid.interpolate_var_to_points(points, nc.variables[&#39;u&#39;], slices=[time_idx, depth_idx])</span>
+
+<span class="sd">        If you have pre-computed information, you can pass it in to avoid unnecessary</span>
+<span class="sd">        computation and increase performance.</span>
+<span class="sd">        - ind = # precomputed indices of points</span>
+<span class="sd">        - alphas = # precomputed alphas (useful if interpolating to the same points frequently)</span>
+
+<span class="sd">        sgrid.interpolate_var_to_points(points, sgrid.u, indices=ind, alphas=alphas,</span>
+<span class="sd">        slices=[time_idx, depth_idx])</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># eventually should remove next line one celltree can support it</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">indices</span>
+        <span class="k">if</span> <span class="nb">hash</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_of_pts</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">grid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infer_location</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ind</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># ind has to be writable</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">locate_faces</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">_memo</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_all</span><span class="p">((</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l_coeffs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compute_transform_coeffs</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">alphas</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">alphas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolation_alphas</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">_memo</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+
+        <span class="p">[</span><span class="n">yslice</span><span class="p">,</span> <span class="n">xslice</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_efficient_slice</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">_memo</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">slices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">slices</span> <span class="o">=</span> <span class="n">slices</span> <span class="o">+</span> <span class="p">(</span><span class="n">yslice</span><span class="p">,)</span>
+            <span class="n">slices</span> <span class="o">=</span> <span class="n">slices</span> <span class="o">+</span> <span class="p">(</span><span class="n">xslice</span><span class="p">,)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">slices</span> <span class="o">=</span> <span class="p">(</span><span class="n">yslice</span><span class="p">,</span> <span class="n">xslice</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">infer_location</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="p">[</span><span class="n">slices</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Variable has too many dimensions to </span><span class="se">\</span>
+<span class="s2">            associate with grid. Please specify slices.&quot;</span><span class="p">)</span>
+
+        <span class="n">ind</span> <span class="o">=</span> <span class="n">ind</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="o">-</span> <span class="p">[</span><span class="n">yslice</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">xslice</span><span class="o">.</span><span class="n">start</span><span class="p">]</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_variable_by_index</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">ind</span><span class="p">)</span>
+        <span class="n">vals</span> <span class="o">*=</span> <span class="n">alphas</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="SGrid.infer_location"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.infer_location">[docs]</a>    <span class="k">def</span> <span class="nf">infer_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Assuming default is psi grid, check variable dimensions to determine which grid</span>
+<span class="sd">        it is on.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># Variable has no shape attribute!</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">difference</span> <span class="o">=</span> <span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">difference</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="ow">or</span>  <span class="n">difference</span> <span class="o">==</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_lon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;center&#39;</span>
+        <span class="k">elif</span> <span class="n">difference</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge1_lon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;edge1&#39;</span>
+        <span class="k">elif</span> <span class="n">difference</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge2_lon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;edge2&#39;</span>
+        <span class="k">elif</span> <span class="n">difference</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;node&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="SGrid.fits_data"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.fits_data">[docs]</a>    <span class="k">def</span> <span class="nf">fits_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">infer_location</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="SGrid.interpolation_alphas"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.interpolation_alphas">[docs]</a>    <span class="k">def</span> <span class="nf">interpolation_alphas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                             <span class="n">points</span><span class="p">,</span>
+                             <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">grid</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span>
+                             <span class="n">_memo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                             <span class="n">_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                             <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a list of Nx2 points, returns a Nx4 array of weights for</span>
+<span class="sd">        interpolating the corners of the cells containing the points</span>
+<span class="sd">        to the points.</span>
+
+<span class="sd">        Primary sources:</span>
+<span class="sd">        http://www.iquilezles.org/www/articles/ibilinear/ibilinear.htm</span>
+<span class="sd">        https://www.particleincell.com/2012/quad-interpolation/</span>
+<span class="sd">        Implemented math is a combination of the two</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">x_to_l</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Params:</span>
+<span class="sd">            x: x coordinate of point</span>
+<span class="sd">            y: y coordinate of point</span>
+<span class="sd">            a: x coefficients</span>
+<span class="sd">            b: y coefficients</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">            (l,m) - coordinate in logical space to use for interpolation</span>
+
+<span class="sd">            Eqns:</span>
+<span class="sd">            m = (-bb +- sqrt(bb^2 - 4*aa*cc))/(2*aa)</span>
+<span class="sd">            l = (l-a1 - a3*m)/(a2 + a4*m)</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">def</span> <span class="nf">quad_eqn</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">aa</span><span class="p">,</span> <span class="n">bb</span><span class="p">,</span> <span class="n">cc</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                solves the following eqns for m and l</span>
+<span class="sd">                m = (-bb +- sqrt(bb^2 - 4*aa*cc))/(2*aa)</span>
+<span class="sd">                l = (l-a1 - a3*m)/(a2 + a4*m)</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">aa</span><span class="p">)</span> <span class="ow">is</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">return</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">bb</span> <span class="o">*</span> <span class="n">bb</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">aa</span> <span class="o">*</span> <span class="n">cc</span>
+                <span class="n">k</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_less</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+                <span class="n">det</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                <span class="n">m1</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">bb</span> <span class="o">-</span> <span class="n">det</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">aa</span><span class="p">)</span>
+                <span class="n">l1</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">*</span>
+                      <span class="n">m1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">*</span> <span class="n">m1</span><span class="p">)</span>
+
+                <span class="n">m2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">bb</span> <span class="o">+</span> <span class="n">det</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">aa</span><span class="p">)</span>
+                <span class="n">l2</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">*</span>
+                      <span class="n">m2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">*</span> <span class="n">m2</span><span class="p">)</span>
+
+                <span class="n">t1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">l1</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">l1</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">t2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">m1</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">m1</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">t3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">)</span>
+
+                <span class="n">m</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">choose</span><span class="p">(</span><span class="n">t3</span><span class="p">,</span> <span class="p">(</span><span class="n">m1</span><span class="p">,</span> <span class="n">m2</span><span class="p">))</span>
+                <span class="n">l</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">choose</span><span class="p">(</span><span class="n">t3</span><span class="p">,</span> <span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">))</span>
+
+            <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">T</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span>
+            <span class="n">aa</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">bb</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> \
+                <span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span> <span class="o">*</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">cc</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span> <span class="o">*</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">bb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">bb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+            <span class="n">t</span> <span class="o">=</span> <span class="n">aa</span><span class="p">[:]</span> <span class="o">==</span> <span class="mi">0</span>
+
+            <span class="c1"># Attempts to solve the simpler linear case first.</span>
+            <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+                <span class="n">m</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">cc</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">/</span> <span class="n">bb</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+                <span class="n">l</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">*</span> <span class="n">m</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="n">t</span><span class="p">]</span> <span class="o">*</span> <span class="n">m</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+            <span class="c1"># now solve the quadratic cases</span>
+            <span class="n">quad_eqn</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="o">~</span><span class="n">t</span><span class="p">,</span> <span class="n">aa</span><span class="p">[</span><span class="o">~</span><span class="n">t</span><span class="p">],</span> <span class="n">bb</span><span class="p">[</span><span class="o">~</span><span class="n">t</span><span class="p">],</span> <span class="n">cc</span><span class="p">[</span><span class="o">~</span><span class="n">t</span><span class="p">])</span>
+
+            <span class="k">return</span> <span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+
+        <span class="c1"># convert physical (x,y) to logical (l,m) on the interval (0,1)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_alpha_memo_dict&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alpha_memo_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;node&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                     <span class="s1">&#39;edge1&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                     <span class="s1">&#39;edge2&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                                     <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">_memo</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_hash</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_of_pts</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_memoed</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha_memo_dict</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l_coeffs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compute_transform_coeffs</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+
+        <span class="n">lons</span><span class="p">,</span> <span class="n">lats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_grid_vars</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">locate_faces</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">_memo</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+
+        <span class="n">sl</span> <span class="o">=</span> <span class="p">[</span><span class="n">yslice</span><span class="p">,</span> <span class="n">xslice</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_efficient_slice</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">_memo</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+
+        <span class="n">lons</span> <span class="o">=</span> <span class="n">lons</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span>
+        <span class="n">lats</span> <span class="o">=</span> <span class="n">lats</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span>
+
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">indices</span> <span class="o">-</span> <span class="p">[</span><span class="n">sl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">sl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">]</span>
+
+        <span class="n">reflats</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">reflons</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l_coeffs</span><span class="p">[</span><span class="n">grid</span><span class="p">][</span><span class="n">sl</span><span class="p">][</span><span class="n">indices</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">indices</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m_coeffs</span><span class="p">[</span><span class="n">grid</span><span class="p">][</span><span class="n">sl</span><span class="p">][</span><span class="n">indices</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">indices</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]]</span>
+
+        <span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="o">=</span> <span class="n">x_to_l</span><span class="p">(</span><span class="n">reflons</span><span class="p">,</span> <span class="n">reflats</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+        <span class="n">aa</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">l</span> <span class="o">-</span> <span class="n">m</span> <span class="o">+</span> <span class="n">l</span> <span class="o">*</span> <span class="n">m</span>
+        <span class="n">ab</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="n">l</span> <span class="o">*</span> <span class="n">m</span>
+        <span class="n">ac</span> <span class="o">=</span> <span class="n">l</span> <span class="o">*</span> <span class="n">m</span>
+        <span class="n">ad</span> <span class="o">=</span> <span class="n">l</span> <span class="o">-</span> <span class="n">l</span> <span class="o">*</span> <span class="n">m</span>
+        <span class="n">alphas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">aa</span><span class="p">,</span> <span class="n">ab</span><span class="p">,</span> <span class="n">ac</span><span class="p">,</span> <span class="n">ad</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="k">if</span> <span class="n">_memo</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_memo</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha_memo_dict</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">alphas</span></div></div>
+
+
+<div class="viewcode-block" id="SGridAttributes"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes">[docs]</a><span class="k">class</span> <span class="nc">SGridAttributes</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class containing methods to help with getting the</span>
+<span class="sd">    attributes for either SGrid.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc</span><span class="p">,</span> <span class="n">topology_dim</span><span class="p">,</span> <span class="n">topology_variable</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nc</span> <span class="o">=</span> <span class="n">nc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ncd</span> <span class="o">=</span> <span class="n">NetCDFDataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topology_dim</span> <span class="o">=</span> <span class="n">topology_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topology_variable</span> <span class="o">=</span> <span class="n">topology_variable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">topology_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">topology_variable</span><span class="p">]</span>
+
+<div class="viewcode-block" id="SGridAttributes.get_dimensions"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">get_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ds_dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">dimensions</span>
+        <span class="n">grid_dims</span> <span class="o">=</span> <span class="p">[(</span><span class="n">ds_dim</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ds_dims</span><span class="p">[</span><span class="n">ds_dim</span><span class="p">]))</span> <span class="k">for</span> <span class="n">ds_dim</span> <span class="ow">in</span> <span class="n">ds_dims</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">grid_dims</span></div>
+
+<div class="viewcode-block" id="SGridAttributes.get_topology_var"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_topology_var">[docs]</a>    <span class="k">def</span> <span class="nf">get_topology_var</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">grid_topology_var</span> <span class="o">=</span> <span class="n">find_grid_topology_var</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">grid_topology_var</span></div>
+
+<div class="viewcode-block" id="SGridAttributes.get_attr_dimension"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_attr_dimension">[docs]</a>    <span class="k">def</span> <span class="nf">get_attr_dimension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">attr_dim</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topology_var</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">attr_dim</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">attr_padding</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr_dim_padding</span> <span class="o">=</span> <span class="n">parse_padding</span><span class="p">(</span><span class="n">attr_dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">topology_variable</span><span class="p">)</span>
+            <span class="n">attr_padding</span> <span class="o">=</span> <span class="n">attr_dim_padding</span>
+        <span class="k">return</span> <span class="n">attr_dim</span><span class="p">,</span> <span class="n">attr_padding</span></div>
+
+<div class="viewcode-block" id="SGridAttributes.get_attr_coordinates"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_attr_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">get_attr_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">attr_coordinates_raw</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topology_var</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">location_name</span> <span class="o">=</span> <span class="n">attr_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">attr_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncd</span><span class="o">.</span><span class="n">find_coordinates_by_location</span><span class="p">(</span><span class="n">location_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">topology_dim</span><span class="p">)</span>  <span class="c1"># noqa</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">attr_coordinates_val</span> <span class="o">=</span> <span class="n">attr_coordinates_raw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">attr_coordinates</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">attr_coordinates_val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">attr_coordinates</span></div>
+
+<div class="viewcode-block" id="SGridAttributes.get_node_coordinates"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_node_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">get_node_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">node_dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">topology_var</span><span class="o">.</span><span class="n">node_dimensions</span>
+        <span class="n">node_dimensions</span> <span class="o">=</span> <span class="n">node_dims</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">node_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">topology_var</span><span class="o">.</span><span class="n">node_coordinates</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">grid_cell_node_vars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncd</span><span class="o">.</span><span class="n">find_node_coordinates</span><span class="p">(</span><span class="n">node_dimensions</span><span class="p">)</span>  <span class="c1"># noqa</span>
+            <span class="n">node_coordinates</span> <span class="o">=</span> <span class="n">grid_cell_node_vars</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">node_coordinate_val</span> <span class="o">=</span> <span class="n">node_coordinates</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+            <span class="n">node_coordinates</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">node_coordinate_val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">node_dimensions</span><span class="p">,</span> <span class="n">node_coordinates</span></div>
+
+<div class="viewcode-block" id="SGridAttributes.get_variable_attributes"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_variable_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_variable_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sgrid</span><span class="p">):</span>
+        <span class="n">dataset_variables</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">grid_variables</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">nc_variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span>
+        <span class="k">for</span> <span class="n">nc_variable</span> <span class="ow">in</span> <span class="n">nc_variables</span><span class="p">:</span>
+            <span class="n">nc_var</span> <span class="o">=</span> <span class="n">nc_variables</span><span class="p">[</span><span class="n">nc_variable</span><span class="p">]</span>
+            <span class="n">sgrid_var</span> <span class="o">=</span> <span class="n">SGridVariable</span><span class="o">.</span><span class="n">create_variable</span><span class="p">(</span><span class="n">nc_var</span><span class="p">,</span> <span class="n">sgrid</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">sgrid</span><span class="p">,</span> <span class="n">sgrid_var</span><span class="o">.</span><span class="n">variable</span><span class="p">,</span> <span class="n">sgrid_var</span><span class="p">)</span>
+            <span class="n">dataset_variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nc_var</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">nc_var</span><span class="p">,</span> <span class="s1">&#39;grid&#39;</span><span class="p">):</span>
+                <span class="n">grid_variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nc_var</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">sgrid</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">dataset_variables</span>
+        <span class="n">sgrid</span><span class="o">.</span><span class="n">grid_variables</span> <span class="o">=</span> <span class="n">grid_variables</span></div>
+
+<div class="viewcode-block" id="SGridAttributes.get_angles"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_angles">[docs]</a>    <span class="k">def</span> <span class="nf">get_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">angles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;angle&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">angles</span><span class="p">:</span>
+            <span class="c1"># FIXME: Get rid of pair_arrays.</span>
+            <span class="n">center_lon</span><span class="p">,</span> <span class="n">center_lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cell_center_lat_lon</span><span class="p">()</span>
+            <span class="n">cell_centers</span> <span class="o">=</span> <span class="n">pair_arrays</span><span class="p">(</span><span class="n">center_lon</span><span class="p">,</span> <span class="n">center_lat</span><span class="p">)</span>
+            <span class="n">centers_start</span> <span class="o">=</span> <span class="n">cell_centers</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">centers_end</span> <span class="o">=</span> <span class="n">cell_centers</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
+            <span class="n">angles</span> <span class="o">=</span> <span class="n">calculate_angle_from_true_east</span><span class="p">(</span><span class="n">centers_start</span><span class="p">,</span> <span class="n">centers_end</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">angles</span></div>
+
+<div class="viewcode-block" id="SGridAttributes.get_cell_center_lat_lon"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_cell_center_lat_lon">[docs]</a>    <span class="k">def</span> <span class="nf">get_cell_center_lat_lon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">grid_cell_center_lon_var</span><span class="p">,</span> <span class="n">grid_cell_center_lat_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr_coordinates</span><span class="p">(</span><span class="s1">&#39;face_coordinates&#39;</span><span class="p">)</span>  <span class="c1"># noqa</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">center_lat</span><span class="p">,</span> <span class="n">center_lon</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">center_lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="p">[</span><span class="n">grid_cell_center_lat_var</span><span class="p">]</span>
+            <span class="n">center_lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="p">[</span><span class="n">grid_cell_center_lon_var</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">center_lon</span><span class="p">,</span> <span class="n">center_lat</span></div>
+
+<div class="viewcode-block" id="SGridAttributes.get_cell_node_lat_lon"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_cell_node_lat_lon">[docs]</a>    <span class="k">def</span> <span class="nf">get_cell_node_lat_lon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">node_lon_var</span><span class="p">,</span> <span class="n">node_lat_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_node_coordinates</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">node_lon</span><span class="p">,</span> <span class="n">node_lat</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">node_lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="p">[</span><span class="n">node_lat_var</span><span class="p">]</span>
+            <span class="n">node_lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="p">[</span><span class="n">node_lon_var</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">node_lon</span><span class="p">,</span> <span class="n">node_lat</span></div>
+
+<div class="viewcode-block" id="SGridAttributes.get_cell_edge1_lat_lon"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_cell_edge1_lat_lon">[docs]</a>    <span class="k">def</span> <span class="nf">get_cell_edge1_lat_lon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">edge1_lon_var</span><span class="p">,</span> <span class="n">edge1_lat_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr_coordinates</span><span class="p">(</span><span class="s1">&#39;edge1_coordinates&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">edge1_lon</span><span class="p">,</span> <span class="n">edge1_lat</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">edge1_lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="p">[</span><span class="n">edge1_lon_var</span><span class="p">]</span>
+            <span class="n">edge1_lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="p">[</span><span class="n">edge1_lat_var</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">edge1_lon</span><span class="p">,</span> <span class="n">edge1_lat</span></div>
+
+<div class="viewcode-block" id="SGridAttributes.get_cell_edge2_lat_lon"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_cell_edge2_lat_lon">[docs]</a>    <span class="k">def</span> <span class="nf">get_cell_edge2_lat_lon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">edge2_lon_var</span><span class="p">,</span> <span class="n">edge2_lat_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_attr_coordinates</span><span class="p">(</span><span class="s1">&#39;edge2_coordinates&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">edge2_lon</span><span class="p">,</span> <span class="n">edge2_lat</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">edge2_lon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="p">[</span><span class="n">edge2_lon_var</span><span class="p">]</span>
+            <span class="n">edge2_lat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="p">[</span><span class="n">edge2_lat_var</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">edge2_lon</span><span class="p">,</span> <span class="n">edge2_lat</span></div></div>
+
+
+<div class="viewcode-block" id="load_grid"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.sgrid.load_grid">[docs]</a><span class="k">def</span> <span class="nf">load_grid</span><span class="p">(</span><span class="n">nc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a SGrid object from a netCDF4.Dataset or file/URL.</span>
+
+<span class="sd">    :param str or netCDF4.Dataset nc: a netCDF4 Dataset or URL/filepath</span>
+<span class="sd">                                       to the netCDF file</span>
+<span class="sd">    :return: SGrid object</span>
+<span class="sd">    :rtype: sgrid.SGrid</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nc</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">SGrid</span><span class="o">.</span><span class="n">load_grid</span><span class="p">(</span><span class="n">nc</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright .
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.8',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

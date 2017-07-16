@@ -1,0 +1,1281 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gridded.pyugrid.ugrid &mdash; gridded 0.0.8 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="gridded 0.0.8 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> gridded
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../overview.html#goals">Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../overview.html#why-gridded">Why gridded?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../overview.html#data-standards">Data standards</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing.html">Installing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../installing.html#pip">pip</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../installing.html#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../installing.html#conda">conda</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../installing.html#conda-forge">conda-forge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../installing.html#environments">Environments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#grid-objects">Grid objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#variable-objects">Variable objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#time-object">Time object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#depth-object">Depth object</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html#design-principles">Design Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#grid-independence">Grid Independence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#duck-typing">Duck Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#lazy-loading-data-arrays">Lazy loading / data arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html#reference">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../gridded.html">gridded package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.depth">gridded.depth module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.gridded">gridded.gridded module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.grids">gridded.grids module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.time">gridded.time module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.utilities">gridded.utilities module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded.variable">gridded.variable module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../gridded.html#module-gridded">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">gridded</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>gridded.pyugrid.ugrid</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for gridded.pyugrid.ugrid</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">ugrid classes</span>
+
+<span class="sd">set of classes for working with unstructured model grids</span>
+
+<span class="sd">The &quot;ugrid&quot; class is the base class: it stores everything in memory</span>
+
+<span class="sd">It can read from and write to netcdf files in the UGRID format.</span>
+
+<span class="sd">It may be able to reference a netcdf file at some point, rather than storing</span>
+<span class="sd">directly in memory.</span>
+
+<span class="sd">NOTE: only support for triangular mesh grids at the moment.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">gridded.pyugrid.read_netcdf</span> <span class="k">as</span> <span class="nn">read_netcdf</span>
+<span class="kn">from</span> <span class="nn">gridded.pyugrid.util</span> <span class="k">import</span> <span class="n">point_in_tri</span>
+<span class="kn">from</span> <span class="nn">gridded.pyugrid.uvar</span> <span class="k">import</span> <span class="n">UVar</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;UGrid&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;UVar&#39;</span><span class="p">]</span>
+
+<span class="c1"># datatype used for indexes -- might want to change for 64 bit some day.</span>
+<span class="n">IND_DT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
+<span class="n">NODE_DT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>  <span class="c1"># datatype used for node coordinates.</span>
+
+
+<div class="viewcode-block" id="UGrid"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid">[docs]</a><span class="k">class</span> <span class="nc">UGrid</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A basic class to hold an unstructured grid (triangular mesh).</span>
+
+<span class="sd">    The internal structure mirrors the netcdf data standard.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">nodes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">node_lon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">node_lat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">faces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">boundaries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">face_face_connectivity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">face_edge_connectivity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">face_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">boundary_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">mesh_name</span><span class="o">=</span><span class="s2">&quot;mesh&quot;</span><span class="p">,</span>
+                 <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ugrid class -- holds, saves, etc. an unstructured grid</span>
+
+<span class="sd">        :param nodes=None : the coordinates of the nodes</span>
+<span class="sd">        :type nodes: (NX2) array of floats</span>
+
+<span class="sd">        :param faces=None : the faces of the grid. Indexes for the nodes array.</span>
+<span class="sd">        :type faces: (NX3) array of integers</span>
+
+<span class="sd">        :param edges=None : the edges of the grid. Indexes for the nodes array.</span>
+<span class="sd">        :type edges: (NX2) array of integers</span>
+
+<span class="sd">        :param boundaries=None: specification of the boundaries are usually a</span>
+<span class="sd">                                subset of edges where boundary condition</span>
+<span class="sd">                                information, etc is stored.</span>
+<span class="sd">                                (NX2) integer array of indexes for the nodes</span>
+<span class="sd">                                array.</span>
+<span class="sd">        :type boundaries: numpy array of integers</span>
+
+<span class="sd">        :param face_face_connectivity=None: connectivity arrays.</span>
+<span class="sd">        :param face_edge_connectivity=None: connectivity arrays.</span>
+
+<span class="sd">        :param edge_coordinates=None: representative coordinate of the edges.</span>
+<span class="sd">        :param face_coordinates=None: representative coordinate of the faces.</span>
+<span class="sd">        :param boundary_coordinates=None: representative coordinate of the</span>
+<span class="sd">                                          boundaries.</span>
+
+<span class="sd">        :param edge_coordinates=None: representative coordinate of the edges</span>
+<span class="sd">        :type edge_coordinates: (NX2) array of floats</span>
+
+<span class="sd">        :param face_coordinates=None: representative coordinate of the faces</span>
+<span class="sd">                                      (NX2) float array</span>
+<span class="sd">        :type face_coordinates: (NX2) array of floats</span>
+
+
+<span class="sd">        :param boundary_coordinates=None: representative coordinate of the</span>
+<span class="sd">                                          boundaries</span>
+<span class="sd">        :type boundary_coordinates: (NX2) array of floats</span>
+
+
+<span class="sd">        :param data = None: associated variables</span>
+<span class="sd">        :type data: dict of UVar objects</span>
+
+<span class="sd">        :param mesh_name = &quot;mesh&quot;: optional name for the mesh</span>
+<span class="sd">        :type mesh_name: string</span>
+
+<span class="sd">        Often this is too much data to pass in as literals -- so usually</span>
+<span class="sd">        specialized constructors will be used instead (load from file, etc).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">nodes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node_lon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">node_lat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">node_lon</span><span class="p">,</span> <span class="n">node_lat</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="n">nodes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="o">=</span> <span class="n">faces</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">edges</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boundaries</span> <span class="o">=</span> <span class="n">boundaries</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">face_face_connectivity</span> <span class="o">=</span> <span class="n">face_face_connectivity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face_edge_connectivity</span> <span class="o">=</span> <span class="n">face_edge_connectivity</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_coordinates</span> <span class="o">=</span> <span class="n">edge_coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face_coordinates</span> <span class="o">=</span> <span class="n">face_coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boundary_coordinates</span> <span class="o">=</span> <span class="n">boundary_coordinates</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mesh_name</span> <span class="o">=</span> <span class="n">mesh_name</span>
+
+        <span class="c1"># the data associated with the grid</span>
+        <span class="c1"># should be a dict of UVar objects</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># The data associated with the grid.</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_data</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+
+        <span class="c1"># A kdtree is used to locate nodes.</span>
+        <span class="c1"># It will be created if/when it is needed.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kdtree</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="UGrid.from_ncfile"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.from_ncfile">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_ncfile</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">nc_url</span><span class="p">,</span> <span class="n">mesh_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">load_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        create a UGrid object from a netcdf file name (or opendap url)</span>
+
+<span class="sd">        :param nc_url: the filename or OpenDap url you want to load</span>
+
+<span class="sd">        :param mesh_name=None: the name of the mesh you want. If None, then</span>
+<span class="sd">                               you&#39;ll get the only mesh in the file. If there</span>
+<span class="sd">                               is more than one mesh in the file, a ValueError</span>
+<span class="sd">                               Will be raised</span>
+<span class="sd">        :param load_data=False: flag to indicate whether you want to load the</span>
+<span class="sd">                                associated data or not.  The mesh will be</span>
+<span class="sd">                                loaded in any case.  If False, only the mesh</span>
+<span class="sd">                                will be loaded.  If True, then all the data</span>
+<span class="sd">                                associated with the mesh will be loaded.</span>
+<span class="sd">                                This could be huge!</span>
+<span class="sd">        :type load_data: boolean</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="n">klass</span><span class="p">()</span>
+        <span class="n">read_netcdf</span><span class="o">.</span><span class="n">load_grid_from_ncfilename</span><span class="p">(</span><span class="n">nc_url</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span>
+                                              <span class="n">mesh_name</span><span class="p">,</span> <span class="n">load_data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">grid</span></div>
+
+<div class="viewcode-block" id="UGrid.from_nc_dataset"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.from_nc_dataset">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_nc_dataset</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">nc</span><span class="p">,</span> <span class="n">mesh_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">load_data</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        create a UGrid object from a netcdf file (or opendap url)</span>
+
+<span class="sd">        :param nc: An already open Dataset object</span>
+<span class="sd">        :type nc: netCDF4.DataSet</span>
+
+<span class="sd">        :param mesh_name=None: the name of the mesh you want. If None, then</span>
+<span class="sd">                               you&#39;ll get the only mesh in the file. If there</span>
+<span class="sd">                               is more than one mesh in the file, a ValueError</span>
+<span class="sd">                               Will be raised</span>
+
+<span class="sd">        :param load_data=False: flag to indicate whether you want to load the</span>
+<span class="sd">                                associated data or not.  The mesh will be</span>
+<span class="sd">                                loaded in any case.  If False, only the mesh</span>
+<span class="sd">                                will be loaded.  If True, then all the data</span>
+<span class="sd">                                associated with the mesh will be loaded.</span>
+<span class="sd">                                This could be huge!</span>
+
+<span class="sd">        :type load_data: boolean</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="n">klass</span><span class="p">()</span>
+        <span class="n">read_netcdf</span><span class="o">.</span><span class="n">load_grid_from_nc_dataset</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">mesh_name</span><span class="p">,</span> <span class="n">load_data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">grid</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        summary of information about the grid</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;UGrid object:&quot;</span><span class="p">]</span>
+
+        <span class="n">msg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Number of nodes: </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">))</span>
+        <span class="n">msg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Number of faces: </span><span class="si">%i</span><span class="s2"> with </span><span class="si">%i</span><span class="s2"> vertices per face&quot;</span> <span class="o">%</span>
+                   <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_vertices</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundaries</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Number of boundaries: </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">boundaries</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Variables: &quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()]))</span>
+
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="UGrid.check_consistent"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.check_consistent">[docs]</a>    <span class="k">def</span> <span class="nf">check_consistent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the various data is consistent: the edges and faces reference</span>
+<span class="sd">        existing nodes, etc.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_vertices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Number of vertices in a face.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_faces</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_faces</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">node_lon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">node_lat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@nodes</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes_coords</span><span class="p">):</span>
+        <span class="c1"># Room here to do consistency checking, etc.</span>
+        <span class="c1"># For now -- simply make sure it&#39;s a numpy array.</span>
+        <span class="k">if</span> <span class="n">nodes_coords</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">NODE_DT</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">nodes_coords</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">NODE_DT</span><span class="p">)</span>
+
+    <span class="nd">@nodes</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># If there are no nodes, there can&#39;t be anything else.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">NODE_DT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_faces</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_boundaries</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">faces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_faces</span>
+
+    <span class="nd">@faces</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">faces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">faces_indexes</span><span class="p">):</span>
+        <span class="c1"># Room here to do consistency checking, etc.</span>
+        <span class="c1"># For now -- simply make sure it&#39;s a numpy array.</span>
+        <span class="k">if</span> <span class="n">faces_indexes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_faces</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">faces_indexes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">IND_DT</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_faces</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># Other things are no longer valid.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_face_face_connectivity</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_face_edge_connectivity</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@faces</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span> <span class="nf">faces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_faces</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_faces</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Other things are no longer valid.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_face_face_connectivity</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_face_edge_connectivity</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_coordinates</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span>
+
+    <span class="nd">@edges</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edges_indexes</span><span class="p">):</span>
+        <span class="c1"># Room here to do consistency checking, etc.</span>
+        <span class="c1"># For now -- simply make sure it&#39;s a numpy array.</span>
+        <span class="k">if</span> <span class="n">edges_indexes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">edges_indexes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">IND_DT</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_face_edge_connectivity</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@edges</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_face_edge_connectivity</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_coordinates</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_boundaries</span>
+
+    <span class="nd">@boundaries</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boundaries_indexes</span><span class="p">):</span>
+        <span class="c1"># Room here to do consistency checking, etc.</span>
+        <span class="c1"># For now -- simply make sure it&#39;s a numpy array.</span>
+        <span class="k">if</span> <span class="n">boundaries_indexes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_boundaries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">boundaries_indexes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">IND_DT</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_boundaries</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@boundaries</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span> <span class="nf">boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_boundaries</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boundary_coordinates</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">face_face_connectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_face_face_connectivity</span>
+
+    <span class="nd">@face_face_connectivity</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">face_face_connectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_face_connectivity</span><span class="p">):</span>
+        <span class="c1"># Add more checking?</span>
+        <span class="k">if</span> <span class="n">face_face_connectivity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">face_face_connectivity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">face_face_connectivity</span><span class="p">,</span>
+                                                <span class="n">dtype</span><span class="o">=</span><span class="n">IND_DT</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">face_face_connectivity</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">),</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">num_vertices</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;face_face_connectivity must be size &quot;</span>
+                       <span class="s2">&quot;(num_faces, </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_vertices</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_face_face_connectivity</span> <span class="o">=</span> <span class="n">face_face_connectivity</span>
+
+    <span class="nd">@face_face_connectivity</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span> <span class="nf">face_face_connectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_face_face_connectivity</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">face_edge_connectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_face_edge_connectivity</span>
+
+    <span class="nd">@face_edge_connectivity</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">face_edge_connectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_edge_connectivity</span><span class="p">):</span>
+        <span class="c1"># Add more checking?</span>
+        <span class="k">if</span> <span class="n">face_edge_connectivity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">face_edge_connectivity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">face_edge_connectivity</span><span class="p">,</span>
+                                                <span class="n">dtype</span><span class="o">=</span><span class="n">IND_DT</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">face_edge_connectivity</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">),</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">num_vertices</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;face_face_connectivity must be size &quot;</span>
+                       <span class="s2">&quot;(num_face, </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_vertices</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_face_edge_connectivity</span> <span class="o">=</span> <span class="n">face_edge_connectivity</span>
+
+    <span class="nd">@face_edge_connectivity</span><span class="o">.</span><span class="n">deleter</span>
+    <span class="k">def</span> <span class="nf">face_edge_connectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_face_edge_connectivity</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        dict of data associated with the data arrays</span>
+<span class="sd">        You can&#39;t set this -- must use UGrid.add_data().</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+
+<div class="viewcode-block" id="UGrid.infer_location"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.infer_location">[docs]</a>    <span class="k">def</span> <span class="nf">infer_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param data:</span>
+
+<span class="sd">        Returns &#39;nodes&#39; if data will fit to the nodes, &#39;faces&#39; if the data will fit to the faces,</span>
+<span class="sd">        and None otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># Variable has no shape attribute!</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="s1">&#39;nodes&#39;</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="s1">&#39;faces&#39;</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="UGrid.add_data"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.add_data">[docs]</a>    <span class="k">def</span> <span class="nf">add_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uvar</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a UVar to the data dict</span>
+
+<span class="sd">        :param uvar: the UVar object to add.</span>
+<span class="sd">                     Its name will be the key in the data dict.</span>
+<span class="sd">        :type uvar: a ugrid.UVar object</span>
+
+<span class="sd">        Some sanity checking is done to make sure array sizes are correct.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Size check:</span>
+        <span class="k">if</span> <span class="n">uvar</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;node&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uvar</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;length of data array must match &quot;</span>
+                                 <span class="s2">&quot;the number of nodes&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">uvar</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;edge&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uvar</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;length of data array must match &quot;</span>
+                                 <span class="s2">&quot;the number of edges&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">uvar</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;face&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uvar</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;length of data array must match &quot;</span>
+                                 <span class="s2">&quot;the number of faces&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">uvar</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;boundary&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">uvar</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">boundaries</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;length of data array must match &quot;</span>
+                                 <span class="s2">&quot;the number of boundaries&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Can&#39;t add data associated with &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">(</span><span class="n">uvar</span><span class="o">.</span><span class="n">location</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">uvar</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">uvar</span></div>
+
+<div class="viewcode-block" id="UGrid.find_uvars"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.find_uvars">[docs]</a>    <span class="k">def</span> <span class="nf">find_uvars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">standard_name</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find all :py:class:`UVar`s that match the specified standard name</span>
+
+<span class="sd">        :param str standard_name: the standard name attribute.</span>
+<span class="sd">                                  Based on the UGRID conventions.</span>
+
+<span class="sd">        :keyword location: optional attribute location to narrow the returned</span>
+<span class="sd">        :py:class : `UVar`s (one of &#39;node&#39;, &#39;edge&#39;, &#39;face&#39;, or &#39;boundary&#39;).</span>
+
+<span class="sd">        :return: set of matching :py:class:`UVar`s</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ds</span><span class="o">.</span><span class="n">attributes</span> <span class="ow">or</span> <span class="s1">&#39;standard_name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">attributes</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">ds</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;standard_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">standard_name</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">location</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ds</span><span class="o">.</span><span class="n">location</span> <span class="o">!=</span> <span class="n">location</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">found</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">found</span></div>
+
+<div class="viewcode-block" id="UGrid.locate_nodes"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.locate_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">locate_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the index of the closest nodes to the input locations.</span>
+
+<span class="sd">        :param points: the lons/lats of locations you want the nodes</span>
+<span class="sd">                       closest to.</span>
+<span class="sd">        :type point: a (N, 2) ndarray of points</span>
+<span class="sd">                     (or something that can be converted).</span>
+
+<span class="sd">        :returns: the index of the closest node.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kdtree</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_build_kdtree</span><span class="p">()</span>
+
+        <span class="n">node_inds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kdtree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">node_inds</span></div>
+
+    <span class="k">def</span> <span class="nf">_build_kdtree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Only import if it&#39;s used.</span>
+        <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="k">import</span> <span class="n">cKDTree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kdtree</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_hash_of_pts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a SHA1 hash of the array of points passed in</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha1</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">tobytes</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_add_memo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param points: List of points to be hashed.</span>
+<span class="sd">        :param item: Result of computation to be stored.</span>
+<span class="sd">        :param location: Name of grid on which computation was done.</span>
+<span class="sd">        :param D: Dict that will store hash -&gt; item mapping.</span>
+<span class="sd">        :param _hash: If hash is already computed it may be passed in here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">_copy</span><span class="p">:</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_hash</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_of_pts</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">D</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">D</span><span class="p">[</span><span class="n">_hash</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="p">:</span>
+                <span class="n">D</span><span class="o">.</span><span class="n">popitem</span><span class="p">(</span><span class="n">last</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">D</span><span class="p">[</span><span class="n">_hash</span><span class="p">]</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_memoed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_hash</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_of_pts</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">D</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_hash</span> <span class="ow">in</span> <span class="n">D</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">D</span><span class="p">[</span><span class="n">_hash</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">_copy</span> <span class="k">else</span> <span class="n">D</span><span class="p">[</span><span class="n">_hash</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="UGrid.locate_faces"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.locate_faces">[docs]</a>    <span class="k">def</span> <span class="nf">locate_faces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;celltree&#39;</span><span class="p">,</span> <span class="n">_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">_memo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the face indices, one per point.</span>
+
+<span class="sd">        Points that are not in the mesh will have an index of -1</span>
+
+<span class="sd">        If a single point is passed in, a single index will be returned</span>
+<span class="sd">        If a sequence of points is passed in an array of indexes will be returned.</span>
+
+<span class="sd">        :param points:  The points that you want to locate -- (lon, lat). If the shape of point</span>
+<span class="sd">                        is 1D, function will return a scalar index. If it is 2D, it will return</span>
+<span class="sd">                        a 1D array of indices</span>
+<span class="sd">        :type point: array-like containing one or more points: shape (2,) for one point, shape (N, 2)</span>
+<span class="sd">                     for more than one point.</span>
+
+<span class="sd">        :param method=&#39;celltree&#39;: method to use. Options are &#39;celltree&#39;, &#39;simple&#39;.</span>
+<span class="sd">                                  for &#39;celltree&#39; the celltree2d pacakge must be installed:</span>
+<span class="sd">                                  https://github.com/NOAA-ORR-ERD/cell_tree2d/</span>
+<span class="sd">                                  &#39;simple&#39; is very, very slow for large grids.</span>
+<span class="sd">        :type simple: str</span>
+
+<span class="sd">        This version utilizes the CellTree data structure.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">just_one</span> <span class="o">=</span> <span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">points</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_ind_memo_dict&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ind_memo_dict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">_memo</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_hash</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_of_pts</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_memoed</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ind_memo_dict</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;celltree&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">cell_tree2d</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;the cell_tree2d package must be installed to use the celltree search:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                  <span class="s2">&quot;https://github.com/NOAA-ORR-ERD/cell_tree2d/&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">build_celltree</span><span class="p">()</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">locate</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;simple&#39;</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">IND_DT</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">face</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_faces</span><span class="p">):</span>
+                    <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">face</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">point_in_tri</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+                        <span class="n">indices</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+                        <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">indices</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;method&quot; must be one of: &quot;celltree&quot;, &quot;simple&quot;&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_memo</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_memo</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ind_memo_dict</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">just_one</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">indices</span></div>
+
+<div class="viewcode-block" id="UGrid.build_celltree"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.build_celltree">[docs]</a>    <span class="k">def</span> <span class="nf">build_celltree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tries to build the celltree for the current UGrid. Will fail if nodes</span>
+<span class="sd">        or faces is not defined.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">cell_tree2d</span> <span class="k">import</span> <span class="n">CellTree</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Nodes and faces must be defined in order to create and use CellTree&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span> <span class="o">=</span> <span class="n">CellTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UGrid.interpolation_alphas"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.interpolation_alphas">[docs]</a>    <span class="k">def</span> <span class="nf">interpolation_alphas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">_memo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given an array of points, this function will return the bilinear interpolation alphas</span>
+<span class="sd">        for each of the three nodes of the face that the point is located in. If the point is</span>
+<span class="sd">        not located on the grid, the alphas are set to 0</span>
+<span class="sd">        :param points: Nx2 numpy array of lat/lon coordinates</span>
+
+<span class="sd">        :param indices: If the face indices of the points is already known, it can be passed in to save</span>
+<span class="sd">        repeating the effort.</span>
+
+<span class="sd">        :return: Nx3 numpy array of interpolation factors</span>
+
+<span class="sd">        TODO: mask the indices that aren&#39;t on the grid properly.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_alpha_memo_dict&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_alpha_memo_dict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">_memo</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_hash</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_of_pts</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_memoed</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha_memo_dict</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">locate_faces</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="s1">&#39;celltree&#39;</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_memo</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+        <span class="n">node_positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">[</span><span class="n">indices</span><span class="p">]]</span>
+
+        <span class="p">(</span><span class="n">lon1</span><span class="p">,</span> <span class="n">lon2</span><span class="p">,</span> <span class="n">lon3</span><span class="p">)</span> <span class="o">=</span> <span class="n">node_positions</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+        <span class="p">(</span><span class="n">lat1</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">lat3</span><span class="p">)</span> <span class="o">=</span> <span class="n">node_positions</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="n">reflats</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">reflons</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">denoms</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">lat3</span> <span class="o">-</span> <span class="n">lat1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">lon2</span> <span class="o">-</span> <span class="n">lon1</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">lon3</span> <span class="o">-</span> <span class="n">lon1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">lat2</span> <span class="o">-</span> <span class="n">lat1</span><span class="p">))</span>
+        <span class="c1"># alphas should all add up to 1</span>
+        <span class="n">alpha1s</span> <span class="o">=</span> <span class="p">(</span><span class="n">reflats</span> <span class="o">-</span> <span class="n">lat3</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">lon3</span> <span class="o">-</span> <span class="n">lon2</span><span class="p">)</span> <span class="o">-</span> \
+            <span class="p">(</span><span class="n">reflons</span> <span class="o">-</span> <span class="n">lon3</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">lat3</span> <span class="o">-</span> <span class="n">lat2</span><span class="p">)</span>
+        <span class="n">alpha2s</span> <span class="o">=</span> <span class="p">(</span><span class="n">reflons</span> <span class="o">-</span> <span class="n">lon1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">lat3</span> <span class="o">-</span> <span class="n">lat1</span><span class="p">)</span> <span class="o">-</span> \
+            <span class="p">(</span><span class="n">reflats</span> <span class="o">-</span> <span class="n">lat1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">lon3</span> <span class="o">-</span> <span class="n">lon1</span><span class="p">)</span>
+        <span class="n">alpha3s</span> <span class="o">=</span> <span class="p">(</span><span class="n">reflats</span> <span class="o">-</span> <span class="n">lat1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">lon2</span> <span class="o">-</span> <span class="n">lon1</span><span class="p">)</span> <span class="o">-</span> \
+            <span class="p">(</span><span class="n">reflons</span> <span class="o">-</span> <span class="n">lon1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">lat2</span> <span class="o">-</span> <span class="n">lat1</span><span class="p">)</span>
+        <span class="n">alphas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">alpha1s</span> <span class="o">/</span> <span class="n">denoms</span><span class="p">,</span> <span class="n">alpha2s</span> <span class="o">/</span> <span class="n">denoms</span><span class="p">,</span> <span class="n">alpha3s</span> <span class="o">/</span> <span class="n">denoms</span><span class="p">))</span>
+        <span class="n">alphas</span><span class="p">[</span><span class="n">indices</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">_memo</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_memo</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha_memo_dict</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">alphas</span></div>
+
+<div class="viewcode-block" id="UGrid.interpolate_var_to_points"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.interpolate_var_to_points">[docs]</a>    <span class="k">def</span> <span class="nf">interpolate_var_to_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                  <span class="n">points</span><span class="p">,</span>
+                                  <span class="n">variable</span><span class="p">,</span>
+                                  <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">alphas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">slices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">slice_grid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                  <span class="n">_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                  <span class="n">_memo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                  <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        interpolates teh passed-in variable to the points in points</span>
+
+<span class="sd">        used linear interpolation from the nodes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infer_location</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+        <span class="c1"># FixMe: should it get location from variable object?</span>
+        <span class="k">if</span> <span class="n">location</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Data is incompatible with grid nodes or faces&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">slices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">slices</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">slices</span> <span class="o">=</span> <span class="n">slices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="p">[</span><span class="n">slices</span><span class="p">]</span>
+
+        <span class="n">_hash</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hash_of_pts</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+
+        <span class="n">inds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">locate_faces</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="s1">&#39;celltree&#39;</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_memo</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;faces&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">variable</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span>
+<span class="c1">#             raise NotImplementedError(&quot;Currently does not support interpolation of a &quot;</span>
+<span class="c1">#                                       &quot;variable defined on the faces&quot;)</span>
+        <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;nodes&#39;</span><span class="p">:</span>
+            <span class="n">pos_alphas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolation_alphas</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">inds</span><span class="p">,</span> <span class="n">_copy</span><span class="p">,</span> <span class="n">_memo</span><span class="p">,</span> <span class="n">_hash</span><span class="p">)</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="n">variable</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">[</span><span class="n">inds</span><span class="p">]]</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">vals</span> <span class="o">*</span> <span class="n">pos_alphas</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="UGrid.build_face_face_connectivity"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.build_face_face_connectivity">[docs]</a>    <span class="k">def</span> <span class="nf">build_face_face_connectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds the face_face_connectivity array: giving the neighbors of each triangle.</span>
+
+<span class="sd">        Note: arbitrary order and CW vs CCW may not be consistent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">num_vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_vertices</span>
+        <span class="n">num_faces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">face_face</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_faces</span><span class="p">,</span> <span class="n">num_vertices</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">IND_DT</span><span class="p">)</span>
+        <span class="n">face_face</span> <span class="o">+=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># Fill with -1.</span>
+
+        <span class="c1"># Loop through all the triangles to find the matching edges:</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dict to store the edges.</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">face</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">):</span>
+            <span class="c1"># Loop through edges of the triangle:</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_vertices</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_vertices</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">edge</span> <span class="o">=</span> <span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">face</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">edge</span> <span class="o">=</span> <span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">face</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># Sort the node numbers.</span>
+                    <span class="n">edge</span> <span class="o">=</span> <span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="c1"># see if it is already in there</span>
+                <span class="n">prev_edge</span> <span class="o">=</span> <span class="n">edges</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">prev_edge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">face_num</span><span class="p">,</span> <span class="n">edge_num</span> <span class="o">=</span> <span class="n">prev_edge</span>
+                    <span class="n">face_face</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">face_num</span>
+                    <span class="n">face_face</span><span class="p">[</span><span class="n">face_num</span><span class="p">,</span> <span class="n">edge_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">edges</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>  <span class="c1"># face num, edge_num.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_face_face_connectivity</span> <span class="o">=</span> <span class="n">face_face</span></div>
+
+<div class="viewcode-block" id="UGrid.get_lines"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.get_lines">[docs]</a>    <span class="k">def</span> <span class="nf">get_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">build_edges</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="UGrid.build_edges"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.build_edges">[docs]</a>    <span class="k">def</span> <span class="nf">build_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds the edges array: all the edges defined by the triangles</span>
+
+<span class="sd">        This will replace the existing edge array, if there is one.</span>
+
+<span class="sd">        NOTE: arbitrary order -- should the order be preserved?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">num_vertices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_vertices</span>
+        <span class="n">num_faces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">face_face</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_faces</span><span class="p">,</span> <span class="n">num_vertices</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">IND_DT</span><span class="p">)</span>
+        <span class="n">face_face</span> <span class="o">+=</span> <span class="o">-</span><span class="mi">1</span>  <span class="c1"># Fill with -1.</span>
+
+        <span class="c1"># Loop through all the faces to find all the edges:</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>  <span class="c1"># Use a set so no duplicates.</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">face</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">):</span>
+            <span class="c1"># Loop through edges:</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_vertices</span><span class="p">):</span>
+                <span class="n">edge</span> <span class="o">=</span> <span class="p">(</span><span class="n">face</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">face</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># Flip them</span>
+                    <span class="n">edge</span> <span class="o">=</span> <span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">edges</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">edges</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">IND_DT</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UGrid.build_boundaries"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.build_boundaries">[docs]</a>    <span class="k">def</span> <span class="nf">build_boundaries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds the boundary segments from the cell array.</span>
+
+<span class="sd">        It is assumed that -1 means no neighbor, which indicates a boundary</span>
+
+<span class="sd">        This will over-write the existing boundaries array if there is one.</span>
+
+<span class="sd">        This is a not-very-smart just loop through all the faces method.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">boundaries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">face</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face_face_connectivity</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">neighbor</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">face</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">neighbor</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_vertices</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">bound</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">bound</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                    <span class="n">boundaries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bound</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boundaries</span> <span class="o">=</span> <span class="n">boundaries</span></div>
+
+<div class="viewcode-block" id="UGrid.build_face_edge_connectivity"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.build_face_edge_connectivity">[docs]</a>    <span class="k">def</span> <span class="nf">build_face_edge_connectivity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds the face-edge connectivity array</span>
+
+<span class="sd">        Not implemented yet.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="UGrid.build_face_coordinates"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.build_face_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">build_face_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds the face_coordinates array, using the average of the</span>
+<span class="sd">        nodes defining each face.</span>
+
+<span class="sd">        Note that you may want a different definition of the face</span>
+<span class="sd">        coordinates than this computes, but this is here to have</span>
+<span class="sd">        an easy default.</span>
+
+<span class="sd">        This will write-over an existing face_coordinates array.</span>
+
+<span class="sd">        Useful if you want this in the output file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">face_coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">NODE_DT</span><span class="p">)</span>
+        <span class="c1"># FIXME: there has got to be a way to vectorize this.</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">face</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">):</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">face</span><span class="p">]</span>
+            <span class="n">face_coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face_coordinates</span> <span class="o">=</span> <span class="n">face_coordinates</span></div>
+
+<div class="viewcode-block" id="UGrid.build_edge_coordinates"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.build_edge_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">build_edge_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds the face_coordinates array, using the average of the</span>
+<span class="sd">        nodes defining each edge.</span>
+
+<span class="sd">        Note that you may want a different definition of the edge</span>
+<span class="sd">        coordinates than this computes, but this is here to have</span>
+<span class="sd">        an easy default.</span>
+
+
+<span class="sd">        This will write-over an existing face_coordinates array</span>
+
+<span class="sd">        Useful if you want this in the output file</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">edge_coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">NODE_DT</span><span class="p">)</span>
+        <span class="c1"># FIXME: there has got to be a way to vectorize this.</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">edge</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">):</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span>
+            <span class="n">edge_coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_coordinates</span> <span class="o">=</span> <span class="n">edge_coordinates</span></div>
+
+<div class="viewcode-block" id="UGrid.build_boundary_coordinates"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.build_boundary_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">build_boundary_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds the boundary_coordinates array, using the average of the</span>
+<span class="sd">        nodes defining each boundary segment.</span>
+
+<span class="sd">        Note that you may want a different definition of the boundary</span>
+<span class="sd">        coordinates than this computes, but this is here to have</span>
+<span class="sd">        an easy default.</span>
+
+<span class="sd">        This will write-over an existing face_coordinates array</span>
+
+<span class="sd">        Useful if you want this in the output file</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">boundary_coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">boundaries</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+                                        <span class="n">dtype</span><span class="o">=</span><span class="n">NODE_DT</span><span class="p">)</span>
+        <span class="c1"># FXIME: there has got to be a way to vectorize this.</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bound</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">boundaries</span><span class="p">):</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">bound</span><span class="p">]</span>
+            <span class="n">boundary_coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boundary_coordinates</span> <span class="o">=</span> <span class="n">boundary_coordinates</span></div>
+
+<div class="viewcode-block" id="UGrid.save_as_netcdf"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.save_as_netcdf">[docs]</a>    <span class="k">def</span> <span class="nf">save_as_netcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the ugrid object as a netcdf file.</span>
+
+<span class="sd">        :param filepath: path to file you want o save to.  An existing one</span>
+<span class="sd">                         will be clobbered if it already exists.</span>
+
+<span class="sd">        Follows the convention established by the netcdf UGRID working group:</span>
+
+<span class="sd">        http://publicwiki.deltares.nl/display/NETCDF/Deltares+CF+proposal+for+Unstructured+Grid+data+model</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mesh_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mesh_name</span>
+
+        <span class="c1"># FIXME: Why not use netCDF4.Dataset instead of renaming?</span>
+        <span class="kn">from</span> <span class="nn">netCDF4</span> <span class="k">import</span> <span class="n">Dataset</span> <span class="k">as</span> <span class="n">ncDataset</span>
+        <span class="c1"># Create a new netcdf file.</span>
+        <span class="k">with</span> <span class="n">ncDataset</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">clobber</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">nclocal</span><span class="p">:</span>
+
+            <span class="n">nclocal</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s2">&quot;_num_node&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">nclocal</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span>
+                    <span class="n">mesh_name</span> <span class="o">+</span> <span class="s2">&quot;_num_edge&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_boundaries</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">nclocal</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s2">&quot;_num_boundary&quot;</span><span class="p">,</span>
+                                        <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_boundaries</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_faces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">nclocal</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span>
+                    <span class="n">mesh_name</span> <span class="o">+</span> <span class="s2">&quot;_num_face&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_faces</span><span class="p">))</span>
+                <span class="n">nclocal</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s2">&quot;_num_vertices&quot;</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_faces</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">nclocal</span><span class="o">.</span><span class="n">createDimension</span><span class="p">(</span><span class="s2">&quot;two&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="c1"># mesh topology</span>
+            <span class="n">mesh</span> <span class="o">=</span> <span class="n">nclocal</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">,</span> <span class="n">IND_DT</span><span class="p">,</span> <span class="p">(),)</span>
+            <span class="n">mesh</span><span class="o">.</span><span class="n">cf_role</span> <span class="o">=</span> <span class="s2">&quot;mesh_topology&quot;</span>
+            <span class="n">mesh</span><span class="o">.</span><span class="n">long_name</span> <span class="o">=</span> <span class="s2">&quot;Topology data of 2D unstructured mesh&quot;</span>
+            <span class="n">mesh</span><span class="o">.</span><span class="n">topology_dimension</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">mesh</span><span class="o">.</span><span class="n">node_coordinates</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_node_lon </span><span class="si">{0}</span><span class="s2">_node_lat&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">)</span>  <span class="c1"># noqa</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Attribute required if variables will be defined on edges.</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">edge_node_connectivity</span> <span class="o">=</span> <span class="n">mesh_name</span> <span class="o">+</span> <span class="s2">&quot;_edge_nodes&quot;</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_coordinates</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># Optional attribute (requires edge_node_connectivity).</span>
+                    <span class="n">coord</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_edge_lon </span><span class="si">{0}</span><span class="s2">_edge_lat&quot;</span><span class="o">.</span><span class="n">format</span>
+                    <span class="n">mesh</span><span class="o">.</span><span class="n">edge_coordinates</span> <span class="o">=</span> <span class="n">coord</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">face_node_connectivity</span> <span class="o">=</span> <span class="n">mesh_name</span> <span class="o">+</span> <span class="s2">&quot;_face_nodes&quot;</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_coordinates</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># Optional attribute.</span>
+                    <span class="n">coord</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_face_lon </span><span class="si">{0}</span><span class="s2">_face_lat&quot;</span><span class="o">.</span><span class="n">format</span>
+                    <span class="n">mesh</span><span class="o">.</span><span class="n">face_coordinates</span> <span class="o">=</span> <span class="n">coord</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_edge_connectivity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Optional attribute (requires edge_node_connectivity).</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">face_edge_connectivity</span> <span class="o">=</span> <span class="n">mesh_name</span> <span class="o">+</span> <span class="s2">&quot;_face_edges&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_face_connectivity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Optional attribute.</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">face_face_connectivity</span> <span class="o">=</span> <span class="n">mesh_name</span> <span class="o">+</span> <span class="s2">&quot;_face_links&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundaries</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">mesh</span><span class="o">.</span><span class="n">boundary_node_connectivity</span> <span class="o">=</span> <span class="n">mesh_name</span> <span class="o">+</span> <span class="s2">&quot;_boundary_nodes&quot;</span>
+
+            <span class="c1"># FIXME: This could be re-factored to be more generic, rather than</span>
+            <span class="c1"># separate for each type of data see the coordinates example below.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">nc_create_var</span> <span class="o">=</span> <span class="n">nclocal</span><span class="o">.</span><span class="n">createVariable</span>
+                <span class="n">face_nodes</span> <span class="o">=</span> <span class="n">nc_create_var</span><span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s2">&quot;_face_nodes&quot;</span><span class="p">,</span> <span class="n">IND_DT</span><span class="p">,</span>
+                                           <span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;_num_face&#39;</span><span class="p">,</span>
+                                            <span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;_num_vertices&#39;</span><span class="p">),)</span>
+                <span class="n">face_nodes</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces</span>
+
+                <span class="n">face_nodes</span><span class="o">.</span><span class="n">cf_role</span> <span class="o">=</span> <span class="s2">&quot;face_node_connectivity&quot;</span>
+                <span class="n">face_nodes</span><span class="o">.</span><span class="n">long_name</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Maps every triangular face to &quot;</span>
+                                        <span class="s2">&quot;its three corner nodes.&quot;</span><span class="p">)</span>
+                <span class="n">face_nodes</span><span class="o">.</span><span class="n">start_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">nc_create_var</span> <span class="o">=</span> <span class="n">nclocal</span><span class="o">.</span><span class="n">createVariable</span>
+                <span class="n">edge_nodes</span> <span class="o">=</span> <span class="n">nc_create_var</span><span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s2">&quot;_edge_nodes&quot;</span><span class="p">,</span> <span class="n">IND_DT</span><span class="p">,</span>
+                                           <span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;_num_edge&#39;</span><span class="p">,</span> <span class="s1">&#39;two&#39;</span><span class="p">),)</span>
+                <span class="n">edge_nodes</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span>
+
+                <span class="n">edge_nodes</span><span class="o">.</span><span class="n">cf_role</span> <span class="o">=</span> <span class="s2">&quot;edge_node_connectivity&quot;</span>
+                <span class="n">edge_nodes</span><span class="o">.</span><span class="n">long_name</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Maps every edge to the two &quot;</span>
+                                        <span class="s2">&quot;nodes that it connects.&quot;</span><span class="p">)</span>
+                <span class="n">edge_nodes</span><span class="o">.</span><span class="n">start_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundaries</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">nc_create_var</span> <span class="o">=</span> <span class="n">nclocal</span><span class="o">.</span><span class="n">createVariable</span>
+                <span class="n">boundary_nodes</span> <span class="o">=</span> <span class="n">nc_create_var</span><span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s2">&quot;_boundary_nodes&quot;</span><span class="p">,</span>
+                                               <span class="n">IND_DT</span><span class="p">,</span>
+                                               <span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;_num_boundary&#39;</span><span class="p">,</span>
+                                                <span class="s1">&#39;two&#39;</span><span class="p">),)</span>
+                <span class="n">boundary_nodes</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundaries</span>
+
+                <span class="n">boundary_nodes</span><span class="o">.</span><span class="n">cf_role</span> <span class="o">=</span> <span class="s2">&quot;boundary_node_connectivity&quot;</span>
+                <span class="n">boundary_nodes</span><span class="o">.</span><span class="n">long_name</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Maps every boundary segment to &quot;</span>
+                                            <span class="s2">&quot;the two nodes that it connects.&quot;</span><span class="p">)</span>
+                <span class="n">boundary_nodes</span><span class="o">.</span><span class="n">start_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># Optional &quot;coordinate variables.&quot;</span>
+            <span class="k">for</span> <span class="n">location</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;face&#39;</span><span class="p">,</span> <span class="s1">&#39;edge&#39;</span><span class="p">,</span> <span class="s1">&#39;boundary&#39;</span><span class="p">]:</span>
+                <span class="n">loc</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_coordinates&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">ind</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;lat&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;lon&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]:</span>
+                        <span class="n">nc_create_var</span> <span class="o">=</span> <span class="n">nclocal</span><span class="o">.</span><span class="n">createVariable</span>
+                        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_</span><span class="si">{1}</span><span class="s2">_</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+                        <span class="n">dimensions</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_num_</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">,</span> <span class="n">location</span><span class="p">)</span>
+                        <span class="n">var</span> <span class="o">=</span> <span class="n">nc_create_var</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">NODE_DT</span><span class="p">,</span>
+                                            <span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="n">dimensions</span><span class="p">),)</span>
+                        <span class="n">loc</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_coordinates&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">location</span><span class="p">)</span>
+                        <span class="n">var</span><span class="p">[:]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">)[:,</span> <span class="n">ind</span><span class="p">]</span>
+                        <span class="c1"># Attributes of the variable.</span>
+                        <span class="n">var</span><span class="o">.</span><span class="n">standard_name</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;longitude&quot;</span> <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;lon&#39;</span>
+                                             <span class="k">else</span> <span class="s1">&#39;latitude&#39;</span><span class="p">)</span>
+                        <span class="n">var</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;degrees_east&quot;</span> <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="s1">&#39;lon&#39;</span>
+                                     <span class="k">else</span> <span class="s1">&#39;degrees_north&#39;</span><span class="p">)</span>
+                        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Characteristics </span><span class="si">{0}</span><span class="s2"> of 2D mesh </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span>
+                        <span class="n">var</span><span class="o">.</span><span class="n">long_name</span> <span class="o">=</span> <span class="n">name</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">standard_name</span><span class="p">,</span> <span class="n">location</span><span class="p">)</span>
+
+            <span class="c1"># The node data.</span>
+            <span class="n">node_lon</span> <span class="o">=</span> <span class="n">nclocal</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;_node_lon&#39;</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                                              <span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;_num_node&#39;</span><span class="p">,),</span>
+                                              <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">),),</span>
+                                              <span class="c1"># zlib=False,</span>
+                                              <span class="c1"># complevel=0,</span>
+                                              <span class="p">)</span>
+            <span class="n">node_lon</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">node_lon</span><span class="o">.</span><span class="n">standard_name</span> <span class="o">=</span> <span class="s2">&quot;longitude&quot;</span>
+            <span class="n">node_lon</span><span class="o">.</span><span class="n">long_name</span> <span class="o">=</span> <span class="s2">&quot;Longitude of 2D mesh nodes.&quot;</span>
+            <span class="n">node_lon</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="s2">&quot;degrees_east&quot;</span>
+
+            <span class="n">node_lat</span> <span class="o">=</span> <span class="n">nclocal</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;_node_lat&#39;</span><span class="p">,</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                                              <span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;_num_node&#39;</span><span class="p">,),</span>
+                                              <span class="n">chunksizes</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">),),</span>
+                                              <span class="c1"># zlib=False,</span>
+                                              <span class="c1"># complevel=0,</span>
+                                              <span class="p">)</span>
+            <span class="n">node_lat</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">node_lat</span><span class="o">.</span><span class="n">standard_name</span> <span class="o">=</span> <span class="s2">&quot;latitude&quot;</span>
+            <span class="n">node_lat</span><span class="o">.</span><span class="n">long_name</span> <span class="o">=</span> <span class="s2">&quot;Latitude of 2D mesh nodes.&quot;</span>
+            <span class="n">node_lat</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="s2">&quot;degrees_north&quot;</span>
+
+            <span class="c1"># Write the associated data.</span>
+            <span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;node&#39;</span><span class="p">:</span>
+                    <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;_num_node&#39;</span><span class="p">,)</span>
+                    <span class="n">coordinates</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_node_lon </span><span class="si">{0}</span><span class="s2">_node_lat&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">)</span>
+                    <span class="n">chunksizes</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">),)</span>
+                <span class="k">elif</span> <span class="n">dataset</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;face&#39;</span><span class="p">:</span>
+                    <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;_num_face&#39;</span><span class="p">,)</span>
+                    <span class="n">coord</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_face_lon </span><span class="si">{0}</span><span class="s2">_face_lat&quot;</span><span class="o">.</span><span class="n">format</span>
+                    <span class="n">coordinates</span> <span class="o">=</span> <span class="p">(</span><span class="n">coord</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_coordinates</span>
+                                   <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="n">chunksizes</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">faces</span><span class="p">),)</span>
+                <span class="k">elif</span> <span class="n">dataset</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;edge&#39;</span><span class="p">:</span>
+                    <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;_num_edge&#39;</span><span class="p">,)</span>
+                    <span class="n">coord</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_edge_lon </span><span class="si">{0}</span><span class="s2">_edge_lat&quot;</span><span class="o">.</span><span class="n">format</span>
+                    <span class="n">coordinates</span> <span class="o">=</span> <span class="p">(</span><span class="n">coord</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_coordinates</span>
+                                   <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="n">chunksizes</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">),)</span>
+                <span class="k">elif</span> <span class="n">dataset</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;boundary&#39;</span><span class="p">:</span>
+                    <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">mesh_name</span> <span class="o">+</span> <span class="s1">&#39;_num_boundary&#39;</span><span class="p">,)</span>
+                    <span class="n">coord</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_boundary_lon </span><span class="si">{0}</span><span class="s2">_boundary_lat&quot;</span><span class="o">.</span><span class="n">format</span>
+                    <span class="n">bcoord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary_coordinates</span>
+                    <span class="n">coordinates</span> <span class="o">=</span> <span class="p">(</span><span class="n">coord</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">)</span> <span class="k">if</span> <span class="n">bcoord</span>
+                                   <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="n">chunksizes</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">boundaries</span><span class="p">),)</span>
+                <span class="n">data_var</span> <span class="o">=</span> <span class="n">nclocal</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                                  <span class="n">dataset</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                                                  <span class="n">shape</span><span class="p">,</span>
+                                                  <span class="n">chunksizes</span><span class="o">=</span><span class="n">chunksizes</span><span class="p">,</span>
+                                                  <span class="c1"># zlib=False,</span>
+                                                  <span class="c1"># complevel=0,</span>
+                                                  <span class="p">)</span>
+                <span class="n">data_var</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">data</span>
+                <span class="c1"># Add the standard attributes:</span>
+                <span class="n">data_var</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">location</span>
+                <span class="n">data_var</span><span class="o">.</span><span class="n">mesh</span> <span class="o">=</span> <span class="n">mesh_name</span>
+                <span class="k">if</span> <span class="n">coordinates</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">data_var</span><span class="o">.</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">coordinates</span>
+                <span class="c1"># Add the extra attributes.</span>
+                <span class="k">for</span> <span class="n">att_name</span><span class="p">,</span> <span class="n">att_value</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">data_var</span><span class="p">,</span> <span class="n">att_name</span><span class="p">,</span> <span class="n">att_value</span><span class="p">)</span>
+            <span class="n">nclocal</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright .
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'0.0.8',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

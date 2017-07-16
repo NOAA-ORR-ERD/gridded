@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gridded API &mdash; gridded 0.0.8 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="gridded 0.0.8 documentation" href="index.html"/>
+        <link rel="next" title="gridded package" href="gridded.html"/>
+        <link rel="prev" title="Tutorial" href="tutorial.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> gridded
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#goals">Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#why-gridded">Why gridded?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#data-standards">Data standards</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installing.html#pip">pip</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installing.html#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installing.html#conda">conda</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installing.html#conda-forge">conda-forge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installing.html#environments">Environments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grid-objects">Grid objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#variable-objects">Variable objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#time-object">Time object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#depth-object">Depth object</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#design-principles">Design Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#grid-independence">Grid Independence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#duck-typing">Duck Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lazy-loading-data-arrays">Lazy loading / data arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#reference">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gridded.html">gridded package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.depth">gridded.depth module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.gridded">gridded.gridded module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.grids">gridded.grids module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.time">gridded.time module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.utilities">gridded.utilities module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.variable">gridded.variable module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">gridded</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/api_reference.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gridded-api">
+<h1><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code><a class="headerlink" href="#gridded-api" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal"><span class="pre">gridded</span></code> API is built around a few core object types. In the general case, model results are delivered in a file or collection of files that contain a definition of the grid and data (or variables) that are associated with that grid. Depending on use-case, it can make sense to work with the entire collection of data and grid, or to work with just a couple of particular variables. The <code class="docutils literal"><span class="pre">gridded</span></code> object model is designed to allow either use case.</p>
+<div class="section" id="gridded-dataset">
+<h2><code class="docutils literal"><span class="pre">gridded.Dataset</span></code><a class="headerlink" href="#gridded-dataset" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="gridded.html#gridded.gridded.Dataset" title="gridded.gridded.Dataset"><code class="xref py py-class docutils literal"><span class="pre">gridded.gridded.Dataset</span></code></a> object represents the entire gridded dataset. It more-or-less maps to what is usually found in a CF-compliant netcdf file output from a model run.</p>
+<p>A :class:<code class="docutils literal"><span class="pre">gridded.gridded.Dataset</span></code> contains a few core pieces of information:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Attributes of the whole dataset</li>
+<li>A Grid object – this is a duck-typed grid object that could be any of the supported grid types.</li>
+<li>A dict of <a class="reference internal" href="gridded.html#gridded.variable.Variable" title="gridded.variable.Variable"><code class="xref py py-class docutils literal"><span class="pre">gridded.variable.Variable</span></code></a> objects – names as the key</li>
+<li>Assorted utilities for accessing, saving, and loading the data.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="grid-objects">
+<h2>Grid objects<a class="headerlink" href="#grid-objects" title="Permalink to this headline">¶</a></h2>
+<p>Grid objects represent the grid itself, and contain functionality to work with the grid that requires specific knowledge of grid types, such as interpolation searching, etc.</p>
+<p>The <a class="reference internal" href="gridded.html#gridded.grids.GridBase" title="gridded.grids.GridBase"><code class="xref py py-class docutils literal"><span class="pre">gridded.grids.GridBase</span></code></a> object provides shared functionality that all Grids require. It does not (but probably should) specify the full Grid API.</p>
+</div>
+<div class="section" id="variable-objects">
+<h2>Variable objects<a class="headerlink" href="#variable-objects" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="gridded.html#gridded.variable.Variable" title="gridded.variable.Variable"><code class="xref py py-class docutils literal"><span class="pre">gridded.variable.Variable</span></code></a> contains the data associated with a particular quantity in the <code class="docutils literal"><span class="pre">Dataset</span></code>. It maps more-or-less to a netcdf Variable, with a name, attributes, and an array that holds the actual data. It also holds a reference to the Grid, Time, and Depth objects for the Grid that it is defined on, so that it can use those object to perform interpolation, etc.</p>
+<p>The idea is that a Variable represents a continuous field of some property in 4-D space (lat, lon, depth, time).</p>
+</div>
+<div class="section" id="time-object">
+<h2>Time object<a class="headerlink" href="#time-object" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="gridded.html#gridded.time.Time" title="gridded.time.Time"><code class="xref py py-class docutils literal"><span class="pre">gridded.time.Time</span></code></a> object represent the time axis of the dataset, providing interpolation in time for Variables.</p>
+</div>
+<div class="section" id="depth-object">
+<h2>Depth object<a class="headerlink" href="#depth-object" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="gridded.html#gridded.depth.Depth" title="gridded.depth.Depth"><code class="xref py py-class docutils literal"><span class="pre">gridded.depth.Depth</span></code></a> objects represent the depth axis of the data set, it provides an abstraction around various vertical coordinate schemes, and provides interpolation in depth for Variables.</p>
+</div>
+</div>
+<div class="section" id="design-principles">
+<h1>Design Principles<a class="headerlink" href="#design-principles" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="grid-independence">
+<h2>Grid Independence<a class="headerlink" href="#grid-independence" title="Permalink to this headline">¶</a></h2>
+<p>The primary goal of <code class="docutils literal"><span class="pre">gridded</span></code> is for an end-user to be able to do data analysis and visualization without needing to understand the intricacies of the grid structure, and ideally to no have to even know what grid a particular dataset or variable is using.</p>
+<p>For example one should be able to plot a time series of a parameter, like sea surface temperature, with exactly the same code regardless of the underlying grid:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">gridded</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">path_to_file</span><span class="p">)</span>
+<span class="n">sst</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">get_variables_by_attributes</span><span class="p">(</span><span class="n">standard_name</span><span class="o">=</span><span class="s1">&#39;sea_surface_temperature&#39;</span><span class="p">)</span>
+<span class="n">time_series</span> <span class="o">=</span> <span class="n">sst</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The user can now plot the time series for a given location and times, without having to know anything about the grid structure.</p>
+</div>
+<div class="section" id="duck-typing">
+<h2>Duck Typing<a class="headerlink" href="#duck-typing" title="Permalink to this headline">¶</a></h2>
+<p>These are for the most part “duck typed”, rather than strict subclassing. Though there are base classes that provide shared functionality.</p>
+<p>We are trying to be clear about the “public” vs “private” API by using leading underscores for methods and attributes not intended for external use.</p>
+</div>
+<div class="section" id="lazy-loading-data-arrays">
+<h2>Lazy loading / data arrays<a class="headerlink" href="#lazy-loading-data-arrays" title="Permalink to this headline">¶</a></h2>
+<p>Many of the datasets users need to work with can be quite large. As a result it is impractical to load entire datasets into memory at once. <code class="docutils literal"><span class="pre">gridded</span></code> for the most part shifts the burden of handling lazy loading to external libraries, and does this by keeping data stored in a “numpy array-like” objects. Users can use pure numpy arrays, or any object that “acts” like a numpy array. This should allow <code class="docutils literal"><span class="pre">gridded</span></code> to work with netcdf variables, hdf5 arrays, dask arrays, etc.</p>
+<p>In practice, there is no clear definition of “array-like”, so <code class="docutils literal"><span class="pre">gridded</span></code> has defined its own definition, based on features we know we need. But it is assumed that nd indexing behaves that same as numpy arrays – as there is no way to easily confirm that.</p>
+<p>To support that, we support converting and testing for array-like with:</p>
+<p><code class="docutils literal"><span class="pre">gridded.utils.asarraylike()</span></code></p>
+<p>and</p>
+<p><code class="docutils literal"><span class="pre">gridded.utils.isarraylike()</span></code></p>
+</div>
+</div>
+<div class="section" id="reference">
+<h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="gridded.html">gridded package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gridded.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gridded.pysgrid.html">gridded.pysgrid package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pysgrid.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pysgrid.html#module-gridded.pysgrid.lookup">gridded.pysgrid.lookup module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pysgrid.html#module-gridded.pysgrid.processing_2d">gridded.pysgrid.processing_2d module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pysgrid.html#module-gridded.pysgrid.read_netcdf">gridded.pysgrid.read_netcdf module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pysgrid.html#module-gridded.pysgrid.sgrid">gridded.pysgrid.sgrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pysgrid.html#module-gridded.pysgrid.utils">gridded.pysgrid.utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pysgrid.html#module-gridded.pysgrid.variables">gridded.pysgrid.variables module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pysgrid.html#module-gridded.pysgrid">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.pyugrid.html">gridded.pyugrid package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pyugrid.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pyugrid.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pyugrid.html#module-gridded.pyugrid.read_netcdf">gridded.pyugrid.read_netcdf module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pyugrid.html#module-gridded.pyugrid.ugrid">gridded.pyugrid.ugrid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pyugrid.html#module-gridded.pyugrid.util">gridded.pyugrid.util module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pyugrid.html#module-gridded.pyugrid.uvar">gridded.pyugrid.uvar module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.pyugrid.html#module-gridded.pyugrid">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.tests.html">gridded.tests package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests.gen_analytical_datasets">gridded.tests.gen_analytical_datasets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests.test_dataset">gridded.tests.test_dataset module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests.test_grid">gridded.tests.test_grid module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests.test_property">gridded.tests.test_property module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests.test_time">gridded.tests.test_time module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests.test_utilities">gridded.tests.test_utilities module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests.utilities">gridded.tests.utilities module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="gridded.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridded.html#module-gridded.depth">gridded.depth module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridded.html#module-gridded.gridded">gridded.gridded module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridded.html#module-gridded.grids">gridded.grids module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridded.html#module-gridded.time">gridded.time module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridded.html#module-gridded.utilities">gridded.utilities module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridded.html#module-gridded.variable">gridded.variable module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridded.html#module-gridded">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="gridded.html" class="btn btn-neutral float-right" title="gridded package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tutorial.html" class="btn btn-neutral" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright .
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.8',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,315 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installing &mdash; gridded 0.0.8 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="gridded 0.0.8 documentation" href="index.html"/>
+        <link rel="next" title="Tutorial" href="tutorial.html"/>
+        <link rel="prev" title="Overview" href="overview.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> gridded
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#goals">Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#why-gridded">Why gridded?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#data-standards">Data standards</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pip">pip</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#conda">conda</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#conda-forge">conda-forge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#environments">Environments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#grid-objects">Grid objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#variable-objects">Variable objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#time-object">Time object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#depth-object">Depth object</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html#design-principles">Design Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#grid-independence">Grid Independence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#duck-typing">Duck Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#lazy-loading-data-arrays">Lazy loading / data arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html#reference">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gridded.html">gridded package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#gridded-depth-module">gridded.depth module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#gridded-gridded-module">gridded.gridded module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#gridded-grids-module">gridded.grids module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#gridded-time-module">gridded.time module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#gridded-utilities-module">gridded.utilities module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#gridded-variable-module">gridded.variable module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">gridded</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Installing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/installing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installing">
+<h1>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">gridded</span></code> itself is pure python and easy to install from source or packages. However, it does rely on a number of complex compiled dependencies, notable netCDF4 and celltree2d.</p>
+<div class="section" id="pip">
+<h2>pip<a class="headerlink" href="#pip" title="Permalink to this headline">¶</a></h2>
+<p>As of yet, there is no package on PyPi, so a plain <code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gridded</span></code> Will not work.</p>
+<p>However, if you are managing your packages with pip, then you can use pip to install from source or gitHub:</p>
+<div class="section" id="from-source">
+<h3>From source<a class="headerlink" href="#from-source" title="Permalink to this headline">¶</a></h3>
+<p>Either make a clone of the gitHub repo or download a source tarball and unpack it.</p>
+<p>Then, in the <code class="docutils literal"><span class="pre">gridded</span></code> dir:</p>
+<p><code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">./</span></code></p>
+<p>or, if you want to contribute to the code, you can install in editable mode:</p>
+<p><code class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">./</span></code></p>
+</div>
+</div>
+<div class="section" id="conda">
+<h2>conda<a class="headerlink" href="#conda" title="Permalink to this headline">¶</a></h2>
+<p>The conda system provides a way to manage complex compiled packages:</p>
+<p><a class="reference external" href="https://conda.io/docs/intro.html">https://conda.io/docs/intro.html</a></p>
+<p>You can install a base conda system with either the Anaconda distribution, or miniconda:</p>
+<p><a class="reference external" href="https://www.continuum.io/downloads">https://www.continuum.io/downloads</a></p>
+<p><a class="reference external" href="https://conda.io/miniconda.html">https://conda.io/miniconda.html</a></p>
+<div class="section" id="conda-forge">
+<h3>conda-forge<a class="headerlink" href="#conda-forge" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">gridded</span></code> has some dependencies that are not supported in the default conda channel. These are all support on the conda-forge channel:</p>
+<p><a class="reference external" href="https://anaconda.org/conda-forge">https://anaconda.org/conda-forge</a></p>
+<p>You can add the channel to your system with:</p>
+<p><code class="docutils literal"><span class="pre">conda</span> <span class="pre">config</span> <span class="pre">--add</span> <span class="pre">channels</span> <span class="pre">conda-forge</span></code></p>
+<p>Dependencies are listed in <code class="docutils literal"><span class="pre">conda_requirements.txt</span></code>, and can be installed with:</p>
+<p><code class="docutils literal"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">--file</span> <span class="pre">conda_requirements.txt</span></code></p>
+<p>If you want to develop, test or work with the examples, you will need the development requirements as well:</p>
+<p><code class="docutils literal"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">--file</span> <span class="pre">conda_requirements_dev.txt</span></code></p>
+</div>
+<div class="section" id="environments">
+<h3>Environments<a class="headerlink" href="#environments" title="Permalink to this headline">¶</a></h3>
+<p>There are also a few “environment files” that will directly build a conda environment for you:</p>
+<p><code class="docutils literal"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-f</span> <span class="pre">py2_environment.yml</span></code></p>
+<p>For python2, and:</p>
+<p><code class="docutils literal"><span class="pre">py3_environment.yml</span></code></p>
+<p>For python 3</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tutorial.html" class="btn btn-neutral float-right" title="Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="overview.html" class="btn btn-neutral" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright .
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.8',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

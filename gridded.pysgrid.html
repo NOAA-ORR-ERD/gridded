@@ -1,0 +1,979 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gridded.pysgrid package &mdash; gridded 0.0.8 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="gridded 0.0.8 documentation" href="index.html"/>
+        <link rel="up" title="gridded package" href="gridded.html"/>
+        <link rel="next" title="gridded.pyugrid package" href="gridded.pyugrid.html"/>
+        <link rel="prev" title="gridded package" href="gridded.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> gridded
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#goals">Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#why-gridded">Why gridded?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#data-standards">Data standards</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installing.html#pip">pip</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installing.html#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installing.html#conda">conda</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installing.html#conda-forge">conda-forge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installing.html#environments">Environments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#grid-objects">Grid objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#variable-objects">Variable objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#time-object">Time object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#depth-object">Depth object</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html#design-principles">Design Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#grid-independence">Grid Independence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#duck-typing">Duck Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#lazy-loading-data-arrays">Lazy loading / data arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="api_reference.html#reference">Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="gridded.html">gridded package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="gridded.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.depth">gridded.depth module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.gridded">gridded.gridded module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.grids">gridded.grids module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.time">gridded.time module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.utilities">gridded.utilities module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.variable">gridded.variable module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">gridded</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a> &raquo;</li>
+        
+          <li><a href="gridded.html">gridded package</a> &raquo;</li>
+        
+      <li>gridded.pysgrid package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/gridded.pysgrid.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gridded-pysgrid-package">
+<h1>gridded.pysgrid package<a class="headerlink" href="#gridded-pysgrid-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gridded.pysgrid.lookup">
+<span id="gridded-pysgrid-lookup-module"></span><h2>gridded.pysgrid.lookup module<a class="headerlink" href="#module-gridded.pysgrid.lookup" title="Permalink to this headline">¶</a></h2>
+<p>Created on Mar 24, 2015</p>
+<p>&#64;author: ayan</p>
+</div>
+<div class="section" id="module-gridded.pysgrid.processing_2d">
+<span id="gridded-pysgrid-processing-2d-module"></span><h2>gridded.pysgrid.processing_2d module<a class="headerlink" href="#module-gridded.pysgrid.processing_2d" title="Permalink to this headline">¶</a></h2>
+<p>Created on Apr 2, 2015</p>
+<p>&#64;author: ayan</p>
+<dl class="function">
+<dt id="gridded.pysgrid.processing_2d.avg_to_cell_center">
+<code class="descclassname">gridded.pysgrid.processing_2d.</code><code class="descname">avg_to_cell_center</code><span class="sig-paren">(</span><em>data_array</em>, <em>avg_dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/processing_2d.html#avg_to_cell_center"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.processing_2d.avg_to_cell_center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a two-dimensional numpy.array, average
+adjacent row values (avg_dim=1) or adjacent
+column values (avg_dim=0) to the grid cell
+center.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data_array</strong> (<em>numpy.array</em>) – 2-dimensional data</li>
+<li><strong>avg_dim</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – integer specify array axis to be averaged</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">averages</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.processing_2d.rotate_vectors">
+<code class="descclassname">gridded.pysgrid.processing_2d.</code><code class="descname">rotate_vectors</code><span class="sig-paren">(</span><em>x_arr</em>, <em>y_arr</em>, <em>angle_arr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/processing_2d.html#rotate_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.processing_2d.rotate_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given x and y vectors in a projected coordinate
+system, rotate them by angles into a different
+coordinate system.</p>
+<p>All arrays must have the same dimensions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_arr</strong> (<em>numpy.array</em>) – array of x-directed vectors</li>
+<li><strong>y_arr</strong> (<em>numpy.array</em>) – array of y-directed vectors</li>
+<li><strong>angle_arr</strong> (<em>numpy.array</em>) – array of angles in radians</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">x and y arrays of rotated vectors</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/2/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.processing_2d.vector_sum">
+<code class="descclassname">gridded.pysgrid.processing_2d.</code><code class="descname">vector_sum</code><span class="sig-paren">(</span><em>x_arr</em>, <em>y_arr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/processing_2d.html#vector_sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.processing_2d.vector_sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the vector sum of arrays of
+x and y vectors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_arr</strong> (<em>numpy.array</em>) – array of x-directed vectors</li>
+<li><strong>y_arr</strong> (<em>numpy.array</em>) – array of y-directed vectors</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">array of vector sums</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gridded.pysgrid.read_netcdf">
+<span id="gridded-pysgrid-read-netcdf-module"></span><h2>gridded.pysgrid.read_netcdf module<a class="headerlink" href="#module-gridded.pysgrid.read_netcdf" title="Permalink to this headline">¶</a></h2>
+<p>Created on Mar 19, 2015</p>
+<p>&#64;author: ayan</p>
+<dl class="class">
+<dt id="gridded.pysgrid.read_netcdf.NetCDFDataset">
+<em class="property">class </em><code class="descclassname">gridded.pysgrid.read_netcdf.</code><code class="descname">NetCDFDataset</code><span class="sig-paren">(</span><em>nc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/read_netcdf.html#NetCDFDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.read_netcdf.NetCDFDataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="gridded.pysgrid.read_netcdf.NetCDFDataset.find_coordinates_by_location">
+<code class="descname">find_coordinates_by_location</code><span class="sig-paren">(</span><em>location_str</em>, <em>topology_dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/read_netcdf.html#NetCDFDataset.find_coordinates_by_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.read_netcdf.NetCDFDataset.find_coordinates_by_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a grid coordinates variables with a location attribute equal
+to location_str. This method can be used to infer edge, face, or
+volume coordinates from the location attribute of a variable.</p>
+<p>Location is a required attribute per SGRID conventions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>location_str</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – the location value to search for</li>
+<li><strong>topology_dim</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – the topology dimension of the grid</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.read_netcdf.NetCDFDataset.find_node_coordinates">
+<code class="descname">find_node_coordinates</code><span class="sig-paren">(</span><em>node_dimensions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/read_netcdf.html#NetCDFDataset.find_node_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.read_netcdf.NetCDFDataset.find_node_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the variables for the grid
+cell vertices.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.read_netcdf.NetCDFDataset.find_variables_by_attr">
+<code class="descname">find_variables_by_attr</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/read_netcdf.html#NetCDFDataset.find_variables_by_attr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.read_netcdf.NetCDFDataset.find_variables_by_attr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.read_netcdf.NetCDFDataset.sgrid_compliant_file">
+<code class="descname">sgrid_compliant_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/read_netcdf.html#NetCDFDataset.sgrid_compliant_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.read_netcdf.NetCDFDataset.sgrid_compliant_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether a dataset is
+SGRID compliant.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if dataset is compliant, raise an exception if it is not</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.read_netcdf.find_grid_topology_var">
+<code class="descclassname">gridded.pysgrid.read_netcdf.</code><code class="descname">find_grid_topology_var</code><span class="sig-paren">(</span><em>nc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/read_netcdf.html#find_grid_topology_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.read_netcdf.find_grid_topology_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the variable from a netCDF dataset
+that have a <cite>cf_role `attribute of ‘grid_topology’ and
+`topology_dimension</cite> of 2.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Params nc:</th><td class="field-body">netCDF dataset</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">variable name that contain grid topologies</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/string.html#module-string" title="(in Python v2.7)">string</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.read_netcdf.parse_axes">
+<code class="descclassname">gridded.pysgrid.read_netcdf.</code><code class="descname">parse_axes</code><span class="sig-paren">(</span><em>axes_attr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/read_netcdf.html#parse_axes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.read_netcdf.parse_axes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.read_netcdf.parse_padding">
+<code class="descclassname">gridded.pysgrid.read_netcdf.</code><code class="descname">parse_padding</code><span class="sig-paren">(</span><em>padding_str</em>, <em>mesh_topology_var</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/read_netcdf.html#parse_padding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.read_netcdf.parse_padding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use regex expressions to break apart an
+attribute string containing padding types
+for each variable with a cf_role of
+‘grid_topology’.</p>
+<p>Padding information is returned within a named tuple
+for each node dimension of an edge, face, or vertical
+dimension. The named tuples have the following attributes:
+mesh_topology_var, dim_name, dim_var, and padding.
+Padding information is returned as a list
+of these named tuples.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>padding_str</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – string containing padding types from
+a netCDF attribute.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">named tuples with padding information.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.read_netcdf.parse_vector_axis">
+<code class="descclassname">gridded.pysgrid.read_netcdf.</code><code class="descname">parse_vector_axis</code><span class="sig-paren">(</span><em>variable_standard_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/read_netcdf.html#parse_vector_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.read_netcdf.parse_vector_axis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-gridded.pysgrid.sgrid">
+<span id="gridded-pysgrid-sgrid-module"></span><h2>gridded.pysgrid.sgrid module<a class="headerlink" href="#module-gridded.pysgrid.sgrid" title="Permalink to this headline">¶</a></h2>
+<p>Created on Apr 20, 2015</p>
+<p>&#64;author: ayan</p>
+<dl class="class">
+<dt id="gridded.pysgrid.sgrid.SGrid">
+<em class="property">class </em><code class="descclassname">gridded.pysgrid.sgrid.</code><code class="descname">SGrid</code><span class="sig-paren">(</span><em>node_lon=None</em>, <em>node_lat=None</em>, <em>center_lon=None</em>, <em>center_lat=None</em>, <em>edge1_lon=None</em>, <em>edge1_lat=None</em>, <em>edge2_lon=None</em>, <em>edge2_lat=None</em>, <em>edges=None</em>, <em>node_padding=None</em>, <em>edge1_padding=None</em>, <em>edge2_padding=None</em>, <em>grid_topology_var=None</em>, <em>variables=None</em>, <em>grid_variables=None</em>, <em>dimensions=None</em>, <em>node_dimensions=None</em>, <em>node_coordinates=None</em>, <em>edge1_coordinates=None</em>, <em>edge2_coordinates=None</em>, <em>angles=None</em>, <em>edge1_dimensions=None</em>, <em>edge2_dimensions=None</em>, <em>faces=None</em>, <em>face_padding=None</em>, <em>face_coordinates=None</em>, <em>face_dimensions=None</em>, <em>vertical_padding=None</em>, <em>vertical_dimensions=None</em>, <em>tree=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.all_padding">
+<code class="descname">all_padding</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.all_padding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.all_padding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.build_celltree">
+<code class="descname">build_celltree</code><span class="sig-paren">(</span><em>grid='node'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.build_celltree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.build_celltree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to build the celltree for grid defined by the node coordinates of the specified grid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>grid</strong> – which grid to biuld the celltree for. options are:
+‘node’, ‘edge1’, ‘edge2’, ‘center’</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.build_kdtree">
+<code class="descname">build_kdtree</code><span class="sig-paren">(</span><em>grid='node'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.build_kdtree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.build_kdtree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds the kdtree for the specified grid</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.fits_data">
+<code class="descname">fits_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.fits_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.fits_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.get_all_edge_padding">
+<code class="descname">get_all_edge_padding</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.get_all_edge_padding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.get_all_edge_padding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.get_all_face_padding">
+<code class="descname">get_all_face_padding</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.get_all_face_padding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.get_all_face_padding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.get_efficient_slice">
+<code class="descname">get_efficient_slice</code><span class="sig-paren">(</span><em>points</em>, <em>indices=None</em>, <em>grid='node'</em>, <em>_memo=False</em>, <em>_copy=False</em>, <em>_hash=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.get_efficient_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.get_efficient_slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>given minimum and maximum longitudes and latitudes, find
+the most efficient slice for the specified grid that covers the
+entire specified area.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.get_variable_at_index">
+<code class="descname">get_variable_at_index</code><span class="sig-paren">(</span><em>var</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.get_variable_at_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.get_variable_at_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.get_variable_by_index">
+<code class="descname">get_variable_by_index</code><span class="sig-paren">(</span><em>var</em>, <em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.get_variable_by_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.get_variable_by_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>index = index arr of quads (maskedarray only)
+var = ndarray/ma.array
+returns ndarray/ma.array</p>
+<p>ordering is idx, idx+[0,1], idx+[1,1], idx+[1,0]
+masked values from var remain masked</p>
+<p>Function to get the node values of a given face index.
+Emulates the ‘self.grid.nodes[self.grid.nodes.faces[index]]’
+paradigm of unstructured grids.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.infer_location">
+<code class="descname">infer_location</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.infer_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.infer_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assuming default is psi grid, check variable dimensions to determine which grid
+it is on.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.pysgrid.sgrid.SGrid.info">
+<code class="descname">info</code><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>summary of information about the grid</p>
+<p>this needs to be implimented – see UGrid for example</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.interpolate_var_to_points">
+<code class="descname">interpolate_var_to_points</code><span class="sig-paren">(</span><em>points</em>, <em>variable</em>, <em>indices=None</em>, <em>grid=None</em>, <em>alphas=None</em>, <em>mask=None</em>, <em>slices=None</em>, <em>_memo=False</em>, <em>slice_grid=True</em>, <em>_hash=None</em>, <em>_copy=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.interpolate_var_to_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.interpolate_var_to_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolates a variable on one of the grids to an array of points.
+:param points: Nx2 Array of points to be interpolated to.
+:param variable: Variable data array with the same shape as one of the grids.
+:param indices: If computed already, array of Nx2 indices can be passed in to increase speed. # noqa
+:param alphas: If computed already, array of Nx4 alphas can be passed in to increase speed. # noqua
+:param mask: under development.</p>
+<ul class="simple">
+<li>With a numpy array:</li>
+</ul>
+<p>sgrid.interpolate_var_to_points(points, sgrid.u[time_idx, depth_idx])
+- With a raw netCDF Variable:
+sgrid.interpolate_var_to_points(points, nc.variables[‘u’], slices=[time_idx, depth_idx])</p>
+<p>If you have pre-computed information, you can pass it in to avoid unnecessary
+computation and increase performance.
+- ind = # precomputed indices of points
+- alphas = # precomputed alphas (useful if interpolating to the same points frequently)</p>
+<p>sgrid.interpolate_var_to_points(points, sgrid.u, indices=ind, alphas=alphas,
+slices=[time_idx, depth_idx])</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.interpolation_alphas">
+<code class="descname">interpolation_alphas</code><span class="sig-paren">(</span><em>points</em>, <em>indices=None</em>, <em>grid='center'</em>, <em>_memo=False</em>, <em>_copy=False</em>, <em>_hash=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.interpolation_alphas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.interpolation_alphas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a list of Nx2 points, returns a Nx4 array of weights for
+interpolating the corners of the cells containing the points
+to the points.</p>
+<p>Primary sources:
+<a class="reference external" href="http://www.iquilezles.org/www/articles/ibilinear/ibilinear.htm">http://www.iquilezles.org/www/articles/ibilinear/ibilinear.htm</a>
+<a class="reference external" href="https://www.particleincell.com/2012/quad-interpolation/">https://www.particleincell.com/2012/quad-interpolation/</a>
+Implemented math is a combination of the two</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="gridded.pysgrid.sgrid.SGrid.load_grid">
+<em class="property">classmethod </em><code class="descname">load_grid</code><span class="sig-paren">(</span><em>nc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.load_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.load_grid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.locate_faces">
+<code class="descname">locate_faces</code><span class="sig-paren">(</span><em>points</em>, <em>grid</em>, <em>_memo=False</em>, <em>_copy=False</em>, <em>_hash=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.locate_faces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.locate_faces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the node grid indices, one per point.</p>
+<p>Points that are not on the node grid will have an index of -1</p>
+<p>If a single point is passed in, a single index will be returned.
+If a sequence of points is passed in an array of indexes will be returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>points</strong> (<em>array-like containing one</em><em> or </em><em>more points: shape</em><em> (</em><em>2</em><em>,</em><em>) </em><em>for one point</em><em>,
+</em><a class="reference internal" href="gridded.html#gridded.grids.GridBase.shape" title="gridded.grids.GridBase.shape"><em>shape</em></a><em> (</em><em>N</em><em>, </em><em>2</em><em>) </em><em>for more than one point.</em>) – The points that you want to locate – (lon, lat). If the shape of point
+is 1D, function will return a scalar index. If it is 2D, it will return
+a 1D array of indices.</li>
+<li><strong>grid</strong> (<em>Name of the grid</em><em> (</em><em>'node'</em><em>, </em><em>'center'</em><em>, </em><em>'edge1'</em><em>, </em><em>'edge2</em><em>)</em>) – The grid on which you want to locate the points</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This version utilizes the CellTree data structure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.locate_nearest">
+<code class="descname">locate_nearest</code><span class="sig-paren">(</span><em>points</em>, <em>grid</em>, <em>_memo=False</em>, <em>_copy=False</em>, <em>_hash=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.locate_nearest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.locate_nearest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.nearest_var_to_points">
+<code class="descname">nearest_var_to_points</code><span class="sig-paren">(</span><em>points</em>, <em>variable</em>, <em>indices=None</em>, <em>grid=None</em>, <em>alphas=None</em>, <em>mask=None</em>, <em>slices=None</em>, <em>_memo=False</em>, <em>slice_grid=True</em>, <em>_hash=None</em>, <em>_copy=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.nearest_var_to_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.nearest_var_to_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.pysgrid.sgrid.SGrid.nodes">
+<code class="descname">nodes</code><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.nodes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.pysgrid.sgrid.SGrid.non_grid_variables">
+<code class="descname">non_grid_variables</code><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.non_grid_variables" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.pysgrid.sgrid.SGrid.padding_slices">
+<code class="descname">padding_slices</code><em class="property"> = {'both': (1, -1), 'none': (None, None), 'low': (1, None), 'high': (None, 1)}</em><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.padding_slices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGrid.save_as_netcdf">
+<code class="descname">save_as_netcdf</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.save_as_netcdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.save_as_netcdf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.pysgrid.sgrid.SGrid.topology_dimension">
+<code class="descname">topology_dimension</code><em class="property"> = 2</em><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.topology_dimension" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gridded.pysgrid.sgrid.SGridAttributes">
+<em class="property">class </em><code class="descclassname">gridded.pysgrid.sgrid.</code><code class="descname">SGridAttributes</code><span class="sig-paren">(</span><em>nc</em>, <em>topology_dim</em>, <em>topology_variable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGridAttributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGridAttributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Class containing methods to help with getting the
+attributes for either SGrid.</p>
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGridAttributes.get_angles">
+<code class="descname">get_angles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGridAttributes.get_angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGridAttributes.get_angles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGridAttributes.get_attr_coordinates">
+<code class="descname">get_attr_coordinates</code><span class="sig-paren">(</span><em>attr_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGridAttributes.get_attr_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGridAttributes.get_attr_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGridAttributes.get_attr_dimension">
+<code class="descname">get_attr_dimension</code><span class="sig-paren">(</span><em>attr_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGridAttributes.get_attr_dimension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGridAttributes.get_attr_dimension" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGridAttributes.get_cell_center_lat_lon">
+<code class="descname">get_cell_center_lat_lon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGridAttributes.get_cell_center_lat_lon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGridAttributes.get_cell_center_lat_lon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGridAttributes.get_cell_edge1_lat_lon">
+<code class="descname">get_cell_edge1_lat_lon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGridAttributes.get_cell_edge1_lat_lon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGridAttributes.get_cell_edge1_lat_lon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGridAttributes.get_cell_edge2_lat_lon">
+<code class="descname">get_cell_edge2_lat_lon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGridAttributes.get_cell_edge2_lat_lon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGridAttributes.get_cell_edge2_lat_lon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGridAttributes.get_cell_node_lat_lon">
+<code class="descname">get_cell_node_lat_lon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGridAttributes.get_cell_node_lat_lon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGridAttributes.get_cell_node_lat_lon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGridAttributes.get_dimensions">
+<code class="descname">get_dimensions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGridAttributes.get_dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGridAttributes.get_dimensions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGridAttributes.get_node_coordinates">
+<code class="descname">get_node_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGridAttributes.get_node_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGridAttributes.get_node_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGridAttributes.get_topology_var">
+<code class="descname">get_topology_var</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGridAttributes.get_topology_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGridAttributes.get_topology_var" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.pysgrid.sgrid.SGridAttributes.get_variable_attributes">
+<code class="descname">get_variable_attributes</code><span class="sig-paren">(</span><em>sgrid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGridAttributes.get_variable_attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGridAttributes.get_variable_attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.sgrid.load_grid">
+<code class="descclassname">gridded.pysgrid.sgrid.</code><code class="descname">load_grid</code><span class="sig-paren">(</span><em>nc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#load_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.load_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a SGrid object from a netCDF4.Dataset or file/URL.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>or netCDF4.Dataset nc</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – a netCDF4 Dataset or URL/filepath
+to the netCDF file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">SGrid object</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#gridded.pysgrid.sgrid.SGrid" title="gridded.pysgrid.sgrid.SGrid">sgrid.SGrid</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gridded.pysgrid.utils">
+<span id="gridded-pysgrid-utils-module"></span><h2>gridded.pysgrid.utils module<a class="headerlink" href="#module-gridded.pysgrid.utils" title="Permalink to this headline">¶</a></h2>
+<p>Created on Mar 23, 2015</p>
+<p>&#64;author: ayan</p>
+<dl class="class">
+<dt id="gridded.pysgrid.utils.GridPadding">
+<em class="property">class </em><code class="descclassname">gridded.pysgrid.utils.</code><code class="descname">GridPadding</code><span class="sig-paren">(</span><em>mesh_topology_var</em>, <em>face_dim</em>, <em>node_dim</em>, <em>padding</em><span class="sig-paren">)</span><a class="headerlink" href="#gridded.pysgrid.utils.GridPadding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">tuple</span></code></p>
+<dl class="attribute">
+<dt id="gridded.pysgrid.utils.GridPadding.face_dim">
+<code class="descname">face_dim</code><a class="headerlink" href="#gridded.pysgrid.utils.GridPadding.face_dim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.pysgrid.utils.GridPadding.mesh_topology_var">
+<code class="descname">mesh_topology_var</code><a class="headerlink" href="#gridded.pysgrid.utils.GridPadding.mesh_topology_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.pysgrid.utils.GridPadding.node_dim">
+<code class="descname">node_dim</code><a class="headerlink" href="#gridded.pysgrid.utils.GridPadding.node_dim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.pysgrid.utils.GridPadding.padding">
+<code class="descname">padding</code><a class="headerlink" href="#gridded.pysgrid.utils.GridPadding.padding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.utils.calculate_angle_from_true_east">
+<code class="descclassname">gridded.pysgrid.utils.</code><code class="descname">calculate_angle_from_true_east</code><span class="sig-paren">(</span><em>lon_lat_1</em>, <em>lon_lat_2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/utils.html#calculate_angle_from_true_east"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.utils.calculate_angle_from_true_east" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the angle from true east in radians.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.utils.calculate_bearing">
+<code class="descclassname">gridded.pysgrid.utils.</code><code class="descname">calculate_bearing</code><span class="sig-paren">(</span><em>lon_lat_1</em>, <em>lon_lat_2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/utils.html#calculate_bearing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.utils.calculate_bearing" title="Permalink to this definition">¶</a></dt>
+<dd><p>return bearing from true north in degrees</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.utils.check_element_equal">
+<code class="descclassname">gridded.pysgrid.utils.</code><code class="descname">check_element_equal</code><span class="sig-paren">(</span><em>lst</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/utils.html#check_element_equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.utils.check_element_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check that all elements in an
+iterable are the same.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Params lst:</th><td class="field-body">iterable object to be checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">result of element equality check</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.utils.determine_variable_slicing">
+<code class="descclassname">gridded.pysgrid.utils.</code><code class="descname">determine_variable_slicing</code><span class="sig-paren">(</span><em>sgrid_obj</em>, <em>nc_variable</em>, <em>method='center'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/utils.html#determine_variable_slicing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.utils.determine_variable_slicing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Figure out how to slice a variable. This function
+only knows who to figure out slices that would be
+used to trim data before averaging to grid cell
+centers; grid cell nodes will be supported later.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sgrid_obj</strong> (<a class="reference internal" href="#gridded.pysgrid.sgrid.SGrid" title="gridded.pysgrid.sgrid.SGrid"><em>sgrid.SGrid</em></a>) – an SGrid object derived from a netCDF file or
+netCDF4.Dataset object.</li>
+<li><strong>nc_dataset</strong> (<em>netCDF4.Dataset</em>) – a netCDF4.Dataset object from which
+the sgrid_obj was derived.</li>
+<li><strong>variable</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – the name of a variable to be sliced.</li>
+<li><strong>method</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – slice method for analysis at grid cell centers or grid
+cell nodes; accepts either ‘center’ or ‘node’.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the slice for the variable for the given method.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/2/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.utils.does_intersection_exist">
+<code class="descclassname">gridded.pysgrid.utils.</code><code class="descname">does_intersection_exist</code><span class="sig-paren">(</span><em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/utils.html#does_intersection_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.utils.does_intersection_exist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.utils.infer_avg_axes">
+<code class="descclassname">gridded.pysgrid.utils.</code><code class="descname">infer_avg_axes</code><span class="sig-paren">(</span><em>sgrid_obj</em>, <em>nc_var_obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/utils.html#infer_avg_axes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.utils.infer_avg_axes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Infer which numpy axis to average over given
+the a variable defined on the grid. Works
+well for 2D. Not so sure about 3D.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.utils.infer_variable_location">
+<code class="descclassname">gridded.pysgrid.utils.</code><code class="descname">infer_variable_location</code><span class="sig-paren">(</span><em>sgrid</em>, <em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/utils.html#infer_variable_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.utils.infer_variable_location" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.utils.pair_arrays">
+<code class="descclassname">gridded.pysgrid.utils.</code><code class="descname">pair_arrays</code><span class="sig-paren">(</span><em>x_array</em>, <em>y_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/utils.html#pair_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.utils.pair_arrays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given two arrays to equal dimensions,
+pair their values element-wise.</p>
+<p>For example given arrays [[1, 2], [3, 4]]
+and [[-1, -2], [-3, -4]], this function will
+return [[[1, -1], [2, -2]], [[3, -3], [4, -4]]].</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x_array</strong> (<em>np.array</em>) – a numpy array containing “x” coordinates</li>
+<li><strong>y_array</strong> (<em>np.array</em>) – a numpy array containing “y” coordinates</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">array containing (x, y) arrays</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridded.pysgrid.utils.points_in_polys">
+<code class="descclassname">gridded.pysgrid.utils.</code><code class="descname">points_in_polys</code><span class="sig-paren">(</span><em>points</em>, <em>polys</em>, <em>polyy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/utils.html#points_in_polys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.utils.points_in_polys" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>points</strong> – Numpy array of Nx2 points</li>
+<li><strong>polys</strong> – Numpy array of N polygons of degree M represented</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>by Mx2 points (NxMx2) for each point, see if respective poly
+contains it. Returns array of True/False</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gridded.pysgrid.variables">
+<span id="gridded-pysgrid-variables-module"></span><h2>gridded.pysgrid.variables module<a class="headerlink" href="#module-gridded.pysgrid.variables" title="Permalink to this headline">¶</a></h2>
+<p>Created on Apr 15, 2015</p>
+<p>&#64;author: ayan</p>
+<dl class="class">
+<dt id="gridded.pysgrid.variables.SGridVariable">
+<em class="property">class </em><code class="descclassname">gridded.pysgrid.variables.</code><code class="descname">SGridVariable</code><span class="sig-paren">(</span><em>center_axis=None</em>, <em>center_slicing=None</em>, <em>coordinates=None</em>, <em>dimensions=None</em>, <em>dtype=None</em>, <em>grid=None</em>, <em>location=None</em>, <em>node_axis=None</em>, <em>node_slicing=None</em>, <em>standard_name=None</em>, <em>variable=None</em>, <em>vector_axis=None</em>, <em>x_axis=None</em>, <em>y_axis=None</em>, <em>z_axis=None</em>, <em>data=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/variables.html#SGridVariable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.variables.SGridVariable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Object of variables found and inferred
+from an SGRID compliant dataset.</p>
+<dl class="classmethod">
+<dt id="gridded.pysgrid.variables.SGridVariable.create_var">
+<em class="property">classmethod </em><code class="descname">create_var</code><span class="sig-paren">(</span><em>nc_var_obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/variables.html#SGridVariable.create_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.variables.SGridVariable.create_var" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="gridded.pysgrid.variables.SGridVariable.create_variable">
+<em class="property">classmethod </em><code class="descname">create_variable</code><span class="sig-paren">(</span><em>nc_var_obj</em>, <em>sgrid_obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/variables.html#SGridVariable.create_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.variables.SGridVariable.create_variable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.pysgrid.variables.SGridVariable.data">
+<code class="descname">data</code><a class="headerlink" href="#gridded.pysgrid.variables.SGridVariable.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.pysgrid.variables.SGridVariable.max">
+<code class="descname">max</code><a class="headerlink" href="#gridded.pysgrid.variables.SGridVariable.max" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.pysgrid.variables.SGridVariable.min">
+<code class="descname">min</code><a class="headerlink" href="#gridded.pysgrid.variables.SGridVariable.min" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.pysgrid.variables.SGridVariable.ndim">
+<code class="descname">ndim</code><a class="headerlink" href="#gridded.pysgrid.variables.SGridVariable.ndim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.pysgrid.variables.SGridVariable.shape">
+<code class="descname">shape</code><a class="headerlink" href="#gridded.pysgrid.variables.SGridVariable.shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gridded.pysgrid">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gridded.pysgrid" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="gridded.pyugrid.html" class="btn btn-neutral float-right" title="gridded.pyugrid package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="gridded.html" class="btn btn-neutral" title="gridded package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright .
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.8',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

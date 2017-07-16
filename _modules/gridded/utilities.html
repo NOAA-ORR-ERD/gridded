@@ -1,0 +1,462 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gridded.utilities &mdash; gridded 0.0.8 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="gridded 0.0.8 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> gridded
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#goals">Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#why-gridded">Why gridded?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#data-standards">Data standards</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installing.html#pip">pip</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../installing.html#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../installing.html#conda">conda</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../installing.html#conda-forge">conda-forge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../installing.html#environments">Environments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#grid-objects">Grid objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#variable-objects">Variable objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#time-object">Time object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#depth-object">Depth object</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html#design-principles">Design Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#grid-independence">Grid Independence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#duck-typing">Duck Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#lazy-loading-data-arrays">Lazy loading / data arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html#reference">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../gridded.html">gridded package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.depth">gridded.depth module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.gridded">gridded.gridded module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.grids">gridded.grids module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.time">gridded.time module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.utilities">gridded.utilities module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.variable">gridded.variable module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">gridded</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>gridded.utilities</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for gridded.utilities</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">assorted utility functions needed by gridded</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">netCDF4</span> <span class="k">as</span> <span class="nn">nc4</span>
+
+<span class="n">must_have</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dtype&#39;</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="s1">&#39;ndim&#39;</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getitem__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattribute__&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_reorganize_spatial_data</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provides a version of the data organized for use in internal gridded</span>
+<span class="sd">    algorithms. The data should be organized as an array with N rows, with</span>
+<span class="sd">    with each row representing the coordinates of one point. Each row should</span>
+<span class="sd">    at least have a length of two. The first column is ALWAYS considered to be</span>
+<span class="sd">    longitude (or x_axis) and the second is latitude (or y_axis). The third is</span>
+<span class="sd">    depth (or z_axis).</span>
+
+<span class="sd">    In particular, this function is meant to address situations where the user</span>
+<span class="sd">    provides spatial data in a non-numpy container, or with a different shape</span>
+<span class="sd">    than expected. For example:</span>
+
+<span class="sd">    single_pt = np.array([[(4,),(5,)]])</span>
+<span class="sd">    array([[4],</span>
+<span class="sd">           [5]])</span>
+
+<span class="sd">    The assumed interpretation is that this represents one point with lon = 4,</span>
+<span class="sd">    lat = 5. The reorganization for internal use would be:</span>
+
+<span class="sd">    array([[4, 5]])</span>
+
+<span class="sd">    In the situation where the shape of the input data is shaped between 2x2</span>
+<span class="sd">    and 3x3, no changes are made, because it is impossible to tell which</span>
+<span class="sd">    &#39;orientation&#39; is more &#39;correct&#39;. In this case, the data will be used as is.</span>
+
+<span class="sd">    Since the user may organize their spatial data in a number of ways, this</span>
+<span class="sd">    function should be used to standardize the format so math can be done</span>
+<span class="sd">    consistently. It is also worth using the _spatial_data_metadata function</span>
+<span class="sd">    in case it is appropriate to reformat calculation results to be more</span>
+<span class="sd">    like the spatial data input.</span>
+
+<span class="sd">    array([[lon0, lat0, depth0],</span>
+<span class="sd">           [lon1, lat1, depth1],</span>
+<span class="sd">           ...</span>
+<span class="sd">           [lonN, latN, depthN]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">points</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">points_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">points_arr</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">object_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">string_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;points data does not convert to a numeric array type&#39;</span><span class="p">)</span>
+    <span class="n">shp</span> <span class="o">=</span> <span class="n">points_arr</span><span class="o">.</span><span class="n">shape</span>
+    <span class="c1">#special cases</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1">#two valid cases: [lon, lat] and [lon, lat, depth]. all others = error</span>
+        <span class="k">if</span> <span class="n">shp</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,)</span> <span class="ow">or</span> <span class="n">shp</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
+            <span class="k">return</span> <span class="n">points_arr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">shp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Only 2 or 3 elements (lon, lat) or</span><span class="se">\</span>
+<span class="s1">                             (lon, lat_depth) is allowed when using 1D data&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">shp</span> <span class="ow">in</span> <span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)):</span>
+        <span class="c1">#can&#39;t do anything here because it&#39;s 100% ambiguous.</span>
+        <span class="k">return</span> <span class="n">points_arr</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Make sure at least one of the dimensions is length 2 or 3. If it is</span>
+<span class="sd">        dimension 0, then reshape, otherwise do nothing. If both dimensions are</span>
+<span class="sd">        longer than 3, this is an error.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">shp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">shp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Too many coordinate dimensions in input array&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">shp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">shp</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="c1">#&#39;correct&#39; shape</span>
+            <span class="k">return</span> <span class="n">points_arr</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">points_arr</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">pass</span>
+
+
+
+<span class="k">def</span> <span class="nf">_align_results_to_spatial_data</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes the results of a calculation and reorganizes it so it&#39;s dimensions</span>
+<span class="sd">    are in line with the original spatial data. This function should only be</span>
+<span class="sd">    used when the output of a calculation has a one-to-one correlation with</span>
+<span class="sd">    some input spatial data. For example:</span>
+<span class="sd">                      #[x,y,z]</span>
+<span class="sd">    points = np.array([[1,2,3],</span>
+<span class="sd">                       [4,5,6],</span>
+<span class="sd">                       [6,7,8],</span>
+<span class="sd">                       [9,10,11)</span>
+
+<span class="sd">                       [x,y]</span>
+<span class="sd">    result = np.array([[1,1],</span>
+<span class="sd">                       [2,2],</span>
+<span class="sd">                       [3,3],</span>
+<span class="sd">                       [4,4]])</span>
+
+<span class="sd">    In this case, result is &#39;aligned&#39; with the input points (there is 1 row in</span>
+<span class="sd">    result for each [x,y,z] in points. This format of one row output per input</span>
+<span class="sd">    point should be consistent for vectorized calculations in this library</span>
+
+<span class="sd">    points = np.array([[1,4,6,9],   #x</span>
+<span class="sd">                       [2,5,7,10],  #y</span>
+<span class="sd">                       [3,6,8,11]]) #z</span>
+
+<span class="sd">    However, this case is not aligned with result from above. Therefore we</span>
+<span class="sd">    should re-organize the result</span>
+
+<span class="sd">    result = np.array([[1,2,3,4],   #x</span>
+<span class="sd">                       [1,2,3,4]])  #y</span>
+
+<span class="sd">    This function is not applied when input points or results shape are in the</span>
+<span class="sd">    domain between 2x2 and 3x3. If the result cannot be aligned, then the</span>
+<span class="sd">    result is returned unchanged. Note that this is an internal function</span>
+<span class="sd">    and should be used specifically when implementing interfaces for functions</span>
+<span class="sd">    that are expected to provide strictly vectorized results.</span>
+<span class="sd">    (N results per N input points)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">points</span> <span class="ow">is</span> <span class="kc">None</span> <span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="n">points_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+    <span class="n">shp</span> <span class="o">=</span> <span class="n">points_arr</span><span class="o">.</span><span class="n">shape</span>
+    <span class="c1">#special cases</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1">#two valid cases: [lon, lat] and [lon, lat, depth]. all others = error</span>
+        <span class="k">if</span> <span class="n">shp</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,)</span> <span class="ow">or</span> <span class="n">shp</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Only 2 or 3 elements (lon, lat) or</span><span class="se">\</span>
+<span class="s1">                             (lon, lat_depth) is allowed when using 1D data&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">shp</span> <span class="ow">in</span> <span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">),(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">result</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">shp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">shp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Too many coordinate dimensions in points array&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">shp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">shp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">shp</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+
+<div class="viewcode-block" id="isarraylike"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.isarraylike">[docs]</a><span class="k">def</span> <span class="nf">isarraylike</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    tests if obj acts enough like an array to be used in gridded.</span>
+
+<span class="sd">    This should catch netCDF4 variables and numpy arrays, at least, etc.</span>
+
+<span class="sd">    Note: these won&#39;t check if the attributes required actually work right.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">must_have</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="asarraylike"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.asarraylike">[docs]</a><span class="k">def</span> <span class="nf">asarraylike</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    If it satisfies the requirements of pyugrid the object is returned as is.</span>
+<span class="sd">    If not, then numpy&#39;s array() will be called on it.</span>
+
+<span class="sd">    :param obj: The object to check if it&#39;s like an array</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">obj</span> <span class="k">if</span> <span class="n">isarraylike</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="isstring"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.isstring">[docs]</a><span class="k">def</span> <span class="nf">isstring</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    py2/3 compaitlbie wayto test for a string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">basestring</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_dataset"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.get_dataset">[docs]</a><span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Utility to create a netCDF4 Dataset from a filename, list of filenames,</span>
+<span class="sd">    or just pass it through if it&#39;s already a netCDF4.Dataset</span>
+
+<span class="sd">    if dataset is not None, it should be a valid netCDF4 Dataset object,</span>
+<span class="sd">    and it will simiply be returned</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dataset</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ncfile</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">isstring</span><span class="p">(</span><span class="n">ncfile</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">nc4</span><span class="o">.</span><span class="n">MFDataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright .
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.8',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
