@@ -17,6 +17,7 @@ before_install:
     - conda config --add channels conda-forge
     - travis_retry conda create --yes -n TEST python=$TRAVIS_PYTHON_VERSION
     - source activate TEST
+    - which python
     - conda install --file conda_requirements_dev.txt
 
 install:
