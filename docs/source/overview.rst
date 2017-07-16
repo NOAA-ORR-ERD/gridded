@@ -5,7 +5,7 @@ Overview
 Goals
 =====
 
-The goal of this package is to present a single way to work with results from ANY model -- regardless of what type of grid it was computed on. In particular:
+The goal of this package is to present a single way to work with results from ANY hydrodynamic/oceanographic model -- regardless of what type of grid it was computed on. In particular:
 
 
 * Regular Structured Grids ([CF Conventions](http://cfconventions.org/)), with API embedded in [Iris](http://scitools.org.uk/iris/) and to some degree in [xarray](https://github.com/pydata/xarray)
@@ -14,6 +14,7 @@ The goal of this package is to present a single way to work with results from AN
 
 * Staggered Grids (CF + [SGRID Conventions](https://publicwiki.deltares.nl/display/NETCDF/Deltares+proposal+for+Staggered+Grid+data+model)) with nascent API in [pysgrid](https://github.com/sgrid/pysgrid)
 
+``gridded`` could/should be useful for other types of gridded data, in particular meteorological models, but so far has motly been developed/tested with oceanographic models.
 
 Why gridded?
 ============
@@ -22,7 +23,7 @@ Why gridded?
 
 Other solutions have (so far) built assumptions about the underlying grid type into the code and API, making it difficult to adapt to other grid types. Nevertheless, ``gridded`` hopes to learn from the the fabulous work done by other packages, such as:
 
-Iris: http://scitools.org.uk/iris/  and xarray: https://github.com/pydata/xarray
+Iris: http://scitools.org.uk/iris/ and xarray: https://github.com/pydata/xarray
 
 Data standards
 ==============
