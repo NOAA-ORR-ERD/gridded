@@ -15,8 +15,9 @@ before_install:
     - bash miniconda.sh -b -p $HOME/miniconda
     - export PATH="$HOME/miniconda/bin:$PATH"
     - conda config --add channels conda-forge
-    - travis_retry conda create --yes -n TEST python=$TRAVIS_PYTHON_VERSION nomkl --file conda_requirements_dev.txt
+    - travis_retry conda create --yes -n TEST python=$TRAVIS_PYTHON_VERSION
     - source activate TEST
+    - conda install --file conda_requirements_dev.txt
 
 install:
     - python setup.py develop
