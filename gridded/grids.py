@@ -187,8 +187,8 @@ class Grid(object):
 
         :param filename: Name of the file this grid was constructed from, if available.
         '''
-        raise NotImplementedError("Grid is not meant to be instantiated. Please use\
-        the from_netCDF function")
+        raise NotImplementedError("Grid is not meant to be instantiated. "
+                                  "Please use the from_netCDF function")
 
     @staticmethod
     def _load_grid(filename, grid_type, dataset=None):
@@ -219,7 +219,7 @@ class Grid(object):
                           or valid topology variable
         :param grid_topology: A dictionary mapping of grid attribute to variable name.
                               Takes precedence over discovered attributes
-        :param **kwargs: All kwargs to SGrid or UGrid are valid, and take precedence over all.
+        :param kwargs: All kwargs to SGrid or UGrid are valid, and take precedence over all.
         :returns: Instance of Grid_U, Grid_S, or PyGrid_R
         '''
         gf = dataset if filename is None else get_dataset(filename, dataset)

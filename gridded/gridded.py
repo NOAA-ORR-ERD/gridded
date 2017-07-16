@@ -102,3 +102,30 @@ class Dataset():
                        are the only options at this point.
         """
         raise NotImplementedError
+
+    def get_variables_by_attribute(self, attr, value):
+        """
+        return the variables that have attributes that fit the defined input
+
+        :param attr: the name of the attribute you want to match
+
+        :param value: the value of the attribute you want to match
+
+        fixme: make this a bit more flexible, more like the netCDF4 version
+        """
+        variables = []
+        for var in self.variables.values:
+            try:
+                if variables.attributes[attr] == value:
+                    variables.append(var)
+            except KeyError:
+                pass
+        return variables
+
+
+
+
+
+
+
+
