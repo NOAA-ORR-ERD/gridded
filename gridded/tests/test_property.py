@@ -66,9 +66,20 @@ class TestVariable:
         points = np.array(([0, 0, 0], [np.pi, 1, 0], [2 * np.pi, 0, 0]))
         time = datetime.datetime.now()
 
-        assert all(u.at(points, time) == [1, 1, 1])
+        res = u.at(points, time)
+        assert all(res == [1, 1, 1])
         print(np.cos(points[:, 0] / 2) / 2)
         assert all(np.isclose(v.at(points, time), np.cos(points[:, 0] / 2) / 2))
+
+        #reorganize the points so they are arrays of components
+        #results of .at should follow the same format
+        points = np.array([[0, np.pi/2, np.pi, 1.5*np.pi, 2*np.pi],  #x
+                           [0, 0.5, 1, 0.5, 0],                      #y
+                           [0,0,0,0,0]])                             #z
+
+        assert all(u.at(points, time) == [1, 1, 1, 1, 1])
+        print(np.cos(points[0] / 2) / 2)
+        assert all(np.isclose(v.at(points, time), np.cos(points[0] / 2) / 2))
 
 class TestVectorVariable:
 
@@ -88,8 +99,18 @@ class TestVectorVariable:
                                          varnames=['u_rho', 'v_rho'])
         points = np.array(([0, 0, 0], [np.pi, 1, 0], [2 * np.pi, 0, 0]))
         time = datetime.datetime.now()
+        res = gvp.at(points, time)
 
-        assert all(np.isclose(gvp.at(points, time)[:, 1], np.cos(points[:, 0] / 2) / 2))
+        assert all(np.isclose(res[:, 1], np.cos(points[:, 0] / 2) / 2))
+
+        #reorganize the points so they are arrays of components
+        #results of .at should follow the same format
+        points = np.array([[0, np.pi/2, np.pi, 1.5*np.pi, 2*np.pi],  #x
+                           [0, 0.5, 1, 0.5, 0],                      #y
+                           [0,0,0,0,0]])                             #z
+        time = datetime.datetime.now()
+        res = gvp.at(points, time)
+        assert all(np.isclose(res[1], np.cos(points[0] / 2) / 2))
 
 
 if __name__ == "__main__":

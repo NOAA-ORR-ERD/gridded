@@ -4,7 +4,8 @@ import netCDF4 as nc4
 import numpy as np
 import collections
 from collections import OrderedDict
-from gridded.utilities import get_dataset
+from gridded.utilities import get_dataset, _reorganize_spatial_data,\
+    _align_results_to_spatial_data
 from gridded.grids import Grid, Grid_U, Grid_S
 from gridded.depth import Depth
 from gridded.time import Time
@@ -88,6 +89,7 @@ class Variable(object):
 #         if not hasattr(data, 'shape'):
 #             if grid.infer_location is None:
 #                 raise ValueError('Data must be able to fit to the grid')
+
         self.grid = grid
         self.depth = depth
         self.name = self._units = self._time = self._data = None
@@ -391,7 +393,7 @@ class Variable(object):
         self._order = order
 
 #     @profile
-    def at(self, points, time, units=None, extrapolate=False, _hash=None, _mem=True, **kwargs):
+    def at(self, points, time, units=None, extrapolate=False, _hash=None, _mem=True, _auto_align=True, **kwargs):
         '''
         Find the value of the property at positions P at time T
 
@@ -407,24 +409,29 @@ class Variable(object):
         :return: returns a Nx1 array of interpolated values
         :rtype: double
         '''
+        pts = _reorganize_spatial_data(points)
+
         if _hash is None:
-            _hash = self._get_hash(points, time)
+            _hash = self._get_hash(pts, time)
 
         if _mem:
-            res = self._get_memoed(points, time, self._result_memo, _hash=_hash)
+            res = self._get_memoed(pts, time, self._result_memo, _hash=_hash)
             if res is not None:
                 return res
 
         order = self.dimension_ordering
         if order[0] == 'time':
-            value = self._time_interp(points, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
+            value = self._time_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
         elif order[0] == 'depth':
-            value = self._depth_interp(points, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
+            value = self._depth_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
         else:
-            value = self._xy_interp(points, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
+            value = self._xy_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
+
+        if _auto_align == True:
+            value = _align_results_to_spatial_data(value.copy(), points)
 
         if _mem:
-            self._memoize_result(points, time, value, self._result_memo, _hash=_hash)
+            self._memoize_result(pts, time, value, self._result_memo, _hash=_hash)
         return value
 
     def _xy_interp(self, points, time, extrapolate, slices=(), **kwargs):
@@ -441,7 +448,7 @@ class Variable(object):
         '''
         _hash = kwargs['_hash'] if '_hash' in kwargs else None
         units = kwargs['units'] if 'units' in kwargs else None
-        value = self.grid.interpolate_var_to_points(points[:, 0:2], self.data, _hash=_hash[0], slices=slices, _memo=True)
+        value = self.grid.interpolate_var_to_points(points[:, 0:2], self.data, _hash=self._get_hash(points[:,0:2], time), slices=slices, _memo=True)
         return value
 
     def _time_interp(self, points, time, extrapolate, slices=(), **kwargs):
@@ -522,20 +529,16 @@ class Variable(object):
                 values[underground] = self.fill_value
             return values
 
-#     def serialize(self, json_='webapi'):
-#         _dict = serializable.Serializable.serialize(self, json_=json_)
-#         if self.data_file is not None:
-#             # put file in save zip
-#             pass
-#         else:
-#             # write data to file and put in zip
-#             pass
-#         if self.grid_file is not None:
-#             # put grid in save zip. make sure it's not in there twice.
-#             pass
-#         else:
-#             # write grid to file and put in zip
-#             pass
+    def transect(self, times, depths, points):
+        output_shape = (len(times), len(depths), len(points))
+        outarr = np.array(shape=output_shape)
+        for t in range(0,len(times)):
+            for d in range(0, len(depths)):
+                pts = np.array(shape=(len(points),3))
+                pts[:,0:2] = points
+                pts[:,2] = depths[d]
+                layer = d
+
 
     @classmethod
     def _gen_varname(cls,
@@ -910,7 +913,8 @@ class VectorVariable(object):
         else:
             return None
 
-    def at(self, points, time, units=None, extrapolate=False, memoize=True, _hash=None, **kwargs):
+    def at(self, points, time, units=None, extrapolate=False, memoize=True, _hash=None, _auto_align=True, **kwargs):
+        pts = _reorganize_spatial_data(points)
         mem = memoize
         if hash is None:
             _hash = self._get_hash(points, time)
@@ -928,8 +932,12 @@ class VectorVariable(object):
                                         _hash=_hash,
                                         **kwargs) for var in self.variables])
 
+        if _auto_align == True:
+            value = _align_results_to_spatial_data(value.copy(), points)
+
         if mem:
             self._memoize_result(points, time, value, self._result_memo, _hash=_hash)
+
         return value
 
     @classmethod
