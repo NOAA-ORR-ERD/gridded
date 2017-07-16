@@ -1,0 +1,20 @@
+# requirements for the gridded package
+# these should all be available in the conda-forge channel
+
+## core requirements to run gridded
+
+# requires python, but if you leave it out, it will use python already in
+# the conda environment, rather than upgrading
+# python>=2.7.*
+numpy>=1.11.*
+scipy
+netcdf4
+cell_tree2d
+six
+
+## extra stuff you'll want for development testing
+# this is the minimal that will support travis tests
+pytest
+#sphinx
+#sphinx_rtd_theme
+
