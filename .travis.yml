@@ -18,7 +18,7 @@ before_install:
     - travis_retry conda create --yes -n TEST python=$TRAVIS_PYTHON_VERSION
     - source activate TEST
     - which python
-    - conda install --file conda_requirements_dev.txt
+    - conda install -y --file conda_requirements_dev.txt
 
 install:
     - python setup.py develop

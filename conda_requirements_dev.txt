@@ -21,6 +21,4 @@ nb_conda_kernels
 cartopy
 sphinx
 sphinx_rtd_theme
-doctr
-
 
