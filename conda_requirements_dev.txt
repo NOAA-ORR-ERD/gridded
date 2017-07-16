@@ -20,6 +20,7 @@ jupyter
 nb_conda_kernels
 cartopy
 sphinx
-sphinx-rtd-theme
+sphinx_rtd_theme
+doctr
 
 
