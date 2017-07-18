@@ -1,0 +1,34 @@
+language: python
+
+sudo: false
+
+python:
+    - 2.7
+    - 3.5
+
+env:
+    global:
+        - secure: "LSg3jdSe+J8nrJpQdRnHoHvSP5Xq2+j5q9hYsbSnL1+arArQqQ1i8feBPBvjsUXf3rr2Ie6Xv5PIuAqWtBqDftgX6XGosZ8pPM+7bmtyor9hPoPaTtV8r5h4UTpxWPI6zXAezm5NHNXyjwnnSqPSGeJzhizomBH3JoPbRNOhHBMaydPOcDKqkYQ4iY2QeIn5GUBCGb/1YMxcGjoXP3zfe5zfUczzHwTIXdn+QX+U4RTSUFRru1fJa4ALR6TOJ4ghjlfBsz6Ear78zyBBn+piS/RJ+6bM3Hh81jtLvzhndYprdsUZ7Sat0m1yGBF1xJbBu4hWaOHlVg81+7pKneusmjrP/0GqXLJO0o4Ln2uZXJos+8481ScDU0+0VxelAnEFBwX9h0qy+Pp2RmovLSj+aDcmRxR2g/PJDoztkDfT+f/I59jxH+FG615Llbtzgv9UDRpszWPoJhPGejiBYxl+B7b4eYEGimYexD4wQHcMKeJ+wlXlsoFovETKFbg0BxhNHSEBsZ6IrYUulWxr6bzKMZ/eo/trUGl/NVyd4GYfe4HJcjQ0wsN3Jk1PXt8AqNGDozCLc0yCIidJqUGQZhxwFMHaQCInEkRIClR+eu+yvlhsS4si5Jgt7bEhVBnEupjzxHf73TAbZkFCs0qFg1wFZOWU84I++1HfV34FwBc7rWc="
+
+before_install:
+    - wget http://bit.ly/miniconda -O miniconda.sh
+    - bash miniconda.sh -b -p $HOME/miniconda
+    - export PATH="$HOME/miniconda/bin:$PATH"
+    - conda config --add channels conda-forge
+    - travis_retry conda create --yes -n TEST python=$TRAVIS_PYTHON_VERSION
+    - source activate TEST
+    - which python
+    - conda install -y --file conda_requirements_test.txt
+
+install:
+    - python setup.py develop
+
+script:
+    - pytest --pyargs gridded
+#    - set -e
+#    - cd docs/make html # Command to build your docs
+#    - pip install doctr
+#    - doctr deploy <deploy_directory>
+
+
+

@@ -1,14 +1,11 @@
-###########
-``gridded``
-###########
+########
+Overview
+########
 
-A single API for accessing / working with gridded model results on multiple grid types
+Goals
+=====
 
-
-Goal
-====
-
-The goal of this package is to present a single way to work with results from ANY model -- regardless of what type of grid it was computed on. In particular:
+The goal of this package is to present a single way to work with results from ANY hydrodynamic/oceanographic model -- regardless of what type of grid it was computed on. In particular:
 
 
 * Regular Structured Grids ([CF Conventions](http://cfconventions.org/)), with API embedded in [Iris](http://scitools.org.uk/iris/) and to some degree in [xarray](https://github.com/pydata/xarray)
@@ -17,6 +14,7 @@ The goal of this package is to present a single way to work with results from AN
 
 * Staggered Grids (CF + [SGRID Conventions](https://publicwiki.deltares.nl/display/NETCDF/Deltares+proposal+for+Staggered+Grid+data+model)) with nascent API in [pysgrid](https://github.com/sgrid/pysgrid)
 
+``gridded`` could/should be useful for other types of gridded data, in particular meteorological models, but so far has motly been developed/tested with oceanographic models.
 
 Why gridded?
 ============
@@ -25,7 +23,7 @@ Why gridded?
 
 Other solutions have (so far) built assumptions about the underlying grid type into the code and API, making it difficult to adapt to other grid types. Nevertheless, ``gridded`` hopes to learn from the the fabulous work done by other packages, such as:
 
-Iris: http://scitools.org.uk/iris/  and xarray: https://github.com/pydata/xarray
+Iris: http://scitools.org.uk/iris/ and xarray: https://github.com/pydata/xarray
 
 Data standards
 ==============
@@ -39,28 +37,4 @@ Data standards
 * SGRID Conventions: http://sgrid.github.io/sgrid/
 
 ``gridded`` also provided APIs for reading results that do not conform to the conventions, allowing one to work with non-confirming datasets with the same API, as well as providing tools to convert non-confirming files to conforming files.
-
-
-Installing
-==========
-
-``gridded`` itself is pure python and easy to install from source or packages. However, it does rely on a number of complex compiled dependencies, notable netCDF4 and celltree2d.
-
-For easiest results, install the dependencies from conda-forge:
-
-https://anaconda.org/conda-forge
-
-And then install ``gridded`` itself from source or from the conda package.
-
-Dependencies are listed in ``conda_requirements.txt``:
-
-``conda install --file conda_requirements.txt``
-
-If you want to develop, test or work with the examples, you will need the development requirements as well:
-
-``conda install --file conda_requirements_dev.txt``
-
-
-
-
 

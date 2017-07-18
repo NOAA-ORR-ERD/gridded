@@ -1,5 +1,4 @@
 # requirements for the gridded package
-# the goal is to have it work across as wide a range of versions as possible
 # these should all be available in the conda-forge channel
 
 ## core requirements to run gridded
@@ -13,12 +12,9 @@ netcdf4
 cell_tree2d
 six
 
-## extra stuff you'll want for development / testing / demoing
+## extra stuff you'll want for development testing
+# this is the minimal that will support travis tests
 pytest
-matplotlib
-jupyter
-nb_conda_kernels
-cartopy
-sphinx
-sphinx_rtd_theme
+#sphinx
+#sphinx_rtd_theme
 
