@@ -109,7 +109,7 @@ class Time(object):
         return not self.__eq__(other)
 
     def _timeseries_is_ascending(self, ts):
-        return all(np.sort(ts) == ts)
+        return np.all(np.sort(ts) == ts)
 
     def _has_duplicates(self, time):
         return len(np.unique(time)) != len(time) and len(time) != 1

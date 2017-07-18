@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# import gridded
+import gridded
 import numpy as np
 from datetime import datetime
 from gridded.time import Time
@@ -27,6 +27,7 @@ class S_Depth(Depth):
     '''
     Represents the ocean s-coordinate, with particular focus on ROMS implementation
     '''
+    _def_count=0
     default_terms = [('Cs_r', 'S-coordinate stretching curves at RHO-points'),
                      ('Cs_w', 'S-coordinate stretching curves at W-points'),
                      ('s_rho', 'S-coordinate at RHO-points'),
@@ -38,30 +39,24 @@ class S_Depth(Depth):
                                 'grid': Grid,
                                 'variable': None}
     def __init__(self,
-                 filename=None,
-                 dataset=None,
+                 name=None,
                  time=None,
                  grid=None,
                  bathymetry=None,
+                 zeta=None,
+                 terms=None,
                  **kwargs):
-        ds = dataset
-        if ds is None:
-            if filename is None:
-                raise ValueError("Need filename or dataset containing sigma equation terms")
-            ds = get_dataset(filename)
+        self.name=name
+        self.time=time
+        self.grid=grid
         self.bathymetry = bathymetry
-        if bathymetry is None:
-            bathy_name = self._gen_varname(filename=filename,
-                                           dataset=ds,
-                                           names_list=['h'],
-                                           std_names_list=['bathymetry at RHO-points'])
-            bathymetry = self.__class__._default_component_type['variable'].from_netCDF(dataset=ds,
-                                  grid=grid,
-                                  varname=bathy_name,
-                                  name='Bathymetry'
-                                  )
-        self.bathymetry = bathymetry
+        self.zeta = zeta
         self.terms={}
+        if terms is None:
+            raise ValueError('Must provide terms for sigma coordinate')
+        else:
+            for k, v in terms.items():
+                setattr(self, k, v)
 
 
     @classmethod
@@ -79,6 +74,8 @@ class S_Depth(Depth):
                     grid_file=None,
                     load_all=False,
                     bathymetry=None,
+                    zeta=None,
+                    terms=None,
                     fill_value=0,
                     **kwargs
                     ):
@@ -126,19 +123,36 @@ class S_Depth(Depth):
                                   varname=bathy_name,
                                   name='Bathymetry'
                                   )
+        if zeta is None:
+            zeta_name = cls._gen_varname(filename=filename,
+                                           dataset=ds,
+                                           names_list=['zeta'],
+                                           std_names_list=['free-surface'])
+            zeta = Variable.from_netCDF(dataset=ds,
+                                  grid=grid,
+                                  varname=zeta_name,
+                                  name='zeta'
+                                  )
         if time is None:
-            time = Time.from_netCDF(filename=data_file,
-                                    dataset=ds,
-                                    datavar=bathymetry)
-        return cls(filename=filename,
-                   dataset=ds,
+            time = zeta.time
+        if terms is None:
+            terms={}
+            for tn, tln in cls.default_terms:
+                vname=tn
+                if tn not in ds.variables.keys():
+                    vname = cls._gen_varname(filename, ds, [tn], [tln])
+                if tn not in ['h','zeta']: #don't want to reinclude bathymetry
+                    terms[vname] = ds['vname'][:]
+        return cls(name=name,
                    time=time,
                    grid=grid,
-                   bathymetry=bathymetry)
+                   bathymetry=bathymetry,
+                   zeta=zeta,
+                   terms=terms)
 
     @property
     def surface_index(self):
-        return
+        return -1
 
     @property
     def bottom_index(self):
@@ -146,25 +160,27 @@ class S_Depth(Depth):
 
     @property
     def num_w_levels(self):
-        return len(self.terms['s_w'])
+        return len(self.s_w)
 
     @property
     def num_r_levels(self):
-        return len(self.terms['s_rho'])
+        return len(self.s_rho)
 
-    def _w_level_depth_given_bathymetry(self, depths, lvl):
-        s_w = self.terms['s_w'][lvl]
-        Cs_w = self.terms['Cs_w'][lvl]
-        hc = self.terms['hc']
-        return -(hc * (s_w - Cs_w) + Cs_w * depths)
+    def _w_level_depth_given_bathymetry(self, depths, zeta, lvl):
+        s_w = self.s_w[lvl]
+        Cs_w = self.Cs_w[lvl]
+        hc = self.hc
+        S = hc * s_w + (depths - hc) * Cs_w
+        return -(S + zeta * (1 + S / depths))
 
-    def _r_level_depth_given_bathymetry(self, depths, lvl):
-        s_rho = self.terms['s_rho'][lvl]
-        Cs_r = self.terms['Cs_r'][lvl]
-        hc = self.terms['hc']
-        return -(hc * (s_rho - Cs_r) + Cs_r * depths)
+    def _r_level_depth_given_bathymetry(self, depths, zeta, lvl):
+        s_rho = self.s_rho[lvl]
+        Cs_r = self.Cs_r[lvl]
+        hc = self.hc
+        S = hc * s_rho + (depths - hc) * Cs_r
+        return -(S + zeta * (1 + S / depths))
 
-    def interpolation_alphas(self, points, data_shape, _hash=None):
+    def interpolation_alphas(self, points, time, data_shape, _hash=None):
         '''
         Returns a pair of values. The 1st value is an array of the depth indices of all the particles.
         The 2nd value is an array of the interpolation alphas for the particles between their depth
@@ -175,7 +191,8 @@ class S_Depth(Depth):
             return None, None
         indices = -np.ones((len(points)), dtype=np.int64)
         alphas = -np.ones((len(points)), dtype=np.float64)
-        depths = self.bathymetry.at(points, datetime.now(), _hash=_hash)[underwater]
+        depths = self.bathymetry.at(points, time, _hash=_hash)[underwater]
+        zeta = self.zeta.at(points, time, _hash=_hash)[underwater]
         pts = points[underwater]
         und_ind = -np.ones((len(np.where(underwater)[0])))
         und_alph = und_ind.copy()
@@ -190,7 +207,7 @@ class S_Depth(Depth):
             raise ValueError('Cannot get depth interpolation alphas for data shape specified; does not fit r or w depth axis')
         blev_depths = ulev_depths = None
         for ulev in range(0, num_levels):
-            ulev_depths = ldgb(depths, ulev)
+            ulev_depths = ldgb(depths, zeta, ulev)
 #             print ulev_depths[0]
             within_layer = np.where(np.logical_and(ulev_depths < pts[:, 2], und_ind == -1))[0]
 #             print within_layer
@@ -206,6 +223,37 @@ class S_Depth(Depth):
         indices[underwater] = und_ind
         alphas[underwater] = und_alph
         return indices, alphas
+
+    def get_section(self, time, coord='w', x_coord=None, y_coord=None, ):
+        '''
+        Returns a section  of the z-level space in time. All s-levels are
+        returned in the data. By providing a x_coord or y_coord you can
+        get cross sections in the direction specified, or both for the level
+        depths at a single point.
+        '''
+        if coord not in ['w', 'rho']:
+            raise ValueError('Can only specify "w" or "rho" for coord kwarg')
+        ldgb = None
+        z_shp = None
+        if coord == 'w':
+            ldgb = self._w_level_depth_given_bathymetry
+            z_shp = (self.num_w_levels, self.zeta.data.shape[-2], self.zeta.data.shape[-1])
+        if coord == 'rho':
+            ldgb = self._r_level_depth_given_bathymetry
+            z_shp = (self.num_r_levels, self.zeta.data.shape[-2], self.zeta.data.shape[-1])
+        time_idx = self.time.index_of(time)
+        time_alpha = self.time.interp_alpha(time)
+        z0  = self.zeta.data[time_idx]
+        if time_idx == len(self.time.data) - 1 or time_idx == 0:
+            zeta = self.zeta.data[time_idx]
+        else:
+            z1 = self.zeta.data[time_idx + 1]
+            zeta = (z1 - z0)*(1-time_alpha) + z0
+        bathy = self.bathymetry.data[:]
+        z_data=np.empty(z_shp)
+        for lvl in range(0,len(z_data)):
+            z_data[lvl] = ldgb(bathy,zeta,lvl)
+        return z_data
 
     @classmethod
     def _gen_varname(cls,
