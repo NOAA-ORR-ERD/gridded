@@ -32,6 +32,8 @@ class GridBase(object):
         self.filename = filename
         type(self)._def_count += 1
 
+        super(GridBase, self).__init__(**kwargs)
+
     @classmethod
     def from_netCDF(cls, *args, **kwargs):
         kwargs['grid_type'] = cls

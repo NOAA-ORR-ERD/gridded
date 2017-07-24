@@ -10,9 +10,11 @@ from gridded.utilities import get_dataset
 class Depth(object):
 
     def __init__(self,
-                 surface_index=-1):
+                 surface_index=None,
+                 bottom_index=None,
+                 **kwargs):
         self.surface_index = surface_index
-        self.bottom_index = surface_index
+        self.bottom_index = bottom_index
 
     @classmethod
     def from_netCDF(cls,
@@ -22,6 +24,11 @@ class Depth(object):
     def interpolation_alphas(self, points, data_shape, _hash=None):
         return (None, None)
 
+
+class Level_Depth(Depth):
+    _def_count=0
+    _default_component_types = {'time': Time,
+                                'grid': Grid}
 
 class S_Depth(Depth):
     '''
@@ -46,6 +53,11 @@ class S_Depth(Depth):
                  zeta=None,
                  terms=None,
                  **kwargs):
+        super(S_Depth, self).__init__(**kwargs)
+        if self.surface_index is None:
+            self.surface_index = -1
+        if self.bottom_index is None:
+            self.bottom_index = 0
         self.name=name
         self.time=time
         self.grid=grid
@@ -148,15 +160,8 @@ class S_Depth(Depth):
                    grid=grid,
                    bathymetry=bathymetry,
                    zeta=zeta,
-                   terms=terms)
-
-    @property
-    def surface_index(self):
-        return -1
-
-    @property
-    def bottom_index(self):
-        return 0
+                   terms=terms,
+                   **kwargs)
 
     @property
     def num_w_levels(self):
