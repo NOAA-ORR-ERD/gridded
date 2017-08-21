@@ -106,6 +106,23 @@ class GridBase(object):
     def _write_grid_to_file(self, pth):
         self.save_as_netcdf(pth)
 
+    def import_variable(self, variable, location='node'):
+        """
+        Takes a Variable or VectorVariable and interpolates the data onto this grid.
+        You may pass a location ('nodes', 'faces', 'edge1', 'edge2) and the
+        variable will be interpolated there if possible
+        If no location is passed, the variable will be interpolated to the
+        nodes of this grid. If the Variable's grid and this grid are the same, this
+        function will return the Variable unchanged.
+
+        If this grid covers area that the source grid does not, all values
+        in this area will be masked. If regridding from cell centers to the nodes,
+        The values of any border point not within will be equal to the value at the
+        center of the border cell.
+        """
+
+        raise NotImplementedError("GridBase cannot interpolate variables to itself")
+
 
 class Grid_U(GridBase, UGrid):
 
@@ -139,6 +156,13 @@ class Grid_U(GridBase, UGrid):
 
         return init_args, gt
 
+    @classmethod
+    def gen_from_quads(cls, nodes):
+        if not len(nodes.shape) == 3:
+            raise ValueError('Nodes of a quad grid must be 2 dimensional')
+        lin_nodes = None
+        if isinstance(nodes, np.ma.MaskedArray):
+            lin_nodes = nodes.reshape(-1,2)[nodes]
 
 class Grid_S(GridBase, SGrid):
 

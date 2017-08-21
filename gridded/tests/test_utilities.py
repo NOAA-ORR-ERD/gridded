@@ -7,7 +7,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import numpy as np
 import pytest
 from gridded import utilities
-
+from gridded.tests.test_depth import get_s_depth
 
 def test_reorganize_spatial_data():
     #1-dimensional data
@@ -70,6 +70,72 @@ def test_spatial_data_metadata():
     a5 = utilities._align_results_to_spatial_data(res_5, pts_4)
     assert np.all(a4.T == res_4)
     assert np.all(a5.T == res_5)
+
+
+def test_regrid_variable_TDStoS():
+    # Time is present
+    # Depth is present
+    # Grid_S to Grid_S
+    from gridded.variable import Variable
+    from gridded.time import Time
+    from gridded.grids import Grid_S
+    sd = get_s_depth()
+    grid = sd.grid
+    n_levels = sd.num_w_levels
+    data = np.ones((1,n_levels,grid.node_lon.shape[0], grid.node_lon.shape[1]))
+    for l in range(0,n_levels):
+        data[0,l] *= l
+
+    v1 = Variable(name='v1',
+                  grid=grid,
+                  data=data,
+                  depth=sd,
+                  time=Time.constant_time())
+
+    g2 = Grid_S(node_lon=(grid.node_lon[0:-1,0:-1] + grid.node_lon[1:,1:]) /2,
+                node_lat=(grid.node_lat[0:-1,0:-1] + grid.node_lat[1:,1:]) /2)
+
+    v2 = utilities.regrid_variable(g2, v1)
+    #time should be unchanged
+    assert v2.time is v1.time
+    #number of depth levels should remain unchanged
+    assert len(v2.depth) == len(v1.depth)
+    sz = v1.data.shape[-1]
+    #data shape should retain the same time/depth dimensions as the original
+    #except in xy
+    assert v2.data.shape == (v1.data.shape[0],v1.data.shape[1],sz-1,sz-1)
+
+
+def test_regrid_variable_StoS():
+    # Time is not present
+    # Depth is not present
+    # Grid_S to Grid_S
+    from gridded.variable import Variable
+    from gridded.time import Time
+    from gridded.grids import Grid_S
+    sd = get_s_depth()
+    grid = sd.grid
+    data = np.ones((grid.node_lon.shape[0], grid.node_lon.shape[1]))
+
+    v1 = Variable(name='v1',
+                  grid=grid,
+                  data=data,
+                  depth=None,
+                  time=None)
+
+    g2 = Grid_S(node_lon=(grid.node_lon[0:-1,0:-1] + grid.node_lon[1:,1:]) /2,
+                node_lat=(grid.node_lat[0:-1,0:-1] + grid.node_lat[1:,1:]) /2)
+
+    v2 = utilities.regrid_variable(g2, v1)
+    #time should be unchanged
+    assert v2.time is v1.time
+    #depth should be None
+    assert v2.depth is v1.depth is None
+    sz = v1.data.shape[-1]
+    #data shape should retain the same time/depth dimensions as the original
+    #except in xy
+    assert v2.data.shape == (sz-1,sz-1)
+
 
 class DummyArrayLike(object):
     """

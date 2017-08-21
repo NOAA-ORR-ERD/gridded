@@ -171,6 +171,9 @@ class S_Depth(Depth):
     def num_r_levels(self):
         return len(self.s_rho)
 
+    def __len__(self):
+        return self.num_w_levels
+
     def _w_level_depth_given_bathymetry(self, depths, zeta, lvl):
         s_w = self.s_w[lvl]
         Cs_w = self.Cs_w[lvl]
@@ -191,7 +194,7 @@ class S_Depth(Depth):
         The 2nd value is an array of the interpolation alphas for the particles between their depth
         index and depth_index+1. If both values are None, then all particles are on the surface layer.
         '''
-        underwater = points[:, 2] > 0.0
+        underwater = points[:, 2] > -self.zeta.at(points, time)
         if len(np.where(underwater)[0]) == 0:
             return None, None
         indices = -np.ones((len(points)), dtype=np.int64)

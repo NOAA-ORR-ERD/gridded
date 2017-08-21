@@ -3,7 +3,7 @@
 """
 assorted utility functions needed by gridded
 """
-
+from __future__ import absolute_import, division, print_function, unicode_literals
 import collections
 import numpy as np
 import netCDF4 as nc4
@@ -11,9 +11,115 @@ import netCDF4 as nc4
 must_have = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute__']
 
 
+def regrid_variable(grid, o_var, location='node'):
+    from gridded.variable import Variable
+    from gridded.grids import Grid_S, Grid_U
+    from gridded.depth import S_Depth, Depth
+    """
+    Takes a Variable or VectorVariable and interpolates the data onto grid.
+    You may pass a location ('nodes', 'faces', 'edge1', 'edge2) and the
+    variable will be interpolated there if possible
+    If no location is passed, the variable will be interpolated to the
+    nodes of this grid. If the Variable's grid and this grid are the same, this
+    function will return the Variable unchanged.
+
+    If this grid covers area that the source grid does not, all values
+    in this area will be masked. If regridding from cell centers to the nodes,
+    The values of any border point not within will be equal to the value at the
+    center of the border cell.
+
+    NOTE: This function will load the ENTIRE data space of the source Variable.
+    Make sure that this is reasonable. If it is not, consider pre-slicing
+    the time and depth dimensions of the source Variable to what you need.
+    """
+
+    dest_points = None
+    if location == 'node':
+        dest_points = grid.nodes
+    if location == 'face' or location == 'center':
+        if grid.face_coordinates is None and isinstance(grid, Grid_U):
+            grid.build_face_coordinates()
+            dest_points = grid.face_coordinates
+        else:
+            dest_points = grid.centers
+    dest_points = dest_points.reshape(-1,2)
+    if 'edge' in location:
+        raise NotImplementedError("Cannot regrid variable to edges at this time")
+    dest_indices = o_var.grid.locate_faces(dest_points,'node')
+    if np.all(dest_indices == -1):
+        raise ValueError("Grid {0} has no destination points overlapping\
+        the grid of the source variable {1}".format(grid, o_var))
+    n_depth = None
+    if o_var.depth is not None:
+        if isinstance(o_var.depth, S_Depth):
+            n_depth = _regrid_s_depth(grid, o_var.depth)
+        elif isinstance(o_var.depth, Depth):
+            n_depth = o_var.depth
+        else:
+            raise NotImplementedError("Can only regrid sigma depths for now")
+
+    xy_shp = grid._get_grid_vars(location)[0].shape
+    d_shp = len(n_depth) if n_depth is not None else None
+    t_shp = len(o_var.time) if o_var.time is not None else None
+    n_shape = xy_shp
+    if d_shp:
+        n_shape = (d_shp,) + n_shape
+    if t_shp:
+        n_shape = (t_shp,) + n_shape
+
+    n_data = np.empty(n_shape)
+    location_shp = grid.node_lon.shape
+
+    pts = np.zeros((dest_points.shape[0], 3))
+    pts[:,0:2] = dest_points
+    if o_var.time is not None:
+        for t_idx, t in enumerate(o_var.time.data):
+            if n_depth is not None and isinstance(n_depth, S_Depth):
+                for lev_idx, lev_data in enumerate(o_var.depth.get_section(t)):
+                    lev = Variable(name='level{0}'.format(lev_idx),
+                                   data=lev_data,
+                                   grid=o_var.grid)
+                    zs = lev.at(pts, t)
+                    pts[:,2] = zs
+                    n_data[t_idx, lev_idx] = o_var.at(pts, t).reshape(location_shp)
+            else:
+                n_data[t_idx] = o_var.at(pts,t).reshape(location_shp)
+    else:
+        n_data = o_var.at(pts,None).reshape(location_shp)
+
+    n_var = Variable(name='regridded {0}'.format(o_var.name),
+                     grid=grid,
+                     time=o_var.time,
+                     depth=n_depth,
+                     data=n_data,
+                     units=o_var.units)
+    return n_var
+
+def _regrid_s_depth(grid, o_depth):
+    """
+    Creates a new S_Depth object from an existing one that works on a new grid.
+    """
+    from gridded.grids import Grid_S, Grid_U
+    from gridded.depth import S_Depth
+    o_bathy = o_depth.bathymetry
+    o_zeta = o_depth.zeta
+    n_bathy = regrid_variable(grid, o_bathy)
+    n_zeta = regrid_variable(grid, o_zeta)
+    n_depth = S_Depth(time=o_depth.time,
+                      grid=grid,
+                      bathymetry=n_bathy,
+                      zeta=n_zeta,
+                      terms={'Cs_w': o_depth.Cs_w,
+                             'Cs_r': o_depth.Cs_r,
+                             's_w': o_depth.s_w,
+                             's_rho': o_depth.s_rho,
+                             'hc': o_depth.hc})
+    return n_depth
+
+
 def _reorganize_spatial_data(points):
     """
-    Provides a version of the data organized for use in internal gridded
+    Provides a version of the points data organized for use in internal gridded
     algorithms. The data should be organized as an array with N rows, with
     with each row representing the coordinates of one point. Each row should
     at least have a length of two. The first column is ALWAYS considered to be

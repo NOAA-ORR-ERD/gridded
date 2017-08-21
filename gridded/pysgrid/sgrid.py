@@ -199,6 +199,10 @@ class SGrid(object):
     def nodes(self):
         return np.stack((self.node_lon, self.node_lat), axis=-1)
 
+    @property
+    def centers(self):
+        return np.stack((self.center_lon, self.center_lat), axis=-1)
+
     def _save_common_components(self, nc_file):
         grid_var = self.grid_topology_var
         # Create dimensions.
@@ -288,13 +292,13 @@ class SGrid(object):
         return grid_vars
 
     def _get_grid_vars(self, name):
-        if name is 'node':
+        if name == 'node':
             return (self.node_lon, self.node_lat)
-        elif name is 'center':
+        elif name == 'center':
             return (self.center_lon, self.center_lat)
-        elif name is 'edge1':
+        elif name == 'edge1':
             return (self.edge1_lon, self.edge1_lat)
-        elif name is 'edge2':
+        elif name == 'edge2':
             return (self.edge2_lon, self.edge2_lat)
         else:
             raise ValueError('Invalid grid name {0}'.format(name))

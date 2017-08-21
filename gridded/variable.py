@@ -505,7 +505,7 @@ class Variable(object):
             val_func = self._xy_interp
         else:
             val_func = self._time_interp
-        indices, alphas = self.depth.interpolation_alphas(points, self.data.shape[1:], kwargs.get('_hash', None))
+        indices, alphas = self.depth.interpolation_alphas(points, time, self.data.shape[1:], kwargs.get('_hash', None))
         if indices is None and alphas is None:
             # all particles are on surface
             return val_func(points, time, extrapolate, slices=slices + (self.depth.surface_index,), **kwargs)
@@ -538,7 +538,6 @@ class Variable(object):
                 pts[:,0:2] = points
                 pts[:,2] = depths[d]
                 layer = d
-
 
     @classmethod
     def _gen_varname(cls,
