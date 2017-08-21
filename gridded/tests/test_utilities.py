@@ -5,7 +5,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 
 import numpy as np
-import pytest
 from gridded import utilities
 from gridded.tests.test_depth import get_s_depth
 
