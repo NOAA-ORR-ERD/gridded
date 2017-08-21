@@ -88,7 +88,7 @@ class Test_S_Depth(object):
         edge = np.linspace(20,0, len(sd.Cs_w))
         center = np.linspace(10,0,len(sd.Cs_w))
         assert np.allclose(levels[:,0,0], edge)
-        assert np.allclose(levels[:, sz/2, sz/2], center)
+        assert np.allclose(levels[:, int(sz/2), int(sz/2)], center)
 
     def test_interpolation_alphas(self, get_s_depth):
         sd = get_s_depth
