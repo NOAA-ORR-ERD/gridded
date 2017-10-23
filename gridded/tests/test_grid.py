@@ -9,7 +9,7 @@ import numpy as np
 import datetime
 import netCDF4 as nc
 import pprint as pp
-from gridded.grids import Grid, Grid_U, Grid_S
+from gridded.grids import Grid, Grid_U, Grid_S, Grid_R
 
 
 @pytest.fixture()
@@ -41,6 +41,7 @@ def ug_topology():
 @pytest.fixture()
 def ug():
     return Grid.from_netCDF(ug_data()[0], ug_data()[1], grid_topology=ug_topology())
+
 
 class TestPyGrid_S:
     def test_construction(self, sg_data, sg_topology):
@@ -82,3 +83,48 @@ class TestPyGrid_U:
         print(ug4.shape)
         assert ug == ug3
         assert ug2 == ug4
+
+
+@pytest.fixture()
+def rg_data():
+    lons = np.array((0,10,20,30,40,55))
+    lats = np.array((0,2,3,4,5,7,9))
+    return lons, lats
+
+@pytest.fixture()
+def example_rg():
+    lons = np.array((0,10,20,30,40,55))
+    lats = np.array((0,2,3,4,5,7,9))
+    rg = Grid_R(node_lon=lons,
+                node_lat=lats)
+    return rg
+
+class TestGrid_R:
+    def test_construction(self, rg_data):
+        node_lon = rg_data[0]
+        node_lat = rg_data[1]
+        rg = Grid_R(node_lon=node_lon,
+                    node_lat=node_lat)
+
+    def test_locate_faces(self, example_rg):
+        points = np.array(([5,1],[6,1],[7,1],[-1,0],[42,0]))
+        idxs = example_rg.locate_faces(points)
+        answer = np.array(([0,0],[0,0],[0,0],[-1,-1],[4,0]))
+        assert np.all(idxs == answer)
+
+        points = np.array([5,1])
+        idxs = example_rg.locate_faces(points)
+        answer = np.array([0,0])
+        assert np.all(idxs == answer)
+
+    def test_interpolation(self, example_rg):
+        example_rg.node_lon = np.array([0,1,2,5])
+        example_rg.node_lat = np.array([0,1,2,12])
+        points = np.array(([0.5,0.5],[3.5,2],[-1,0],[0,-1]))
+        v1 = np.mgrid[0:4,0:4][1]
+        val = example_rg.interpolate_var_to_points(points, v1, method='linear')
+        assert np.all(np.isclose(val,np.array([0.5,2,0,0])))
+
+        points = np.array([3.5,2])
+        val = example_rg.interpolate_var_to_points(points, v1, method='linear')
+        assert np.all(np.isclose(val,np.array([2])))

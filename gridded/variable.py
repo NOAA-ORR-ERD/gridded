@@ -6,7 +6,7 @@ import collections
 from collections import OrderedDict
 from gridded.utilities import get_dataset, _reorganize_spatial_data,\
     _align_results_to_spatial_data
-from gridded.grids import Grid, Grid_U, Grid_S
+from gridded.grids import Grid, Grid_U, Grid_S, Grid_R
 from gridded.depth import Depth
 from gridded.time import Time
 
@@ -367,7 +367,7 @@ class Variable(object):
         if self._order is not None:
             return self._order
         else:
-            if isinstance(self.grid, Grid_S):
+            if isinstance(self.grid, (Grid_S, Grid_R)):
                 order = ['time', 'depth', 'lon', 'lat']
             else:
                 order = ['time', 'depth', 'ele']
@@ -718,7 +718,7 @@ class VectorVariable(object):
             if time_origin is not None:
                 time = Time(data=time.data, filename=data_file, varname=time.varname, origin=time_origin)
         if depth is None:
-            if (isinstance(grid, Grid_S) and len(data.shape) == 4 or
+            if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
                     isinstance(grid, Grid_U) and len(data.shape) == 3):
                 depth = Depth(surface_index=-1)
 
