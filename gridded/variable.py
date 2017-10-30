@@ -570,9 +570,9 @@ class Variable(object):
                 return n
         for n in std_names_list:
             for var in df.variables.values():
-                if hasattr(var, 'standard_name') or hasattr(var, 'long_name'):
-                    if var.name == n:
-                        return n
+                if (hasattr(var, 'standard_name') and var.standard_name == n or
+                        hasattr(var, 'long_name') and var.long_name == n):
+                    return var.name
         raise ValueError("Default names not found.")
 
 
@@ -958,8 +958,10 @@ class VectorVariable(object):
                     k = kws
                     s = shared
                     return (n in s) and ((n not in k) or (n in k and k[n] is None))
+
                 if 'filename' in kws and kws['filename'] is not None:
                     kws['data_file'] = kws['grid_file'] = kws['filename']
+                ds = dg =  None
                 if _mod('dataset'):
                     if 'grid_file' in kws and 'data_file' in kws:
                         if kws['grid_file'] == kws['data_file']:
@@ -976,7 +978,7 @@ class VectorVariable(object):
                     ds = kws['dataset']
                 if _mod('grid'):
                     gt = kws.get('grid_topology', None)
-                    kws['grid'] = Grid.from_netCDF(kws['grid_file'], dataset=dg, grid_topology=gt)
+                    kws['grid'] = Grid.from_netCDF(kws['filename'], dataset=dg, grid_topology=gt)
                 if kws.get('varnames', None) is None:
                     varnames = cls._gen_varnames(kws['data_file'],
                                                  dataset=ds)
