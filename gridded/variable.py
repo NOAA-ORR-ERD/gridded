@@ -209,9 +209,11 @@ class Variable(object):
             if time_origin is not None:
                 time = Time(data=time.data, filename=time.filename, varname=time.varname, origin=time_origin)
         if depth is None:
-            if (isinstance(grid, Grid_S) and len(data.shape) == 4 or
+            if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
                     isinstance(grid, Grid_U) and len(data.shape) == 3):
-                depth = Depth(surface_index=-1)
+                depth = Depth.from_netCDF(grid_file,
+                                          dataset=dg,
+                                          )
 #             if len(data.shape) == 4 or (len(data.shape) == 3 and time is None):
 #                 from gnome.environment.environment_objects import S_Depth
 #                 depth = S_Depth.from_netCDF(grid=grid,
@@ -720,7 +722,9 @@ class VectorVariable(object):
         if depth is None:
             if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
                     isinstance(grid, Grid_U) and len(data.shape) == 3):
-                depth = Depth(surface_index=-1)
+                depth = Depth.from_netCDF(grid_file,
+                                          dataset=dg,
+                                          )
 
 #         if depth is None:
 #             if (isinstance(grid, Grid_S) and len(data.shape) == 4 or

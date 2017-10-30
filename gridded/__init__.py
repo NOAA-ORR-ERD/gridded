@@ -7,8 +7,8 @@ from gridded.gridded import Dataset
 from gridded.grids import Grid
 from gridded.variable import Variable, VectorVariable
 
-from gridded.depth import S_Depth
-S_Depth._default_component_types['variable'] = Variable
+from gridded.depth import DepthBase
+DepthBase._default_component_types['variable'] = Variable
 
 __all__ = ["Variable",
            "VectorVariable",

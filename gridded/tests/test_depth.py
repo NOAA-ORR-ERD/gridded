@@ -16,7 +16,7 @@ from gridded.tests.utilities import get_test_file_dir
 from gridded.grids import Grid_S
 from gridded.time import Time
 
-from gridded.depth import S_Depth
+from gridded.depth import S_Depth, L_Depth
 
 test_dir = get_test_file_dir()
 
@@ -73,6 +73,16 @@ def get_s_depth():
                         'hc':hc})
     return sd
 
+@pytest.fixture(scope='module')
+def get_l_depth():
+    '''
+    This sets up a HYCOM level depth where surface is index 0 and bottom is last index
+    '''
+
+    depth_levels = np.array(([0,1,2,4,6,10]))
+    ld = L_Depth(surface_index=0, bottom_index=len(depth_levels)-1, terms={'depth_levels':depth_levels})
+    return ld
+
 class Test_S_Depth(object):
 
     def test_construction(self, get_s_depth):
@@ -92,3 +102,24 @@ class Test_S_Depth(object):
 
     def test_interpolation_alphas(self, get_s_depth):
         sd = get_s_depth
+
+
+class Test_L_Depth(object):
+
+    def test_construction(self, get_l_depth):
+        assert get_l_depth is not None
+
+    def test_interpolation_alphas(self, get_l_depth):
+        ld = get_l_depth
+        points = np.array(([0,0,0],[1,1,0]))
+        idxs, alphas = ld.interpolation_alphas(points)
+        assert idxs is None
+        assert alphas is None
+        points = np.array(([0,0,0],[1,1,0.5],[0,0,1]))
+        idxs, alphas = ld.interpolation_alphas(points)
+        assert np.all(idxs == np.array([-1,0,1]))
+        assert np.all(np.isclose(alphas, np.array([-1,0.5,0])))
+        points = np.array(([0,0,-1],[0,0,10]))
+        idxs, alphas = ld.interpolation_alphas(points)
+        assert np.all(idxs == np.array([-1,-1]))
+        assert np.all(alphas == np.array([-1,-1]))

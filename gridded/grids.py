@@ -8,7 +8,6 @@ import numpy as np
 
 from gridded.utilities import get_dataset
 from six import string_types
-from yt.units.dimensions import dimensions
 
 from scipy.interpolate import RegularGridInterpolator
 
@@ -318,7 +317,7 @@ class Grid_R(GridBase):
         points = np.asarray(points, dtype=np.float64)
         just_one = (points.ndim == 1)
         points = points.reshape(-1, 2)
-        if self.infer_location(variable) is not None:
+        if self.infer_location(variable) is not None and slices is not None:
             variable = variable[slices]
         x = self.node_lon if variable.shape[0] == len(self.node_lon) else self.node_lat
         y = self.node_lat if x is self.node_lon else self.node_lon
@@ -472,30 +471,29 @@ class Grid(object):
                 else:
                     return Grid_S
             else:
-                #TODO: Determine an effective decision tree for picking if a topology variable is present
-#                 # no grid type explicitly specified. is a topology variable present?
-#                 topology = Grid._find_topology_var(None, dataset=dataset)
-#
-#                 if topology is not None:
-#
-#                     if (topology.cf_role == 'mesh_topology' or
-#                         topology.node_coordinates.split[])
-#                         return Grid_U
-#                     else:
-#                         return Grid_S
-#                 else:
-                # no topology variable either, so generate and try again.
-                # if no defaults are found, _gen_topology will raise an error
-                try:
-                    u_init_args, u_gf_vars = Grid_U._find_required_grid_attrs(None, dataset)
-                    return Grid_U
-                except ValueError:
-                    try:
-                        r_init_args, r_gf_vars = Grid_R._find_required_grid_attrs(None, dataset)
-                        return Grid_R
-                    except ValueError:
-                        s_init_args, s_gf_vars = Grid_S._find_required_grid_attrs(None, dataset)
+                # TODO: Determine an effective decision tree for picking if a topology variable is present
+                # no grid type explicitly specified. is a topology variable present?
+                topology = Grid._find_topology_var(None, dataset=dataset)
+
+                if topology is not None:
+                    if (hasattr(topology, 'node_coordinates') and
+                          not hasattr(topology, 'node_dimensions')):
+                        return Grid_U
+                    else:
                         return Grid_S
+                else:
+                    # no topology variable either, so generate and try again.
+                    # if no defaults are found, _gen_topology will raise an error
+                    try:
+                        u_init_args, u_gf_vars = Grid_U._find_required_grid_attrs(None, dataset)
+                        return Grid_U
+                    except ValueError:
+                        try:
+                            r_init_args, r_gf_vars = Grid_R._find_required_grid_attrs(None, dataset)
+                            return Grid_R
+                        except ValueError:
+                            s_init_args, s_gf_vars = Grid_S._find_required_grid_attrs(None, dataset)
+                            return Grid_S
 
     @staticmethod
     def _find_topology_var(filename,
