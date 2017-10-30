@@ -317,7 +317,7 @@ class Grid_R(GridBase):
         points = np.asarray(points, dtype=np.float64)
         just_one = (points.ndim == 1)
         points = points.reshape(-1, 2)
-        if self.infer_location(variable) is not None and slices is not None:
+        if slices is not None:
             variable = variable[slices]
         x = self.node_lon if variable.shape[0] == len(self.node_lon) else self.node_lat
         y = self.node_lat if x is self.node_lon else self.node_lon

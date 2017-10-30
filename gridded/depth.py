@@ -87,7 +87,7 @@ class DepthBase(object):
 
 class L_Depth(DepthBase):
     _def_count=0
-    default_terms = [('depth_levels','depth_levels')]
+    default_terms = [('depth_levels','depth')]
 
     def __init__(self,
                  name=None,
@@ -129,7 +129,7 @@ class L_Depth(DepthBase):
                 vname=tn
                 if tn not in dataset.variables.keys():
                     vname = cls._gen_varname(filename, dataset, [tn], [tln])
-                terms[vname] = dataset[vname][:]
+                terms[tn] = dataset[vname][:]
         if surface_index is None:
             surface_index = np.argmin(terms['depth_levels'])
         if bottom_index is None:
