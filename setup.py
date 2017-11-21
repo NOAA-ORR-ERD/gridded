@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 from setuptools import setup
 from setuptools import find_packages
@@ -10,8 +11,14 @@ def get_version():
                 return line.split('=', 1)[1].strip().strip('"')
     return ""
 
-install_requires = [line.strip() for line in open('conda_requirements.txt')]
-tests_require = [line.strip() for line in open('conda_requirements_dev.txt')]
+
+# install_requires = [line.strip() for line in open('conda_requirements.txt')]
+# tests_require = [line.strip() for line in open('conda_requirements_dev.txt')]
+
+# leaving requirements out of setup.py, as pip  may not work right anyway.
+# requirements should be pre-installed with conda (or maybe pip)
+install_requires = []
+tests_require = []
 
 config = {'name': 'gridded',
           'description': "Unified API for working with results from (Met/Ocean) models on"
@@ -25,7 +32,7 @@ config = {'name': 'gridded',
           'install_requires': install_requires,
           'tests_require': tests_require,
           'packages': find_packages(),
-          'package_data': {'gridded': ['tests/data/*',]},
+          'package_data': {'gridded': ['tests/data/*']},
           'scripts': [],
           }
 
