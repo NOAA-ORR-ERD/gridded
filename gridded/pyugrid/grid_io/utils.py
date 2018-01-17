@@ -16,7 +16,10 @@ import numpy as np
 from gridded.pyugrid.ugrid import UGrid
 
 
-def load_from_varnames(filename, names_mapping, attribute_check=None):
+def load_from_varnames(filename,
+                       names_mapping,
+                       attribute_check=None,
+                       post_process=None):
     """
     Load a UGrid from a netcdf file where the roles are defined by the
     names of the variables.
@@ -29,6 +32,9 @@ def load_from_varnames(filename, names_mapping, attribute_check=None):
     :type attribute_check: list of tuples to check. Example:
                            [('grid_type','triangular'),] will check if the
                            grid_type attribute is set to "triangular"
+
+    :param post_process: function to call to do some custom post processing.
+                         it should be a callable that takes (Dataset, UGrid)
 
     The names_mapping dict has to contain at least: 'nodes_lon', 'nodes_lat'
 
@@ -105,5 +111,8 @@ def load_from_varnames(filename, names_mapping, attribute_check=None):
         if one_indexed:
             boundaries -= 1
         ug.boundaries = boundaries
+
+    if post_process is not None:
+        post_process(nc, ug)
 
     return ug

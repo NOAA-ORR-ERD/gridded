@@ -31,8 +31,12 @@ class Dataset():
         Construct a gridded.Dataset object. Can be constructed from a data file,
         or also raw grid and variable objects.
 
-        :param ncfile: a file to load the Dataset from.
-        :type ncfile: filename of netcdf file or opendap url or open netCDF4 Dataset object
+        :param ncfile: A file or files to load the Dataset from.
+        :type ncfile: Can be one of:
+                      - file path of netcdf file as a string
+                      - opendap url
+                      - list of file paths (uses a netCDF4 MFDataset)
+                      - open netCDF4 Dataset object
                      (could be other file types in the future)
 
         :param grid: a dataset.Grid object or anything that presents the same API.
@@ -43,6 +47,9 @@ class Dataset():
         Either a filename or grid and variable objects should be provided -- not both.
         """
         if ncfile is not None:
+            if (grid is not None or variables is not None or grid_topology is not None):
+                raise ValueError("You can create a Dataset from a file, or from raw data"
+                                 "but not both.")
             self.nc_dataset = get_dataset(ncfile)
             self.filename = self.nc_dataset.filepath()
             # self.grid = pyugrid.UGrid.from_nc_dataset(ds)
