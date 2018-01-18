@@ -229,26 +229,33 @@
 </div>
 <div class="section" id="module-gridded.tests.test_dataset">
 <span id="gridded-tests-test-dataset-module"></span><h2>gridded.tests.test_dataset module<a class="headerlink" href="#module-gridded.tests.test_dataset" title="Permalink to this headline">¶</a></h2>
-<dl class="data">
-<dt id="gridded.tests.test_dataset.test_dir">
-<code class="descclassname">gridded.tests.test_dataset.</code><code class="descname">test_dir</code><em class="property"> = '/Users/chris.barker/HAZMAT/ERD-PythonPackages/gridded/gridded/tests/data'</em><a class="headerlink" href="#gridded.tests.test_dataset.test_dir" title="Permalink to this definition">¶</a></dt>
-<dd><p>Need to hook this up to existing test data infrastructure</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="gridded.tests.test_dataset.test_init">
-<code class="descclassname">gridded.tests.test_dataset.</code><code class="descname">test_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_dataset.html#test_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_dataset.test_init" title="Permalink to this definition">¶</a></dt>
-<dd><p>tests you can intitize a basic datset</p>
-</dd></dl>
-
 </div>
 <div class="section" id="module-gridded.tests.test_grid">
 <span id="gridded-tests-test-grid-module"></span><h2>gridded.tests.test_grid module<a class="headerlink" href="#module-gridded.tests.test_grid" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
+<dt id="gridded.tests.test_grid.TestGrid_R">
+<em class="property">class </em><code class="descclassname">gridded.tests.test_grid.</code><code class="descname">TestGrid_R</code><a class="reference internal" href="_modules/gridded/tests/test_grid.html#TestGrid_R"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.TestGrid_R" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="gridded.tests.test_grid.TestGrid_R.test_construction">
+<code class="descname">test_construction</code><span class="sig-paren">(</span><em>rg_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#TestGrid_R.test_construction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.TestGrid_R.test_construction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.tests.test_grid.TestGrid_R.test_interpolation">
+<code class="descname">test_interpolation</code><span class="sig-paren">(</span><em>example_rg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#TestGrid_R.test_interpolation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.TestGrid_R.test_interpolation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.tests.test_grid.TestGrid_R.test_locate_faces">
+<code class="descname">test_locate_faces</code><span class="sig-paren">(</span><em>example_rg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#TestGrid_R.test_locate_faces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.TestGrid_R.test_locate_faces" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="gridded.tests.test_grid.TestPyGrid_S">
 <em class="property">class </em><code class="descclassname">gridded.tests.test_grid.</code><code class="descname">TestPyGrid_S</code><a class="reference internal" href="_modules/gridded/tests/test_grid.html#TestPyGrid_S"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.TestPyGrid_S" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-<dl class="method">
+<dd><dl class="method">
 <dt id="gridded.tests.test_grid.TestPyGrid_S.test_construction">
 <code class="descname">test_construction</code><span class="sig-paren">(</span><em>sg_data</em>, <em>sg_topology</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#TestPyGrid_S.test_construction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.TestPyGrid_S.test_construction" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -258,13 +265,22 @@
 <dl class="class">
 <dt id="gridded.tests.test_grid.TestPyGrid_U">
 <em class="property">class </em><code class="descclassname">gridded.tests.test_grid.</code><code class="descname">TestPyGrid_U</code><a class="reference internal" href="_modules/gridded/tests/test_grid.html#TestPyGrid_U"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.TestPyGrid_U" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-<dl class="method">
+<dd><dl class="method">
 <dt id="gridded.tests.test_grid.TestPyGrid_U.test_construction">
 <code class="descname">test_construction</code><span class="sig-paren">(</span><em>ug_data</em>, <em>ug_topology</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#TestPyGrid_U.test_construction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.TestPyGrid_U.test_construction" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
+
+<dl class="function">
+<dt id="gridded.tests.test_grid.example_rg">
+<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">example_rg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#example_rg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.example_rg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="gridded.tests.test_grid.rg_data">
+<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">rg_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#rg_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.rg_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="gridded.tests.test_grid.sg">
@@ -302,8 +318,7 @@
 <dl class="class">
 <dt id="gridded.tests.test_property.TestVariable">
 <em class="property">class </em><code class="descclassname">gridded.tests.test_property.</code><code class="descname">TestVariable</code><a class="reference internal" href="_modules/gridded/tests/test_property.html#TestVariable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_property.TestVariable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-<dl class="method">
+<dd><dl class="method">
 <dt id="gridded.tests.test_property.TestVariable.test_at">
 <code class="descname">test_at</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_property.html#TestVariable.test_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_property.TestVariable.test_at" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -318,8 +333,7 @@
 <dl class="class">
 <dt id="gridded.tests.test_property.TestVectorVariable">
 <em class="property">class </em><code class="descclassname">gridded.tests.test_property.</code><code class="descname">TestVectorVariable</code><a class="reference internal" href="_modules/gridded/tests/test_property.html#TestVectorVariable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_property.TestVectorVariable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-<dl class="method">
+<dd><dl class="method">
 <dt id="gridded.tests.test_property.TestVectorVariable.test_at">
 <code class="descname">test_at</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_property.html#TestVectorVariable.test_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_property.TestVectorVariable.test_at" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -338,7 +352,7 @@
 
 <dl class="data">
 <dt id="gridded.tests.test_property.test_dir">
-<code class="descclassname">gridded.tests.test_property.</code><code class="descname">test_dir</code><em class="property"> = '/Users/chris.barker/HAZMAT/ERD-PythonPackages/gridded/gridded/tests/data'</em><a class="headerlink" href="#gridded.tests.test_property.test_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.tests.test_property.</code><code class="descname">test_dir</code><em class="property"> = u'/Users/chris.barker/HAZMAT/ERD-PythonPackages/gridded/gridded/tests/data'</em><a class="headerlink" href="#gridded.tests.test_property.test_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Need to hook this up to existing test data infrastructure</p>
 </dd></dl>
 
@@ -364,7 +378,7 @@ though it won’t work!</p>
 <p>This will need to be updated when the function is changed.</p>
 <dl class="attribute">
 <dt id="gridded.tests.test_utilities.DummyArrayLike.must_have">
-<code class="descname">must_have</code><em class="property"> = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute__']</em><a class="headerlink" href="#gridded.tests.test_utilities.DummyArrayLike.must_have" title="Permalink to this definition">¶</a></dt>
+<code class="descname">must_have</code><em class="property"> = [u'dtype', u'shape', u'ndim', u'__len__', u'__getitem__', u'__getattribute__']</em><a class="headerlink" href="#gridded.tests.test_utilities.DummyArrayLike.must_have" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -392,6 +406,16 @@ though it won’t work!</p>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="gridded.tests.test_utilities.test_regrid_variable_StoS">
+<code class="descclassname">gridded.tests.test_utilities.</code><code class="descname">test_regrid_variable_StoS</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_utilities.html#test_regrid_variable_StoS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_utilities.test_regrid_variable_StoS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="gridded.tests.test_utilities.test_regrid_variable_TDStoS">
+<code class="descclassname">gridded.tests.test_utilities.</code><code class="descname">test_regrid_variable_TDStoS</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_utilities.html#test_regrid_variable_TDStoS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_utilities.test_regrid_variable_TDStoS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="gridded.tests.test_utilities.test_reorganize_spatial_data">
 <code class="descclassname">gridded.tests.test_utilities.</code><code class="descname">test_reorganize_spatial_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_utilities.html#test_reorganize_spatial_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_utilities.test_reorganize_spatial_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -407,7 +431,7 @@ though it won’t work!</p>
 <p>Assorted utilities useful for the tests.</p>
 <dl class="function">
 <dt id="gridded.tests.utilities.chdir">
-<code class="descclassname">gridded.tests.utilities.</code><code class="descname">chdir</code><span class="sig-paren">(</span><em>dirname=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/utilities.html#chdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.utilities.chdir" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.tests.utilities.</code><code class="descname">chdir</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/utilities.html#chdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.utilities.chdir" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">

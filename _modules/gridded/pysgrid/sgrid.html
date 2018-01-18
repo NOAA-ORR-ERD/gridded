@@ -396,6 +396,10 @@
     <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lat</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">centers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">center_lon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_lat</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_save_common_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nc_file</span><span class="p">):</span>
         <span class="n">grid_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_topology_var</span>
         <span class="c1"># Create dimensions.</span>
@@ -485,13 +489,13 @@
         <span class="k">return</span> <span class="n">grid_vars</span>
 
     <span class="k">def</span> <span class="nf">_get_grid_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="s1">&#39;node&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;node&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lat</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="ow">is</span> <span class="s1">&#39;center&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;center&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center_lon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_lat</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="ow">is</span> <span class="s1">&#39;edge1&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;edge1&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edge1_lon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge1_lat</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">name</span> <span class="ow">is</span> <span class="s1">&#39;edge2&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;edge2&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edge2_lon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge2_lat</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid grid name </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>

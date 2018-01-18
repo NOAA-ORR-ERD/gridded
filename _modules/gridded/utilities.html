@@ -200,7 +200,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">assorted utility functions needed by gridded</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">netCDF4</span> <span class="k">as</span> <span class="nn">nc4</span>
@@ -208,9 +208,115 @@
 <span class="n">must_have</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dtype&#39;</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="s1">&#39;ndim&#39;</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getitem__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattribute__&#39;</span><span class="p">]</span>
 
 
+<div class="viewcode-block" id="regrid_variable"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.regrid_variable">[docs]</a><span class="k">def</span> <span class="nf">regrid_variable</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_var</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s1">&#39;node&#39;</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">gridded.variable</span> <span class="k">import</span> <span class="n">Variable</span>
+    <span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="k">import</span> <span class="n">Grid_S</span><span class="p">,</span> <span class="n">Grid_U</span>
+    <span class="kn">from</span> <span class="nn">gridded.depth</span> <span class="k">import</span> <span class="n">S_Depth</span><span class="p">,</span> <span class="n">Depth</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes a Variable or VectorVariable and interpolates the data onto grid.</span>
+<span class="sd">    You may pass a location (&#39;nodes&#39;, &#39;faces&#39;, &#39;edge1&#39;, &#39;edge2) and the</span>
+<span class="sd">    variable will be interpolated there if possible</span>
+<span class="sd">    If no location is passed, the variable will be interpolated to the</span>
+<span class="sd">    nodes of this grid. If the Variable&#39;s grid and this grid are the same, this</span>
+<span class="sd">    function will return the Variable unchanged.</span>
+
+<span class="sd">    If this grid covers area that the source grid does not, all values</span>
+<span class="sd">    in this area will be masked. If regridding from cell centers to the nodes,</span>
+<span class="sd">    The values of any border point not within will be equal to the value at the</span>
+<span class="sd">    center of the border cell.</span>
+
+<span class="sd">    NOTE: This function will load the ENTIRE data space of the source Variable.</span>
+<span class="sd">    Make sure that this is reasonable. If it is not, consider pre-slicing</span>
+<span class="sd">    the time and depth dimensions of the source Variable to what you need.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dest_points</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;node&#39;</span><span class="p">:</span>
+        <span class="n">dest_points</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">nodes</span>
+    <span class="k">if</span> <span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;face&#39;</span> <span class="ow">or</span> <span class="n">location</span> <span class="o">==</span> <span class="s1">&#39;center&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">grid</span><span class="o">.</span><span class="n">face_coordinates</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">Grid_U</span><span class="p">):</span>
+            <span class="n">grid</span><span class="o">.</span><span class="n">build_face_coordinates</span><span class="p">()</span>
+            <span class="n">dest_points</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">face_coordinates</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dest_points</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">centers</span>
+    <span class="n">dest_points</span> <span class="o">=</span> <span class="n">dest_points</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;edge&#39;</span> <span class="ow">in</span> <span class="n">location</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Cannot regrid variable to edges at this time&quot;</span><span class="p">)</span>
+    <span class="n">dest_indices</span> <span class="o">=</span> <span class="n">o_var</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">locate_faces</span><span class="p">(</span><span class="n">dest_points</span><span class="p">,</span><span class="s1">&#39;node&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dest_indices</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Grid </span><span class="si">{0}</span><span class="s2"> has no destination points overlapping</span><span class="se">\</span>
+<span class="s2">        the grid of the source variable </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_var</span><span class="p">))</span>
+    <span class="n">n_depth</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">o_var</span><span class="o">.</span><span class="n">depth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">depth</span><span class="p">,</span> <span class="n">S_Depth</span><span class="p">):</span>
+            <span class="n">n_depth</span> <span class="o">=</span> <span class="n">_regrid_s_depth</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_var</span><span class="o">.</span><span class="n">depth</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">depth</span><span class="p">,</span> <span class="n">Depth</span><span class="p">):</span>
+            <span class="n">n_depth</span> <span class="o">=</span> <span class="n">o_var</span><span class="o">.</span><span class="n">depth</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Can only regrid sigma depths for now&quot;</span><span class="p">)</span>
+
+    <span class="n">xy_shp</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">_get_grid_vars</span><span class="p">(</span><span class="n">location</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">d_shp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_depth</span><span class="p">)</span> <span class="k">if</span> <span class="n">n_depth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">t_shp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">time</span><span class="p">)</span> <span class="k">if</span> <span class="n">o_var</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">n_shape</span> <span class="o">=</span> <span class="n">xy_shp</span>
+    <span class="k">if</span> <span class="n">d_shp</span><span class="p">:</span>
+        <span class="n">n_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">d_shp</span><span class="p">,)</span> <span class="o">+</span> <span class="n">n_shape</span>
+    <span class="k">if</span> <span class="n">t_shp</span><span class="p">:</span>
+        <span class="n">n_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">t_shp</span><span class="p">,)</span> <span class="o">+</span> <span class="n">n_shape</span>
+
+    <span class="n">n_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_shape</span><span class="p">)</span>
+    <span class="n">location_shp</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">node_lon</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dest_points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="n">pts</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dest_points</span>
+    <span class="k">if</span> <span class="n">o_var</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">t_idx</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">n_depth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_depth</span><span class="p">,</span> <span class="n">S_Depth</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">lev_idx</span><span class="p">,</span> <span class="n">lev_data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">depth</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="n">t</span><span class="p">)):</span>
+                    <span class="n">lev</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;level</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lev_idx</span><span class="p">),</span>
+                                   <span class="n">data</span><span class="o">=</span><span class="n">lev_data</span><span class="p">,</span>
+                                   <span class="n">grid</span><span class="o">=</span><span class="n">o_var</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
+                    <span class="n">zs</span> <span class="o">=</span> <span class="n">lev</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+                    <span class="n">pts</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">zs</span>
+                    <span class="n">n_data</span><span class="p">[</span><span class="n">t_idx</span><span class="p">,</span> <span class="n">lev_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">o_var</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">location_shp</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">n_data</span><span class="p">[</span><span class="n">t_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">o_var</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">location_shp</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n_data</span> <span class="o">=</span> <span class="n">o_var</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">location_shp</span><span class="p">)</span>
+
+    <span class="n">n_var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;regridded </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                     <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
+                     <span class="n">time</span><span class="o">=</span><span class="n">o_var</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+                     <span class="n">depth</span><span class="o">=</span><span class="n">n_depth</span><span class="p">,</span>
+                     <span class="n">data</span><span class="o">=</span><span class="n">n_data</span><span class="p">,</span>
+                     <span class="n">units</span><span class="o">=</span><span class="n">o_var</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">n_var</span></div>
+
+<span class="k">def</span> <span class="nf">_regrid_s_depth</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_depth</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a new S_Depth object from an existing one that works on a new grid.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="k">import</span> <span class="n">Grid_S</span><span class="p">,</span> <span class="n">Grid_U</span>
+    <span class="kn">from</span> <span class="nn">gridded.depth</span> <span class="k">import</span> <span class="n">S_Depth</span>
+    <span class="n">o_bathy</span> <span class="o">=</span> <span class="n">o_depth</span><span class="o">.</span><span class="n">bathymetry</span>
+    <span class="n">o_zeta</span> <span class="o">=</span> <span class="n">o_depth</span><span class="o">.</span><span class="n">zeta</span>
+    <span class="n">n_bathy</span> <span class="o">=</span> <span class="n">regrid_variable</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_bathy</span><span class="p">)</span>
+    <span class="n">n_zeta</span> <span class="o">=</span> <span class="n">regrid_variable</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_zeta</span><span class="p">)</span>
+    <span class="n">n_depth</span> <span class="o">=</span> <span class="n">S_Depth</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">o_depth</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+                      <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
+                      <span class="n">bathymetry</span><span class="o">=</span><span class="n">n_bathy</span><span class="p">,</span>
+                      <span class="n">zeta</span><span class="o">=</span><span class="n">n_zeta</span><span class="p">,</span>
+                      <span class="n">terms</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Cs_w&#39;</span><span class="p">:</span> <span class="n">o_depth</span><span class="o">.</span><span class="n">Cs_w</span><span class="p">,</span>
+                             <span class="s1">&#39;Cs_r&#39;</span><span class="p">:</span> <span class="n">o_depth</span><span class="o">.</span><span class="n">Cs_r</span><span class="p">,</span>
+                             <span class="s1">&#39;s_w&#39;</span><span class="p">:</span> <span class="n">o_depth</span><span class="o">.</span><span class="n">s_w</span><span class="p">,</span>
+                             <span class="s1">&#39;s_rho&#39;</span><span class="p">:</span> <span class="n">o_depth</span><span class="o">.</span><span class="n">s_rho</span><span class="p">,</span>
+                             <span class="s1">&#39;hc&#39;</span><span class="p">:</span> <span class="n">o_depth</span><span class="o">.</span><span class="n">hc</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">n_depth</span>
+
+
 <span class="k">def</span> <span class="nf">_reorganize_spatial_data</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Provides a version of the data organized for use in internal gridded</span>
+<span class="sd">    Provides a version of the points data organized for use in internal gridded</span>
 <span class="sd">    algorithms. The data should be organized as an array with N rows, with</span>
 <span class="sd">    with each row representing the coordinates of one point. Each row should</span>
 <span class="sd">    at least have a length of two. The first column is ALWAYS considered to be</span>

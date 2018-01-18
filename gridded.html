@@ -255,43 +255,114 @@
 <span id="gridded-depth-module"></span><h2>gridded.depth module<a class="headerlink" href="#module-gridded.depth" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gridded.depth.Depth">
-<em class="property">class </em><code class="descclassname">gridded.depth.</code><code class="descname">Depth</code><span class="sig-paren">(</span><em>surface_index=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#Depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.Depth" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gridded.depth.</code><code class="descname">Depth</code><a class="reference internal" href="_modules/gridded/depth.html#Depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.Depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Factory class that generates depth objects. Also handles common loading and
+parsing operations</p>
+<dl class="staticmethod">
+<dt id="gridded.depth.Depth.depth_type_of_var">
+<em class="property">static </em><code class="descname">depth_type_of_var</code><span class="sig-paren">(</span><em>dataset</em>, <em>varname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#Depth.depth_type_of_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.Depth.depth_type_of_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a varname or netCDF variable and dataset, try to determine the depth type from dimensions,
+attributes, or other metadata information, and return a grid_type and topology</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="gridded.depth.Depth.from_netCDF">
+<em class="property">static </em><code class="descname">from_netCDF</code><span class="sig-paren">(</span><em>filename=None</em>, <em>dataset=None</em>, <em>depth_type=None</em>, <em>varname=None</em>, <em>topology=None</em>, <em>_default_types=((u'level'</em>, <em>&lt;class 'gridded.depth.L_Depth'&gt;)</em>, <em>(u'sigma'</em>, <em>&lt;class 'gridded.depth.S_Depth'&gt;)</em>, <em>(u'surface'</em>, <em>&lt;class 'gridded.depth.DepthBase'&gt;))</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#Depth.from_netCDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.Depth.from_netCDF" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> – File containing a depth</li>
+<li><strong>dataset</strong> – Takes precedence over filename, if provided.</li>
+<li><strong>depth_type</strong> – Must be provided if autodetection is not possible.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Instance of L_Depth or S_Depth</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="gridded.depth.Depth.surface_only">
+<em class="property">static </em><code class="descname">surface_only</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#Depth.surface_only"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.Depth.surface_only" title="Permalink to this definition">¶</a></dt>
+<dd><p>If instantiated directly, this will always return a DepthBase It is assumed index -1
+is the surface index</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gridded.depth.DepthBase">
+<em class="property">class </em><code class="descclassname">gridded.depth.</code><code class="descname">DepthBase</code><span class="sig-paren">(</span><em>surface_index=None</em>, <em>bottom_index=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#DepthBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.DepthBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <dl class="classmethod">
-<dt id="gridded.depth.Depth.from_netCDF">
-<em class="property">classmethod </em><code class="descname">from_netCDF</code><span class="sig-paren">(</span><em>surface_index=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#Depth.from_netCDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.Depth.from_netCDF" title="Permalink to this definition">¶</a></dt>
+<dt id="gridded.depth.DepthBase.from_netCDF">
+<em class="property">classmethod </em><code class="descname">from_netCDF</code><span class="sig-paren">(</span><em>surface_index=-1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#DepthBase.from_netCDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.DepthBase.from_netCDF" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="gridded.depth.Depth.interpolation_alphas">
-<code class="descname">interpolation_alphas</code><span class="sig-paren">(</span><em>points</em>, <em>data_shape</em>, <em>_hash=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#Depth.interpolation_alphas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.Depth.interpolation_alphas" title="Permalink to this definition">¶</a></dt>
+<dt id="gridded.depth.DepthBase.interpolation_alphas">
+<code class="descname">interpolation_alphas</code><span class="sig-paren">(</span><em>points</em>, <em>data_shape</em>, <em>_hash=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#DepthBase.interpolation_alphas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.DepthBase.interpolation_alphas" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="gridded.depth.S_Depth">
-<em class="property">class </em><code class="descclassname">gridded.depth.</code><code class="descname">S_Depth</code><span class="sig-paren">(</span><em>filename=None</em>, <em>dataset=None</em>, <em>time=None</em>, <em>grid=None</em>, <em>bathymetry=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#S_Depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.S_Depth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#gridded.depth.Depth" title="gridded.depth.Depth"><code class="xref py py-class docutils literal"><span class="pre">gridded.depth.Depth</span></code></a></p>
-<p>Represents the ocean s-coordinate, with particular focus on ROMS implementation</p>
+<dt id="gridded.depth.L_Depth">
+<em class="property">class </em><code class="descclassname">gridded.depth.</code><code class="descname">L_Depth</code><span class="sig-paren">(</span><em>name=None</em>, <em>terms=None</em>, <em>surface_index=None</em>, <em>bottom_index=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#L_Depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.L_Depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gridded.depth.DepthBase" title="gridded.depth.DepthBase"><code class="xref py py-class docutils literal"><span class="pre">gridded.depth.DepthBase</span></code></a></p>
 <dl class="attribute">
-<dt id="gridded.depth.S_Depth.bottom_index">
-<code class="descname">bottom_index</code><a class="headerlink" href="#gridded.depth.S_Depth.bottom_index" title="Permalink to this definition">¶</a></dt>
+<dt id="gridded.depth.L_Depth.default_terms">
+<code class="descname">default_terms</code><em class="property"> = [(u'depth_levels', u'depth')]</em><a class="headerlink" href="#gridded.depth.L_Depth.default_terms" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="classmethod">
+<dt id="gridded.depth.L_Depth.from_netCDF">
+<em class="property">classmethod </em><code class="descname">from_netCDF</code><span class="sig-paren">(</span><em>filename=None</em>, <em>dataset=None</em>, <em>name=None</em>, <em>topology=None</em>, <em>terms=None</em>, <em>surface_index=None</em>, <em>bottom_index=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#L_Depth.from_netCDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.L_Depth.from_netCDF" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.depth.L_Depth.interpolation_alphas">
+<code class="descname">interpolation_alphas</code><span class="sig-paren">(</span><em>points</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#L_Depth.interpolation_alphas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.L_Depth.interpolation_alphas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a pair of values. The 1st value is an array of the depth indices of all the particles.
+The 2nd value is an array of the interpolation alphas for the particles between their depth
+index and depth_index+1. If both values are None, then all particles are on the surface layer.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gridded.depth.S_Depth">
+<em class="property">class </em><code class="descclassname">gridded.depth.</code><code class="descname">S_Depth</code><span class="sig-paren">(</span><em>name=None</em>, <em>time=None</em>, <em>grid=None</em>, <em>bathymetry=None</em>, <em>zeta=None</em>, <em>terms=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#S_Depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.S_Depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gridded.depth.DepthBase" title="gridded.depth.DepthBase"><code class="xref py py-class docutils literal"><span class="pre">gridded.depth.DepthBase</span></code></a></p>
+<p>Represents the ocean s-coordinate, with particular focus on ROMS implementation</p>
 <dl class="attribute">
 <dt id="gridded.depth.S_Depth.default_terms">
-<code class="descname">default_terms</code><em class="property"> = [('Cs_r', 'S-coordinate stretching curves at RHO-points'), ('Cs_w', 'S-coordinate stretching curves at W-points'), ('s_rho', 'S-coordinate at RHO-points'), ('s_w', 'S-coordinate at W-points'), ('h', 'bathymetry at RHO-points'), ('hc', 'S-coordinate parameter, critical depth'), ('zeta', 'free-surface')]</em><a class="headerlink" href="#gridded.depth.S_Depth.default_terms" title="Permalink to this definition">¶</a></dt>
+<code class="descname">default_terms</code><em class="property"> = [(u'Cs_r', u'S-coordinate stretching curves at RHO-points'), (u'Cs_w', u'S-coordinate stretching curves at W-points'), (u's_rho', u'S-coordinate at RHO-points'), (u's_w', u'S-coordinate at W-points'), (u'h', u'bathymetry at RHO-points'), (u'hc', u'S-coordinate parameter, critical depth'), (u'zeta', u'free-surface')]</em><a class="headerlink" href="#gridded.depth.S_Depth.default_terms" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="classmethod">
 <dt id="gridded.depth.S_Depth.from_netCDF">
-<em class="property">classmethod </em><code class="descname">from_netCDF</code><span class="sig-paren">(</span><em>filename=None</em>, <em>varnames=None</em>, <em>grid_topology=None</em>, <em>name=None</em>, <em>units=None</em>, <em>time=None</em>, <em>time_origin=None</em>, <em>grid=None</em>, <em>dataset=None</em>, <em>data_file=None</em>, <em>grid_file=None</em>, <em>load_all=False</em>, <em>bathymetry=None</em>, <em>fill_value=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#S_Depth.from_netCDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.S_Depth.from_netCDF" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">from_netCDF</code><span class="sig-paren">(</span><em>filename=None</em>, <em>varnames=None</em>, <em>grid_topology=None</em>, <em>name=None</em>, <em>units=None</em>, <em>time=None</em>, <em>time_origin=None</em>, <em>grid=None</em>, <em>dataset=None</em>, <em>data_file=None</em>, <em>grid_file=None</em>, <em>load_all=False</em>, <em>bathymetry=None</em>, <em>zeta=None</em>, <em>terms=None</em>, <em>fill_value=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#S_Depth.from_netCDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.S_Depth.from_netCDF" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="gridded.depth.S_Depth.get_section">
+<code class="descname">get_section</code><span class="sig-paren">(</span><em>time</em>, <em>coord=u'w'</em>, <em>x_coord=None</em>, <em>y_coord=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#S_Depth.get_section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.S_Depth.get_section" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a section  of the z-level space in time. All s-levels are
+returned in the data. By providing a x_coord or y_coord you can
+get cross sections in the direction specified, or both for the level
+depths at a single point.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="gridded.depth.S_Depth.interpolation_alphas">
-<code class="descname">interpolation_alphas</code><span class="sig-paren">(</span><em>points</em>, <em>data_shape</em>, <em>_hash=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#S_Depth.interpolation_alphas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.S_Depth.interpolation_alphas" title="Permalink to this definition">¶</a></dt>
+<code class="descname">interpolation_alphas</code><span class="sig-paren">(</span><em>points</em>, <em>time</em>, <em>data_shape</em>, <em>_hash=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/depth.html#S_Depth.interpolation_alphas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.depth.S_Depth.interpolation_alphas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a pair of values. The 1st value is an array of the depth indices of all the particles.
 The 2nd value is an array of the interpolation alphas for the particles between their depth
 index and depth_index+1. If both values are None, then all particles are on the surface layer.</p>
@@ -307,11 +378,6 @@ index and depth_index+1. If both values are None, then all particles are on the 
 <code class="descname">num_w_levels</code><a class="headerlink" href="#gridded.depth.S_Depth.num_w_levels" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="gridded.depth.S_Depth.surface_index">
-<code class="descname">surface_index</code><a class="headerlink" href="#gridded.depth.S_Depth.surface_index" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </div>
@@ -320,9 +386,27 @@ index and depth_index+1. If both values are None, then all particles are on the 
 <dl class="class">
 <dt id="gridded.gridded.Dataset">
 <em class="property">class </em><code class="descclassname">gridded.gridded.</code><code class="descname">Dataset</code><span class="sig-paren">(</span><em>ncfile=None</em>, <em>grid=None</em>, <em>variables=None</em>, <em>grid_topology=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/gridded.html#Dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.gridded.Dataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-<p>An object that represent an entire complete dataset – a collection of Variable,
+<dd><p>An object that represent an entire complete dataset – a collection of Variable,
 and the grid that they are stored on.</p>
+<dl class="method">
+<dt id="gridded.gridded.Dataset.get_variables_by_attribute">
+<code class="descname">get_variables_by_attribute</code><span class="sig-paren">(</span><em>attr</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/gridded.html#Dataset.get_variables_by_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.gridded.Dataset.get_variables_by_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the variables that have attributes that fit the defined input</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>attr</strong> – the name of the attribute you want to match</li>
+<li><strong>value</strong> – the value of the attribute you want to match</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>fixme: make this a bit more flexible, more like the netCDF4 version</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="gridded.gridded.Dataset.load_from_varnames">
 <code class="descname">load_from_varnames</code><span class="sig-paren">(</span><em>ncfile</em>, <em>topology</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/gridded.html#Dataset.load_from_varnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.gridded.Dataset.load_from_varnames" title="Permalink to this definition">¶</a></dt>
@@ -346,7 +430,7 @@ and the grid that they are stored on.</p>
 
 <dl class="method">
 <dt id="gridded.gridded.Dataset.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>filename</em>, <em>format='netcdf4'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/gridded.html#Dataset.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.gridded.Dataset.save" title="Permalink to this definition">¶</a></dt>
+<code class="descname">save</code><span class="sig-paren">(</span><em>filename</em>, <em>format=u'netcdf4'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/gridded.html#Dataset.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.gridded.Dataset.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>save the dataset to a file</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -376,7 +460,7 @@ are the only options at this point.</li>
 parsing operations</p>
 <dl class="staticmethod">
 <dt id="gridded.grids.Grid.from_netCDF">
-<em class="property">static </em><code class="descname">from_netCDF</code><span class="sig-paren">(</span><em>filename=None</em>, <em>dataset=None</em>, <em>grid_type=None</em>, <em>grid_topology=None</em>, <em>_default_types=(('ugrid'</em>, <em>&lt;class 'gridded.grids.Grid_U'&gt;)</em>, <em>('sgrid'</em>, <em>&lt;class 'gridded.grids.Grid_S'&gt;))</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/grids.html#Grid.from_netCDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.grids.Grid.from_netCDF" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">from_netCDF</code><span class="sig-paren">(</span><em>filename=None</em>, <em>dataset=None</em>, <em>grid_type=None</em>, <em>grid_topology=None</em>, <em>_default_types=(('ugrid'</em>, <em>&lt;class 'gridded.grids.Grid_U'&gt;)</em>, <em>('sgrid'</em>, <em>&lt;class 'gridded.grids.Grid_S'&gt;)</em>, <em>('rgrid'</em>, <em>&lt;class 'gridded.grids.Grid_R'&gt;))</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/grids.html#Grid.from_netCDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.grids.Grid.from_netCDF" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -411,9 +495,87 @@ Takes precedence over discovered attributes</li>
 <em class="property">classmethod </em><code class="descname">from_netCDF</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/grids.html#GridBase.from_netCDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.grids.GridBase.from_netCDF" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="gridded.grids.GridBase.import_variable">
+<code class="descname">import_variable</code><span class="sig-paren">(</span><em>variable</em>, <em>location='node'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/grids.html#GridBase.import_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.grids.GridBase.import_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a Variable or VectorVariable and interpolates the data onto this grid.
+You may pass a location (‘nodes’, ‘faces’, ‘edge1’, ‘edge2) and the
+variable will be interpolated there if possible
+If no location is passed, the variable will be interpolated to the
+nodes of this grid. If the Variable’s grid and this grid are the same, this
+function will return the Variable unchanged.</p>
+<p>If this grid covers area that the source grid does not, all values
+in this area will be masked. If regridding from cell centers to the nodes,
+The values of any border point not within will be equal to the value at the
+center of the border cell.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="gridded.grids.GridBase.shape">
 <code class="descname">shape</code><a class="headerlink" href="#gridded.grids.GridBase.shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gridded.grids.Grid_R">
+<em class="property">class </em><code class="descclassname">gridded.grids.</code><code class="descname">Grid_R</code><span class="sig-paren">(</span><em>node_lon=None</em>, <em>node_lat=None</em>, <em>grid_topology=None</em>, <em>dimensions=None</em>, <em>node_dimensions=None</em>, <em>node_coordinates=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/grids.html#Grid_R"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.grids.Grid_R" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gridded.grids.GridBase" title="gridded.grids.GridBase"><code class="xref py py-class docutils literal"><span class="pre">gridded.grids.GridBase</span></code></a></p>
+<dl class="attribute">
+<dt id="gridded.grids.Grid_R.center_lat">
+<code class="descname">center_lat</code><a class="headerlink" href="#gridded.grids.Grid_R.center_lat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.grids.Grid_R.center_lon">
+<code class="descname">center_lon</code><a class="headerlink" href="#gridded.grids.Grid_R.center_lon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.grids.Grid_R.centers">
+<code class="descname">centers</code><a class="headerlink" href="#gridded.grids.Grid_R.centers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.grids.Grid_R.infer_location">
+<code class="descname">infer_location</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/grids.html#Grid_R.infer_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.grids.Grid_R.infer_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assuming default is node grid, check variable dimensions to determine which grid
+it is on.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridded.grids.Grid_R.interpolate_var_to_points">
+<code class="descname">interpolate_var_to_points</code><span class="sig-paren">(</span><em>points</em>, <em>variable</em>, <em>method='linear'</em>, <em>indices=None</em>, <em>slices=None</em>, <em>mask=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/grids.html#Grid_R.interpolate_var_to_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.grids.Grid_R.interpolate_var_to_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridded.grids.Grid_R.locate_faces">
+<code class="descname">locate_faces</code><span class="sig-paren">(</span><em>points</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/grids.html#Grid_R.locate_faces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.grids.Grid_R.locate_faces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the node grid indices, one per point.</p>
+<p>Points that are not on the node grid will have an index of -1</p>
+<p>If a single point is passed in, a single index will be returned.
+If a sequence of points is passed in an array of indexes will be returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>points</strong> (<em>array-like containing one</em><em> or </em><em>more points: shape</em><em> (</em><em>2</em><em>,</em><em>) </em><em>for one point</em><em>,
+</em><a class="reference internal" href="#gridded.grids.GridBase.shape" title="gridded.grids.GridBase.shape"><em>shape</em></a><em> (</em><em>N</em><em>, </em><em>2</em><em>) </em><em>for more than one point.</em>) – The points that you want to locate – (lon, lat). If the shape of point
+is 1D, function will return a scalar index. If it is 2D, it will return
+a 1D array of indices.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.grids.Grid_R.nodes">
+<code class="descname">nodes</code><a class="headerlink" href="#gridded.grids.Grid_R.nodes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="gridded.grids.Grid_R.topology_dimension">
+<code class="descname">topology_dimension</code><em class="property"> = 2</em><a class="headerlink" href="#gridded.grids.Grid_R.topology_dimension" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -428,6 +590,11 @@ Takes precedence over discovered attributes</li>
 <dt id="gridded.grids.Grid_U">
 <em class="property">class </em><code class="descclassname">gridded.grids.</code><code class="descname">Grid_U</code><span class="sig-paren">(</span><em>filename=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/grids.html#Grid_U"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.grids.Grid_U" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#gridded.grids.GridBase" title="gridded.grids.GridBase"><code class="xref py py-class docutils literal"><span class="pre">gridded.grids.GridBase</span></code></a>, <a class="reference internal" href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid" title="gridded.pyugrid.ugrid.UGrid"><code class="xref py py-class docutils literal"><span class="pre">gridded.pyugrid.ugrid.UGrid</span></code></a></p>
+<dl class="classmethod">
+<dt id="gridded.grids.Grid_U.gen_from_quads">
+<em class="property">classmethod </em><code class="descname">gen_from_quads</code><span class="sig-paren">(</span><em>nodes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/grids.html#Grid_U.gen_from_quads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.grids.Grid_U.gen_from_quads" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -435,7 +602,7 @@ Takes precedence over discovered attributes</li>
 <span id="gridded-time-module"></span><h2>gridded.time module<a class="headerlink" href="#module-gridded.time" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="gridded.time.Time">
-<em class="property">class </em><code class="descclassname">gridded.time.</code><code class="descname">Time</code><span class="sig-paren">(</span><em>data=(datetime.datetime(2017</em>, <em>7</em>, <em>16</em>, <em>15</em>, <em>37</em>, <em>17</em>, <em>65383)</em>, <em>)</em>, <em>filename=None</em>, <em>varname=None</em>, <em>tz_offset=None</em>, <em>origin=None</em>, <em>displacement=datetime.timedelta(0)</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/time.html#Time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.time.Time" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">gridded.time.</code><code class="descname">Time</code><span class="sig-paren">(</span><em>data=(datetime.datetime(2018</em>, <em>1</em>, <em>17</em>, <em>16</em>, <em>14</em>, <em>50</em>, <em>530736)</em>, <em>)</em>, <em>filename=None</em>, <em>varname=None</em>, <em>tz_offset=None</em>, <em>origin=None</em>, <em>displacement=datetime.timedelta(0)</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/time.html#Time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.time.Time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <dl class="classmethod">
 <dt id="gridded.time.Time.constant_time">
@@ -593,6 +760,11 @@ and it will simiply be returned</p>
 <dd><p>py2/3 compaitlbie wayto test for a string</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="gridded.utilities.regrid_variable">
+<code class="descclassname">gridded.utilities.</code><code class="descname">regrid_variable</code><span class="sig-paren">(</span><em>grid</em>, <em>o_var</em>, <em>location=u'node'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/utilities.html#regrid_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.utilities.regrid_variable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-gridded.variable">
 <span id="gridded-variable-module"></span><h2>gridded.variable module<a class="headerlink" href="#module-gridded.variable" title="Permalink to this headline">¶</a></h2>
@@ -688,7 +860,7 @@ If the data has 3 dimensions, self.grid is a Grid_U, the ordering is [‘time’
 <li><strong>time</strong> (<em>[</em><em>] </em><em>of datetime.datetime</em><em>, </em><em>netCDF4 Variable</em><em>, or </em><em>Time object</em>) – Time axis of the data</li>
 <li><strong>data</strong> (<em>netCDF4.Variable</em><em> or </em><em>numpy.array</em>) – Underlying data source</li>
 <li><strong>grid</strong> (<a class="reference internal" href="gridded.pysgrid.html#module-gridded.pysgrid" title="gridded.pysgrid"><em>pysgrid</em></a><em> or </em><a class="reference internal" href="gridded.pyugrid.html#module-gridded.pyugrid" title="gridded.pyugrid"><em>pyugrid</em></a>) – Grid that the data corresponds with</li>
-<li><strong>depth</strong> (<a class="reference internal" href="#gridded.depth.Depth" title="gridded.depth.Depth"><em>Depth</em></a><em>, </em><a class="reference internal" href="#gridded.depth.S_Depth" title="gridded.depth.S_Depth"><em>S_Depth</em></a><em> or </em><em>L_Depth</em>) – Depth axis object</li>
+<li><strong>depth</strong> (<a class="reference internal" href="#gridded.depth.Depth" title="gridded.depth.Depth"><em>Depth</em></a><em>, </em><a class="reference internal" href="#gridded.depth.S_Depth" title="gridded.depth.S_Depth"><em>S_Depth</em></a><em> or </em><a class="reference internal" href="#gridded.depth.L_Depth" title="gridded.depth.L_Depth"><em>L_Depth</em></a>) – Depth axis object</li>
 <li><strong>dataset</strong> (<em>netCDF4.Dataset</em>) – Instance of open Dataset</li>
 <li><strong>data_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) – Name of data source file</li>
 <li><strong>grid_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) – Name of grid source file</li>
@@ -926,7 +1098,7 @@ If the data has 3 dimensions, self.grid is a Grid_U, the ordering is [‘time’
 <li><strong>time</strong> (<em>[</em><em>] </em><em>of datetime.datetime</em><em>, </em><em>netCDF4 Variable</em><em>, or </em><em>Time object</em>) – Time axis of the data</li>
 <li><strong>data</strong> (<em>netCDF4.Variable</em><em> or </em><em>numpy.array</em>) – Underlying data source</li>
 <li><strong>grid</strong> (<a class="reference internal" href="gridded.pysgrid.html#module-gridded.pysgrid" title="gridded.pysgrid"><em>pysgrid</em></a><em> or </em><a class="reference internal" href="gridded.pyugrid.html#module-gridded.pyugrid" title="gridded.pyugrid"><em>pyugrid</em></a>) – Grid that the data corresponds with</li>
-<li><strong>depth</strong> (<a class="reference internal" href="#gridded.depth.Depth" title="gridded.depth.Depth"><em>Depth</em></a><em>, </em><a class="reference internal" href="#gridded.depth.S_Depth" title="gridded.depth.S_Depth"><em>S_Depth</em></a><em> or </em><em>L_Depth</em>) – Depth axis object</li>
+<li><strong>depth</strong> (<a class="reference internal" href="#gridded.depth.Depth" title="gridded.depth.Depth"><em>Depth</em></a><em>, </em><a class="reference internal" href="#gridded.depth.S_Depth" title="gridded.depth.S_Depth"><em>S_Depth</em></a><em> or </em><a class="reference internal" href="#gridded.depth.L_Depth" title="gridded.depth.L_Depth"><em>L_Depth</em></a>) – Depth axis object</li>
 <li><strong>dataset</strong> (<em>netCDF4.Dataset</em>) – Instance of open Dataset</li>
 <li><strong>data_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) – Name of data source file</li>
 <li><strong>grid_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) – Name of grid source file</li>
@@ -1077,7 +1249,7 @@ If the data has 3 dimensions, self.grid is a Grid_U, the ordering is [‘time’
 parsing operations</p>
 <dl class="staticmethod">
 <dt id="gridded.Grid.from_netCDF">
-<em class="property">static </em><code class="descname">from_netCDF</code><span class="sig-paren">(</span><em>filename=None</em>, <em>dataset=None</em>, <em>grid_type=None</em>, <em>grid_topology=None</em>, <em>_default_types=(('ugrid'</em>, <em>&lt;class 'gridded.grids.Grid_U'&gt;)</em>, <em>('sgrid'</em>, <em>&lt;class 'gridded.grids.Grid_S'&gt;))</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/grids.html#Grid.from_netCDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.Grid.from_netCDF" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">from_netCDF</code><span class="sig-paren">(</span><em>filename=None</em>, <em>dataset=None</em>, <em>grid_type=None</em>, <em>grid_topology=None</em>, <em>_default_types=(('ugrid'</em>, <em>&lt;class 'gridded.grids.Grid_U'&gt;)</em>, <em>('sgrid'</em>, <em>&lt;class 'gridded.grids.Grid_S'&gt;)</em>, <em>('rgrid'</em>, <em>&lt;class 'gridded.grids.Grid_R'&gt;))</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/grids.html#Grid.from_netCDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.Grid.from_netCDF" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1094,6 +1266,72 @@ Takes precedence over discovered attributes</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Instance of Grid_U, Grid_S, or PyGrid_R</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gridded.Dataset">
+<em class="property">class </em><code class="descclassname">gridded.</code><code class="descname">Dataset</code><span class="sig-paren">(</span><em>ncfile=None</em>, <em>grid=None</em>, <em>variables=None</em>, <em>grid_topology=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/gridded.html#Dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.Dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>An object that represent an entire complete dataset – a collection of Variable,
+and the grid that they are stored on.</p>
+<dl class="method">
+<dt id="gridded.Dataset.get_variables_by_attribute">
+<code class="descname">get_variables_by_attribute</code><span class="sig-paren">(</span><em>attr</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/gridded.html#Dataset.get_variables_by_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.Dataset.get_variables_by_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the variables that have attributes that fit the defined input</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>attr</strong> – the name of the attribute you want to match</li>
+<li><strong>value</strong> – the value of the attribute you want to match</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>fixme: make this a bit more flexible, more like the netCDF4 version</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridded.Dataset.load_from_varnames">
+<code class="descname">load_from_varnames</code><span class="sig-paren">(</span><em>ncfile</em>, <em>topology</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/gridded.html#Dataset.load_from_varnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.Dataset.load_from_varnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a Gridded dataset by specifying the variable names used for the topology</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ncfile</strong> (<em>filename of netcdf file</em><em> or </em><em>opendap url</em><em> or </em><em>open netCDF4 Dataset object</em><em>
+(</em><em>could be other file types in the future</em><em>)</em>) – a file to load the Dataset from.</li>
+<li><strong>topology</strong> (<em>dict of topology_role keys</em><em>, </em><em>and variable name values</em>) – variables that define the topology</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Docs about what is required for each grid type here.</p>
+<p>NOTE: the grid type will be inferered by what topology is provided.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridded.Dataset.save">
+<code class="descname">save</code><span class="sig-paren">(</span><em>filename</em>, <em>format=u'netcdf4'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/gridded.html#Dataset.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.Dataset.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>save the dataset to a file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> – full path to file to save to.</li>
+<li><strong>format</strong> – format to save – ‘netcdf3’ or ‘netcdf4’
+are the only options at this point.</li>
+</ul>
 </td>
 </tr>
 </tbody>

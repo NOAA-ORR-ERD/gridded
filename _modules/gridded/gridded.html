@@ -228,8 +228,12 @@
 <span class="sd">        Construct a gridded.Dataset object. Can be constructed from a data file,</span>
 <span class="sd">        or also raw grid and variable objects.</span>
 
-<span class="sd">        :param ncfile: a file to load the Dataset from.</span>
-<span class="sd">        :type ncfile: filename of netcdf file or opendap url or open netCDF4 Dataset object</span>
+<span class="sd">        :param ncfile: A file or files to load the Dataset from.</span>
+<span class="sd">        :type ncfile: Can be one of:</span>
+<span class="sd">                      - file path of netcdf file as a string</span>
+<span class="sd">                      - opendap url</span>
+<span class="sd">                      - list of file paths (uses a netCDF4 MFDataset)</span>
+<span class="sd">                      - open netCDF4 Dataset object</span>
 <span class="sd">                     (could be other file types in the future)</span>
 
 <span class="sd">        :param grid: a dataset.Grid object or anything that presents the same API.</span>
@@ -240,6 +244,9 @@
 <span class="sd">        Either a filename or grid and variable objects should be provided -- not both.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ncfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">grid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">grid_topology</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You can create a Dataset from a file, or from raw data&quot;</span>
+                                 <span class="s2">&quot;but not both.&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span><span class="o">.</span><span class="n">filepath</span><span class="p">()</span>
             <span class="c1"># self.grid = pyugrid.UGrid.from_nc_dataset(ds)</span>
@@ -298,7 +305,34 @@
 <span class="sd">        :param format: format to save -- &#39;netcdf3&#39; or &#39;netcdf4&#39;</span>
 <span class="sd">                       are the only options at this point.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="Dataset.get_variables_by_attribute"><a class="viewcode-back" href="../../gridded.html#gridded.gridded.Dataset.get_variables_by_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">get_variables_by_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return the variables that have attributes that fit the defined input</span>
+
+<span class="sd">        :param attr: the name of the attribute you want to match</span>
+
+<span class="sd">        :param value: the value of the attribute you want to match</span>
+
+<span class="sd">        fixme: make this a bit more flexible, more like the netCDF4 version</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">variables</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">variables</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">variables</span></div></div>
+
+
+
+
+
+
+
+
 </pre></div>
 
            </div>

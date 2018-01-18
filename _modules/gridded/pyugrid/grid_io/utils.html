@@ -213,7 +213,10 @@
 <span class="kn">from</span> <span class="nn">gridded.pyugrid.ugrid</span> <span class="k">import</span> <span class="n">UGrid</span>
 
 
-<div class="viewcode-block" id="load_from_varnames"><a class="viewcode-back" href="../../../../gridded.pyugrid.grid_io.html#gridded.pyugrid.grid_io.utils.load_from_varnames">[docs]</a><span class="k">def</span> <span class="nf">load_from_varnames</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">names_mapping</span><span class="p">,</span> <span class="n">attribute_check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="load_from_varnames"><a class="viewcode-back" href="../../../../gridded.pyugrid.grid_io.html#gridded.pyugrid.grid_io.utils.load_from_varnames">[docs]</a><span class="k">def</span> <span class="nf">load_from_varnames</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
+                       <span class="n">names_mapping</span><span class="p">,</span>
+                       <span class="n">attribute_check</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">post_process</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load a UGrid from a netcdf file where the roles are defined by the</span>
 <span class="sd">    names of the variables.</span>
@@ -226,6 +229,9 @@
 <span class="sd">    :type attribute_check: list of tuples to check. Example:</span>
 <span class="sd">                           [(&#39;grid_type&#39;,&#39;triangular&#39;),] will check if the</span>
 <span class="sd">                           grid_type attribute is set to &quot;triangular&quot;</span>
+
+<span class="sd">    :param post_process: function to call to do some custom post processing.</span>
+<span class="sd">                         it should be a callable that takes (Dataset, UGrid)</span>
 
 <span class="sd">    The names_mapping dict has to contain at least: &#39;nodes_lon&#39;, &#39;nodes_lat&#39;</span>
 
@@ -302,6 +308,9 @@
         <span class="k">if</span> <span class="n">one_indexed</span><span class="p">:</span>
             <span class="n">boundaries</span> <span class="o">-=</span> <span class="mi">1</span>
         <span class="n">ug</span><span class="o">.</span><span class="n">boundaries</span> <span class="o">=</span> <span class="n">boundaries</span>
+
+    <span class="k">if</span> <span class="n">post_process</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">post_process</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">ug</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">ug</span></div>
 </pre></div>

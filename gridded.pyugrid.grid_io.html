@@ -214,7 +214,7 @@
 UGRID-compliant files.</p>
 <dl class="function">
 <dt id="gridded.pyugrid.grid_io.utils.load_from_varnames">
-<code class="descclassname">gridded.pyugrid.grid_io.utils.</code><code class="descname">load_from_varnames</code><span class="sig-paren">(</span><em>filename</em>, <em>names_mapping</em>, <em>attribute_check=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/grid_io/utils.html#load_from_varnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.grid_io.utils.load_from_varnames" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.pyugrid.grid_io.utils.</code><code class="descname">load_from_varnames</code><span class="sig-paren">(</span><em>filename</em>, <em>names_mapping</em>, <em>attribute_check=None</em>, <em>post_process=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/grid_io/utils.html#load_from_varnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.grid_io.utils.load_from_varnames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a UGrid from a netcdf file where the roles are defined by the
 names of the variables.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -225,6 +225,8 @@ names of the variables.</p>
 <li><strong>filename</strong> – names of the file to load (or OPeNDAP URL).</li>
 <li><strong>names_mapping</strong> – dict that maps the variable names to UGrid components</li>
 <li><strong>attribute_check=None</strong> – list of global attributes that are expected</li>
+<li><strong>post_process</strong> – function to call to do some custom post processing.
+it should be a callable that takes (Dataset, UGrid)</li>
 </ul>
 </td>
 </tr>
@@ -240,7 +242,7 @@ names of the variables.</p>
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gridded.pyugrid.grid_io" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="gridded.pyugrid.grid_io.load_from_varnames">
-<code class="descclassname">gridded.pyugrid.grid_io.</code><code class="descname">load_from_varnames</code><span class="sig-paren">(</span><em>filename</em>, <em>names_mapping</em>, <em>attribute_check=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/grid_io/utils.html#load_from_varnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.grid_io.load_from_varnames" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.pyugrid.grid_io.</code><code class="descname">load_from_varnames</code><span class="sig-paren">(</span><em>filename</em>, <em>names_mapping</em>, <em>attribute_check=None</em>, <em>post_process=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/grid_io/utils.html#load_from_varnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.grid_io.load_from_varnames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a UGrid from a netcdf file where the roles are defined by the
 names of the variables.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -251,6 +253,8 @@ names of the variables.</p>
 <li><strong>filename</strong> – names of the file to load (or OPeNDAP URL).</li>
 <li><strong>names_mapping</strong> – dict that maps the variable names to UGrid components</li>
 <li><strong>attribute_check=None</strong> – list of global attributes that are expected</li>
+<li><strong>post_process</strong> – function to call to do some custom post processing.
+it should be a callable that takes (Dataset, UGrid)</li>
 </ul>
 </td>
 </tr>

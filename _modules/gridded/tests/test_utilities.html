@@ -202,9 +202,8 @@
 
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pytest</span>
 <span class="kn">from</span> <span class="nn">gridded</span> <span class="k">import</span> <span class="n">utilities</span>
-
+<span class="kn">from</span> <span class="nn">gridded.tests.test_depth</span> <span class="k">import</span> <span class="n">get_s_depth</span>
 
 <div class="viewcode-block" id="test_reorganize_spatial_data"><a class="viewcode-back" href="../../../gridded.tests.html#gridded.tests.test_utilities.test_reorganize_spatial_data">[docs]</a><span class="k">def</span> <span class="nf">test_reorganize_spatial_data</span><span class="p">():</span>
     <span class="c1">#1-dimensional data</span>
@@ -267,6 +266,72 @@
     <span class="n">a5</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">_align_results_to_spatial_data</span><span class="p">(</span><span class="n">res_5</span><span class="p">,</span> <span class="n">pts_4</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">a4</span><span class="o">.</span><span class="n">T</span> <span class="o">==</span> <span class="n">res_4</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">a5</span><span class="o">.</span><span class="n">T</span> <span class="o">==</span> <span class="n">res_5</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_regrid_variable_TDStoS"><a class="viewcode-back" href="../../../gridded.tests.html#gridded.tests.test_utilities.test_regrid_variable_TDStoS">[docs]</a><span class="k">def</span> <span class="nf">test_regrid_variable_TDStoS</span><span class="p">():</span>
+    <span class="c1"># Time is present</span>
+    <span class="c1"># Depth is present</span>
+    <span class="c1"># Grid_S to Grid_S</span>
+    <span class="kn">from</span> <span class="nn">gridded.variable</span> <span class="k">import</span> <span class="n">Variable</span>
+    <span class="kn">from</span> <span class="nn">gridded.time</span> <span class="k">import</span> <span class="n">Time</span>
+    <span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="k">import</span> <span class="n">Grid_S</span>
+    <span class="n">sd</span> <span class="o">=</span> <span class="n">get_s_depth</span><span class="p">()</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">sd</span><span class="o">.</span><span class="n">grid</span>
+    <span class="n">n_levels</span> <span class="o">=</span> <span class="n">sd</span><span class="o">.</span><span class="n">num_w_levels</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">n_levels</span><span class="p">,</span><span class="n">grid</span><span class="o">.</span><span class="n">node_lon</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">node_lon</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n_levels</span><span class="p">):</span>
+        <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">l</span><span class="p">]</span> <span class="o">*=</span> <span class="n">l</span>
+
+    <span class="n">v1</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span>
+                  <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
+                  <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                  <span class="n">depth</span><span class="o">=</span><span class="n">sd</span><span class="p">,</span>
+                  <span class="n">time</span><span class="o">=</span><span class="n">Time</span><span class="o">.</span><span class="n">constant_time</span><span class="p">())</span>
+
+    <span class="n">g2</span> <span class="o">=</span> <span class="n">Grid_S</span><span class="p">(</span><span class="n">node_lon</span><span class="o">=</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">node_lon</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">grid</span><span class="o">.</span><span class="n">node_lon</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                <span class="n">node_lat</span><span class="o">=</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">node_lat</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">grid</span><span class="o">.</span><span class="n">node_lat</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">v2</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">regrid_variable</span><span class="p">(</span><span class="n">g2</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
+    <span class="c1">#time should be unchanged</span>
+    <span class="k">assert</span> <span class="n">v2</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="n">v1</span><span class="o">.</span><span class="n">time</span>
+    <span class="c1">#number of depth levels should remain unchanged</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">v2</span><span class="o">.</span><span class="n">depth</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">v1</span><span class="o">.</span><span class="n">depth</span><span class="p">)</span>
+    <span class="n">sz</span> <span class="o">=</span> <span class="n">v1</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1">#data shape should retain the same time/depth dimensions as the original</span>
+    <span class="c1">#except in xy</span>
+    <span class="k">assert</span> <span class="n">v2</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">v1</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">v1</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">sz</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">sz</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="test_regrid_variable_StoS"><a class="viewcode-back" href="../../../gridded.tests.html#gridded.tests.test_utilities.test_regrid_variable_StoS">[docs]</a><span class="k">def</span> <span class="nf">test_regrid_variable_StoS</span><span class="p">():</span>
+    <span class="c1"># Time is not present</span>
+    <span class="c1"># Depth is not present</span>
+    <span class="c1"># Grid_S to Grid_S</span>
+    <span class="kn">from</span> <span class="nn">gridded.variable</span> <span class="k">import</span> <span class="n">Variable</span>
+    <span class="kn">from</span> <span class="nn">gridded.time</span> <span class="k">import</span> <span class="n">Time</span>
+    <span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="k">import</span> <span class="n">Grid_S</span>
+    <span class="n">sd</span> <span class="o">=</span> <span class="n">get_s_depth</span><span class="p">()</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">sd</span><span class="o">.</span><span class="n">grid</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">grid</span><span class="o">.</span><span class="n">node_lon</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">grid</span><span class="o">.</span><span class="n">node_lon</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="n">v1</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;v1&#39;</span><span class="p">,</span>
+                  <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
+                  <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                  <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">g2</span> <span class="o">=</span> <span class="n">Grid_S</span><span class="p">(</span><span class="n">node_lon</span><span class="o">=</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">node_lon</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">grid</span><span class="o">.</span><span class="n">node_lon</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                <span class="n">node_lat</span><span class="o">=</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">node_lat</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">grid</span><span class="o">.</span><span class="n">node_lat</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">v2</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">regrid_variable</span><span class="p">(</span><span class="n">g2</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
+    <span class="c1">#time should be unchanged</span>
+    <span class="k">assert</span> <span class="n">v2</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="n">v1</span><span class="o">.</span><span class="n">time</span>
+    <span class="c1">#depth should be None</span>
+    <span class="k">assert</span> <span class="n">v2</span><span class="o">.</span><span class="n">depth</span> <span class="ow">is</span> <span class="n">v1</span><span class="o">.</span><span class="n">depth</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="n">sz</span> <span class="o">=</span> <span class="n">v1</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1">#data shape should retain the same time/depth dimensions as the original</span>
+    <span class="c1">#except in xy</span>
+    <span class="k">assert</span> <span class="n">v2</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">sz</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">sz</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="DummyArrayLike"><a class="viewcode-back" href="../../../gridded.tests.html#gridded.tests.test_utilities.DummyArrayLike">[docs]</a><span class="k">class</span> <span class="nc">DummyArrayLike</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
