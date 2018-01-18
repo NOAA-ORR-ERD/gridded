@@ -44,6 +44,11 @@ class Dataset():
         :param variables: a dict of dataset.Variable objects -- or anything that
                           presents the same API.
 
+        :param grid_topology: mapping of grid topology components to netcdf variable names.
+                              used to load non-confirming files. **NotImplemented**
+        :type grid_topology: mapping with keys of topology components and values are
+                             variable names.
+
         Either a filename or grid and variable objects should be provided -- not both.
         """
         if ncfile is not None:
@@ -52,10 +57,9 @@ class Dataset():
                                  "but not both.")
             self.nc_dataset = get_dataset(ncfile)
             self.filename = self.nc_dataset.filepath()
-            # self.grid = pyugrid.UGrid.from_nc_dataset(ds)
-            self.grid = Grid.from_netCDF(filename=self.filename, dataset=self.nc_dataset)
-            # var_names = pyugrid.read_netcdf.find_variables(self.nc_dataset,
-            #                                                self.grid.mesh_name)
+            self.grid = Grid.from_netCDF(filename=self.filename,
+                                         dataset=self.nc_dataset,
+                                         grid_topology=grid_topology)
             self.variables = self._load_variables(self.nc_dataset)
         else:  # no file passed in -- create from grid and variables
             self.filename = None
@@ -67,7 +71,8 @@ class Dataset():
 
         variables = {}
         for k in ds.variables.keys():
-            is_not_grid_attr = all([k not in str(v).split() for v in self.grid.grid_topology.values()])
+            is_not_grid_attr = all([k not in str(v).split()
+                                    for v in self.grid.grid_topology.values()])
             if is_not_grid_attr and self.grid.infer_location(ds[k]) is not None:
                 try:
                     ln = ds[k].long_name
@@ -81,23 +86,24 @@ class Dataset():
 
         return variables
 
-    def load_from_varnames(self, ncfile, topology):
-        """
-        Load a Gridded dataset by specifying the variable names used for the topology
+    # This should be covered by Grid.from_netCDF
+    # def load_from_topology_varnames(self, ncfile, topology):
+    #     """
+    #     Load a Gridded dataset by specifying the variable names used for the topology
 
-        :param ncfile: a file to load the Dataset from.
-        :type ncfile: filename of netcdf file or opendap url or open netCDF4 Dataset object
-                     (could be other file types in the future)
+    #     :param ncfile: a file to load the Dataset from.
+    #     :type ncfile: filename of netcdf file or opendap url or open netCDF4 Dataset object
+    #                  (could be other file types in the future)
 
-        :param topology: variables that define the topology
-        :type topology: dict of topology_role keys, and variable name values
+    #     :param topology: variables that define the topology
+    #     :type topology: dict of topology_role keys, and variable name values
 
-        Docs about what is required for each grid type here.
+    #     Docs about what is required for each grid type here.
 
-        NOTE: the grid type will be inferered by what topology is provided.
-        """
+    #     NOTE: the grid type will be inferred by what topology is provided.
+    #     """
 
-        raise NotImplementedError
+    #     raise NotImplementedError
 
     def save(self, filename, format='netcdf4'):
         """

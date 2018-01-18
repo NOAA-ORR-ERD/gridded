@@ -3,11 +3,14 @@
 # simple script to build and push to gh-pages
 # designed to be run from master
 
-# this version used a separate copy of the repo in a parallel dir
+# this version uses a separate copy of the repo in a parallel dir
 # to keep the gh-pages branch nicely separate from the main branch.
 # this makes it easier to have the index.html in the root dir
 #  -- to be nicely served by gh-pages
-# but you must first create a clone of the repo next to this one:
+
+# You must first create a clone of the repo next to this one,
+# and make sure it has a gh-pages branch that is empty of anything
+# you don't want published.
 
 GHPAGESDIR=../../gridded.gh-pages/
 
