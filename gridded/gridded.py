@@ -67,8 +67,8 @@ class Dataset():
             self.variables = variables
 
     def _load_variables(self, ds):
-        # fixme: need a way to do this for non-compliant files
-
+        print("in _load_variables")
+        print(self.grid.grid_topology.values())
         variables = {}
         for k in ds.variables.keys():
             is_not_grid_attr = all([k not in str(v).split()
@@ -83,7 +83,6 @@ class Dataset():
                                                     varname=k,
                                                     grid=self.grid,
                                                     )
-
         return variables
 
     # This should be covered by Grid.from_netCDF

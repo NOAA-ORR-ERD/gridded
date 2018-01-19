@@ -10,11 +10,7 @@ We really need a **lot** more sample data files...
 from __future__ import (absolute_import, division, print_function, unicode_literals)
 
 import os
-import pytest
 
-
-import numpy as np
-import netCDF4
 
 from gridded import Dataset
 from gridded.variable import Variable
@@ -54,6 +50,7 @@ def test_read_variable_attributes():
     print(ds.variables['Mesh2_depth'].attributes)
     assert ds.variables['Mesh2_depth'].attributes['standard_name'] == 'sea_floor_depth_below_geoid'
     assert ds.variables['Mesh2_depth'].attributes['units'] == 'm'
+
 
 
 def test_read_FVCOM():
