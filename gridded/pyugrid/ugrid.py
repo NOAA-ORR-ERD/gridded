@@ -662,12 +662,15 @@ class UGrid(object):
 
         inds = self.locate_faces(points, 'celltree', _copy, _memo, _hash)
         if location == 'faces':
-            return variable[inds]
+            vals = variable[inds]
+            vals[inds == -1] = vals[inds == -1] * 0
+            return vals
 #             raise NotImplementedError("Currently does not support interpolation of a "
 #                                       "variable defined on the faces")
         if location == 'nodes':
             pos_alphas = self.interpolation_alphas(points, inds, _copy, _memo, _hash)
             vals = variable[self.faces[inds]]
+            vals[inds == -1] = vals[inds == -1] * 0
             return np.sum(vals * pos_alphas, axis=1)
         return None
 
