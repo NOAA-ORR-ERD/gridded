@@ -1,6 +1,5 @@
 """
 Assorted utilities useful for the tests.
-
 """
 
 from __future__ import (absolute_import,

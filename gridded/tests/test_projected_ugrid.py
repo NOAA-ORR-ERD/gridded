@@ -57,6 +57,8 @@ from gridded.grids import Grid_U
 from .utilities import get_temp_test_file
 
 data_file = get_temp_test_file("projected_coords_ugrid.nc")
+if data_file is None:
+    pytestmark = pytest.mark.skip
 
 
 def test_load():
