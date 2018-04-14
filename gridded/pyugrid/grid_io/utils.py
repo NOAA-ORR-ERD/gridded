@@ -3,11 +3,10 @@
 """
 Utilities to help with grid io
 
-only contains load_from_varnames(), which helps you load non-UGRID-compliant
-netcdf files.
+NOTE: this isn't used yet, but should be useful for loading non
+UGRID-compliant files.
 
 Ideally, we'll add loading from shape files or what have you in the future
-
 """
 
 from __future__ import (absolute_import, division, print_function)
@@ -15,10 +14,13 @@ from __future__ import (absolute_import, division, print_function)
 import netCDF4
 import numpy as np
 
-from ..ugrid import UGrid
+from gridded.pyugrid.ugrid import UGrid
 
 
-def load_from_varnames(filename, names_mapping, attribute_check=None):
+def load_from_varnames(filename,
+                       names_mapping,
+                       attribute_check=None,
+                       post_process=None):
     """
     Load a UGrid from a netcdf file where the roles are defined by the
     names of the variables.
@@ -31,6 +33,9 @@ def load_from_varnames(filename, names_mapping, attribute_check=None):
     :type attribute_check: list of tuples to check. Example:
                            [('grid_type','triangular'),] will check if the
                            grid_type attribute is set to "triangular"
+
+    :param post_process: function to call to do some custom post processing.
+                         it should be a callable that takes (Dataset, UGrid)
 
     The names_mapping dict has to contain at least: 'nodes_lon', 'nodes_lat'
 
@@ -107,5 +112,8 @@ def load_from_varnames(filename, names_mapping, attribute_check=None):
         if one_indexed:
             boundaries -= 1
         ug.boundaries = boundaries
+
+    if post_process is not None:
+        post_process(nc, ug)
 
     return ug

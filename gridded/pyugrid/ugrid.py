@@ -25,10 +25,10 @@ import numpy as np
 
 from . import read_netcdf
 from .util import point_in_tri
-from .uvar import UVar
+# from .uvar import UVar
 
-__all__ = ['UGrid',
-           'UVar']
+# __all__ = ['UGrid',
+#            'UVar']
 
 
 # datatype used for indexes -- might want to change for 64 bit some day.
