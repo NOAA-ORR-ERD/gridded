@@ -32,14 +32,21 @@ def test_simple_read():
 
 def test_read_variables():
     """
-    It should get the test_read_variables
+    It should get the variables in the:
+
+    UGRIDv0.9_eleven_points.nc file
     """
     with chdir(test_data_dir):
         ds = Dataset('UGRIDv0.9_eleven_points.nc')
     varnames = list(ds.variables.keys())
     varnames.sort()
     print("variables are:", varnames)
-    assert varnames == ['Mesh2_depth', 'Mesh2_face_u', 'Mesh2_face_v']
+    assert varnames == ['Mesh2_boundary_count',
+                        'Mesh2_boundary_types',
+                        'Mesh2_depth',
+                        'Mesh2_face_u',
+                        'Mesh2_face_v']
+    # assert varnames == ['Mesh2_depth', 'Mesh2_face_u', 'Mesh2_face_v']
     for v in ds.variables.values():
         assert isinstance(v, Variable)
 
@@ -48,9 +55,9 @@ def test_read_variable_attributes():
     with chdir(test_data_dir):
         ds = Dataset('UGRIDv0.9_eleven_points.nc')
     print(ds.variables['Mesh2_depth'].attributes)
-    assert ds.variables['Mesh2_depth'].attributes['standard_name'] == 'sea_floor_depth_below_geoid'
+    assert (ds.variables['Mesh2_depth'].attributes['standard_name'] ==
+            'sea_floor_depth_below_geoid')
     assert ds.variables['Mesh2_depth'].attributes['units'] == 'm'
-
 
 
 def test_read_FVCOM():
@@ -65,6 +72,7 @@ def test_read_FVCOM():
             assert 'u' in ds.variables.keys()
             assert 'v' in ds.variables.keys()
 
+
 def test_read_TAMU():
     with chdir(test_data_dir):
         if os.path.exists('TAMU.nc'):
@@ -75,6 +83,7 @@ def test_read_TAMU():
             assert isinstance(ds.variables, dict)
             assert 'water_u' in ds.variables.keys()
             assert 'water_v' in ds.variables.keys()
+
 
 # def test_get_mesh_names():
 #     """
@@ -235,9 +244,3 @@ def test_read_TAMU():
 #     assert grid.mesh_name == 'Mesh2'
 #     assert grid.nodes.shape == (11, 2)
 #     assert grid.faces.shape == (13, 3)
-
-if __name__ == "__main__":
-    test_simple_read()
-    test_read_variables()
-    test_read_FVCOM()
-    test_read_TAMU()

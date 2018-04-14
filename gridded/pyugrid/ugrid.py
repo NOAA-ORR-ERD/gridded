@@ -393,9 +393,9 @@ class UGrid(object):
             return None  # Variable has a size-zero data array
         if size == self.nodes.shape[0]:
             return 'nodes'
-        if size == self.faces.shape[0]:
+        if self.faces is not None and size == self.faces.shape[0]:
             return 'faces'
-        if size == self.boundaries.shape[0]:
+        if self.boundaries is not None and size == self.boundaries.shape[0]:
             return 'boundaries'
         return None
 

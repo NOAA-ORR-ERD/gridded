@@ -4,39 +4,39 @@ from __future__ import (absolute_import, division, print_function, unicode_liter
 
 import os
 import pytest
-import datetime as dt
 import numpy as np
-import datetime
 import netCDF4 as nc
-import pprint as pp
+
 from gridded.grids import Grid, Grid_U, Grid_S, Grid_R
+from gridded.tests.utilities import get_test_file_dir
 
 
 @pytest.fixture()
 def sg_data():
-    base_dir = os.path.dirname(__file__)
-    s_data = os.path.join(base_dir, 'data')
-    filename = os.path.join(s_data, 'staggered_sine_channel.nc')
+    filename = os.path.join(get_test_file_dir(), 'staggered_sine_channel.nc')
     return filename, nc.Dataset(filename)
+
 
 @pytest.fixture()
 def sg_topology():
     return None
 
+
 @pytest.fixture()
 def sg():
     return Grid.from_netCDF(sg_data()[0], sg_data()[1], grid_topology=sg_topology())
 
+
 @pytest.fixture()
 def ug_data():
-    base_dir = os.path.dirname(__file__)
-    s_data = os.path.join(base_dir, 'data')
-    filename = os.path.join(s_data, 'tri_ring.nc')
+    filename = os.path.join(get_test_file_dir(), 'tri_ring.nc')
     return filename, nc.Dataset(filename)
+
 
 @pytest.fixture()
 def ug_topology():
     return None
+
 
 @pytest.fixture()
 def ug():
@@ -91,6 +91,7 @@ def rg_data():
     lats = np.array((0,2,3,4,5,7,9))
     return lons, lats
 
+
 @pytest.fixture()
 def example_rg():
     lons = np.array((0,10,20,30,40,55))
@@ -98,6 +99,7 @@ def example_rg():
     rg = Grid_R(node_lon=lons,
                 node_lat=lats)
     return rg
+
 
 class TestGrid_R:
     def test_construction(self, rg_data):

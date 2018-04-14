@@ -3,6 +3,8 @@ Assorted utilities useful for the tests.
 
 """
 
+#fixme: this should probably be in a conftest file
+
 from __future__ import (absolute_import,
                         division,
                         print_function,
@@ -13,15 +15,13 @@ import contextlib
 
 import pytest
 
-# from pyugrid import ugrid
-
 
 def get_test_file_dir():
     """
     returns the test file dir path
     """
     test_file_dir = os.path.join(os.path.dirname(__file__))
-    test_file_dir = os.path.join(test_file_dir, 'data')
+    test_file_dir = os.path.join(test_file_dir, 'test_data')
     return test_file_dir
 
 
