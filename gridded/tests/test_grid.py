@@ -8,7 +8,7 @@ import numpy as np
 import netCDF4 as nc
 
 from gridded.grids import Grid, Grid_U, Grid_S, Grid_R
-from gridded.tests.utilities import get_test_file_dir
+from .utilities import get_test_file_dir
 
 
 @pytest.fixture()

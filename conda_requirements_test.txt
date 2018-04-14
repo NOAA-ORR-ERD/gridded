@@ -12,9 +12,8 @@ netcdf4
 cell_tree2d
 six
 
-## extra stuff you'll want for development testing
+## extra stuff you'll want for testing
 # this is the minimal that will support travis tests
 pytest
-#sphinx
-#sphinx_rtd_theme
+progressbar
 

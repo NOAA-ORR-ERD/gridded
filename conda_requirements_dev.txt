@@ -15,6 +15,7 @@ six
 
 ## extra stuff you'll want for development / testing / demoing
 pytest
+progressbar
 matplotlib
 jupyter
 nb_conda_kernels

@@ -168,17 +168,19 @@ class Grid_U(GridBase, UGrid):
             raise ValueError('Nodes of a quad grid must be 2 dimensional')
         lin_nodes = None
         if isinstance(nodes, np.ma.MaskedArray):
-            lin_nodes = nodes.reshape(-1,2)[nodes]
+            lin_nodes = nodes.reshape(-1, 2)[nodes]
+
 
 class Grid_S(GridBase, SGrid):
 
     @classmethod
     def _find_required_grid_attrs(cls, filename, dataset=None, grid_topology=None):
 
-        # THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional attributes are dealt with
+        # THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional attributes
+        #   are dealt with
         # Get superset attributes
         gf_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
-        gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()] )
+        gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()])
         init_args, gt = super(Grid_S, cls)._find_required_grid_attrs(filename,
                                                                      dataset=dataset,
                                                                      grid_topology=grid_topology)
@@ -338,8 +340,10 @@ class Grid_R(GridBase):
 
     def infer_location(self, variable):
         """
-        Assuming default is node grid, check variable dimensions to determine which grid
-        it is on.
+        fixme: should first look for "location" attribute.
+
+        But now we are checking variable dimensions to which part
+        of the grid it is on.
         """
         shape = None
         node_shape = self.nodes.shape[0:-1]
@@ -365,8 +369,8 @@ class Grid_R(GridBase):
 
 class Grid(object):
     '''
-    Factory class that generates grid objects. Also handles common loading and
-    parsing operations
+    Factory class that generates grid objects. Also handles common
+    loading and parsing operations
     '''
 
     def __init__(self):
@@ -400,7 +404,9 @@ class Grid(object):
                     dataset=None,
                     grid_type=None,
                     grid_topology=None,
-                    _default_types=(('ugrid', Grid_U), ('sgrid', Grid_S), ('rgrid', Grid_R)),
+                    _default_types=(('ugrid', Grid_U),
+                                    ('sgrid', Grid_S),
+                                    ('rgrid', Grid_R)),
                     *args,
                     **kwargs):
         '''
@@ -418,8 +424,9 @@ class Grid(object):
             raise ValueError('No filename or dataset provided')
 
         cls = grid_type
-        if (grid_type is None or isinstance(grid_type, string_types) or
-                                 not issubclass(grid_type, GridBase)):
+        if (grid_type is None or
+                isinstance(grid_type, string_types) or
+                not issubclass(grid_type, GridBase)):
             cls = Grid._get_grid_type(gf, grid_type, grid_topology, _default_types)
         compliant = Grid._find_topology_var(None, gf)
         if compliant is not None:
@@ -434,8 +441,13 @@ class Grid(object):
         return c
 
     @staticmethod
-    def _get_grid_type(dataset, grid_type=None, grid_topology=None, _default_types=None):
-
+    def _get_grid_type(dataset,
+                       grid_type=None,
+                       grid_topology=None,
+                       _default_types=None):
+        # fixme: this logic should probably be defered to
+        #        the grid type code -- that is, ask each grid
+        #        type if this dataset is its type.
         if _default_types is None:
             _default_types = dict()
         else:
@@ -476,7 +488,8 @@ class Grid(object):
                 else:
                     return Grid_S
             else:
-                # TODO: Determine an effective decision tree for picking if a topology variable is present
+                # TODO: Determine an effective decision tree for picking if
+                #       a topology variable is present
                 # no grid type explicitly specified. is a topology variable present?
                 topology = Grid._find_topology_var(None, dataset=dataset)
 

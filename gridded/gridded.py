@@ -67,8 +67,9 @@ class Dataset():
             self.variables = variables
 
     def _load_variables(self, ds):
-        print("in _load_variables")
-        print(self.grid.grid_topology.values())
+        """
+        load up the variables in the nc file
+        """
         variables = {}
         for k in ds.variables.keys():
             is_not_grid_attr = all([k not in str(v).split()
