@@ -58,6 +58,7 @@ from .utilities import get_temp_test_file
 
 data_file = get_temp_test_file("projected_coords_ugrid.nc")
 if data_file is None:
+    # skip these tests if the data file couldn't be downloaded
     pytestmark = pytest.mark.skip
 
 
