@@ -388,11 +388,9 @@ class UGrid(object):
 
         None otherwise.
         """
-        print("in infer_location %s"%data)
 
         try:
             loc = data.location
-            print("location attr is: %s"%loc)
             if loc == "face":
                 # FIXME: should we check the array size in this case?
                 return "faces"

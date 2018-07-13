@@ -105,6 +105,16 @@ class Dataset():
 
     #     raise NotImplementedError
 
+    @property
+    def var_names(self):
+        return list(self.variables.keys())
+
+    def __getitem__(self, var_name):
+        try:
+            return self.variables[var_name]
+        except KeyError:
+            raise ValueError("There is no variable named: %s" % var_name)
+
     def save(self, filename, format='netcdf4'):
         """
         save the dataset to a file
@@ -134,11 +144,4 @@ class Dataset():
             except KeyError:
                 pass
         return variables
-
-
-
-
-
-
-
 
