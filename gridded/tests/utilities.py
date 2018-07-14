@@ -19,7 +19,6 @@ import pytest
 
 from .get_remote_data import get_datafile
 
-
 def get_test_file_dir():
     """
     returns the test file dir path
@@ -47,7 +46,7 @@ def get_temp_test_file(filename):
         # attempt to download it
         try:
             get_datafile(filepath)
-        except urllib2.HTTPError:
+        except urllib_request.HTTPError:
             return None
         return None
 
