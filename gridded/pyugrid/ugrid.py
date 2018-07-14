@@ -678,9 +678,9 @@ class UGrid(object):
                                   _memo=True,
                                   _hash=None):
         """
-        interpolates teh passed-in variable to the points in points
+        Interpolates the passed-in variable to the points in points
 
-        used linear interpolation from the nodes.
+        uses linear interpolation from the nodes.
         """
         points = np.asarray(points, dtype=np.float64).reshape(-1, 2)
         location = self.infer_location(variable)

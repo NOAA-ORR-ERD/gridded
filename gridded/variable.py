@@ -4,8 +4,11 @@ import netCDF4 as nc4
 import numpy as np
 import collections
 from collections import OrderedDict
-from gridded.utilities import get_dataset, _reorganize_spatial_data,\
-    _align_results_to_spatial_data
+from gridded.utilities import (get_dataset,
+                               _reorganize_spatial_data,
+                               _align_results_to_spatial_data,
+                               asarraylike,
+                               )
 from gridded.grids import Grid, Grid_U, Grid_S, Grid_R
 from gridded.depth import Depth
 from gridded.time import Time
@@ -96,7 +99,7 @@ class Variable(object):
 
         self.name = name
         self.units = units
-        self.data = data
+        self.data = asarraylike(data)
         self.time = time
         self.data_file = data_file
         self.grid_file = grid_file
@@ -221,6 +224,8 @@ class Variable(object):
 #                                             data_file=data_file,
 #                                             grid_file=grid_file,
 #                                             **kwargs)
+
+        data = asarraylike(data)
         if load_all:
             data = data[:]
         return cls(name=name,
