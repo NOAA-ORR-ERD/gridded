@@ -14,9 +14,9 @@ from __future__ import (absolute_import,
 
 import os
 try:
-    import urllib.request as urllib_request #for python 3
+    import urllib.request as urllib_request  #for python 3
 except ImportError:
-    import urllib2 as urllib_request # for python 2
+    import urllib2 as urllib_request  # for python 2
 
 try:
     from urllib.parse import urljoin

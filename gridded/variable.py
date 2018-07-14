@@ -313,6 +313,16 @@ class Variable(object):
     def is_data_on_nodes(self):
         return self.grid.infer_location(self._data) == 'node'
 
+    @property
+    def bounds(self):
+        """
+        The bounding box of the grid
+        """
+        try:
+            return self.grid.bounds
+        except AttributeError:
+            raise NotImplementedError("%s does not have a bounds property" % type(self.grid))
+
     def _get_hash(self, points, time):
         """
         Returns a SHA1 hash of the array of points passed in

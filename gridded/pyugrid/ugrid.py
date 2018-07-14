@@ -372,6 +372,13 @@ class UGrid(object):
     #     """
     #     return self._data
 
+    @property
+    def bounds(self):
+        """
+        The bounding box of the grid
+        """
+        return (self.nodes.min(axis=0), self.nodes.max(axis=0))
+
     def infer_location(self, data):
         """
         :param data:
