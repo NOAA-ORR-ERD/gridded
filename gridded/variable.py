@@ -12,6 +12,7 @@ from gridded.time import Time
 
 import hashlib
 from functools import wraps
+import pdb
 
 
 class Variable(object):
@@ -97,7 +98,7 @@ class Variable(object):
         self.name = name
         self.units = units
         self.data = data
-        self.time = time
+        self.time = time if time is not None else self._default_component_types['time'].constant_time()
         self.data_file = data_file
         self.grid_file = grid_file
         self.varname = varname
@@ -651,6 +652,7 @@ class VectorVariable(object):
                     grid_file=None,
                     dataset=None,
                     load_all=False,
+                    variables=None,
                     **kwargs
                     ):
         '''
@@ -709,6 +711,8 @@ class VectorVariable(object):
         if varnames is None:
             varnames = cls._gen_varnames(data_file,
                                          dataset=ds)
+            if all([v is None for v in varnames]):
+                raise ValueError('No compatible variable names found!')
         if name is None:
             name = cls.__name__ + str(cls._def_count)
             cls._def_count += 1
@@ -737,21 +741,22 @@ class VectorVariable(object):
 #                                             data_file=data_file,
 #                                             grid_file=grid_file,
 #                                             **kwargs)
-        variables = []
-        for vn in varnames:
-            if vn is not None:
-                variables.append(Variable.from_netCDF(filename=filename,
-                                                      varname=vn,
-                                                      grid_topology=grid_topology,
-                                                      units=units,
-                                                      time=time,
-                                                      grid=grid,
-                                                       depth=depth,
-                                                      data_file=data_file,
-                                                      grid_file=grid_file,
-                                                      dataset=ds,
-                                                      load_all=load_all,
-                                                      **kwargs))
+        if variables is None:
+            variables = []
+            for vn in varnames:
+                if vn is not None:
+                    variables.append(Variable.from_netCDF(filename=filename,
+                                                          varname=vn,
+                                                          grid_topology=grid_topology,
+                                                          units=units,
+                                                          time=time,
+                                                          grid=grid,
+                                                           depth=depth,
+                                                          data_file=data_file,
+                                                          grid_file=grid_file,
+                                                          dataset=ds,
+                                                          load_all=load_all,
+                                                          **kwargs))
         if units is None:
             units = [v.units for v in variables]
             if all(u == units[0] for u in units):

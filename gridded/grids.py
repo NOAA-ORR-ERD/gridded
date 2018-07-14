@@ -32,7 +32,6 @@ class GridBase(object):
             self.name = kwargs['name']
         else:
             self.name = self.__class__.__name__ + '_' + str(type(self)._def_count)
-        self.obj_type = str(type(self).__bases__[0]) #JAH- Does this have a purpose?
         self.filename = filename
         type(self)._def_count += 1
 

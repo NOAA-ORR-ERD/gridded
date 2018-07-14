@@ -21,6 +21,7 @@ class Time(object):
                  tz_offset=None,
                  origin=None,
                  displacement=timedelta(seconds=0),
+                 *args,
                  **kwargs):
         '''
         Representation of a time axis. Provides interpolation alphas and indexing.
@@ -62,8 +63,7 @@ class Time(object):
         if self._has_duplicates(self.data):
             raise ValueError("Time sequence has duplicate entries")
 
-        self.name = data.name if hasattr(data, 'name') else None
-
+        super(Time, self).__init__(*args, **kwargs)
     @classmethod
     def from_netCDF(cls,
                     filename=None,

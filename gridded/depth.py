@@ -28,7 +28,7 @@ class DepthBase(object):
         return cls(surface_index,
                    **kwargs)
 
-    def interpolation_alphas(self, points, data_shape, _hash=None):
+    def interpolation_alphas(self, points, time, data_shape, _hash=None):
         return (None, None)
 
     @classmethod
