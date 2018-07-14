@@ -13,8 +13,15 @@ from __future__ import (absolute_import,
                         unicode_literals)
 
 import os
-import urllib2
-from urlparse import urljoin
+try:
+    import urllib.request as urllib_request #for python 3
+except ImportError:
+    import urllib2 as urllib_request # for python 2
+
+try:
+    from urllib.parse import urljoin
+except ImportError:
+    from urlparse import urljoin
 
 # maybe want to add this back in
 # import progressbar as pb
@@ -58,8 +65,8 @@ def get_datafile(file_):
             path_ = '.'     # relative to current path
 
         try:
-            resp = urllib2.urlopen(urljoin(DATA_SERVER, fname))
-        except urllib2.HTTPError, ex:
+            resp = urllib_request.urlopen(urljoin(DATA_SERVER, fname))
+        except urllib_request.HTTPError as ex:
             ex.msg = ("{0}. '{1}' not found on server or server is down"
                       .format(ex.msg, fname))
             raise ex

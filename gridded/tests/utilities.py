@@ -9,7 +9,11 @@ from __future__ import (absolute_import,
 
 import os
 import contextlib
-import urllib2
+
+try:
+    import urllib.request as urllib_request  # for python 3
+except ImportError:
+    import urllib2 as urllib_request  # for python 2
 
 import pytest
 
