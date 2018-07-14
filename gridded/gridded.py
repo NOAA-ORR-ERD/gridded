@@ -107,7 +107,29 @@ class Dataset():
 
     @property
     def var_names(self):
+        """
+        The names of the variables in the Dataset
+
+        The variables can be acceced via the variable dict:
+
+        temp_var = ds.variables['temp']
+
+        or directly with indexing:
+
+        temp_var = ds['temp']
+        """
         return list(self.variables.keys())
+
+    @property
+    def bounds(self):
+        """
+        The bounding box of the grid
+        """
+        try:
+            return self.grid.bounds
+        except AttributeError:
+            raise NotImplementedError("%s does not have a bounds property" % type(self.grid))
+
 
     def __getitem__(self, var_name):
         try:

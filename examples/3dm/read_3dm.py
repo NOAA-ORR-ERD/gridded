@@ -12,6 +12,25 @@ Test code for reading 3dm ascii format
 """
 
 
+def E3Tline(line):
+    parts = line.split()
+    if parts[0] != "E3T":
+        raise ValueError("not an E3T line")
+    parts = [int(p) for p in parts[1:]]
+    face = [p - 1 for p in parts[1:4]]
+    return face
+
+
+def NDline(line):
+    parts = line.split()
+    if parts[0] != "ND":
+        raise ValueError("not an ND line")
+    parts = [float(p) for p in parts[1:]]
+    node = parts[:2]
+    depth = parts[3]
+    return (node, depth)
+
+
 def read_3dm(filename):
     """
     read a 3dm file, and return a gridded.Dataset
@@ -55,27 +74,9 @@ def read_3dm(filename):
                              varname='depth',
                              attributes=None,
                              )
-        ds = Dataset(grid=grid, variables={"depth", depth_var})
+        ds = Dataset(grid=grid, variables={"depth": depth_var})
         return ds
 
-
-def E3Tline(line):
-    parts = line.split()
-    if parts[0] != "E3T":
-        raise ValueError("not an E3T line")
-    parts = [int(p) for p in parts[1:]]
-    face = [p - 1 for p in parts[1:4]]
-    return face
-
-
-def NDline(line):
-    parts = line.split()
-    if parts[0] != "ND":
-        raise ValueError("not an ND line")
-    parts = [float(p) for p in parts[1:]]
-    node = parts[:2]
-    depth = parts[3]
-    return (node, depth)
 
 
 def test_read():
@@ -85,5 +86,6 @@ def test_read():
     print(gr.nodes[:10])
     assert len(gr.nodes) == 9140
     assert len(gr.faces) == 16869
-    assert False
+    assert ds.var_names == ['depth']
+
 
