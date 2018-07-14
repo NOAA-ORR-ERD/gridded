@@ -134,7 +134,7 @@ class Grid_U(GridBase, UGrid):
     def _find_required_grid_attrs(cls, filename, dataset=None, grid_topology=None):
 
         gf_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
-        gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()] )
+        gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()])
         # Get superset attributes
         init_args, gt = super(Grid_U, cls)._find_required_grid_attrs(filename=filename,
                                                                      dataset=dataset,
@@ -167,17 +167,19 @@ class Grid_U(GridBase, UGrid):
             raise ValueError('Nodes of a quad grid must be 2 dimensional')
         lin_nodes = None
         if isinstance(nodes, np.ma.MaskedArray):
-            lin_nodes = nodes.reshape(-1,2)[nodes]
+            lin_nodes = nodes.reshape(-1, 2)[nodes]
+
 
 class Grid_S(GridBase, SGrid):
 
     @classmethod
     def _find_required_grid_attrs(cls, filename, dataset=None, grid_topology=None):
 
-        # THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional attributes are dealt with
+        # THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional attributes
+        #   are dealt with
         # Get superset attributes
         gf_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
-        gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()] )
+        gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()])
         init_args, gt = super(Grid_S, cls)._find_required_grid_attrs(filename,
                                                                      dataset=dataset,
                                                                      grid_topology=grid_topology)
@@ -230,7 +232,8 @@ class Grid_R(GridBase):
     @classmethod
     def _find_required_grid_attrs(cls, filename, dataset=None, grid_topology=None):
 
-        # THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional attributes are dealt with
+        # THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional attributes
+        # are dealt with
         # Get superset attributes
         gf_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
         gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()] )
@@ -238,12 +241,12 @@ class Grid_R(GridBase):
                                                                      dataset=dataset,
                                                                      grid_topology=grid_topology)
 
-        #Grid_R only needs node_lon and node_lat. However, they must be a specific shape (1D)
+        # Grid_R only needs node_lon and node_lat. However, they must be a specific shape (1D)
         node_lon = init_args['node_lon']
         node_lat = init_args['node_lat']
         if len(node_lon.shape) != 1:
             raise ValueError('Too many dimensions in node_lon. Must be 1D, was {0}D'.format(len(node_lon.shape)))
-        if  len(node_lat.shape) != 1:
+        if len(node_lat.shape) != 1:
             raise ValueError('Too many dimensions in node_lat. Must be 1D, was {0}D'.format(len(node_lat.shape)))
         return init_args, gt
 
@@ -253,11 +256,11 @@ class Grid_R(GridBase):
 
     @property
     def center_lon(self):
-        return (self.node_lon[0:-1] + self.node_lon[1:])/2
+        return (self.node_lon[0:-1] + self.node_lon[1:]) / 2
 
     @property
     def center_lat(self):
-        return (self.node_lat[0:-1] + self.node_lat[1:])/2
+        return (self.node_lat[0:-1] + self.node_lat[1:]) / 2
 
     @property
     def centers(self):
@@ -282,8 +285,8 @@ class Grid_R(GridBase):
         points = np.asarray(points, dtype=np.float64)
         just_one = (points.ndim == 1)
         points = points.reshape(-1, 2)
-        lons = points[:,0]
-        lats = points[:,1]
+        lons = points[:, 0]
+        lats = points[:, 1]
         lon_idxs = np.digitize(lons, self.node_lon) - 1
         for i, n in enumerate(lon_idxs):
             if n == len(self.node_lon) - 1:
@@ -320,11 +323,15 @@ class Grid_R(GridBase):
             variable = variable[slices]
         x = self.node_lon if variable.shape[0] == len(self.node_lon) else self.node_lat
         y = self.node_lat if x is self.node_lon else self.node_lon
-        interp_func = RegularGridInterpolator((x, y), variable, method=method, bounds_error=False, fill_value=0)
+        interp_func = RegularGridInterpolator((x, y),
+                                              variable,
+                                              method=method,
+                                              bounds_error=False,
+                                              fill_value=0)
         if x is self.node_lon:
             vals = interp_func(points, method=method)
         else:
-            vals = interp_func(points[:,::-1], method=method)
+            vals = interp_func(points[:, ::-1], method=method)
         if just_one:
             return vals[0]
         else:
@@ -332,12 +339,14 @@ class Grid_R(GridBase):
 
     def infer_location(self, variable):
         """
-        Assuming default is node grid, check variable dimensions to determine which grid
-        it is on.
+        fixme: should first look for "location" attribute.
+
+        But now we are checking variable dimensions to which part
+        of the grid it is on.
         """
         shape = None
         node_shape = self.nodes.shape[0:-1]
-        centers_shape = self.centers.shape[0:-1]
+        # centers_shape = self.centers.shape[0:-1]
         try:
             shape = np.array(variable.shape)
         except:
@@ -359,8 +368,8 @@ class Grid_R(GridBase):
 
 class Grid(object):
     '''
-    Factory class that generates grid objects. Also handles common loading and
-    parsing operations
+    Factory class that generates grid objects. Also handles common
+    loading and parsing operations
     '''
 
     def __init__(self):
@@ -394,7 +403,9 @@ class Grid(object):
                     dataset=None,
                     grid_type=None,
                     grid_topology=None,
-                    _default_types=(('ugrid', Grid_U), ('sgrid', Grid_S), ('rgrid', Grid_R)),
+                    _default_types=(('ugrid', Grid_U),
+                                    ('sgrid', Grid_S),
+                                    ('rgrid', Grid_R)),
                     *args,
                     **kwargs):
         '''
@@ -412,8 +423,9 @@ class Grid(object):
             raise ValueError('No filename or dataset provided')
 
         cls = grid_type
-        if (grid_type is None or isinstance(grid_type, string_types) or
-                                 not issubclass(grid_type, GridBase)):
+        if (grid_type is None or
+                isinstance(grid_type, string_types) or
+                not issubclass(grid_type, GridBase)):
             cls = Grid._get_grid_type(gf, grid_type, grid_topology, _default_types)
         compliant = Grid._find_topology_var(None, gf)
         if compliant is not None:
@@ -428,8 +440,13 @@ class Grid(object):
         return c
 
     @staticmethod
-    def _get_grid_type(dataset, grid_type=None, grid_topology=None, _default_types=None):
-
+    def _get_grid_type(dataset,
+                       grid_type=None,
+                       grid_topology=None,
+                       _default_types=None):
+        # fixme: this logic should probably be defered to
+        #        the grid type code -- that is, ask each grid
+        #        type if this dataset is its type.
         if _default_types is None:
             _default_types = dict()
         else:
@@ -441,7 +458,7 @@ class Grid(object):
 
         sgrid_names = ['sgrid', 'pygrid_s', 'staggered', 'curvilinear', 'roms']
         ugrid_names = ['ugrid', 'pygrid_u', 'triangular', 'unstructured']
-        rgrid_names = ['rgrid','regular', 'rectangular', 'rectilinear']
+        rgrid_names = ['rgrid', 'regular', 'rectangular', 'rectilinear']
         if grid_type is not None:
             if grid_type.lower() in sgrid_names:
                 return Grid_S
@@ -453,7 +470,7 @@ class Grid(object):
                 raise ValueError('Specified grid_type not recognized/supported')
         if grid_topology is not None:
             if ('faces' in grid_topology.keys() or
-                grid_topology.get('grid_type', 'notype').lower() in ugrid_names):
+                    grid_topology.get('grid_type', 'notype').lower() in ugrid_names):
                 return Grid_U
             elif grid_topology.get('grid_type', 'notype').lower() in rgrid_names:
                 return Grid_R
@@ -462,7 +479,7 @@ class Grid(object):
         else:
             # no topology, so search dataset for grid_type variable
             if (hasattr(dataset, 'grid_type') and
-                dataset.grid_type in sgrid_names + ugrid_names):
+                    dataset.grid_type in sgrid_names + ugrid_names):
                 if dataset.grid_type.lower() in ugrid_names:
                     return Grid_U
                 elif dataset.grid_type.lower() in rgrid_names:
@@ -470,13 +487,14 @@ class Grid(object):
                 else:
                     return Grid_S
             else:
-                # TODO: Determine an effective decision tree for picking if a topology variable is present
+                # TODO: Determine an effective decision tree for picking if
+                #       a topology variable is present
                 # no grid type explicitly specified. is a topology variable present?
                 topology = Grid._find_topology_var(None, dataset=dataset)
 
                 if topology is not None:
                     if (hasattr(topology, 'node_coordinates') and
-                          not hasattr(topology, 'node_dimensions')):
+                            not hasattr(topology, 'node_dimensions')):
                         return Grid_U
                     else:
                         return Grid_S

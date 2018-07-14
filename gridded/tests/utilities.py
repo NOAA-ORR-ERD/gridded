@@ -1,6 +1,5 @@
 """
 Assorted utilities useful for the tests.
-
 """
 
 from __future__ import (absolute_import,
@@ -10,19 +9,43 @@ from __future__ import (absolute_import,
 
 import os
 import contextlib
+import urllib2
 
 import pytest
 
-# from pyugrid import ugrid
+from .get_remote_data import get_datafile
 
 
 def get_test_file_dir():
     """
     returns the test file dir path
     """
-    test_file_dir = os.path.join(os.path.dirname(__file__))
-    test_file_dir = os.path.join(test_file_dir, 'data')
+    test_file_dir = os.path.join(os.path.dirname(__file__), 'test_data')
     return test_file_dir
+
+
+def get_temp_test_file(filename):
+    """
+    returns the path to a temporary test file.
+
+    If it exists, it will return it directly.
+
+    If not, it will attempt to download it.
+
+    If it can't download, it will return None
+    """
+    filepath = os.path.join(os.path.dirname(__file__),
+                            'temp_data',
+                            filename)
+    if os.path.isfile(filepath):
+        return filepath
+    else:
+        # attempt to download it
+        try:
+            get_datafile(filepath)
+        except urllib2.HTTPError:
+            return None
+        return None
 
 
 @pytest.fixture

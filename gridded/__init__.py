@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 from __future__ import (absolute_import, division, print_function, unicode_literals)
-__version__ = "0.0.9"
+
+__version__ = "0.1.0"
 
 from gridded.gridded import Dataset
 from gridded.grids import Grid
@@ -12,4 +13,5 @@ DepthBase._default_component_types['variable'] = Variable
 
 __all__ = ["Variable",
            "VectorVariable",
-           "Grid"]
+           "Grid",
+           "Dataset"]

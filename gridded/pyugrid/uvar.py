@@ -14,7 +14,7 @@ import numpy as np
 from collections import OrderedDict
 
 try:
-    from gridded.pyugrid.util import asarraylike, isarraylike
+    from .util import asarraylike, isarraylike
 except ValueError:
     from util import asarraylike, isarraylike
 
@@ -80,6 +80,9 @@ class UVar(object):
 
     @property
     def data(self):
+        """
+        The data associated with the UVar -- a numpy array-like object with the actual data
+        """
         return self._data
 
     @data.setter
@@ -92,22 +95,29 @@ class UVar(object):
 
     @property
     def shape(self):
+        """
+        The shape of the data array associated with the UVar.
+        """
         return self.data.shape
 
     @property
     def max(self):
+        """ maximum value of the variable """
         return np.max(self._data)
 
     @property
     def min(self):
+        """ minimum value of the variable """
         return np.min(self._data)
 
     @property
     def dtype(self):
+        """ data type of the variable """
         return self.data.dtype
 
     @property
     def ndim(self):
+        """ number of dimensions of the variable """
         return self.data.ndim
 
     def __getitem__(self, item):
@@ -152,10 +162,11 @@ class UMVar(object):
                          'node', 'edge', or 'face' the data is assigned to
 
         :param data: the data
-        :type data: list-like of data sources that satisfy the conditions of util.asarraylike. All data sources
-        must have the same shape.
-        Examples: netCDF Dataset, numpy array
+        :type data: list-like of data sources that satisfy the conditions of util.asarraylike.
+                    All data sources must have the same shape.
+                    Examples: netCDF Dataset, numpy array
         """
+
         self.name = name
 
         if location not in ['node', 'edge', 'face', 'boundary', 'none']:

@@ -17,6 +17,8 @@ def point_in_tri(face_points, point, return_weights=False):
     to element by comparing summed area of sub triangles with area of triangle
     element.
 
+    NOTE: this seems like a pretty expensive way to do it
+           -- compared to three side of line tests..
     """
     sub_tri_areas = np.zeros(3)
     sub_tri_areas[0] = _signed_area_tri(np.vstack((face_points[(0, 1), :],
@@ -27,7 +29,7 @@ def point_in_tri(face_points, point, return_weights=False):
                                                    point)))
     tri_area = _signed_area_tri(face_points)
 
-    if abs(np.abs(sub_tri_areas).sum()-tri_area)/tri_area <= epsilon:
+    if abs(np.abs(sub_tri_areas).sum() - tri_area) / tri_area <= epsilon:
         if return_weights:
             raise NotImplementedError
             # weights = sub_tri_areas/tri_area
@@ -56,10 +58,12 @@ def _signed_area_tri(points):
     x2, y2 = points[1]
     x3, y3 = points[2]
 
-    return(((x1-x3)*(y2-y3)-(x2-x3)*(y1-y3))/2)
+    return(((x1 - x3) * (y2 - y3) - (x2 - x3) * (y1 - y3)) / 2)
 
 
-must_have = ['dtype', 'shape', 'ndim','__len__', '__getitem__', '__getattribute__']
+must_have = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute__']
+
+
 def isarraylike(obj):
     """
     tests if obj acts enough like an array to be used in pyugrid.
@@ -75,6 +79,7 @@ def isarraylike(obj):
 
     return True
 
+
 def asarraylike(obj):
     """
     If it satisfies the requirements of pyugrid the object is returned as is. If not, then numpy's
@@ -85,5 +90,3 @@ def asarraylike(obj):
     """
 
     return obj if isarraylike(obj) else np.array(obj)
-
-
