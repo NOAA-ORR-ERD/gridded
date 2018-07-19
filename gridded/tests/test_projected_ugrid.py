@@ -3,7 +3,9 @@
 """
 tests loading a UGRID file with projected coords
 
-this test uses a data file auto-downloaded from:
+this test uses a data file auto-downloaded from ORR:
+
+http://gnome.orr.noaa.gov/py_gnome_testdata/
 
 Questions about this data;
 
@@ -56,9 +58,13 @@ from gridded.grids import Grid_U
 
 from .utilities import get_temp_test_file
 
-data_file = get_temp_test_file("projected_coords_ugrid.nc")
-if data_file is None:
-    # skip these tests if the data file couldn't be downloaded
+
+try:
+    data_file = get_temp_test_file("projected_coords_ugrid.nc")
+    if data_file is None:
+        # skip these tests if the data file couldn't be downloaded
+        pytestmark = pytest.mark.skip
+except: # if anything went wrong, skip these.
     pytestmark = pytest.mark.skip
 
 

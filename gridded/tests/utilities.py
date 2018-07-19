@@ -38,16 +38,20 @@ def get_temp_test_file(filename):
 
     If it can't download, it will return None
     """
+    print("getting temp test file")
     filepath = os.path.join(os.path.dirname(__file__),
                             'temp_data',
                             filename)
     if os.path.isfile(filepath):
+        print("already there")
         return filepath
     else:
         # attempt to download it
+        print("trying to download")
         try:
             get_datafile(filepath)
         except urllib_request.HTTPError:
+            print("got an error trying to download {}:".format(filepath))
             return None
         return None
 

@@ -3,7 +3,9 @@ Download data from remote server
 
 Some test files are too big to put in git
 
-This code will download test files from an orr server.
+This code will download test files from an ORR server:
+
+http://gnome.orr.noaa.gov/py_gnome_testdata/
 
 '''
 
@@ -14,7 +16,7 @@ from __future__ import (absolute_import,
 
 import os
 try:
-    import urllib.request as urllib_request  #for python 3
+    import urllib.request as urllib_request  # for python 3
 except ImportError:
     import urllib2 as urllib_request  # for python 2
 
@@ -26,7 +28,9 @@ except ImportError:
 # maybe want to add this back in
 # import progressbar as pb
 
-DATA_SERVER = 'http://gnome.orr.noaa.gov/py_gnome_testdata/'
+# DATA_SERVER = 'http://gnome.orr.noaa.gov/py_gnome_testdata/'
+DATA_SERVER = 'https://gnome.orr.noaa.gov/py_gnome_testdata/'
+
 
 CHUNKSIZE = 1024 * 1024
 
