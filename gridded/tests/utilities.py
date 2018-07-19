@@ -9,7 +9,11 @@ from __future__ import (absolute_import,
 
 import os
 import contextlib
-import urllib2
+
+try:
+    import urllib.request as urllib_request  # for python 3
+except ImportError:
+    import urllib2 as urllib_request  # for python 2
 
 import pytest
 
@@ -43,7 +47,7 @@ def get_temp_test_file(filename):
         # attempt to download it
         try:
             get_datafile(filepath)
-        except urllib2.HTTPError:
+        except urllib_request.HTTPError:
             return None
         return None
 
