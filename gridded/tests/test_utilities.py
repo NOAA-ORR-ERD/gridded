@@ -133,7 +133,7 @@ def test_regrid_variable_StoS():
     sz = v1.data.shape[-1]
     #data shape should retain the same time/depth dimensions as the original
     #except in xy
-    assert v2.data.shape == (sz-1,sz-1)
+    assert v2.data.shape[-2::] == (sz-1,sz-1)
 
 
 class DummyArrayLike(object):
