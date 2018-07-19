@@ -14,6 +14,6 @@ six
 
 ## extra stuff you'll want for testing
 # this is the minimal that will support travis tests
-pytest
-progressbar
+# pytest
+# progressbar
 

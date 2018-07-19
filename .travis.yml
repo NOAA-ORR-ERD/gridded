@@ -4,7 +4,7 @@ sudo: false
 
 python:
     - 2.7
-    - 3.5
+    - 3.6
 
 env:
     global:
@@ -19,6 +19,7 @@ before_install:
     - source activate TEST
     - which python
     - conda install -y --file conda_requirements_test.txt
+    - pip install pytest # for some reason, the conda pytst is broken ?!?
 
 install:
     - python setup.py develop
