@@ -32,7 +32,7 @@ config = {'name': 'gridded',
           'install_requires': install_requires,
           'tests_require': tests_require,
           'packages': find_packages(),
-          'package_data': {'gridded': ['tests/data/*']},
+          'package_data': {'gridded': ['tests/data/*', 'tests/test_data/*']},
           'scripts': [],
           }
 
