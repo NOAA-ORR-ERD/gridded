@@ -22,7 +22,7 @@ before_install:
     - pip install pytest # for some reason, the conda pytst is broken ?!?
 
 install:
-    - python setup.py develop
+    - pip install .
 
 script:
     - pytest --pyargs gridded
