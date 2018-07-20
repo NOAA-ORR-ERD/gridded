@@ -499,7 +499,7 @@ class SGrid(object):
 
         var = var[:]
 
-        if isinstance(var, np.ma.MaskedArray) or isinstance(index, np.ma.MaskedArray):
+        if isinstance(var, np.ma.MaskedArray) and isinstance(index, np.ma.MaskedArray):
             rv = np.ma.empty((index.shape[0], 4), dtype=np.float64)
             if index.mask is not np.bool_():  # because False is not False. Thanks numpy
                 rv.mask = np.zeros_like(rv, dtype=bool)
