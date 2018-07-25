@@ -396,7 +396,7 @@ class Variable(object):
         self._order = order
 
 #     @profile
-    def at(self, points, time, units=None, extrapolate=False, _hash=None, _mem=True, _auto_align=True, **kwargs):
+    def at(self, points, time, units=None, extrapolate=False, _hash=None, _mem=True, _auto_align=True, unmask=False, **kwargs):
         '''
         Find the value of the property at positions P at time T
 
@@ -433,8 +433,14 @@ class Variable(object):
         if _auto_align == True:
             value = _align_results_to_spatial_data(value.copy(), points)
 
+        if isinstance(value, np.ma.MaskedArray):
+            np.ma.set_fill_value(value, self.fill_value)
+        if unmask:
+            value = np.ma.filled(value)
+
         if _mem:
             self._memoize_result(pts, time, value, self._result_memo, _hash=_hash)
+
         return value
 
     def _xy_interp(self, points, time, extrapolate, slices=(), **kwargs):
