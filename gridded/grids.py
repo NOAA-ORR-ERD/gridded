@@ -321,6 +321,8 @@ class Grid_R(GridBase):
         points = points.reshape(-1, 2)
         if slices is not None:
             variable = variable[slices]
+            if np.ma.isMA(variable):
+                variable = variable.filled(0) #eventually should use Variable fill value
         x = self.node_lon if variable.shape[0] == len(self.node_lon) else self.node_lat
         y = self.node_lat if x is self.node_lon else self.node_lon
         interp_func = RegularGridInterpolator((x, y),
