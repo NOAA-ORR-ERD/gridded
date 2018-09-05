@@ -6,7 +6,7 @@ from gridded.pysgrid.sgrid import SGrid
 from gridded.pyugrid.ugrid import UGrid
 import numpy as np
 
-from gridded.utilities import get_dataset
+from gridded.utilities import get_dataset, gen_mask
 from six import string_types
 
 from scipy.interpolate import RegularGridInterpolator
@@ -187,21 +187,51 @@ class Grid_S(GridBase, SGrid):
         center_attrs = ['center_lon', 'center_lat']
         edge1_attrs = ['edge1_lon', 'edge1_lat']
         edge2_attrs = ['edge2_lon', 'edge2_lat']
+        node_mask = 'node_mask'
+        center_mask = 'center_mask'
+        edge1_mask = 'edge1_mask'
+        edge2_mask = 'edge2_mask'
 
         center_coord_names = [['center_lon', 'center_lat'], ['lon_rho', 'lat_rho'], ['lonc', 'latc']]
         edge1_coord_names = [['edge1_lon', 'edge1_lat'], ['lon_u', 'lat_u']]
         edge2_coord_names = [['edge2_lon', 'edge2_lat'], ['lon_v', 'lat_v']]
+        node_mask_names = ['mask_psi']
+        center_mask_names = ['mask_rho']
+        edge1_mask_names = ['mask_u']
+        edge2_mask_names = ['mask_v']
 
         if grid_topology is None:
-            for attr, names in (zip((center_attrs, edge1_attrs, edge2_attrs),
-                                    (center_coord_names, edge1_coord_names, edge2_coord_names))):
+            for attr, names, maskattr, maskname in (zip((center_attrs, edge1_attrs, edge2_attrs),
+                                    (center_coord_names, edge1_coord_names, edge2_coord_names),
+                                    (center_mask, edge1_mask, edge2_mask),
+                                    (center_mask_names, edge1_mask_names, edge2_mask_names))):
                 for n1, n2 in names:
                     if n1 in gf_vars and n2 in gf_vars:
-                        init_args[attr[0]] = gf_vars[n1][:]
-                        init_args[attr[1]] = gf_vars[n2][:]
+                        mask = False
+                        for n in maskname:
+                            if n in gf_vars:
+                                mask = gen_mask(gf_vars[n])
+                        a1 = gf_vars[n1][:]
+                        a2 = gf_vars[n2][:]
+                        init_args[attr[0]] = a1
+                        init_args[attr[1]] = a2
+                        init_args[maskattr] = gf_vars[maskname[0]]
                         gt[attr[0]] = n1
                         gt[attr[1]] = n2
+                        gt[maskattr] = maskname[0]
                         break
+            if 'node_lon' in init_args and 'node_lat' in init_args:
+                mask = False
+                for name in node_mask_names:
+                    if name in gf_vars:
+                        mask = gen_mask(gf_vars[name])
+                mask = False
+                init_args['node_lon'].mask = mask
+                init_args['node_lat'].mask = mask
+                if name in gf_vars:
+                    init_args[node_mask] = gf_vars[name]
+                gt[node_mask] = name
+
         else:
             for n, v in grid_topology.items():
                 if n in center_attrs + edge1_attrs + edge2_attrs and v in gf_vars:
@@ -445,7 +475,9 @@ class Grid(object):
     def _get_grid_type(dataset,
                        grid_type=None,
                        grid_topology=None,
-                       _default_types=None):
+                       _default_types=(('ugrid', Grid_U),
+                                    ('sgrid', Grid_S),
+                                    ('rgrid', Grid_R))):
         # fixme: this logic should probably be defered to
         #        the grid type code -- that is, ask each grid
         #        type if this dataset is its type.

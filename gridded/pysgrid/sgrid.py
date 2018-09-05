@@ -14,6 +14,7 @@ from collections import OrderedDict
 from gridded.pysgrid.read_netcdf import NetCDFDataset, parse_padding, find_grid_topology_var
 from gridded.pysgrid.utils import calculate_angle_from_true_east, pair_arrays
 from gridded.pysgrid.variables import SGridVariable
+from gridded.utilities import gen_mask
 
 
 class SGrid(object):
@@ -29,12 +30,16 @@ class SGrid(object):
     def __init__(self,
                  node_lon=None,
                  node_lat=None,
+                 node_mask=None,
                  center_lon=None,
                  center_lat=None,
+                 center_mask=None,
                  edge1_lon=None,
                  edge1_lat=None,
+                 edge1_mask=None,
                  edge2_lon=None,
                  edge2_lat=None,
+                 edge2_mask=None,
                  edges=None,
                  node_padding=None,
                  edge1_padding=None,
@@ -57,17 +62,22 @@ class SGrid(object):
                  vertical_padding=None,
                  vertical_dimensions=None,
                  tree=None,
+                 use_masked_boundary=False,
                  *args,
                  **kwargs):
 
         self.node_lon = node_lon
         self.node_lat = node_lat
+        self.node_mask = node_mask
         self.center_lon = center_lon
         self.center_lat = center_lat
+        self.center_mask = center_mask
         self.edge1_lon = edge1_lon
         self.edge1_lat = edge1_lat
+        self.edge1_mask = edge1_mask
         self.edge2_lon = edge2_lon
         self.edge2_lat = edge2_lat
+        self.edge2_mask = edge2_mask
         self.edges = edges
         self.node_padding = node_padding
         self.edge1_padding = edge1_padding
@@ -90,6 +100,7 @@ class SGrid(object):
         self.vertical_padding = vertical_padding
         self.vertical_dimensions = vertical_dimensions
         self.tree = tree
+        self.use_masked_boundary = use_masked_boundary
         self._l_coeffs = {}
         self._m_coeffs = {}
 
@@ -116,15 +127,23 @@ class SGrid(object):
         edge2_lon, edge2_lat = sa.get_cell_edge2_lat_lon()
         face_dimensions, face_padding = sa.get_attr_dimension('face_dimensions')  # noqa
         face_coordinates = sa.get_attr_coordinates('face_coordinates')
+        node_mask, center_mask, edge1_mask, edge2_mask = sa.get_masks(node_lon,
+                                                                      center_lon,
+                                                                      edge1_lon,
+                                                                      edge2_lon)
         sgrid = cls(angles=angles,
                     node_lon=node_lon,
                     node_lat=node_lat,
+                    node_mask=node_mask,
                     center_lon=center_lon,
                     center_lat=center_lat,
+                    center_mask=center_mask,
                     edge1_lon=edge1_lon,
                     edge1_lat=edge1_lat,
+                    edge1_mask=edge1_mask,
                     edge2_lon=edge2_lon,
                     edge2_lat=edge2_lat,
+                    edge2_mask=edge2_mask,
                     dimensions=dimensions,
                     edge1_coordinates=edge1_coordinates,
                     edge1_dimensions=edge1_dimensions,
@@ -291,6 +310,18 @@ class SGrid(object):
                     dataset_grid_var.axes = ' '.join(axes)
         return grid_vars
 
+    def _get_geo_mask(self, name):
+        if name == 'node':
+            return self.node_mask
+        elif name == 'center':
+            return self.center_mask
+        elif name == 'edge1':
+            return self.edge1_mask
+        elif name == 'edge2':
+            return self.edge2_mask
+        else:
+            raise ValueError('Invalid grid name {0}'.format(name))
+
     def _get_grid_vars(self, name):
         if name == 'node':
             return (self.node_lon, self.node_lat)
@@ -445,11 +476,17 @@ class SGrid(object):
         if self._cell_trees[grid] is None:
             self.build_celltree(grid)
         tree = self._cell_trees[grid][0]
+        rev_arrs = None
+        if grid in self._masks and self._masks.get(grid, None):
+            rev_arrs = self._masks[grid][1]
         indices = tree.locate(points)
+        if rev_arrs is not None:
+            indices = rev_arrs[indices]
         lon, lat = self._get_grid_vars(grid)
         x = indices % (lat.shape[1] - 1)
         y = indices // (lat.shape[1] - 1)
         ind = np.column_stack((y, x))
+
         ind[ind[:, 0] == -1] = [-1, -1]
         if just_one:
             res = ind[0]
@@ -544,7 +581,7 @@ class SGrid(object):
         self._kd_trees[grid] = KDTree(lin_points, leafsize=4)
 
 
-    def build_celltree(self, grid='node'):
+    def build_celltree(self, grid='node', use_mask=True):
         """
         Tries to build the celltree for grid defined by the node coordinates of the specified grid.
 
@@ -562,6 +599,11 @@ class SGrid(object):
                                 'edge1': None,
                                 'edge2': None,
                                 'center': None}
+        if not hasattr(self, '_masks'):
+            self._masks = {'node':None,
+                           'center':None,
+                           'edge1':None,
+                           'edge2':None}
         try:
             from cell_tree2d import CellTree
         except ImportError:
@@ -570,17 +612,48 @@ class SGrid(object):
                               "https://github.com/NOAA-ORR-ERD/cell_tree2d/")
 
         lon, lat = self._get_grid_vars(grid)
+        geo_mask = self._get_geo_mask(grid)
         if lon is None or lat is None:
             raise ValueError("{0}_lon and {0}_lat must be defined in order to create and "
                              "use CellTree for this grid".format(grid))
-        lin_nodes = np.ascontiguousarray(np.column_stack((lon[:].reshape(-1),
-                                                          lat[:].reshape(-1)))).astype(np.float64)
-        y_size = lon.shape[0]
-        x_size = lon.shape[1]
-        lin_faces = np.array([np.array([[x, x + 1, x + x_size + 1, x + x_size]
-                              for x in range(0, x_size - 1, 1)]) + y * x_size
-                              for y in range(0, y_size - 1)])
-        lin_faces = np.ascontiguousarray(lin_faces.reshape(-1, 4).astype(np.int32))
+        if geo_mask is not None and use_mask:
+            # Geometry has an external mask that needs to be applied.
+            lon = lon[:].copy()
+            lat = lat[:].copy()
+            mask = gen_mask(geo_mask, add_boundary=self.use_masked_boundary)
+            lon.mask = mask
+            lat.mask = mask
+            masked_faces_idxs = np.zeros_like(mask, dtype=np.int32)
+            masked_faces_idxs[mask] = -1
+            tmp = np.where(~mask.ravel())[0]
+            masked_faces_idxs[~mask] = np.arange(0,len(tmp))
+            lin_faces = np.full(shape=(lon[0:-1,0:-1].size,4), fill_value=-1, dtype=np.int32)
+            lin_faces[:,0] = np.ravel(masked_faces_idxs[0:-1, 0:-1])
+            lin_faces[:,1] = np.ravel(masked_faces_idxs[0:-1, 1:])
+            lin_faces[:,2] = np.ravel(masked_faces_idxs[1:, 1:])
+            lin_faces[:,3] = np.ravel(masked_faces_idxs[1:, 0:-1])
+            faces_mask = np.any(lin_faces == -1, axis=1)
+            lin_faces[faces_mask] = [-1,-1,-1,-1]
+            lin_faces = np.ma.masked_less(lin_faces, 0).compressed().reshape(-1,4)
+            #need to make a reversal_array. This is an array of the same length
+            #as the unmasked nodes that contains the 'true' index of the
+            #unmasked node. When CellTree gives back an index, it's 'true'
+            #index is discovered using this array
+            reversal_array = np.where(~faces_mask)[0].astype(np.int32)
+            #append a -1 to preserve -1 entries when back-translating the indices
+            reversal_array = np.concatenate((reversal_array, np.array([-1,])))
+            self._masks[grid] = (mask, reversal_array)
+        else:
+            self._masks[grid] = None
+            y_size = lon.shape[0]
+            x_size = lon.shape[1]
+            lin_faces = np.array([np.array([[x, x + 1, x + x_size + 1, x + x_size]
+                                            for x in range(0, x_size - 1, 1)]) + y * x_size
+                                            for y in range    (0, y_size - 1)])
+            lin_faces = np.ascontiguousarray(lin_faces.reshape(-1, 4).astype(np.int32))
+
+        lin_nodes = np.ascontiguousarray(np.column_stack((np.ma.compressed(lon[:]),
+                                                          np.ma.compressed(lat[:]))).astype(np.float64))
         self._cell_trees[grid] = (CellTree(lin_nodes, lin_faces), lin_nodes, lin_faces)
 
     def nearest_var_to_points(self,
@@ -967,6 +1040,26 @@ class SGridAttributes(object):
             edge2_lon = self.nc[edge2_lon_var]
             edge2_lat = self.nc[edge2_lat_var]
         return edge2_lon, edge2_lat
+
+    def get_masks(self, node, center, edge1, edge2):
+        node_shape = node.shape if node.shape else None
+        center_shape = center.shape if center.shape else None
+        edge1_shape = edge1.shape if edge1.shape else None
+        edge2_shape = edge2.shape if edge2.shape else None
+        mask_candidates = [var.name for var in self.nc.variables.values() if 'mask' in var.name or (hasattr(var, 'long_name') and 'mask' in var.long_name)]
+        node_mask = center_mask = edge1_mask = edge2_mask = None
+        for mc in mask_candidates:
+            if self.nc.variables[mc].shape == node_shape and node_mask is None:
+                node_mask = self.nc.variables[mc]
+            if self.nc.variables[mc].shape == center_shape and center_mask is None:
+                center_mask = self.nc.variables[mc]
+            if self.nc.variables[mc].shape == edge1_shape and edge1_mask is None:
+                edge1_mask = self.nc.variables[mc]
+            if self.nc.variables[mc].shape == edge2_shape and edge2_mask is None:
+                edge2_mask = self.nc.variables[mc]
+
+        return node_mask, center_mask, edge1_mask, edge2_mask
+
 
 
 def load_grid(nc):
