@@ -5,8 +5,64 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 
 import numpy as np
+import netCDF4 as nc
 from gridded import utilities
 from gridded.tests.test_depth import get_s_depth
+
+def test_gen_mask():
+    mask = np.array(([True, True , True, True],
+                     [True, False, False, True],
+                     [True, False, False, True],
+                     [True, True, True, True]))
+
+    m = utilities.gen_mask(mask, add_boundary=False)
+
+    assert np.all(m == mask)
+
+    m2 = utilities.gen_mask(mask, add_boundary=True)
+
+    expected_mask = np.array(([True, False, False, True],
+                              [False, False, False, False],
+                              [False, False, False, False],
+                              [True, False, False, True]))
+
+    assert np.all(m2 == expected_mask)
+
+    testds = nc.Dataset('foo', mode='w', diskless=True)
+    testds.createDimension('x', 4)
+    testds.createDimension('y', 4)
+    testds.createVariable('mask', 'b', dimensions=('y', 'x'))
+    testds['mask'][:] = mask
+
+    m3 = utilities.gen_mask(testds['mask'], add_boundary=True)
+
+    assert np.all(m3 == expected_mask)
+
+    testds['mask'][:] = ~mask
+    testds['mask'].flag_values = [0,1]
+    testds['mask'].flag_meanings = ['land', 'water']
+
+    m4 = utilities.gen_mask(testds['mask'], add_boundary=True)
+
+    assert np.all(m4 == expected_mask)
+
+    testds['mask'][:,2] = [0,2,2,0]
+    testds['mask'].flag_values = [0,1,2]
+    testds['mask'].flag_meanings = ['land', 'water', 'water2']
+
+    m5 = utilities.gen_mask(testds['mask'], add_boundary=True)
+
+    assert np.all(m5 == expected_mask)
+
+    #because sometimes it's a damn string
+    testds['mask'].flag_meanings = 'land water water2'
+
+    m5 = utilities.gen_mask(testds['mask'], add_boundary=True)
+
+    assert np.all(m5 == expected_mask)
+    testds.close()
+
+
 
 def test_reorganize_spatial_data():
     #1-dimensional data

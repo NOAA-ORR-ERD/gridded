@@ -7,8 +7,64 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import collections
 import numpy as np
 import netCDF4 as nc4
+import six
 
 must_have = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute__']
+
+def gen_mask(mask_var, add_boundary=False):
+    """
+    Takes a mask variable (netCDF4.Variable) and creates a mask to apply to
+    vertexes in the grid. This map is for GEOMETRY PURPOSES ONLY. It should not
+    be applied to any data that may fit the grid. Such data should already have
+    a mask of it's own that is to be treated as canon.
+
+    For example ROMS mask_psi:
+    <type 'netCDF4._netCDF4.Variable'>
+    float64 mask_psi(eta_psi, xi_psi)
+        long_name: mask on psi-points
+        flag_values: [ 0.  1.]
+        flag_meanings: land water
+        grid: grid
+        location: node
+        coordinates: lat_psi lon_psi
+    unlimited dimensions:
+    current shape = (1043, 723)
+    filling off
+
+    The return of this function is a True/False array of the same shape as the variable passed in.
+    If flag_values and flag_meanings are attributes on the provided netCDF4.Variable, it will treat
+    any value not containing 'water', or 'lake' as True (masked). Otherwise, it will convert to a
+    boolean array directly on the 'truthiness' of the values.
+    Anything != 0 -> True
+    0 = False
+
+    This MAY result in an incorrect mask, if this function doesn't handle special flag
+    meanings as above.
+
+    Additionally, it will transform any True (masked) value that is adjacent to a False (unmasked)
+    value to False (unmasked). This is to avoid boundary condition problems.
+    """
+    ret_mask = np.ones(mask_var.shape, dtype=bool)
+    input_mask = mask_var[:]
+    if isinstance(mask_var, nc4.Variable) and hasattr(mask_var, 'flag_values') and hasattr(mask_var, 'flag_meanings'):
+        fm = mask_var.flag_meanings
+        if isinstance(fm, six.string_types):
+            fm = fm.split(' ')
+        meaning_mask = [False if ('water' in s or 'lake' in s) else True for s in fm]
+        tfmap = dict(zip(mask_var.flag_values, meaning_mask))
+        for k, v in tfmap.items():
+            ret_mask[input_mask == k] = v
+    else:
+        ret_mask[:] = input_mask
+    #add in boundary pts
+    if add_boundary:
+        testarr = np.ones(ret_mask.shape, dtype=bool)
+        np.logical_and(testarr[:, 0:-1], ~(ret_mask[:, 0:-1] & ~ret_mask[:, 1:]), testarr[:,0:-1]) #check 'right'
+        np.logical_and(testarr[:, 1:], ~(ret_mask[:, 1:] & ~ret_mask[:, 0:-1]), testarr[:, 1:]) #check 'left'
+        np.logical_and(testarr[1:, :], ~(ret_mask[1:, :] & ~ret_mask[0:-1, :]), testarr[1:, :]) #check 'down'
+        np.logical_and(testarr[0:-1, :], ~(ret_mask[0:-1, :] & ~ret_mask[1:, :]), testarr[0:-1, :]) #check 'up'
+        np.logical_and(ret_mask, testarr, ret_mask)
+    return ret_mask
 
 
 def regrid_variable(grid, o_var, location='node'):
