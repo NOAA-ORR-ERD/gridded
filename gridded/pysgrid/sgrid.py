@@ -396,11 +396,11 @@ class SGrid(object):
                       [1, 1, 1, 1],
                       [1, 1, 0, 0],
                       ))
-        polyx = np.matrix(polyx)
-        polyy = np.matrix(polyy)
+        # polyx = np.matrix(polyx)
+        # polyy = np.matrix(polyy)
         AI = np.linalg.inv(A)
-        a = np.dot(AI, polyx.getH()).T
-        b = np.dot(AI, polyy.getH()).T
+        a = np.dot(AI, polyx.T).T
+        b = np.dot(AI, polyy.T).T
 
         self._l_coeffs[grid] = np.asarray(a).reshape(l_coeffs.shape)
         self._m_coeffs[grid] = np.asarray(b).reshape(m_coeffs.shape)
