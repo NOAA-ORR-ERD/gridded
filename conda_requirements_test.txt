@@ -9,11 +9,13 @@
 numpy>=1.13.*
 scipy
 netcdf4>=1.4.*
-cell_tree2d
+cell_tree2d>=0.3.*
 six
 
 ## extra stuff you'll want for testing
 # this is the minimal that will support travis tests
 pytest
+pytest-cov
 progressbar
+
 
