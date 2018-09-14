@@ -13,7 +13,9 @@ from gridded.time import Time
 import hashlib
 from functools import wraps
 import pdb
+import logging
 
+log = logging.getLogger(__name__)
 
 class Variable(object):
     """
@@ -424,6 +426,7 @@ class Variable(object):
 
         order = self.dimension_ordering
         if order[0] == 'time':
+            pdb.set_trace()
             value = self._time_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
         elif order[0] == 'depth':
             value = self._depth_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
@@ -433,6 +436,8 @@ class Variable(object):
         if _auto_align == True:
             value = _align_results_to_spatial_data(value.copy(), points)
 
+        pdb.set_trace()
+
         if isinstance(value, np.ma.MaskedArray):
             np.ma.set_fill_value(value, self.fill_value)
         if unmask:
@@ -440,7 +445,6 @@ class Variable(object):
 
         if _mem:
             self._memoize_result(pts, time, value, self._result_memo, _hash=_hash)
-
         return value
 
     def _xy_interp(self, points, time, extrapolate, slices=(), **kwargs):
@@ -491,7 +495,7 @@ class Variable(object):
             s0 = slices + (ind - 1,)
             v0 = val_func(points, time, extrapolate, slices=s0, **kwargs)
             v1 = val_func(points, time, extrapolate, slices=s1, **kwargs)
-            alphas = self.time.interp_alpha(time)
+            alphas = self.time.interp_alpha(time, extrapolate)
             value = v0 + (v1 - v0) * alphas
             return value
 
@@ -514,7 +518,7 @@ class Variable(object):
             val_func = self._xy_interp
         else:
             val_func = self._time_interp
-        indices, alphas = self.depth.interpolation_alphas(points, time, self.data.shape[1:], kwargs.get('_hash', None))
+        indices, alphas = self.depth.interpolation_alphas(points, time, self.data.shape[1:], _hash=kwargs.get('_hash', None), extrapolate=extrapolate)
         if indices is None and alphas is None:
             # all particles are on surface
             return val_func(points, time, extrapolate, slices=slices + (self.depth.surface_index,), **kwargs)
@@ -530,12 +534,8 @@ class Variable(object):
                 if len(pos_idxs) > 0:
                     values.put(pos_idxs, sub_vals.take(pos_idxs))
                 v0 = v1
-            if extrapolate:
-                underground = (indices == self.depth.bottom_index)
-                values[underground] = val_func(points, time, extrapolate, slices=slices + (self.depth.bottom_index,), **kwargs)
-            else:
-                underground = (indices == self.depth.bottom_index)
-                values[underground] = self.fill_value
+            underground = (indices == self.depth.bottom_index)
+            values[underground] = self.fill_value
             return values
 
     def transect(self, times, depths, points):

@@ -335,19 +335,19 @@ class S_Depth(DepthBase):
         S = hc * s_rho + (depths - hc) * Cs_r
         return -(S + zeta * (1 + S / depths))
 
-    def interpolation_alphas(self, points, time, data_shape, _hash=None):
+    def interpolation_alphas(self, points, time, data_shape, _hash=None, extrapolate=False):
         '''
         Returns a pair of values. The 1st value is an array of the depth indices of all the particles.
         The 2nd value is an array of the interpolation alphas for the particles between their depth
         index and depth_index+1. If both values are None, then all particles are on the surface layer.
         '''
-        underwater = points[:, 2] > -self.zeta.at(points, time)
+        underwater = np.logical_and(points[:, 2] != 0, points[:, 2] > -self.zeta.at(points, time, extrapolate=extrapolate))
         if len(np.where(underwater)[0]) == 0:
             return None, None
         indices = -np.ones((len(points)), dtype=np.int64)
         alphas = -np.ones((len(points)), dtype=np.float64)
-        depths = self.bathymetry.at(points, time, _hash=_hash)[underwater]
-        zeta = self.zeta.at(points, time, _hash=_hash)[underwater]
+        depths = self.bathymetry.at(points, time, _hash=_hash, extrapolate=extrapolate)[underwater]
+        zeta = self.zeta.at(points, time, _hash=_hash, extrapolate=extrapolate)[underwater]
         pts = points[underwater]
         und_ind = -np.ones((len(np.where(underwater)[0])))
         und_alph = und_ind.copy()
