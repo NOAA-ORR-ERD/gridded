@@ -436,8 +436,6 @@ class Variable(object):
         if _auto_align == True:
             value = _align_results_to_spatial_data(value.copy(), points)
 
-        pdb.set_trace()
-
         if isinstance(value, np.ma.MaskedArray):
             np.ma.set_fill_value(value, self.fill_value)
         if unmask:
