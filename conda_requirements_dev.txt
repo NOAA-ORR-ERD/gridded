@@ -7,9 +7,9 @@
 # requires python, but if you leave it out, it will use python already in
 # the conda environment, rather than upgrading
 # python>=2.7.*
-numpy>=1.11.*
+numpy>=1.13.*
 scipy
-netcdf4
+netcdf4>=1.4.*
 cell_tree2d
 six
 
