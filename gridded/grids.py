@@ -215,10 +215,11 @@ class Grid_S(GridBase, SGrid):
                         a2 = gf_vars[n2][:]
                         init_args[attr[0]] = a1
                         init_args[attr[1]] = a2
-                        init_args[maskattr] = gf_vars[maskname[0]]
+                        if maskname[0] in gf_vars:
+                            init_args[maskattr] = gf_vars[maskname[0]]
+                            gt[maskattr] = maskname[0]
                         gt[attr[0]] = n1
                         gt[attr[1]] = n2
-                        gt[maskattr] = maskname[0]
                         break
             if 'node_lon' in init_args and 'node_lat' in init_args:
                 mask = False
