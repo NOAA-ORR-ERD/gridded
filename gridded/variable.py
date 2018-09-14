@@ -426,7 +426,6 @@ class Variable(object):
 
         order = self.dimension_ordering
         if order[0] == 'time':
-            pdb.set_trace()
             value = self._time_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
         elif order[0] == 'depth':
             value = self._depth_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
