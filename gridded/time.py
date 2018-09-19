@@ -3,6 +3,7 @@
 # py2/3 compatibility
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+from textwrap import dedent
 import netCDF4 as nc4
 import numpy as np
 
@@ -94,6 +95,28 @@ class Time(object):
         if cls._const_time is None:
             cls._const_time = cls(np.array([datetime.now()]))
         return cls._const_time
+
+    @property
+    def info(self):
+        """
+        Provides info about this Time object
+
+        """
+        msg = """
+              Time object:
+                filename: {}
+                varname: {}
+                first timestep: {}
+                final timestep: {}
+                number of timesteps: {}
+              """.format(self.filename,
+                         self.varname,
+                         self.min_time,
+                         self.max_time,
+                         len(self.data),
+                         )
+
+        return dedent(msg)
 
     def __len__(self):
         return len(self.data)

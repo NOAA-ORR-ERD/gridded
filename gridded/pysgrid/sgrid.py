@@ -170,12 +170,17 @@ class SGrid(object):
     @property
     def info(self):
         """
-        summary of information about the grid
+        Summary of information about the grid
 
-        this needs to be implimented -- see UGrid for example
+        This needs to be implimented -- see UGrid for example
         """
-        msg = ["SGrid object:"]
-        return "\n".join(msg)
+        names = ", ".join([name for name, at in vars(self).items()
+                           if not name.startswith("_") if at is not None])
+
+        msg = ("SGrid object with defined:\n"
+               "    {}".format(names))
+
+        return msg
 
     def get_all_face_padding(self):
         if self.face_padding is not None:

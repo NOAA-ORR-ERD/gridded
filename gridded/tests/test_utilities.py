@@ -3,14 +3,20 @@
 # py2/3 compatibility
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import os
 
 import numpy as np
 import netCDF4 as nc
+
 from gridded import utilities
 from gridded.tests.test_depth import get_s_depth
 
+
+data_dir = os.path.join(os.path.split(__file__)[0], 'test_data')
+
+
 def test_gen_mask():
-    mask = np.array(([True, True , True, True],
+    mask = np.array(([True, True, True, True],
                      [True, False, False, True],
                      [True, False, False, True],
                      [True, True, True, True]))
@@ -39,22 +45,22 @@ def test_gen_mask():
     assert np.all(m3 == expected_mask)
 
     testds['mask'][:] = ~mask
-    testds['mask'].flag_values = [0,1]
+    testds['mask'].flag_values = [0, 1]
     testds['mask'].flag_meanings = ['land', 'water']
 
     m4 = utilities.gen_mask(testds['mask'], add_boundary=True)
 
     assert np.all(m4 == expected_mask)
 
-    testds['mask'][:,2] = [0,2,2,0]
-    testds['mask'].flag_values = [0,1,2]
+    testds['mask'][:, 2] = [0, 2, 2, 0]
+    testds['mask'].flag_values = [0, 1, 2]
     testds['mask'].flag_meanings = ['land', 'water', 'water2']
 
     m5 = utilities.gen_mask(testds['mask'], add_boundary=True)
 
     assert np.all(m5 == expected_mask)
 
-    #because sometimes it's a damn string
+    # because sometimes it's a damn string
     testds['mask'].flag_meanings = 'land water water2'
 
     m5 = utilities.gen_mask(testds['mask'], add_boundary=True)
@@ -63,56 +69,55 @@ def test_gen_mask():
     testds.close()
 
 
-
 def test_reorganize_spatial_data():
-    #1-dimensional data
-    sample_1 = [1,2,3]
-    sample_2 = [(1,),(2,),(3,)]
-    sample_3 = [(1,2,3),]
+    # 1-dimensional data
+    sample_1 = [1, 2, 3]
+    sample_2 = [(1,), (2,), (3,)]
+    sample_3 = [(1, 2, 3), ]
     a1 = utilities._reorganize_spatial_data(sample_1)
     a2 = utilities._reorganize_spatial_data(sample_2)
     a3 = utilities._reorganize_spatial_data(sample_3)
     assert np.all(a1 == a2)
-    assert np.all(a3 == np.array([(1,2,3),]))
+    assert np.all(a3 == np.array([(1, 2, 3), ]))
     assert np.all(a2 == a3)
 
-    #impossible cases
-    sample_1 = np.array([[1,2,3],[4,5,6]])
-    sample_2 = np.array([[1,2],[3,4],[5,6]])
+    # impossible cases
+    sample_1 = np.array([[1, 2, 3], [4, 5, 6]])
+    sample_2 = np.array([[1, 2], [3, 4], [5, 6]])
     a1 = utilities._reorganize_spatial_data(sample_1)
     a2 = utilities._reorganize_spatial_data(sample_2)
     assert np.all(sample_2 == a2)
     assert np.all(sample_1 == a1)
 
-    #dim 0 > dim 1
-    sample_1 = np.array([[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
+    # dim 0 > dim 1
+    sample_1 = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]])
     a1 = utilities._reorganize_spatial_data(sample_1)
     assert np.all(a1 == sample_1)
 
-    #dim 1 > dim 0
-    sample_2 = [[1,4,7,10],[2,5,8,11],[3,6,9,12]]
+    # dim 1 > dim 0
+    sample_2 = [[1, 4, 7, 10], [2, 5, 8, 11], [3, 6, 9, 12]]
     a2 = utilities._reorganize_spatial_data(sample_2)
     assert np.all(a2 == sample_1)
 
 
 def test_spatial_data_metadata():
-    pts_1 = [1,2,3]
-    pts_2 = [(1,),(2,),(3,)]
-    pts_3 = np.array([[1,2,3],[4,5,6]])
-    pts_4 = [[1,4,7,10],[2,5,8,11],[3,6,9,12]]
+    pts_1 = [1, 2, 3]
+    pts_2 = [(1,), (2,), (3,)]
+    pts_3 = np.array([[1, 2, 3], [4, 5, 6]])
+    pts_4 = [[1, 4, 7, 10], [2, 5, 8, 11], [3, 6, 9, 12]]
 
-    res_1 = np.array([[1,],])
-    res_2 = np.array([[1,2,3,4,5,6],])
-    res_3 = np.array([[1,2,3,4,5,6],
-                      [2,3,4,5,6,7]])
-    res_4 = np.array([[1,2,3,4,5,6],
-                      [7,8,9,10,11,12],
-                      [13,14,15,16,17,18],
-                      [19,20,21,22,23,24]])
-    res_5 = np.array([[1,],
-                      [2,],
-                      [3,],
-                      [4,]])
+    res_1 = np.array([[1, ], ])
+    res_2 = np.array([[1, 2, 3, 4, 5, 6], ])
+    res_3 = np.array([[1, 2, 3, 4, 5, 6],
+                      [2, 3, 4, 5, 6, 7]])
+    res_4 = np.array([[1, 2, 3, 4, 5, 6],
+                      [7, 8, 9, 10, 11, 12],
+                      [13, 14, 15, 16, 17, 18],
+                      [19, 20, 21, 22, 23, 24]])
+    res_5 = np.array([[1, ],
+                      [2, ],
+                      [3, ],
+                      [4, ]])
 
     a1 = utilities._align_results_to_spatial_data(res_1, pts_1)
     assert np.all(a1 == res_1)
@@ -249,3 +254,13 @@ def test_as_test_asarraylike_dummy():
     dum = DummyArrayLike()
     result = utilities.asarraylike(dum)
     assert result is dum
+
+
+def test_get_dataset_attrs():
+    filename = os.path.join(data_dir, 'UGRIDv0.9_eleven_points.nc')
+    ds = nc.Dataset(filename)
+    attrs = utilities.get_dataset_attrs(ds)
+
+    assert len(attrs) == 4
+    assert attrs['Conventions'] == "UGRID-0.9"
+    assert attrs['Title'] == "UGRID for GNOME"
