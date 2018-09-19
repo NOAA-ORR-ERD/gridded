@@ -8,7 +8,7 @@ The ``gridded`` API is built around a few core object types. In the general case
 
 The :class:`gridded.gridded.Dataset` object represents the entire gridded dataset. It more-or-less maps to what is usually found in a CF-compliant netcdf file output from a model run.
 
-A :class:``gridded.gridded.Dataset`` contains a few core pieces of information:
+A :class:`gridded.gridded.Dataset` contains a few core pieces of information:
 
  - Attributes of the whole dataset
  - A Grid object -- this is a duck-typed grid object that could be any of the supported grid types.

@@ -3,13 +3,10 @@
 # py2/3 compatibility
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from pprint import pformat
-# import copy
-
 from gridded.grids import Grid
 from gridded.variable import Variable
 
-from gridded.utilities import get_dataset
+from gridded.utilities import get_dataset, get_dataset_attrs
 
 """
 The main gridded.Dataset code
@@ -18,8 +15,8 @@ The main gridded.Dataset code
 
 class Dataset():
     """
-    An object that represent an entire complete dataset -- a collection of Variables,
-    and the grid that they are stored on.
+    An object that represent an entire complete dataset -- a collection of Variables
+    and the Grid that they are stored on.
     """
 
     def __init__(self,
@@ -62,9 +59,8 @@ class Dataset():
         the input ones ignored.
         """
         if ncfile is not None:
-            if   (grid is not None or
+            if (grid is not None or
                   variables is not None or
-                  grid_topology is not None or
                   attributes is not None):
                 raise ValueError("You can create a Dataset from a file, or from raw data"
                                  "but not both.")
@@ -74,6 +70,7 @@ class Dataset():
                                          dataset=self.nc_dataset,
                                          grid_topology=grid_topology)
             self.variables = self._load_variables(self.nc_dataset)
+            self.attributes = get_dataset_attrs(self.nc_dataset)
         else:  # no file passed in -- create from grid and variables
             self.filename = None
             self.grid = grid
@@ -155,7 +152,7 @@ class Dataset():
         """
         Information about the Dataset object
         """
-        vars = [var.info for var in self.variables]
+        vars = [var.info for var in self.variables.values()]
         vars = "".join([" " * 8 + v for v in vars])
         vars = "\n".join([" " * 8 + line for line in vars.split("\n")])
         attrs = "\n".join(["        {}: {}".format(k, v) for k, v in self.attributes.items()])

@@ -4,6 +4,7 @@ from textwrap import dedent
 import collections
 import hashlib
 from functools import wraps
+import os
 
 import numpy as np
 import netCDF4 as nc4
@@ -186,6 +187,8 @@ class Variable(object):
             else:
                 dg = dataset
             ds = dataset
+        if data_file is None:
+            data_file = os.path.split(ds.filepath())[-1]
 
         if grid is None:
             grid = Grid.from_netCDF(grid_file,
@@ -264,7 +267,7 @@ class Variable(object):
         except KeyError:
             std_name = None
         msg = """
-              Variable object:
+              Variable:
                 filename: {0.data_file}
                 varname: {0.varname}
                 standard name: {1}
