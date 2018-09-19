@@ -157,7 +157,7 @@ class Dataset():
         vars = "\n".join([" " * 8 + line for line in vars.split("\n")])
         attrs = "\n".join(["        {}: {}".format(k, v) for k, v in self.attributes.items()])
         grid = "\n".join([" " * 8 + line for line in self.grid.info.split("\n")])
-        msg = ("gridded.Datset:\n"
+        msg = ("gridded.Dataset:\n"
                "    filename: {0.filename}\n"
                "    grid:\n{3}\n"
                "    variables: {1}\n"

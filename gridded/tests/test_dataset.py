@@ -33,13 +33,11 @@ def test_info():
 
     info = gds.info
 
+    print(info)
     # just a couple checks to make sure it's not totally bogus
     assert "gridded.Dataset:" in info
     assert "variables:" in info
     assert "attributes:" in info
-
-    assert False
-
 
 # def test_get_variables_by_attribute():
 #     gds = Dataset(sample_sgrid_file)
