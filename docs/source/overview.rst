@@ -36,5 +36,5 @@ Data standards
 
 * SGRID Conventions: http://sgrid.github.io/sgrid/
 
-``gridded`` also provided APIs for reading results that do not conform to the conventions, allowing one to work with non-confirming datasets with the same API, as well as providing tools to convert non-confirming files to conforming files.
+``gridded`` also provided APIs for reading results that do not conform to the conventions, allowing one to work with non-confirming datasets with the same API, as well as providing tools to convert non-confirming files to conforming files (incomplete).
 

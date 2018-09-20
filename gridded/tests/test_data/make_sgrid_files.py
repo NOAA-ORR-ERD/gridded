@@ -3,10 +3,11 @@
 """
 Script to make sample sgrid files
 
-Borrowed from pysgrid, and refactored to sinple generate them,
+Borrowed from pysgrid, and refactored to simply generate them,
 rather than as fixtures.
-"""
 
+NOTE: making these session fixtures might make sense.
+"""
 
 from __future__ import (absolute_import, division, print_function)
 
@@ -460,6 +461,85 @@ def non_compliant_sgrid(fname='noncompliant_sgrid.nc'):
     nc.close()
 
 
+def semi_circular_single_grid(fname='simple_cgrid.nc'):
+    """
+    NOTE: this one is currently not loadable with gridded!
+          not sure if it's a gridded bug or a bug in this file
+
+    a simple, one grid curvilinear grid
+
+    no staggared variables
+
+    no time
+    """
+    # circular grid
+    center = (5, 50)
+    min_radius = 1.0
+    max_radius = 2.0
+    min_angle = -(np.pi / 4.0)
+    max_angle = np.pi / 4.0
+
+    num_i = 24
+    num_j = 8
+
+    with Dataset(fname, 'w') as nc:
+        nc.createDimension('i', num_i)
+        nc.createDimension('j', num_j)
+
+        # global attributes
+        nc.coordinate_system = "WGS84"
+        nc.summary = "sample data file from the gridded tests"
+        nc.Conventions = "CF-1.6"
+
+        # minimal grid attributes
+        the_grid = nc.createVariable('the_grid', 'i')
+        the_grid.cf_role = "grid_topology"
+        the_grid.topology_dimension = 2
+        the_grid.node_dimensions = "i j"
+        the_grid.node_coordinates = "lon lat"
+
+        # create coordinate variables
+        lon = nc.createVariable('latitude', np.float32, ('i', 'j'))
+        lon.standard_name = "latitude"
+        lon.units = "degree_east"
+        lat = nc.createVariable('longitude', np.float32, ('i', 'j'))
+        lat.standard_name = "latitude"
+        lat.units = "degree_north"
+
+
+        # create field variables
+        u = nc.createVariable('u', np.float32, ('i', 'j'))
+        v = nc.createVariable('v', np.float32, ('i', 'j'))
+        zeta = nc.createVariable('zeta', np.float32, ('i', 'j'))
+
+        for var in (u, v):
+            var.units = "m/s"
+
+        for var in (u, v, zeta):
+            var.coordinates = "lon lat"
+
+        zeta.units = "m"
+
+        # now the values:
+        # circular grid
+
+        X = np.zeros((num_i, num_j), dtype=np.float32)
+        Y = np.zeros((num_i, num_j), dtype=np.float32)
+        for i, theta in enumerate(np.linspace(min_angle, max_angle, num_i)):
+            for j, r in enumerate(np.linspace(min_radius, max_radius, num_j)):
+                X[i, j] = r * np.cos(theta) + center[0]
+                Y[i, j] = r * np.cos(theta) + center[1]
+        lon[:] = X
+        lat[:] = Y
+
+        # could be better, but...
+        zeta[:] = 3.0
+        u[:] = 1.0
+        v[:] = 1.0
+        # context manager should sync and close
+    return fname
+
+
 def make_all():
     """
     make all the sample files
@@ -471,7 +551,10 @@ def make_all():
     wrf_sgrid_2d()
     wrf_sgrid()
     non_compliant_sgrid()
+    # semi_circular_single_grid()
 
 
 if __name__ == "__main__":
     make_all()
+    # fname = semi_circular_single_grid()
+    # print("making:", fname)

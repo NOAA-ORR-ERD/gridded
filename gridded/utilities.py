@@ -11,6 +11,7 @@ import six
 
 must_have = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute__']
 
+
 def gen_mask(mask_var, add_boundary=False):
     """
     Takes a mask variable (netCDF4.Variable) and creates a mask to apply to
@@ -348,7 +349,7 @@ def get_dataset(ncfile, dataset=None):
     or just pass it through if it's already a netCDF4.Dataset
 
     if dataset is not None, it should be a valid netCDF4 Dataset object,
-    and it will simiply be returned
+    and it will simply be returned
     """
     if dataset is not None:
         return dataset
@@ -360,3 +361,15 @@ def get_dataset(ncfile, dataset=None):
         return nc4.Dataset(ncfile)
     else:
         return nc4.MFDataset(ncfile)
+
+
+def get_dataset_attrs(ds):
+    """
+    get all the attributes of the dataset as a single dict
+
+    :param ds: an open netCDF4.Dataset
+    """
+    return {name: ds.getncattr(name) for name in ds.ncattrs()}
+
+
+

@@ -1,21 +1,24 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import netCDF4 as nc4
-import numpy as np
+from textwrap import dedent
 import collections
-from collections import OrderedDict
+import hashlib
+from functools import wraps
+import os
+
+import numpy as np
+import netCDF4 as nc4
+
 from gridded.utilities import get_dataset, _reorganize_spatial_data,\
     _align_results_to_spatial_data
 from gridded.grids import Grid, Grid_U, Grid_S, Grid_R
 from gridded.depth import Depth
 from gridded.time import Time
 
-import hashlib
-from functools import wraps
-import pdb
 import logging
 
 log = logging.getLogger(__name__)
+
 
 class Variable(object):
     """
@@ -186,16 +189,19 @@ class Variable(object):
             else:
                 dg = dataset
             ds = dataset
+        if data_file is None:
+            data_file = os.path.split(ds.filepath())[-1]
 
         if grid is None:
             grid = Grid.from_netCDF(grid_file,
-                                      dataset=dg,
-                                      grid_topology=grid_topology)
+                                    dataset=dg,
+                                    grid_topology=grid_topology)
         if varname is None:
             varname = cls._gen_varname(data_file,
                                        dataset=ds)
             if varname is None:
-                raise NameError('Default current names are not in the data file, must supply variable name')
+                raise NameError('Default current names are not in the data file, '
+                                'must supply variable name')
         data = ds[varname]
         if name is None:
             name = cls.__name__ + str(cls._def_count)
@@ -210,7 +216,10 @@ class Variable(object):
                                     dataset=ds,
                                     datavar=data)
             if time_origin is not None:
-                time = Time(data=time.data, filename=time.filename, varname=time.varname, origin=time_origin)
+                time = Time(data=time.data,
+                            filename=time.filename,
+                            varname=time.varname,
+                            origin=time_origin)
         if depth is None:
             if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
                     isinstance(grid, Grid_U) and len(data.shape) == 3):
@@ -248,6 +257,26 @@ class Variable(object):
                 'units="{0.units}", '
                 'data="{0.data}", '
                 ')').format(self)
+
+    @property
+    def info(self):
+        """
+        Information about the variable object
+        This could be filled out more
+        """
+        try:
+            std_name = self.attributes['standard_name']
+        except KeyError:
+            std_name = None
+        msg = """
+              Variable:
+                filename: {0.data_file}
+                varname: {0.varname}
+                standard name: {1}
+                units: {0.units}
+                data shape: {0.data.shape}
+              """.format(self, std_name)
+        return dedent(msg)
 
     @property
     def time(self):
@@ -356,16 +385,19 @@ class Variable(object):
     @property
     def dimension_ordering(self):
         '''
-        Returns a list that describes the dimensions of the property's data. If a dimension_ordering is assigned,
-        it will continue to use that. If no dimension_ordering is set, then a default ordering will be generated
+        Returns a list that describes the dimensions of the property's data.
+        If a dimension_ordering is assigned, it will continue to use that.
+        If no dimension_ordering is set, then a default ordering will be generated
         based on the object properties and data shape.
 
-        For example, if the data has 4 dimensions and is represented by a Grid_S (structured grid), and the
-        Variable has a depth and time assigned, then the assumed ordering is ['time','depth','lon','lat']
+        For example, if the data has 4 dimensions and is represented by a
+        Grid_S (structured grid), and the Variable has a depth and time assigned,
+        then the assumed ordering is ['time','depth','lon','lat']
 
-        If the data has 3 dimensions, self.grid is a Grid_S, and self.time is None, then the ordering is
-        ['depth','lon','lat']
-        If the data has 3 dimensions, self.grid is a Grid_U, the ordering is ['time','depth','ele']
+        If the data has 3 dimensions, self.grid is a Grid_S, and self.time is None,
+        then the ordering is ['depth','lon','lat']
+        If the data has 3 dimensions, self.grid is a Grid_U, the ordering is
+        ['time','depth','ele']
         '''
         if not hasattr(self, '_order'):
             self._order = None
@@ -386,7 +418,8 @@ class Variable(object):
                 elif self.depth is not None:
                     del order[0]
                 else:
-                    raise ValueError('Generated ordering too short to fit data. Time or depth must not be None')
+                    raise ValueError('Generated ordering too short to fit data. '
+                                     'Time or depth must not be None')
             elif diff == 2:
                 order = order[2:]
             else:
@@ -398,22 +431,35 @@ class Variable(object):
         self._order = order
 
 #     @profile
-    def at(self, points, time, units=None, extrapolate=False, _hash=None, _mem=True, _auto_align=True, unmask=False, **kwargs):
-        '''
+    def at(self,
+           points,
+           time,
+           units=None,
+           extrapolate=False,
+           _hash=None,
+           _mem=True,
+           _auto_align=True,
+           unmask=False,
+           **kwargs):
+        """
         Find the value of the property at positions P at time T
 
         :param points: Coordinates to be queried (P)
-        :param time: The time at which to query these points (T)
-        :param units: units the values will be returned in (or converted to)
-        :param extrapolate: if True, extrapolation will be supported
         :type points: Nx2 array of double
+
+        :param time: The time at which to query these points (T)
         :type time: datetime.datetime object
-        :type depth: integer
-        :type units: string such as ('mem/s', 'knots', etc)
+
+        :param units: units the values will be returned in (or converted to)
+        :type units: string such as ('m/s', 'knots', etc)
+
+        :param extrapolate: if True, extrapolation will be supported
+
         :type extrapolate: boolean (True or False)
+
         :return: returns a Nx1 array of interpolated values
         :rtype: double
-        '''
+        """
         pts = _reorganize_spatial_data(points)
 
         if _hash is None:
@@ -636,7 +682,7 @@ class VectorVariable(object):
             self.grid_file = self.variables[0].grid_file if grid_file is None else grid_file
             self.data_file = self.variables[0].data_file if data_file is None else data_file
 
-        self._result_memo = OrderedDict()
+        self._result_memo = collections.OrderedDict()
         for i, comp in enumerate(self.__class__.comp_order):
             setattr(self, comp, self.variables[i])
 
