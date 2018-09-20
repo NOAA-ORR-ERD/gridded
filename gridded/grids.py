@@ -226,7 +226,6 @@ class Grid_S(GridBase, SGrid):
                 for name in node_mask_names:
                     if name in gf_vars:
                         mask = gen_mask(gf_vars[name])
-                mask = False
                 init_args['node_lon'].mask = mask
                 init_args['node_lat'].mask = mask
                 if name in gf_vars:
