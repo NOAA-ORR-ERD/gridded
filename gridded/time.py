@@ -187,6 +187,8 @@ class Time(object):
         if not (extrapolate or len(self.data) == 1):
             self.valid_time(time)
         index = np.searchsorted(self.data, time)
+        if len(self.data) == 1:
+            index = 0
         return index
 
     def interp_alpha(self, time, extrapolate=False):

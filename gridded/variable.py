@@ -15,7 +15,9 @@ from gridded.grids import Grid, Grid_U, Grid_S, Grid_R
 from gridded.depth import Depth
 from gridded.time import Time
 
-# import pdb
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class Variable(object):
@@ -486,7 +488,6 @@ class Variable(object):
 
         if _mem:
             self._memoize_result(pts, time, value, self._result_memo, _hash=_hash)
-
         return value
 
     def _xy_interp(self, points, time, extrapolate, slices=(), **kwargs):
@@ -537,7 +538,7 @@ class Variable(object):
             s0 = slices + (ind - 1,)
             v0 = val_func(points, time, extrapolate, slices=s0, **kwargs)
             v1 = val_func(points, time, extrapolate, slices=s1, **kwargs)
-            alphas = self.time.interp_alpha(time)
+            alphas = self.time.interp_alpha(time, extrapolate)
             value = v0 + (v1 - v0) * alphas
             return value
 
@@ -560,7 +561,7 @@ class Variable(object):
             val_func = self._xy_interp
         else:
             val_func = self._time_interp
-        indices, alphas = self.depth.interpolation_alphas(points, time, self.data.shape[1:], kwargs.get('_hash', None))
+        indices, alphas = self.depth.interpolation_alphas(points, time, self.data.shape[1:], _hash=kwargs.get('_hash', None), extrapolate=extrapolate)
         if indices is None and alphas is None:
             # all particles are on surface
             return val_func(points, time, extrapolate, slices=slices + (self.depth.surface_index,), **kwargs)
@@ -576,12 +577,8 @@ class Variable(object):
                 if len(pos_idxs) > 0:
                     values.put(pos_idxs, sub_vals.take(pos_idxs))
                 v0 = v1
-            if extrapolate:
-                underground = (indices == self.depth.bottom_index)
-                values[underground] = val_func(points, time, extrapolate, slices=slices + (self.depth.bottom_index,), **kwargs)
-            else:
-                underground = (indices == self.depth.bottom_index)
-                values[underground] = self.fill_value
+            underground = (indices == self.depth.bottom_index)
+            values[underground] = self.fill_value
             return values
 
     def transect(self, times, depths, points):
