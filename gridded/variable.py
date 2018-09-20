@@ -383,16 +383,19 @@ class Variable(object):
     @property
     def dimension_ordering(self):
         '''
-        Returns a list that describes the dimensions of the property's data. If a dimension_ordering is assigned,
-        it will continue to use that. If no dimension_ordering is set, then a default ordering will be generated
+        Returns a list that describes the dimensions of the property's data.
+        If a dimension_ordering is assigned, it will continue to use that.
+        If no dimension_ordering is set, then a default ordering will be generated
         based on the object properties and data shape.
 
-        For example, if the data has 4 dimensions and is represented by a Grid_S (structured grid), and the
-        Variable has a depth and time assigned, then the assumed ordering is ['time','depth','lon','lat']
+        For example, if the data has 4 dimensions and is represented by a
+        Grid_S (structured grid), and the Variable has a depth and time assigned,
+        then the assumed ordering is ['time','depth','lon','lat']
 
-        If the data has 3 dimensions, self.grid is a Grid_S, and self.time is None, then the ordering is
-        ['depth','lon','lat']
-        If the data has 3 dimensions, self.grid is a Grid_U, the ordering is ['time','depth','ele']
+        If the data has 3 dimensions, self.grid is a Grid_S, and self.time is None,
+        then the ordering is ['depth','lon','lat']
+        If the data has 3 dimensions, self.grid is a Grid_U, the ordering is
+        ['time','depth','ele']
         '''
         if not hasattr(self, '_order'):
             self._order = None
@@ -413,7 +416,8 @@ class Variable(object):
                 elif self.depth is not None:
                     del order[0]
                 else:
-                    raise ValueError('Generated ordering too short to fit data. Time or depth must not be None')
+                    raise ValueError('Generated ordering too short to fit data. '
+                                     'Time or depth must not be None')
             elif diff == 2:
                 order = order[2:]
             else:
@@ -425,22 +429,35 @@ class Variable(object):
         self._order = order
 
 #     @profile
-    def at(self, points, time, units=None, extrapolate=False, _hash=None, _mem=True, _auto_align=True, unmask=False, **kwargs):
-        '''
+    def at(self,
+           points,
+           time,
+           units=None,
+           extrapolate=False,
+           _hash=None,
+           _mem=True,
+           _auto_align=True,
+           unmask=False,
+           **kwargs):
+        """
         Find the value of the property at positions P at time T
 
         :param points: Coordinates to be queried (P)
-        :param time: The time at which to query these points (T)
-        :param units: units the values will be returned in (or converted to)
-        :param extrapolate: if True, extrapolation will be supported
         :type points: Nx2 array of double
+
+        :param time: The time at which to query these points (T)
         :type time: datetime.datetime object
-        :type depth: integer
-        :type units: string such as ('mem/s', 'knots', etc)
+
+        :param units: units the values will be returned in (or converted to)
+        :type units: string such as ('m/s', 'knots', etc)
+
+        :param extrapolate: if True, extrapolation will be supported
+
         :type extrapolate: boolean (True or False)
+
         :return: returns a Nx1 array of interpolated values
         :rtype: double
-        '''
+        """
         pts = _reorganize_spatial_data(points)
 
         if _hash is None:
