@@ -367,8 +367,6 @@ class SGrid(object):
         D[location][_hash].setflags(write=False)
 
     def _get_memoed(self, points, location, D, _copy=False, _hash=None):
-        print("in _get_memoed")
-        print(D)
         if _hash is None:
             _hash = self._hash_of_pts(points)
         if (D[location] is not None and _hash in D[location]):
@@ -458,23 +456,20 @@ class SGrid(object):
         This version utilizes the CellTree data structure.
 
         """
-        print ("in_locate_faces:")
         if not hasattr(self, '_ind_memo_dict'):
             self._ind_memo_dict = {'node': None,
-                                 'edge1': None,
-                                 'edge2': None,
-                                 'center': None}
+                                   'edge1': None,
+                                   'edge2': None,
+                                   'center': None}
         if not hasattr(self, '_cell_trees'):
             self._cell_trees = {'node': None,
                                 'edge1': None,
                                 'edge2': None,
                                 'center': None}
-        print("memo:", _memo)
         if _memo:
             if _hash is None:
                 _hash = self._hash_of_pts(points)
             result = self._get_memoed(points, grid, self._ind_memo_dict, _copy, _hash)
-            print("result of _get_memoed", result)
             if result is not None:
                 return result
 
@@ -489,7 +484,6 @@ class SGrid(object):
         if grid in self._masks and self._masks.get(grid, None):
             rev_arrs = self._masks[grid][1]
         indices = tree.locate(points)
-        print("indices after tree.locate", indices )
         if rev_arrs is not None:
             indices = rev_arrs[indices]
         lon, lat = self._get_grid_vars(grid)
@@ -736,7 +730,6 @@ class SGrid(object):
 
         """
         # eventually should remove next line one celltree can support it
-        print("entering interpolate_var_to_points")
 
         points = points.reshape(-1, 2)
 
@@ -749,8 +742,6 @@ class SGrid(object):
         if ind is None:
             # ind has to be writable
             ind = self.locate_faces(points, grid, _memo, _copy, _hash)
-            print("in interpolate_var_to_points")
-            print("indexes: ", ind)
             if (ind.mask).all():
                 return np.ma.masked_all((points.shape[0]))
 
@@ -784,9 +775,6 @@ class SGrid(object):
         Assuming default is psi grid, check variable dimensions to determine which grid
         it is on.
         """
-        print("****** in infer_location:")
-        print(variable)
-
         shape = None
         try:
             shape = np.array(variable.shape)
@@ -794,10 +782,7 @@ class SGrid(object):
             return None  # Variable has no shape attribute!
         if len(variable.shape) < 2:
             return None
-        print("node_lon: ", self.node_lon)
-        print("node_lon.shape: ", self.node_lon.shape)
         difference = (shape[-2:] - self.node_lon.shape).tolist()
-        print(difference)
         if (difference == [1, 1] or difference == [-1, -1]) and self.center_lon is not None:
             location = 'center'
         elif difference == [1, 0] and self.edge1_lon is not None:
@@ -808,7 +793,6 @@ class SGrid(object):
             location = 'node'
         else:
             location = None
-        print("location: ", location)
         return location
 
     def fits_data(self, data):

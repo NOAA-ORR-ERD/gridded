@@ -72,7 +72,7 @@ class Variable(object):
         :type data: array-like object such as netCDF4.Variable or numpy.ndarray
 
         :param grid: Grid that the data corresponds with
-        :type grid: GRid object (pysgrid or pyugrid or )
+        :type grid: Grid object (pysgrid or pyugrid or )
 
         :param data_file: Name of data source file
         :type data_file: string
@@ -370,7 +370,17 @@ class Variable(object):
             return None
 
     def center_values(self, time, units=None, extrapolate=False):
-        # NOT COMPLETE
+        """
+        interpolate data to the center of the cells
+
+        :param time: the time to interpolate at
+
+        **Warning:** NOT COMPLETE
+
+        NOTE: what if this data is already on the cell centers?
+        """
+        raise NotImplementedError("center_values is not finished")
+
         if not extrapolate:
             self.time.valid_time(time)
         if len(self.time) == 1:
@@ -465,8 +475,6 @@ class Variable(object):
         """
         pts = _reorganize_spatial_data(points)
 
-        print("in at:", pts)
-
         if _hash is None:
             _hash = self._get_hash(pts, time)
 
@@ -477,13 +485,11 @@ class Variable(object):
 
         order = self.dimension_ordering
         if order[0] == 'time':
-            print("interpolating in time")
             value = self._time_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
         elif order[0] == 'depth':
             value = self._depth_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
         else:
             value = self._xy_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
-        print("value:", value)
 
 
         if _auto_align == True:
@@ -513,7 +519,6 @@ class Variable(object):
         _hash = kwargs['_hash'] if '_hash' in kwargs else None
         units = kwargs['units'] if 'units' in kwargs else None
 
-        print(self.grid.interpolate_var_to_points)
         value = self.grid.interpolate_var_to_points(points[:, 0:2],
                                                     self.data,
                                                     _hash=self._get_hash(points[:, 0:2],
@@ -550,16 +555,10 @@ class Variable(object):
             ind = self.time.index_of(time)
             s1 = slices + (ind,)
             s0 = slices + (ind - 1,)
-            print(s1)
-            print(s0)
             v0 = val_func(points, time, extrapolate, slices=s0, **kwargs)
             v1 = val_func(points, time, extrapolate, slices=s1, **kwargs)
-            print("v0: ", v0)
-            print("v1: ", v1)
             alphas = self.time.interp_alpha(time, extrapolate)
-            print("in _time_interp - alphas", alphas)
             value = v0 + (v1 - v0) * alphas
-            print("in _time_interp:", value)
             return value
 
     def _depth_interp(self, points, time, extrapolate, slices=(), **kwargs):

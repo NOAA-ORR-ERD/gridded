@@ -8,12 +8,9 @@ from gridded.variable import Variable
 
 from gridded.utilities import get_dataset, get_dataset_attrs
 
-import pdb
-
 """
 The main gridded.Dataset code
 """
-
 
 class Dataset():
     """
@@ -60,7 +57,6 @@ class Dataset():
         If a filename is passed in, the attributes will be pulled from the file, and
         the input ones ignored.
         """
-        # pdb.set_trace()
 
         if ncfile is not None:
             if (grid is not None or
@@ -81,6 +77,11 @@ class Dataset():
             self.variables = variables
             self.attributes = {} if attributes is None else attributes
 
+    def __getitem__(self, key):
+        """
+        shortcut to getting a variable object
+        """
+        return self.variables[key]
 
     def _load_variables(self, ds):
         """

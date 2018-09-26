@@ -1,9 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
 
-import pdb
-
-from netCDF4 import Dataset
-
 from gridded.pysgrid.sgrid import SGrid
 from gridded.pyugrid.ugrid import UGrid
 import numpy as np
@@ -55,17 +51,16 @@ class GridBase(object):
         Grid_U or Grid_S, this function should provide all the kwargs needed to
         create a valid instance.
         '''
-        print("in _find_required_grid_attrs")
-        print(filename)
-        print(dataset)
-        print(grid_topology)
         gf_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
-        gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()] )
+        gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()])
         init_args = {}
         gt = {}
         init_args['filename'] = filename
         node_attrs = ['node_lon', 'node_lat']
-        node_coord_names = [['node_lon', 'node_lat'], ['lon', 'lat'], ['lon_psi', 'lat_psi'],['longitude','latitude']]
+        node_coord_names = [['node_lon', 'node_lat'],
+                            ['lon', 'lat'],
+                            ['lon_psi', 'lat_psi'],
+                            ['longitude', 'latitude']]
         composite_node_names = ['nodes', 'node']
         if grid_topology is None:
             for n1, n2 in node_coord_names:
@@ -473,8 +468,11 @@ class Grid(object):
                 isinstance(grid_type, string_types) or
                 not issubclass(grid_type, GridBase)):
             cls = Grid._get_grid_type(gf, grid_type, grid_topology, _default_types)
-        pdb.set_trace()
-        compliant = Grid._find_topology_var(None, gf)
+        if not grid_topology:
+            compliant = Grid._find_topology_var(None, gf)
+        else:
+            compliant = None
+
         if compliant is not None:
             c = Grid._load_grid(filename, cls, dataset)
             c.grid_topology = compliant.__dict__
