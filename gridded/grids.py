@@ -99,9 +99,9 @@ class GridBase(object):
             return True
         for n in ('nodes', 'faces'):
             if (hasattr(self, n) and
-                  hasattr(o, n) and
-                  getattr(self, n) is not None and
-                  getattr(o, n) is not None):
+                hasattr(o, n) and
+                getattr(self, n) is not None and
+                getattr(o, n) is not None):
                 s = getattr(self, n)
                 s2 = getattr(o, n)
                 if s.shape != s2.shape or np.any(s != s2):
@@ -468,6 +468,8 @@ class Grid(object):
                 isinstance(grid_type, string_types) or
                 not issubclass(grid_type, GridBase)):
             cls = Grid._get_grid_type(gf, grid_type, grid_topology, _default_types)
+
+        # if grid_topology is passed in, don't look for the variable
         if not grid_topology:
             compliant = Grid._find_topology_var(None, gf)
         else:

@@ -12,6 +12,7 @@ from gridded.utilities import get_dataset, get_dataset_attrs
 The main gridded.Dataset code
 """
 
+
 class Dataset():
     """
     An object that represent an entire complete dataset -- a collection of Variables
@@ -43,7 +44,7 @@ class Dataset():
                           presents the same API.
 
         :param grid_topology: mapping of grid topology components to netcdf variable names.
-                              used to load non-confirming files. **NotImplemented**
+                              used to load non-confirming files.
         :type grid_topology: mapping with keys of topology components and values are
                              variable names.
 
