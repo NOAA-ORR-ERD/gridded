@@ -47,12 +47,19 @@ def gen_mask(mask_var, add_boundary=False):
     """
     ret_mask = np.ones(mask_var.shape, dtype=bool)
     input_mask = mask_var[:]
-    if isinstance(mask_var, nc4.Variable) and hasattr(mask_var, 'flag_values') and hasattr(mask_var, 'flag_meanings'):
+    type1 = (isinstance(mask_var, nc4.Variable) and hasattr(mask_var, 'flag_values') and hasattr(mask_var, 'flag_meanings'))
+    type2 = (isinstance(mask_var, nc4.Variable) and hasattr(mask_var, 'option_0'))
+    if type1:
         fm = mask_var.flag_meanings
         if isinstance(fm, six.string_types):
             fm = fm.split(' ')
         meaning_mask = [False if ('water' in s or 'lake' in s) else True for s in fm]
         tfmap = dict(zip(mask_var.flag_values, meaning_mask))
+        for k, v in tfmap.items():
+            ret_mask[input_mask == k] = v
+    elif type2: #special case where option_0 == land, option_1 == water, etc #TODO generalize this properly
+        meaning_mask = [True, False]
+        tfmap = dict(zip([0, 1], meaning_mask))
         for k, v in tfmap.items():
             ret_mask[input_mask == k] = v
     else:
