@@ -620,6 +620,7 @@ class SGrid(object):
         if lon is None or lat is None:
             raise ValueError("{0}_lon and {0}_lat must be defined in order to create and "
                              "use CellTree for this grid".format(grid))
+
         if geo_mask is not None and use_mask:
             # Geometry has an external mask that needs to be applied.
             lon = lon[:].copy()
@@ -654,11 +655,18 @@ class SGrid(object):
             lin_faces = np.array([np.array([[x, x + 1, x + x_size + 1, x + x_size]
                                             for x in range(0, x_size - 1, 1)]) + y * x_size
                                             for y in range    (0, y_size - 1)])
-            lin_faces = np.ascontiguousarray(lin_faces.reshape(-1, 4).astype(np.int32))
+        lin_faces = np.ascontiguousarray(lin_faces.reshape(-1, 4).astype(np.int32))
 
-        lin_nodes = np.ascontiguousarray(np.column_stack((np.ma.compressed(lon[:]),
-                                                          np.ma.compressed(lat[:]))).astype(np.float64))
+        if isinstance(lon, np.ma.MaskedArray) and lon.mask is not False and use_mask:
+            lin_nodes = np.ascontiguousarray(np.column_stack((np.ma.compressed(lon[:]),
+                                                              np.ma.compressed(lat[:]))).reshape(-1, 2).astype(np.float64))
+        else:
+            lin_nodes = np.ascontiguousarray(np.stack((lon, lat), axis=-1).reshape(-1, 2).astype(np.float64))
+
         self._cell_trees[grid] = (CellTree(lin_nodes, lin_faces), lin_nodes, lin_faces)
+        print(lin_nodes)
+        print(lin_faces)
+
 
     def nearest_var_to_points(self,
                               points,
