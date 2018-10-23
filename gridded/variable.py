@@ -72,7 +72,7 @@ class Variable(object):
         :type data: array-like object such as netCDF4.Variable or numpy.ndarray
 
         :param grid: Grid that the data corresponds with
-        :type grid: GRid object (pysgrid or pyugrid or )
+        :type grid: Grid object (pysgrid or pyugrid or )
 
         :param data_file: Name of data source file
         :type data_file: string
@@ -105,6 +105,8 @@ class Variable(object):
         self.data = data
         self.time = time if time is not None else self._default_component_types['time'].constant_time()
         self.data_file = data_file
+        # the "main" filename for a Varibale should be the grid data.
+        self.filename = data_file
         self.grid_file = grid_file
         self.varname = varname
         self._result_memo = collections.OrderedDict()
@@ -270,10 +272,11 @@ class Variable(object):
             std_name = None
         msg = """
               Variable:
-                filename: {0.data_file}
+                filename: {0.filename}
                 varname: {0.varname}
                 standard name: {1}
                 units: {0.units}
+                grid: {0.grid}
                 data shape: {0.data.shape}
               """.format(self, std_name)
         return dedent(msg)
@@ -367,7 +370,17 @@ class Variable(object):
             return None
 
     def center_values(self, time, units=None, extrapolate=False):
-        # NOT COMPLETE
+        """
+        interpolate data to the center of the cells
+
+        :param time: the time to interpolate at
+
+        **Warning:** NOT COMPLETE
+
+        NOTE: what if this data is already on the cell centers?
+        """
+        raise NotImplementedError("center_values is not finished")
+
         if not extrapolate:
             self.time.valid_time(time)
         if len(self.time) == 1:
@@ -478,6 +491,7 @@ class Variable(object):
         else:
             value = self._xy_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
 
+
         if _auto_align == True:
             value = _align_results_to_spatial_data(value.copy(), points)
 
@@ -504,7 +518,12 @@ class Variable(object):
         '''
         _hash = kwargs['_hash'] if '_hash' in kwargs else None
         units = kwargs['units'] if 'units' in kwargs else None
-        value = self.grid.interpolate_var_to_points(points[:, 0:2], self.data, _hash=self._get_hash(points[:,0:2], time), slices=slices, _memo=True)
+
+        value = self.grid.interpolate_var_to_points(points[:, 0:2],
+                                                    self.data,
+                                                    _hash=self._get_hash(points[:, 0:2],
+                                                                         time),
+                                                    slices=slices, _memo=True)
         return value
 
     def _time_interp(self, points, time, extrapolate, slices=(), **kwargs):

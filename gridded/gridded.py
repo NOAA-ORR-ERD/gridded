@@ -44,7 +44,7 @@ class Dataset():
                           presents the same API.
 
         :param grid_topology: mapping of grid topology components to netcdf variable names.
-                              used to load non-confirming files. **NotImplemented**
+                              used to load non-confirming files.
         :type grid_topology: mapping with keys of topology components and values are
                              variable names.
 
@@ -58,6 +58,7 @@ class Dataset():
         If a filename is passed in, the attributes will be pulled from the file, and
         the input ones ignored.
         """
+
         if ncfile is not None:
             if (grid is not None or
                   variables is not None or
@@ -77,6 +78,11 @@ class Dataset():
             self.variables = variables
             self.attributes = {} if attributes is None else attributes
 
+    def __getitem__(self, key):
+        """
+        shortcut to getting a variable object
+        """
+        return self.variables[key]
 
     def _load_variables(self, ds):
         """

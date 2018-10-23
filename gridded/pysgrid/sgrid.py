@@ -456,12 +456,11 @@ class SGrid(object):
         This version utilizes the CellTree data structure.
 
         """
-
         if not hasattr(self, '_ind_memo_dict'):
             self._ind_memo_dict = {'node': None,
-                                 'edge1': None,
-                                 'edge2': None,
-                                 'center': None}
+                                   'edge1': None,
+                                   'edge2': None,
+                                   'center': None}
         if not hasattr(self, '_cell_trees'):
             self._cell_trees = {'node': None,
                                 'edge1': None,
@@ -731,6 +730,7 @@ class SGrid(object):
 
         """
         # eventually should remove next line one celltree can support it
+
         points = points.reshape(-1, 2)
 
         ind = indices
@@ -783,16 +783,17 @@ class SGrid(object):
         if len(variable.shape) < 2:
             return None
         difference = (shape[-2:] - self.node_lon.shape).tolist()
-        if (difference == [1, 1] or  difference == [-1, -1]) and self.center_lon is not None:
-            return 'center'
+        if (difference == [1, 1] or difference == [-1, -1]) and self.center_lon is not None:
+            location = 'center'
         elif difference == [1, 0] and self.edge1_lon is not None:
-            return 'edge1'
+            location = 'edge1'
         elif difference == [0, 1] and self.edge2_lon is not None:
-            return 'edge2'
+            location = 'edge2'
         elif difference == [0, 0] and self.node_lon is not None:
-            return 'node'
+            location = 'node'
         else:
-            return None
+            location = None
+        return location
 
     def fits_data(self, data):
         return self.infer_location(data) is not None

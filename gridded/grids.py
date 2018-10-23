@@ -1,7 +1,5 @@
 from __future__ import (absolute_import, division, print_function)
 
-from netCDF4 import Dataset
-
 from gridded.pysgrid.sgrid import SGrid
 from gridded.pyugrid.ugrid import UGrid
 import numpy as np
@@ -54,12 +52,15 @@ class GridBase(object):
         create a valid instance.
         '''
         gf_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
-        gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()] )
+        gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()])
         init_args = {}
         gt = {}
         init_args['filename'] = filename
         node_attrs = ['node_lon', 'node_lat']
-        node_coord_names = [['node_lon', 'node_lat'], ['lon', 'lat'], ['lon_psi', 'lat_psi'],['longitude','latitude']]
+        node_coord_names = [['node_lon', 'node_lat'],
+                            ['lon', 'lat'],
+                            ['lon_psi', 'lat_psi'],
+                            ['longitude', 'latitude']]
         composite_node_names = ['nodes', 'node']
         if grid_topology is None:
             for n1, n2 in node_coord_names:
@@ -98,9 +99,9 @@ class GridBase(object):
             return True
         for n in ('nodes', 'faces'):
             if (hasattr(self, n) and
-                  hasattr(o, n) and
-                  getattr(self, n) is not None and
-                  getattr(o, n) is not None):
+                hasattr(o, n) and
+                getattr(self, n) is not None and
+                getattr(o, n) is not None):
                 s = getattr(self, n)
                 s2 = getattr(o, n)
                 if s.shape != s2.shape or np.any(s != s2):
@@ -412,7 +413,8 @@ class Grid(object):
         :param filename: Name of the file this grid was constructed from, if available.
         '''
         raise NotImplementedError("Grid is not meant to be instantiated. "
-                                  "Please use the from_netCDF function")
+                                  "Please use the from_netCDF function. "
+                                  "or initialize the type of grid you want directly")
 
     @staticmethod
     def _load_grid(filename, grid_type, dataset=None):
@@ -442,13 +444,19 @@ class Grid(object):
                     **kwargs):
         '''
         :param filename: File containing a grid
+
         :param dataset: Takes precedence over filename, if provided.
+
         :param grid_type: Must be provided if Dataset does not have a 'grid_type' attribute,
                           or valid topology variable
+
         :param grid_topology: A dictionary mapping of grid attribute to variable name.
                               Takes precedence over discovered attributes
-        :param kwargs: All kwargs to SGrid or UGrid are valid, and take precedence over all.
-        :returns: Instance of Grid_U, Grid_S, or PyGrid_R
+
+        :param kwargs: All kwargs to SGrid, UGrid, or RGrid are valid, and take precedence
+                       over all.
+
+        :returns: Instance of Grid_U, Grid_S, or Grid_R
         '''
         gf = dataset if filename is None else get_dataset(filename, dataset)
         if gf is None:
@@ -459,7 +467,13 @@ class Grid(object):
                 isinstance(grid_type, string_types) or
                 not issubclass(grid_type, GridBase)):
             cls = Grid._get_grid_type(gf, grid_type, grid_topology, _default_types)
-        compliant = Grid._find_topology_var(None, gf)
+
+        # if grid_topology is passed in, don't look for the variable
+        if not grid_topology:
+            compliant = Grid._find_topology_var(None, gf)
+        else:
+            compliant = None
+
         if compliant is not None:
             c = Grid._load_grid(filename, cls, dataset)
             c.grid_topology = compliant.__dict__
@@ -476,11 +490,16 @@ class Grid(object):
                        grid_type=None,
                        grid_topology=None,
                        _default_types=(('ugrid', Grid_U),
-                                    ('sgrid', Grid_S),
-                                    ('rgrid', Grid_R))):
+                                       ('sgrid', Grid_S),
+                                       ('rgrid', Grid_R))):
         # fixme: this logic should probably be defered to
         #        the grid type code -- that is, ask each grid
         #        type if this dataset is its type.
+        #
+        #        It also should be refactored to start with the standards
+        #        and maybe havev a pedantic mode where it won't load non-standard
+        #        files
+
         if _default_types is None:
             _default_types = dict()
         else:
@@ -543,7 +562,12 @@ class Grid(object):
                             r_init_args, r_gf_vars = Grid_R._find_required_grid_attrs(None, dataset)
                             return Grid_R
                         except ValueError:
-                            s_init_args, s_gf_vars = Grid_S._find_required_grid_attrs(None, dataset)
+                            try:
+                                s_init_args, s_gf_vars = Grid_S._find_required_grid_attrs(None, dataset)
+                            except ValueError:
+                                raise ValueError("Can not figure out what type of grid this is. "
+                                                 "Try specifying the grid_topology attributes "
+                                                 "or specifying the grid type")
                             return Grid_S
 
     @staticmethod
