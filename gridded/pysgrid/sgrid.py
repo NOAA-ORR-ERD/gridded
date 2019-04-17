@@ -180,6 +180,11 @@ class SGrid(object):
         return all_padding
 
     def save_as_netcdf(self, filepath):
+        """
+        save the grid as a netcdf file
+
+        :param filepath: path to the file to be created and saved to
+        """
         with Dataset(filepath, 'w') as nclocal:
             grid_vars = self._save_common_components(nclocal)
             # Add attributes to the grid_topology variable.
