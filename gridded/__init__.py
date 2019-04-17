@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
+
+
 from __future__ import (absolute_import, division, print_function, unicode_literals)
 
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 from gridded.gridded import Dataset
 from gridded.grids import Grid

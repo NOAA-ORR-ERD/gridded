@@ -669,8 +669,6 @@ class SGrid(object):
             lin_nodes = np.ascontiguousarray(np.stack((lon, lat), axis=-1).reshape(-1, 2).astype(np.float64))
 
         self._cell_trees[grid] = (CellTree(lin_nodes, lin_faces), lin_nodes, lin_faces)
-        print(lin_nodes)
-        print(lin_faces)
 
 
     def nearest_var_to_points(self,
