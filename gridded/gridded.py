@@ -3,30 +3,28 @@
 # py2/3 compatibility
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import copy
-
-import numpy as np
-import netCDF4 as nc4
 from gridded.grids import Grid
 from gridded.variable import Variable
 
-from gridded.utilities import asarraylike, get_dataset
-
+from gridded.utilities import get_dataset, get_dataset_attrs
 
 """
 The main gridded.Dataset code
 """
 
-import netCDF4
-
 
 class Dataset():
     """
-    An object that represent an entire complete dataset -- a collection of Variable,
-    and the grid that they are stored on.
+    An object that represent an entire complete dataset -- a collection of Variables
+    and the Grid that they are stored on.
     """
 
-    def __init__(self, ncfile=None, grid=None, variables=None, grid_topology=None,):
+    def __init__(self,
+                 ncfile=None,
+                 grid=None,
+                 variables=None,
+                 grid_topology=None,
+                 attributes=None):
         """
         Construct a gridded.Dataset object. Can be constructed from a data file,
         or also raw grid and variable objects.
@@ -41,18 +39,30 @@ class Dataset():
 
         :param grid: a dataset.Grid object or anything that presents the same API.
 
-        :param variables: a dict of dataset.Variable objects -- or anything that
+        :param variables: a dict
+        of dataset.Variable objects -- or anything that
                           presents the same API.
 
         :param grid_topology: mapping of grid topology components to netcdf variable names.
-                              used to load non-confirming files. **NotImplemented**
+                              used to load non-confirming files.
         :type grid_topology: mapping with keys of topology components and values are
                              variable names.
 
+        :param attributes: The global attributes of the dataset -- usually the global
+                           attributes of a netcdf file.
+        :type attributes: Mapping of attribute name to attributes themselves
+                          (usually strings)
+
         Either a filename or grid and variable objects should be provided -- not both.
+
+        If a filename is passed in, the attributes will be pulled from the file, and
+        the input ones ignored.
         """
+
         if ncfile is not None:
-            if (grid is not None or variables is not None or grid_topology is not None):
+            if (grid is not None or
+                  variables is not None or
+                  attributes is not None):
                 raise ValueError("You can create a Dataset from a file, or from raw data"
                                  "but not both.")
             self.nc_dataset = get_dataset(ncfile)
@@ -61,10 +71,18 @@ class Dataset():
                                          dataset=self.nc_dataset,
                                          grid_topology=grid_topology)
             self.variables = self._load_variables(self.nc_dataset)
+            self.attributes = get_dataset_attrs(self.nc_dataset)
         else:  # no file passed in -- create from grid and variables
             self.filename = None
             self.grid = grid
             self.variables = variables
+            self.attributes = {} if attributes is None else attributes
+
+    def __getitem__(self, key):
+        """
+        shortcut to getting a variable object
+        """
+        return self.variables[key]
 
     def _load_variables(self, ds):
         """
@@ -77,7 +95,7 @@ class Dataset():
             if is_not_grid_attr and self.grid.infer_location(ds[k]) is not None:
                 try:
                     ln = ds[k].long_name
-                except:
+                except:  # fixme: what Exception are we expecting???
                     ln = ds[k].name
                 variables[k] = Variable.from_netCDF(dataset=ds,
                                                     name=ln,
@@ -135,10 +153,23 @@ class Dataset():
                 pass
         return variables
 
-
-
-
-
-
-
-
+    @property
+    def info(self):
+        """
+        Information about the Dataset object
+        """
+        vars = [var.info for var in self.variables.values()]
+        vars = "".join([" " * 8 + v for v in vars])
+        vars = "\n".join([" " * 8 + line for line in vars.split("\n")])
+        attrs = "\n".join(["        {}: {}".format(k, v) for k, v in self.attributes.items()])
+        grid = "\n".join([" " * 8 + line for line in self.grid.info.split("\n")])
+        msg = ("gridded.Dataset:\n"
+               "    filename: {0.filename}\n"
+               "    grid:\n{3}\n"
+               "    variables: {1}\n"
+               "    attributes:\n{2}".format(self,
+                                             vars,
+                                             attrs,
+                                             grid
+                                             ))
+        return msg

@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 
 
 from gridded import Variable, Grid
+from gridded.grids import Grid_S
 
 def gen_vortex_3D(filename=None):
     x, y = np.mgrid[-30:30:61j, -30:30:61j]
@@ -15,10 +16,10 @@ def gen_vortex_3D(filename=None):
     x = np.ascontiguousarray(x.T)
     x_size = 61
     y_size = 61
-    g = Grid(node_lon=x,
+    g = Grid_S(node_lon=x,
                node_lat=y)
     g.build_celltree()
-    lin_nodes = g._trees['node'][1]
+    lin_nodes = g._cell_trees['node'][1]
     lin_faces = np.array([np.array([([lx, lx + x_size + 1, lx + 1], [lx, lx + x_size, lx + x_size + 1]) for lx in range(0, x_size - 1, 1)]) + ly * x_size for ly in range(0, y_size - 1)])
     lin_faces = lin_faces.reshape(-1, 3)
     # y += np.sin(x) / 1
@@ -150,6 +151,9 @@ def gen_sinusoid(filename=None):
     vz = np.zeros_like(x)
 #     ax.quiver(x, y, vx, vy, color='darkblue', pivot='tail', angles='xy', scale=1.5, scale_units='xy', width=0.0025)
 #     ax.plot(x[2], y[2])
+    mask_rho = np.zeros_like(x, dtype=bool)
+    mask_rho[0,:] = True
+    mask_rho[-1,:] = True
     rho = {'r_grid': (x, y, Z),
            'r_vel': (vx, vy, vz)}
 
@@ -159,6 +163,9 @@ def gen_sinusoid(filename=None):
     vxc = np.ones_like(xc)
     vyc = np.cos(xc / 2) / 2
     vzc = np.zeros_like(xc)
+    mask_psi = np.zeros_like(xc, dtype=bool)
+    mask_psi[0,:] = True
+    mask_psi[-1,:] = True
     psi = {'p_grid': (xc, yc, zc),
            'p_vel': (vxc, vyc, vzc)}
 
@@ -168,6 +175,9 @@ def gen_sinusoid(filename=None):
     vxu = np.ones_like(xu) * 2
     vyu = np.zeros_like(xu)
     vzu = np.zeros_like(xu)
+    mask_u = np.zeros_like(xu, dtype=bool)
+    mask_u[0,:] = True
+    mask_u[-1,:] = True
     u = {'u_grid': (xu, yu, zu),
          'u_vel': (vzu, vxu, vzu)}
 
@@ -177,6 +187,9 @@ def gen_sinusoid(filename=None):
     vxv = np.zeros_like(xv)
     vyv = np.cos(xv / 2) / 2
     vzv = np.zeros_like(xv)
+    mask_v = np.zeros_like(xv, dtype=bool)
+    mask_v[0,:] = True
+    mask_v[-1,:] = True
     v = {'v_grid': (xv, yv, zv),
          'v_vel': (vyv, vzv, vzv)}
 
@@ -210,6 +223,13 @@ def gen_sinusoid(filename=None):
             ds.createVariable(k, 'f8', dimensions=v[0:2])
             ds[k][:] = v[2]
             ds[k].units = 'm/s'
+
+        for k, v in {'mask_rho': ('xi_rho', 'eta_rho', mask_rho),
+                     'mask_psi': ('xi_psi', 'eta_psi', mask_psi),
+                     'mask_u':('xi_rho', 'eta_psi', mask_u),
+                     'mask_v':('xi_psi', 'eta_rho', mask_v)}.items():
+            ds.createVariable(k, 'b', dimensions=v[0:2])
+            ds[k][:] = v[2]
         ds.grid_type = 'sgrid'
         ds.createVariable('angle', 'f8', dimensions=('xi_rho', 'eta_rho'))
         ds['angle'][:] = angle

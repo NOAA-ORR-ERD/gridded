@@ -19,7 +19,7 @@ before_install:
     - source activate TEST
     - which python
     - conda install -y --file conda_requirements_test.txt
-    - pip install pytest # for some reason, the conda pytst is broken ?!?
+    - pip install pytest # for some reason, the conda pytest on linux is broken ?!?
 
 install:
     - pip install .

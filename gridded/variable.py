@@ -1,18 +1,23 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import netCDF4 as nc4
-import numpy as np
+from textwrap import dedent
 import collections
-from collections import OrderedDict
+import hashlib
+from functools import wraps
+import os
+
+import numpy as np
+import netCDF4 as nc4
+
 from gridded.utilities import get_dataset, _reorganize_spatial_data,\
     _align_results_to_spatial_data
 from gridded.grids import Grid, Grid_U, Grid_S, Grid_R
 from gridded.depth import Depth
 from gridded.time import Time
 
-import hashlib
-from functools import wraps
-import pdb
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class Variable(object):
@@ -67,7 +72,7 @@ class Variable(object):
         :type data: array-like object such as netCDF4.Variable or numpy.ndarray
 
         :param grid: Grid that the data corresponds with
-        :type grid: GRid object (pysgrid or pyugrid or )
+        :type grid: Grid object (pysgrid or pyugrid or )
 
         :param data_file: Name of data source file
         :type data_file: string
@@ -100,6 +105,8 @@ class Variable(object):
         self.data = data
         self.time = time if time is not None else self._default_component_types['time'].constant_time()
         self.data_file = data_file
+        # the "main" filename for a Varibale should be the grid data.
+        self.filename = data_file
         self.grid_file = grid_file
         self.varname = varname
         self._result_memo = collections.OrderedDict()
@@ -184,16 +191,19 @@ class Variable(object):
             else:
                 dg = dataset
             ds = dataset
+        if data_file is None:
+            data_file = os.path.split(ds.filepath())[-1]
 
         if grid is None:
             grid = Grid.from_netCDF(grid_file,
-                                      dataset=dg,
-                                      grid_topology=grid_topology)
+                                    dataset=dg,
+                                    grid_topology=grid_topology)
         if varname is None:
             varname = cls._gen_varname(data_file,
                                        dataset=ds)
             if varname is None:
-                raise NameError('Default current names are not in the data file, must supply variable name')
+                raise NameError('Default current names are not in the data file, '
+                                'must supply variable name')
         data = ds[varname]
         if name is None:
             name = cls.__name__ + str(cls._def_count)
@@ -208,7 +218,10 @@ class Variable(object):
                                     dataset=ds,
                                     datavar=data)
             if time_origin is not None:
-                time = Time(data=time.data, filename=time.filename, varname=time.varname, origin=time_origin)
+                time = Time(data=time.data,
+                            filename=time.filename,
+                            varname=time.varname,
+                            origin=time_origin)
         if depth is None:
             if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
                     isinstance(grid, Grid_U) and len(data.shape) == 3):
@@ -246,6 +259,27 @@ class Variable(object):
                 'units="{0.units}", '
                 'data="{0.data}", '
                 ')').format(self)
+
+    @property
+    def info(self):
+        """
+        Information about the variable object
+        This could be filled out more
+        """
+        try:
+            std_name = self.attributes['standard_name']
+        except KeyError:
+            std_name = None
+        msg = """
+              Variable:
+                filename: {0.filename}
+                varname: {0.varname}
+                standard name: {1}
+                units: {0.units}
+                grid: {0.grid}
+                data shape: {0.data.shape}
+              """.format(self, std_name)
+        return dedent(msg)
 
     @property
     def time(self):
@@ -336,7 +370,17 @@ class Variable(object):
             return None
 
     def center_values(self, time, units=None, extrapolate=False):
-        # NOT COMPLETE
+        """
+        interpolate data to the center of the cells
+
+        :param time: the time to interpolate at
+
+        **Warning:** NOT COMPLETE
+
+        NOTE: what if this data is already on the cell centers?
+        """
+        raise NotImplementedError("center_values is not finished")
+
         if not extrapolate:
             self.time.valid_time(time)
         if len(self.time) == 1:
@@ -354,16 +398,19 @@ class Variable(object):
     @property
     def dimension_ordering(self):
         '''
-        Returns a list that describes the dimensions of the property's data. If a dimension_ordering is assigned,
-        it will continue to use that. If no dimension_ordering is set, then a default ordering will be generated
+        Returns a list that describes the dimensions of the property's data.
+        If a dimension_ordering is assigned, it will continue to use that.
+        If no dimension_ordering is set, then a default ordering will be generated
         based on the object properties and data shape.
 
-        For example, if the data has 4 dimensions and is represented by a Grid_S (structured grid), and the
-        Variable has a depth and time assigned, then the assumed ordering is ['time','depth','lon','lat']
+        For example, if the data has 4 dimensions and is represented by a
+        Grid_S (structured grid), and the Variable has a depth and time assigned,
+        then the assumed ordering is ['time','depth','lon','lat']
 
-        If the data has 3 dimensions, self.grid is a Grid_S, and self.time is None, then the ordering is
-        ['depth','lon','lat']
-        If the data has 3 dimensions, self.grid is a Grid_U, the ordering is ['time','depth','ele']
+        If the data has 3 dimensions, self.grid is a Grid_S, and self.time is None,
+        then the ordering is ['depth','lon','lat']
+        If the data has 3 dimensions, self.grid is a Grid_U, the ordering is
+        ['time','depth','ele']
         '''
         if not hasattr(self, '_order'):
             self._order = None
@@ -384,7 +431,8 @@ class Variable(object):
                 elif self.depth is not None:
                     del order[0]
                 else:
-                    raise ValueError('Generated ordering too short to fit data. Time or depth must not be None')
+                    raise ValueError('Generated ordering too short to fit data. '
+                                     'Time or depth must not be None')
             elif diff == 2:
                 order = order[2:]
             else:
@@ -396,22 +444,35 @@ class Variable(object):
         self._order = order
 
 #     @profile
-    def at(self, points, time, units=None, extrapolate=False, _hash=None, _mem=True, _auto_align=True, **kwargs):
-        '''
+    def at(self,
+           points,
+           time,
+           units=None,
+           extrapolate=False,
+           _hash=None,
+           _mem=True,
+           _auto_align=True,
+           unmask=False,
+           **kwargs):
+        """
         Find the value of the property at positions P at time T
 
         :param points: Coordinates to be queried (P)
-        :param time: The time at which to query these points (T)
-        :param units: units the values will be returned in (or converted to)
-        :param extrapolate: if True, extrapolation will be supported
         :type points: Nx2 array of double
+
+        :param time: The time at which to query these points (T)
         :type time: datetime.datetime object
-        :type depth: integer
-        :type units: string such as ('mem/s', 'knots', etc)
+
+        :param units: units the values will be returned in (or converted to)
+        :type units: string such as ('m/s', 'knots', etc)
+
+        :param extrapolate: if True, extrapolation will be supported
+
         :type extrapolate: boolean (True or False)
+
         :return: returns a Nx1 array of interpolated values
         :rtype: double
-        '''
+        """
         pts = _reorganize_spatial_data(points)
 
         if _hash is None:
@@ -430,8 +491,14 @@ class Variable(object):
         else:
             value = self._xy_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
 
+
         if _auto_align == True:
             value = _align_results_to_spatial_data(value.copy(), points)
+
+        if isinstance(value, np.ma.MaskedArray):
+            np.ma.set_fill_value(value, self.fill_value)
+        if unmask:
+            value = np.ma.filled(value)
 
         if _mem:
             self._memoize_result(pts, time, value, self._result_memo, _hash=_hash)
@@ -451,7 +518,12 @@ class Variable(object):
         '''
         _hash = kwargs['_hash'] if '_hash' in kwargs else None
         units = kwargs['units'] if 'units' in kwargs else None
-        value = self.grid.interpolate_var_to_points(points[:, 0:2], self.data, _hash=self._get_hash(points[:,0:2], time), slices=slices, _memo=True)
+
+        value = self.grid.interpolate_var_to_points(points[:, 0:2],
+                                                    self.data,
+                                                    _hash=self._get_hash(points[:, 0:2],
+                                                                         time),
+                                                    slices=slices, _memo=True)
         return value
 
     def _time_interp(self, points, time, extrapolate, slices=(), **kwargs):
@@ -485,7 +557,7 @@ class Variable(object):
             s0 = slices + (ind - 1,)
             v0 = val_func(points, time, extrapolate, slices=s0, **kwargs)
             v1 = val_func(points, time, extrapolate, slices=s1, **kwargs)
-            alphas = self.time.interp_alpha(time)
+            alphas = self.time.interp_alpha(time, extrapolate)
             value = v0 + (v1 - v0) * alphas
             return value
 
@@ -508,7 +580,7 @@ class Variable(object):
             val_func = self._xy_interp
         else:
             val_func = self._time_interp
-        indices, alphas = self.depth.interpolation_alphas(points, time, self.data.shape[1:], kwargs.get('_hash', None))
+        indices, alphas = self.depth.interpolation_alphas(points, time, self.data.shape[1:], _hash=kwargs.get('_hash', None), extrapolate=extrapolate)
         if indices is None and alphas is None:
             # all particles are on surface
             return val_func(points, time, extrapolate, slices=slices + (self.depth.surface_index,), **kwargs)
@@ -524,12 +596,8 @@ class Variable(object):
                 if len(pos_idxs) > 0:
                     values.put(pos_idxs, sub_vals.take(pos_idxs))
                 v0 = v1
-            if extrapolate:
-                underground = (indices == self.depth.bottom_index)
-                values[underground] = val_func(points, time, extrapolate, slices=slices + (self.depth.bottom_index,), **kwargs)
-            else:
-                underground = (indices == self.depth.bottom_index)
-                values[underground] = self.fill_value
+            underground = (indices == self.depth.bottom_index)
+            values[underground] = self.fill_value
             return values
 
     def transect(self, times, depths, points):
@@ -633,7 +701,7 @@ class VectorVariable(object):
             self.grid_file = self.variables[0].grid_file if grid_file is None else grid_file
             self.data_file = self.variables[0].data_file if data_file is None else data_file
 
-        self._result_memo = OrderedDict()
+        self._result_memo = collections.OrderedDict()
         for i, comp in enumerate(self.__class__.comp_order):
             setattr(self, comp, self.variables[i])
 

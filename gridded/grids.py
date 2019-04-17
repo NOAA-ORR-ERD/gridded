@@ -1,12 +1,10 @@
 from __future__ import (absolute_import, division, print_function)
 
-from netCDF4 import Dataset
-
 from gridded.pysgrid.sgrid import SGrid
 from gridded.pyugrid.ugrid import UGrid
 import numpy as np
 
-from gridded.utilities import get_dataset
+from gridded.utilities import get_dataset, gen_mask
 from six import string_types
 
 from scipy.interpolate import RegularGridInterpolator
@@ -54,12 +52,15 @@ class GridBase(object):
         create a valid instance.
         '''
         gf_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
-        gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()] )
+        gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()])
         init_args = {}
         gt = {}
         init_args['filename'] = filename
         node_attrs = ['node_lon', 'node_lat']
-        node_coord_names = [['node_lon', 'node_lat'], ['lon', 'lat'], ['lon_psi', 'lat_psi'],['longitude','latitude']]
+        node_coord_names = [['node_lon', 'node_lat'],
+                            ['lon', 'lat'],
+                            ['lon_psi', 'lat_psi'],
+                            ['longitude', 'latitude']]
         composite_node_names = ['nodes', 'node']
         if grid_topology is None:
             for n1, n2 in node_coord_names:
@@ -98,9 +99,9 @@ class GridBase(object):
             return True
         for n in ('nodes', 'faces'):
             if (hasattr(self, n) and
-                  hasattr(o, n) and
-                  getattr(self, n) is not None and
-                  getattr(o, n) is not None):
+                hasattr(o, n) and
+                getattr(self, n) is not None and
+                getattr(o, n) is not None):
                 s = getattr(self, n)
                 s2 = getattr(o, n)
                 if s.shape != s2.shape or np.any(s != s2):
@@ -187,21 +188,51 @@ class Grid_S(GridBase, SGrid):
         center_attrs = ['center_lon', 'center_lat']
         edge1_attrs = ['edge1_lon', 'edge1_lat']
         edge2_attrs = ['edge2_lon', 'edge2_lat']
+        node_mask = 'node_mask'
+        center_mask = 'center_mask'
+        edge1_mask = 'edge1_mask'
+        edge2_mask = 'edge2_mask'
 
         center_coord_names = [['center_lon', 'center_lat'], ['lon_rho', 'lat_rho'], ['lonc', 'latc']]
         edge1_coord_names = [['edge1_lon', 'edge1_lat'], ['lon_u', 'lat_u']]
         edge2_coord_names = [['edge2_lon', 'edge2_lat'], ['lon_v', 'lat_v']]
+        node_mask_names = ['mask_psi']
+        center_mask_names = ['mask_rho']
+        edge1_mask_names = ['mask_u']
+        edge2_mask_names = ['mask_v']
 
         if grid_topology is None:
-            for attr, names in (zip((center_attrs, edge1_attrs, edge2_attrs),
-                                    (center_coord_names, edge1_coord_names, edge2_coord_names))):
+            for attr, names, maskattr, maskname in (zip((center_attrs, edge1_attrs, edge2_attrs),
+                                    (center_coord_names, edge1_coord_names, edge2_coord_names),
+                                    (center_mask, edge1_mask, edge2_mask),
+                                    (center_mask_names, edge1_mask_names, edge2_mask_names))):
                 for n1, n2 in names:
                     if n1 in gf_vars and n2 in gf_vars:
-                        init_args[attr[0]] = gf_vars[n1][:]
-                        init_args[attr[1]] = gf_vars[n2][:]
+                        mask = False
+                        for n in maskname:
+                            if n in gf_vars:
+                                mask = gen_mask(gf_vars[n])
+                        a1 = gf_vars[n1][:]
+                        a2 = gf_vars[n2][:]
+                        init_args[attr[0]] = a1
+                        init_args[attr[1]] = a2
+                        if maskname[0] in gf_vars:
+                            init_args[maskattr] = gf_vars[maskname[0]]
+                            gt[maskattr] = maskname[0]
                         gt[attr[0]] = n1
                         gt[attr[1]] = n2
                         break
+            if 'node_lon' in init_args and 'node_lat' in init_args:
+                mask = False
+                for name in node_mask_names:
+                    if name in gf_vars:
+                        mask = gen_mask(gf_vars[name])
+                init_args['node_lon'].mask = mask
+                init_args['node_lat'].mask = mask
+                if name in gf_vars:
+                    init_args[node_mask] = gf_vars[name]
+                gt[node_mask] = name
+
         else:
             for n, v in grid_topology.items():
                 if n in center_attrs + edge1_attrs + edge2_attrs and v in gf_vars:
@@ -321,6 +352,8 @@ class Grid_R(GridBase):
         points = points.reshape(-1, 2)
         if slices is not None:
             variable = variable[slices]
+            if np.ma.isMA(variable):
+                variable = variable.filled(0) #eventually should use Variable fill value
         x = self.node_lon if variable.shape[0] == len(self.node_lon) else self.node_lat
         y = self.node_lat if x is self.node_lon else self.node_lon
         interp_func = RegularGridInterpolator((x, y),
@@ -380,7 +413,8 @@ class Grid(object):
         :param filename: Name of the file this grid was constructed from, if available.
         '''
         raise NotImplementedError("Grid is not meant to be instantiated. "
-                                  "Please use the from_netCDF function")
+                                  "Please use the from_netCDF function. "
+                                  "or initialize the type of grid you want directly")
 
     @staticmethod
     def _load_grid(filename, grid_type, dataset=None):
@@ -410,13 +444,19 @@ class Grid(object):
                     **kwargs):
         '''
         :param filename: File containing a grid
+
         :param dataset: Takes precedence over filename, if provided.
+
         :param grid_type: Must be provided if Dataset does not have a 'grid_type' attribute,
                           or valid topology variable
+
         :param grid_topology: A dictionary mapping of grid attribute to variable name.
                               Takes precedence over discovered attributes
-        :param kwargs: All kwargs to SGrid or UGrid are valid, and take precedence over all.
-        :returns: Instance of Grid_U, Grid_S, or PyGrid_R
+
+        :param kwargs: All kwargs to SGrid, UGrid, or RGrid are valid, and take precedence
+                       over all.
+
+        :returns: Instance of Grid_U, Grid_S, or Grid_R
         '''
         gf = dataset if filename is None else get_dataset(filename, dataset)
         if gf is None:
@@ -427,7 +467,13 @@ class Grid(object):
                 isinstance(grid_type, string_types) or
                 not issubclass(grid_type, GridBase)):
             cls = Grid._get_grid_type(gf, grid_type, grid_topology, _default_types)
-        compliant = Grid._find_topology_var(None, gf)
+
+        # if grid_topology is passed in, don't look for the variable
+        if not grid_topology:
+            compliant = Grid._find_topology_var(None, gf)
+        else:
+            compliant = None
+
         if compliant is not None:
             c = Grid._load_grid(filename, cls, dataset)
             c.grid_topology = compliant.__dict__
@@ -443,10 +489,17 @@ class Grid(object):
     def _get_grid_type(dataset,
                        grid_type=None,
                        grid_topology=None,
-                       _default_types=None):
+                       _default_types=(('ugrid', Grid_U),
+                                       ('sgrid', Grid_S),
+                                       ('rgrid', Grid_R))):
         # fixme: this logic should probably be defered to
         #        the grid type code -- that is, ask each grid
         #        type if this dataset is its type.
+        #
+        #        It also should be refactored to start with the standards
+        #        and maybe havev a pedantic mode where it won't load non-standard
+        #        files
+
         if _default_types is None:
             _default_types = dict()
         else:
@@ -509,7 +562,12 @@ class Grid(object):
                             r_init_args, r_gf_vars = Grid_R._find_required_grid_attrs(None, dataset)
                             return Grid_R
                         except ValueError:
-                            s_init_args, s_gf_vars = Grid_S._find_required_grid_attrs(None, dataset)
+                            try:
+                                s_init_args, s_gf_vars = Grid_S._find_required_grid_attrs(None, dataset)
+                            except ValueError:
+                                raise ValueError("Can not figure out what type of grid this is. "
+                                                 "Try specifying the grid_topology attributes "
+                                                 "or specifying the grid type")
                             return Grid_S
 
     @staticmethod
