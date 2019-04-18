@@ -13,7 +13,7 @@ env:
 before_install:
     - wget http://bit.ly/miniconda -O miniconda.sh
     - bash miniconda.sh -b -p $HOME/miniconda
-    - export PATH="$HOME/miniconda/bin:$PATH"
+    - source $HOME/miniconda/etc/profile.d/conda.sh
     - conda config --add channels conda-forge
     - cat $HOME/.condarc
     - conda update -y -n base conda
