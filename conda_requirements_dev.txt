@@ -1,19 +1,14 @@
-# requirements for the gridded package
-# the goal is to have it work across as wide a range of versions as possible
+# extra requirements for the gridded package
+# extra stuff you'll want for development / testing / demoing
+
 # these should all be available in the conda-forge channel
 
-## core requirements to run gridded
+# It is best to install these at the same time as the main requirements,
+# so that conda doesn't downgrade anything else:
 
-# requires python, but if you leave it out, it will use python already in
-# the conda environment, rather than upgrading
-# python>=2.7.*
-numpy>=1.13.*
-scipy
-netcdf4>=1.4.*
-cell_tree2d>=0.3.*
-six
+# conda install --file conda_requirements.txt --file conda_requirements_dev.txt
 
-## extra stuff you'll want for development / testing / demoing
+
 pytest
 pytest-cov
 progressbar
