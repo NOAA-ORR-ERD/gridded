@@ -25,7 +25,7 @@ before_install:
     conda update --quiet conda
     conda config --add channels conda-forge --force
     conda config --set channel_priority strict
-    conda create --name TEST python=$PY pytest --file conda_requirements.txt --file conda_requirements_test.txt --quiet
+    conda create --name TEST python=$PY --file conda_requirements.txt --file conda_requirements_test.txt --quiet
     source activate TEST
     conda info --all
     conda list
