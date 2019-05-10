@@ -497,7 +497,13 @@ class UGrid(object):
 
     def _build_kdtree(self):
         # Only import if it's used.
-        from scipy.spatial import cKDTree
+        try:
+            from scipy.spatial import cKDTree
+        except ImportError:
+            raise ImportError("The scipy package is required to use "
+                              "UGrid.locate_nodes\n"
+                              " -- nearest neighbor interpolation")
+
         self._kdtree = cKDTree(self.nodes)
 
     def _hash_of_pts(self, points):

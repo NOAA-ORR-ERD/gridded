@@ -580,7 +580,7 @@ class SGrid(object):
     def build_kdtree(self, grid='node'):
         """Builds the kdtree for the specified grid"""
         try:
-            from scipy.spatial import KDTree
+            from scipy.spatial import cKDTree
         except ImportError:
             raise ImportError("The scipy package is required to use "
                               "SGrid.locate_nearest\n"
@@ -590,7 +590,7 @@ class SGrid(object):
             raise ValueError("{0}_lon and {0}_lat must be defined in order to "
                              "create and use KDTree for this grid".format(grid))
         lin_points = np.column_stack((lon.ravel(), lat.ravel()))
-        self._kd_trees[grid] = KDTree(lin_points, leafsize=4)
+        self._kd_trees[grid] = cKDTree(lin_points, leafsize=4)
 
     def build_celltree(self, grid='node', use_mask=True):
         """
