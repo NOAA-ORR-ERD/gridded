@@ -10,7 +10,7 @@ from __future__ import (absolute_import, division, print_function)
 import pytest
 import numpy as np
 
-from pysgrid.processing_2d import avg_to_cell_center, rotate_vectors, vector_sum
+from gridded.pysgrid.processing_2d import avg_to_cell_center, rotate_vectors, vector_sum
 
 
 def test_vector_sum():

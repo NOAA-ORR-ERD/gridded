@@ -6,8 +6,9 @@ Created on Feb 17, 2016
 
 import numpy as np
 
-from pysgrid import SGrid
-from pysgrid.utils import points_in_polys
+from gridded.pysgrid.sgrid import SGrid
+from gridded.pysgrid.utils import points_in_polys
+
 
 node_lon = np.array(([1, 3, 5], [1, 3, 5], [1, 3, 5]))
 node_lat = np.array(([1, 1, 1], [3, 3, 3], [5, 5, 5]))

@@ -11,9 +11,10 @@ from __future__ import (absolute_import, division, print_function)
 
 import pytest
 
-from ..sgrid import SGrid
-from ..utils import GridPadding
-from ..variables import SGridVariable
+from gridded.pysgrid.sgrid import SGrid
+from gridded.pysgrid.utils import GridPadding
+from gridded.pysgrid.variables import SGridVariable
+
 from .write_nc_test_files import deltares_sgrid
 
 

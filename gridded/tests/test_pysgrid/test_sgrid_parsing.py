@@ -9,7 +9,7 @@ from __future__ import (absolute_import, division, print_function)
 
 import pytest
 
-from ..read_netcdf import (parse_axes, parse_padding, parse_vector_axis)
+from gridded.pysgrid.read_netcdf import (parse_axes, parse_padding, parse_vector_axis)
 
 
 def test_xyz_axis_parse():

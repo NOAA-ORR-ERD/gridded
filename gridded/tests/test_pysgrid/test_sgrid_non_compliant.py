@@ -9,7 +9,7 @@ from __future__ import (absolute_import, division, print_function)
 
 import pytest
 
-from ..sgrid import load_grid
+from gridded.pysgrid.sgrid import load_grid
 
 from .write_nc_test_files import non_compliant_sgrid
 

@@ -11,7 +11,7 @@ import pytest
 
 import numpy as np
 
-from pysgrid.utils import (calculate_bearing,
+from gridded.pysgrid.utils import (calculate_bearing,
                            calculate_angle_from_true_east,
                            check_element_equal,
                            does_intersection_exist,

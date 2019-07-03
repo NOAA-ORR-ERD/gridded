@@ -10,7 +10,7 @@ from __future__ import (absolute_import, division, print_function)
 import pytest
 import numpy as np
 
-from ..sgrid import SGrid, load_grid
+from gridded.pysgrid.sgrid import SGrid, load_grid
 
 from .write_nc_test_files import wrf_sgrid
 
