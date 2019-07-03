@@ -14,7 +14,7 @@ import pytest
 import numpy as np
 from netCDF4 import Dataset
 
-from ..lookup import (LON_GRID_CELL_CENTER_LONG_NAME,
+from gridded.pysgrid.lookup import (LON_GRID_CELL_CENTER_LONG_NAME,
                       LAT_GRID_CELL_CENTER_LONG_NAME,
                       LON_GRID_CELL_NODE_LONG_NAME,
                       LAT_GRID_CELL_NODE_LONG_NAME)
