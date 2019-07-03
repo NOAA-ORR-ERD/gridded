@@ -83,6 +83,9 @@ def test_read_TAMU():
             assert isinstance(ds.variables, dict)
             assert 'water_u' in ds.variables.keys()
             assert 'water_v' in ds.variables.keys()
+        else:
+            print("TAMU.nc could not be found")
+            assert False
 
 
 # def test_get_mesh_names():
