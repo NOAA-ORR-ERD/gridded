@@ -31,8 +31,8 @@ def rotate_vectors_data():
     return x, y, angles_simple, angles_complex
 
 
-def test_vector_rotation_simple():
-    x, y, angles_simple, angles_complex = rotate_vectors_data()
+def test_vector_rotation_simple(rotate_vectors_data):
+    x, y, angles_simple, angles_complex = rotate_vectors_data
     rotated_x, rotated_y = rotate_vectors(x, y, angles_simple)
 
     expected_x = np.array([3, -12, 9, -60])
@@ -42,8 +42,8 @@ def test_vector_rotation_simple():
     np.testing.assert_almost_equal(rotated_y, expected_y, decimal=3)
 
 
-def test_vector_rotation_complex():
-    x, y, angles_simple, angles_complex = rotate_vectors_data()
+def test_vector_rotation_complex(rotate_vectors_data):
+    x, y, angles_simple, angles_complex = rotate_vectors_data
     rotated_x, rotated_y = rotate_vectors(x, y, angles_complex)
     expected_x = np.array([0.5981, -3.0083, -21.9203, -46.4615])
     expected_y = np.array([4.9641, 12.6471, 34.6482, 39.5263])
@@ -56,8 +56,8 @@ def avg_center_data():
     return np.array([[4, 5, 9, 10], [8, 39, 41, 20], [5, 29, 18, 71]])
 
 
-def test_no_transpose():
-    data = avg_center_data()
+def test_no_transpose(avg_center_data):
+    data = avg_center_data
     avg_result = avg_to_cell_center(data, 1)
     expected = np.array([[4.5, 7, 9.5],
                          [23.5, 40, 30.5],
@@ -65,8 +65,8 @@ def test_no_transpose():
     np.testing.assert_almost_equal(avg_result, expected, decimal=3)
 
 
-def test_with_transpose():
-    data = avg_center_data()
+def test_with_transpose(avg_center_data):
+    data = avg_center_data
     avg_result = avg_to_cell_center(data, 0)
     expected = np.array([[6, 22, 25, 15], [6.5, 34, 29.5, 45.5]])
     np.testing.assert_almost_equal(avg_result, expected, decimal=3)

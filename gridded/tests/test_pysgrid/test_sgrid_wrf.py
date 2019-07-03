@@ -15,6 +15,9 @@ from gridded.pysgrid.sgrid import SGrid, load_grid
 from .write_nc_test_files import wrf_sgrid
 
 
+pytestmark = pytest.mark.skipif(True, reason="Lots of issues with these -- needs revisiting")
+
+
 """
 Test SGrid WRF Dataset.
 

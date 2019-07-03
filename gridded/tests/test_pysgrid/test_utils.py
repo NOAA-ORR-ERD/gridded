@@ -12,11 +12,11 @@ import pytest
 import numpy as np
 
 from gridded.pysgrid.utils import (calculate_bearing,
-                           calculate_angle_from_true_east,
-                           check_element_equal,
-                           does_intersection_exist,
-                           pair_arrays,
-                           )
+                                   calculate_angle_from_true_east,
+                                   check_element_equal,
+                                   does_intersection_exist,
+                                   pair_arrays,
+                                   )
 
 
 @pytest.fixture
@@ -27,14 +27,14 @@ def intersection_data():
     return a, b, c
 
 
-def test_intersect_exists():
-    a, b, c = intersection_data()
+def test_intersect_exists(intersection_data):
+    a, b, c = intersection_data
     result = does_intersection_exist(a, b)
     assert result
 
 
-def test_intersect_does_not_exist():
-    a, b, c = intersection_data()
+def test_intersect_does_not_exist(intersection_data):
+    a, b, c = intersection_data
     result = does_intersection_exist(a, c)
     assert result is False
 
@@ -62,14 +62,14 @@ def check_element():
     return a, b
 
 
-def test_list_with_identical_elements():
-    a, b = check_element()
+def test_list_with_identical_elements(check_element):
+    a, b = check_element
     result = check_element_equal(a)
     assert result
 
 
-def test_list_with_different_elements():
-    a, b = check_element()
+def test_list_with_different_elements(check_element):
+    a, b = check_element
     result = check_element_equal(b)
     assert result is False
 

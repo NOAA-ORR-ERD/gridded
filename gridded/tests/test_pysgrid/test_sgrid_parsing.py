@@ -35,16 +35,16 @@ def parse_pad():
     return grid_topology, pad_1, pad_2, pad_no
 
 
-def test_mesh_name():
-    grid_topology, pad_1, pad_2, pad_no = parse_pad()
+def test_mesh_name(parse_pad):
+    grid_topology, pad_1, pad_2, pad_no = parse_pad
     result = parse_padding(pad_1, grid_topology)
     mesh_topology = result[0].mesh_topology_var
     expected = 'some_grid'
     assert mesh_topology == expected
 
 
-def test_two_padding_types():
-    grid_topology, pad_1, pad_2, pad_no = parse_pad()
+def test_two_padding_types(parse_pad):
+    grid_topology, pad_1, pad_2, pad_no = parse_pad
     result = parse_padding(pad_2, grid_topology)
     expected_len = 2
     padding_datum_0 = result[0]
@@ -60,8 +60,8 @@ def test_two_padding_types():
     assert dim == expected_dim
 
 
-def test_one_padding_type():
-    grid_topology, pad_1, pad_2, pad_no = parse_pad()
+def test_one_padding_type(parse_pad):
+    grid_topology, pad_1, pad_2, pad_no = parse_pad
     result = parse_padding(pad_1, grid_topology)
     expected_len = 1
     padding_datum_0 = result[0]
@@ -77,8 +77,8 @@ def test_one_padding_type():
     assert dim == expected_dim
 
 
-def test_no_padding():
-    grid_topology, pad_1, pad_2, pad_no = parse_pad()
+def test_no_padding(parse_pad):
+    grid_topology, pad_1, pad_2, pad_no = parse_pad
     with pytest.raises(ValueError):
         parse_padding(padding_str=pad_no,
                       mesh_topology_var=grid_topology)
