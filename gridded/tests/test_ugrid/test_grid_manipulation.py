@@ -9,11 +9,13 @@ from __future__ import (absolute_import, division, print_function)
 
 import numpy as np
 
+import pytest
+
 from utilities import two_triangles, twenty_one_triangles
 
 
-def test_build_face_face_connectivity_small():
-    ugrid = two_triangles()
+def test_build_face_face_connectivity_small(two_triangles):
+    ugrid = two_triangles
     ugrid.build_face_face_connectivity()
     face_face = ugrid.face_face_connectivity
 
@@ -21,8 +23,8 @@ def test_build_face_face_connectivity_small():
     assert np.array_equal(face_face[1], [-1, -1, 0])
 
 
-def test_build_face_face_connectivity_big():
-    ugrid = twenty_one_triangles()
+def test_build_face_face_connectivity_big(twenty_one_triangles):
+    ugrid = twenty_one_triangles
     ugrid.build_face_face_connectivity()
     face_face = ugrid.face_face_connectivity
 
@@ -33,8 +35,8 @@ def test_build_face_face_connectivity_big():
     assert face_face[20].tolist() == [19, -1, -1]
 
 
-def test_build_edges():
-    ugrid = two_triangles()
+def test_build_edges(two_triangles):
+    ugrid = two_triangles
     ugrid.build_edges()
     edges = ugrid.edges
 
@@ -42,8 +44,8 @@ def test_build_edges():
     assert np.array_equal(edges, [[0, 1], [0, 2], [1, 2], [1, 3], [2, 3]])
 
 
-def test_build_face_coordinates():
-    grid = two_triangles()
+def test_build_face_coordinates(two_triangles):
+    grid = two_triangles
     grid.build_face_coordinates()
     coords = grid.face_coordinates
 
@@ -52,8 +54,8 @@ def test_build_face_coordinates():
                                 (2.1, 1.43333333)])
 
 
-def test_build_edge_coordinates():
-    grid = two_triangles()
+def test_build_edge_coordinates(two_triangles):
+    grid = two_triangles
     grid.build_edge_coordinates()
     coords = grid.edge_coordinates
 
@@ -65,8 +67,8 @@ def test_build_edge_coordinates():
                                 [1.6, 1.1]])
 
 
-def test_build_boundary_coordinates():
-    grid = two_triangles()
+def test_build_boundary_coordinates(two_triangles):
+    grid = two_triangles
     grid.boundaries = [(0, 1), (0, 2), (2, 3), (1, 3)]
     grid.build_boundary_coordinates()
     coords = grid.boundary_coordinates
@@ -78,8 +80,8 @@ def test_build_boundary_coordinates():
                                 [2.6, 1.1]])
 
 
-def test_build_boundaries_small():
-    ugrid = two_triangles()
+def test_build_boundaries_small(two_triangles):
+    ugrid = two_triangles
     ugrid.build_face_face_connectivity()
     ugrid.build_boundaries()
 
@@ -88,8 +90,8 @@ def test_build_boundaries_small():
     assert boundaries == expected_boundaries
 
 
-def test_build_boundaries_big():
-    ugrid = twenty_one_triangles()
+def test_build_boundaries_big(twenty_one_triangles):
+    ugrid = twenty_one_triangles
     ugrid.build_face_face_connectivity()
     ugrid.build_boundaries()
 

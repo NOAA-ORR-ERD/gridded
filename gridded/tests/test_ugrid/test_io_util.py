@@ -12,7 +12,7 @@ from gridded.pyugrid.ugrid import UGrid
 from gridded.pyugrid.grid_io import load_from_varnames
 
 
-@pytest.fixture
+# @pytest.fixture
 @contextlib.contextmanager
 def non_compliante_mesh(fname):
     """

@@ -18,15 +18,16 @@ import numpy as np
 from gridded.pyugrid.ugrid import UGrid
 from gridded.pyugrid.uvar import UVar
 
-
 from utilities import chdir, two_triangles, twenty_one_triangles
+
+pytestmark = pytest.mark.skipif(True, reason="add_data not yet suported")
 
 test_files = os.path.join(os.path.dirname(__file__), 'files')
 
 
 @pytest.fixture
-def two_triangles_with_depths():
-    grid = two_triangles()
+def two_triangles_with_depths(two_triangles):
+    grid = two_triangles
 
     depths = UVar('depth', location='node', data=[1.0, 2.0, 3.0, 4.0])
     depths.attributes['units'] = 'unknown'
@@ -38,9 +39,9 @@ def two_triangles_with_depths():
 
 
 @pytest.fixture
-def twenty_one_triangles_with_depths():
+def twenty_one_triangles_with_depths(twenty_one_triangles):
     """Returns a basic triangle grid with 21 triangles, a hole and a tail."""
-    grid = twenty_one_triangles()
+    grid = twenty_one_triangles
 
     depths = UVar('depth', location='node', data=list(range(1, 21)))
     depths.attributes['units'] = 'unknown'
@@ -58,13 +59,13 @@ def find_depths(grid):
     return None
 
 
-def test_no_std_name():
+def test_no_std_name(two_triangles_with_depths):
     """
     Tests to make sure it doesn't crash if a `UVar` does not have a
     `standard_name`.
 
     """
-    grid = two_triangles_with_depths()
+    grid = two_triangles_with_depths
 
     junk = UVar('junk', location='node', data=[1.0, 2.0, 3.0, 4.0])
     junk.attributes['units'] = 'unknown'
@@ -75,8 +76,8 @@ def test_no_std_name():
     assert depths.name == 'depth'
 
 
-def test_two_triangles():
-    grid = two_triangles_with_depths()
+def test_two_triangles(two_triangles_with_depths):
+    grid = two_triangles_with_depths
 
     fname = '2_triangles.nc'
     with chdir(test_files):
@@ -98,8 +99,8 @@ def test_two_triangles():
     assert depths.attributes['units'] == 'unknown'
 
 
-def test_21_triangles():
-    grid = twenty_one_triangles_with_depths()
+def test_21_triangles(twenty_one_triangles_with_depths):
+    grid = twenty_one_triangles_with_depths
 
     fname = '21_triangles.nc'
     with chdir(test_files):
@@ -118,8 +119,8 @@ def test_21_triangles():
     assert depths.attributes['units'] == 'unknown'
 
 
-def test_two_triangles_without_faces():
-    grid = two_triangles_with_depths()
+def test_two_triangles_without_faces(two_triangles_with_depths):
+    grid = two_triangles_with_depths
     grid.faces = None
 
     fname = '2_triangles_without_faces.nc'
@@ -148,8 +149,8 @@ def test_two_triangles_without_faces():
     assert depths.attributes['units'] == 'unknown'
 
 
-def test_two_triangles_without_edges():
-    grid = two_triangles_with_depths()
+def test_two_triangles_without_edges(two_triangles_with_depths):
+    grid = two_triangles_with_depths
     # This will set the _edges to None, but it will be rebuild
     grid.edges = None
 

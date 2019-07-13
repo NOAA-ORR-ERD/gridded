@@ -165,6 +165,7 @@ def test_read_longitude_no_standard_name():
     assert np.array_equal(grid.nodes[-1, :], (-34.911235, 29.29379))
 
 
+@pytest.mark.skipif(True, reason="load_data not supported")
 def test_read_data_keys():
     with chdir(files):
         grid = UGrid.from_ncfile('ElevenPoints_UGRIDv0.9.nc', load_data=True)
@@ -173,6 +174,7 @@ def test_read_data_keys():
                                         u'depth']
 
 
+@pytest.mark.skipif(True, reason="load_data not supported")
 def test_read_data():
     expected_depth = [1, 1, 1, 102, 1, 1, 60, 1, 1, 97, 1]
     expected_depth_attributes = {'standard_name': 'sea_floor_depth_below_geoid',
