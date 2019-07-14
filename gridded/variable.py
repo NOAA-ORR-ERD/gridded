@@ -676,6 +676,7 @@ class VectorVariable(object):
                  varnames=None,
                  **kwargs):
 
+        super(VectorVariable, self).__init__()
         self.name = self._units = self._time = self._variables = None
 
         self.name = name
