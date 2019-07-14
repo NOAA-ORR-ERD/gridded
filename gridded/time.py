@@ -73,6 +73,19 @@ class Time(object):
                     datavar=None,
                     tz_offset=None,
                     **kwargs):
+        """
+        construct a Time object from a netcdf file
+
+        :param filename=None: name of netcddf file
+        :param dataset=None: netcdf dataset object (one or the other)
+        :param varname=None: name of the netcdf variable
+        :param datavar=None: Either the time variable name, or
+                             A netcdf variable that needs a Time object.
+                             It will try to find the time variable that
+                             corresponds to the passed in variable.
+        :param tz_offset=None,
+
+        """
         if dataset is None:
             dataset = get_dataset(filename)
         if datavar is not None:
