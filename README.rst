@@ -4,6 +4,7 @@
 
 A single API for accessing / working with gridded model results on multiple grid types
 
+`Documentation <https://noaa-orr-erd.github.io/gridded/index.html>`_
 
 Goal
 ====
