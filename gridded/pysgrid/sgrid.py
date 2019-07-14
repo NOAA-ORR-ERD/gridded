@@ -528,7 +528,7 @@ class SGrid(object):
         tree = self._kd_trees[grid]
         lin_indices = np.array(tree.query(points))[1].astype(np.int32)
         lon, lat = self._get_grid_vars(grid)
-        ind = np.unravel_index(lin_indices, dims=lon.shape)
+        ind = np.unravel_index(lin_indices, shape=lon.shape)
         ind = np.array(ind).T
         return ind
 

@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# NOTE: THIS MODULE IS DEPRECATED
+#       THis funcitonality should all be in gridded.Variable
+
 """
 UVar object, used to hold variables that are associated with a ugrid
 
