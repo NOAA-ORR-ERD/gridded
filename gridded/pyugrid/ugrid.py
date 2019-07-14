@@ -113,6 +113,13 @@ class UGrid(object):
         mesh section in the convention for further details.
         """
 
+        print(node_lat, node_lon)
+
+        if ((nodes is not None) and
+            ((node_lon is not None) or
+             (node_lat is not None))):
+            raise TypeError("You need to provide a single nodes array "
+                            "or node_lon and node_lat")
         if nodes is None:
             if node_lon is not None and node_lat is not None:
                 nodes = np.ma.column_stack((node_lon, node_lat))

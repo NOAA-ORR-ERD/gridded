@@ -61,7 +61,7 @@ class SGrid(object):
                  face_dimensions=None,
                  vertical_padding=None,
                  vertical_dimensions=None,
-                 tree=None,
+                 tree=None,    #Fixme: should this be initilizable here?
                  use_masked_boundary=False,
                  *args,
                  **kwargs):
@@ -78,7 +78,7 @@ class SGrid(object):
         self.edge2_lon = edge2_lon
         self.edge2_lat = edge2_lat
         self.edge2_mask = edge2_mask
-        self.edges = edges
+        self.edges = edges  # Fixme: is this needed?
         self.node_padding = node_padding
         self.edge1_padding = edge1_padding
         self.edge2_padding = edge2_padding

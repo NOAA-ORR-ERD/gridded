@@ -9,6 +9,10 @@ More specific functionality is other test modules.
 
 from __future__ import (absolute_import, division, print_function)
 
+import numpy as np
+
+import pytest
+
 from gridded.pyugrid.ugrid import UGrid
 from gridded.pyugrid.ugrid import IND_DT, NODE_DT
 
@@ -21,6 +25,10 @@ nodes = [(0.1, 0.1),
          (2.1, 0.1),
          (1.1, 2.1),
          (3.1, 2.1)]
+
+node_lon = np.array(nodes)[:, 0]
+node_lat = np.array(nodes)[:, 1]
+
 
 faces = [(0, 1, 2),
          (1, 3, 2)]
@@ -63,3 +71,33 @@ def test_full_set():
     assert grid.faces.shape[1] == 3
     assert grid.edges.shape[1] == 2
     assert grid.boundaries.shape[1] == 2
+
+
+def test_nodes_and_lon_lat():
+    grid = UGrid(node_lon=node_lon,
+                 node_lat=node_lat,
+                 )
+
+    assert np.all(grid.nodes == nodes)
+
+
+def test_both_nodes_and_lon_lat():
+    with pytest.raises(TypeError):
+        grid = UGrid(node_lon=node_lon,
+                     node_lat=node_lat,
+                     nodes=nodes
+                     )
+
+
+def test_both_nodes_and_lon():
+    with pytest.raises(TypeError):
+        grid = UGrid(node_lon=node_lon,
+                     nodes=nodes
+                     )
+
+def test_both_nodes_and_lat():
+    with pytest.raises(TypeError):
+        grid = UGrid(node_lat=node_lat,
+                     nodes=nodes
+                     )
+
