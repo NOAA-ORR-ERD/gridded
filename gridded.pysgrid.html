@@ -24,28 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="gridded 0.0.8 documentation" href="index.html"/>
-        <link rel="up" title="gridded package" href="gridded.html"/>
-        <link rel="next" title="gridded.pyugrid package" href="gridded.pyugrid.html"/>
-        <link rel="prev" title="gridded package" href="gridded.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="gridded.pyugrid package" href="gridded.pyugrid.html" />
+    <link rel="prev" title="gridded package" href="gridded.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -104,8 +95,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="non_conforming_data.html">Loading Non Conforming Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-conform-to-the-underlying-data-model">If your files conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#unstructured-grids">Unstructured Grids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#gridded-dataset"><code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#grid-objects">Grid objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#variable-objects">Variable objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#time-object">Time object</a></li>
@@ -144,7 +144,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">gridded</a>
@@ -152,9 +152,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -177,7 +178,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a> &raquo;</li>
+          <li><a href="api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a> &raquo;</li>
         
           <li><a href="gridded.html">gridded package</a> &raquo;</li>
         
@@ -227,7 +228,7 @@ center.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>data_array</strong> (<em>numpy.array</em>) – 2-dimensional data</li>
-<li><strong>avg_dim</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – integer specify array axis to be averaged</li>
+<li><strong>avg_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – integer specify array axis to be averaged</li>
 </ul>
 </td>
 </tr>
@@ -262,7 +263,7 @@ coordinate system.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">x and y arrays of rotated vectors</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/2/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a></p>
 </td>
 </tr>
 </tbody>
@@ -302,7 +303,7 @@ x and y vectors.</p>
 <dl class="class">
 <dt id="gridded.pysgrid.read_netcdf.NetCDFDataset">
 <em class="property">class </em><code class="descclassname">gridded.pysgrid.read_netcdf.</code><code class="descname">NetCDFDataset</code><span class="sig-paren">(</span><em>nc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/read_netcdf.html#NetCDFDataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.read_netcdf.NetCDFDataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <dl class="method">
 <dt id="gridded.pysgrid.read_netcdf.NetCDFDataset.find_coordinates_by_location">
 <code class="descname">find_coordinates_by_location</code><span class="sig-paren">(</span><em>location_str</em>, <em>topology_dim</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/read_netcdf.html#NetCDFDataset.find_coordinates_by_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.read_netcdf.NetCDFDataset.find_coordinates_by_location" title="Permalink to this definition">¶</a></dt>
@@ -315,8 +316,8 @@ volume coordinates from the location attribute of a variable.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>location_str</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – the location value to search for</li>
-<li><strong>topology_dim</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – the topology dimension of the grid</li>
+<li><strong>location_str</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the location value to search for</li>
+<li><strong>topology_dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the topology dimension of the grid</li>
 </ul>
 </td>
 </tr>
@@ -347,7 +348,7 @@ SGRID compliant.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if dataset is compliant, raise an exception if it is not</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -369,7 +370,7 @@ that have a <cite>cf_role `attribute of ‘grid_topology’ and
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">variable name that contain grid topologies</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/string.html#module-string" title="(in Python v2.7)">string</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
 </tr>
 </tbody>
 </table>
@@ -397,7 +398,7 @@ of these named tuples.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>padding_str</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – string containing padding types from
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>padding_str</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – string containing padding types from
 a netCDF attribute.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">named tuples with padding information.</td>
@@ -421,7 +422,7 @@ a netCDF attribute.</td>
 <dl class="class">
 <dt id="gridded.pysgrid.sgrid.SGrid">
 <em class="property">class </em><code class="descclassname">gridded.pysgrid.sgrid.</code><code class="descname">SGrid</code><span class="sig-paren">(</span><em>node_lon=None</em>, <em>node_lat=None</em>, <em>center_lon=None</em>, <em>center_lat=None</em>, <em>edge1_lon=None</em>, <em>edge1_lat=None</em>, <em>edge2_lon=None</em>, <em>edge2_lat=None</em>, <em>edges=None</em>, <em>node_padding=None</em>, <em>edge1_padding=None</em>, <em>edge2_padding=None</em>, <em>grid_topology_var=None</em>, <em>variables=None</em>, <em>grid_variables=None</em>, <em>dimensions=None</em>, <em>node_dimensions=None</em>, <em>node_coordinates=None</em>, <em>edge1_coordinates=None</em>, <em>edge2_coordinates=None</em>, <em>angles=None</em>, <em>edge1_dimensions=None</em>, <em>edge2_dimensions=None</em>, <em>faces=None</em>, <em>face_padding=None</em>, <em>face_coordinates=None</em>, <em>face_dimensions=None</em>, <em>vertical_padding=None</em>, <em>vertical_dimensions=None</em>, <em>tree=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <dl class="method">
 <dt id="gridded.pysgrid.sgrid.SGrid.all_padding">
 <code class="descname">all_padding</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGrid.all_padding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.all_padding" title="Permalink to this definition">¶</a></dt>
@@ -561,7 +562,7 @@ If a sequence of points is passed in an array of indexes will be returned.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>points</strong> (<em>array-like containing one</em><em> or </em><em>more points: shape</em><em> (</em><em>2</em><em>,</em><em>) </em><em>for one point</em><em>,
-</em><a class="reference internal" href="gridded.html#gridded.grids.GridBase.shape" title="gridded.grids.GridBase.shape"><em>shape</em></a><em> (</em><em>N</em><em>, </em><em>2</em><em>) </em><em>for more than one point.</em>) – The points that you want to locate – (lon, lat). If the shape of point
+</em><em>shape</em><em> (</em><em>N</em><em>, </em><em>2</em><em>) </em><em>for more than one point.</em>) – The points that you want to locate – (lon, lat). If the shape of point
 is 1D, function will return a scalar index. If it is 2D, it will return
 a 1D array of indices.</li>
 <li><strong>grid</strong> (<em>Name of the grid</em><em> (</em><em>'node'</em><em>, </em><em>'center'</em><em>, </em><em>'edge1'</em><em>, </em><em>'edge2</em><em>)</em>) – The grid on which you want to locate the points</li>
@@ -595,7 +596,7 @@ a 1D array of indices.</li>
 
 <dl class="attribute">
 <dt id="gridded.pysgrid.sgrid.SGrid.padding_slices">
-<code class="descname">padding_slices</code><em class="property"> = {'high': (None, 1), 'both': (1, -1), 'none': (None, None), 'low': (1, None)}</em><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.padding_slices" title="Permalink to this definition">¶</a></dt>
+<code class="descname">padding_slices</code><em class="property"> = {'both': (1, -1), 'high': (None, 1), 'low': (1, None), 'none': (None, None)}</em><a class="headerlink" href="#gridded.pysgrid.sgrid.SGrid.padding_slices" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -613,7 +614,7 @@ a 1D array of indices.</li>
 <dl class="class">
 <dt id="gridded.pysgrid.sgrid.SGridAttributes">
 <em class="property">class </em><code class="descclassname">gridded.pysgrid.sgrid.</code><code class="descname">SGridAttributes</code><span class="sig-paren">(</span><em>nc</em>, <em>topology_dim</em>, <em>topology_variable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/sgrid.html#SGridAttributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.sgrid.SGridAttributes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Class containing methods to help with getting the
 attributes for either SGrid.</p>
 <dl class="method">
@@ -681,7 +682,7 @@ attributes for either SGrid.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>or netCDF4.Dataset nc</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – a netCDF4 Dataset or URL/filepath
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>or netCDF4.Dataset nc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – a netCDF4 Dataset or URL/filepath
 to the netCDF file</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">SGrid object</td>
@@ -700,7 +701,7 @@ to the netCDF file</td>
 <dl class="class">
 <dt id="gridded.pysgrid.utils.GridPadding">
 <em class="property">class </em><code class="descclassname">gridded.pysgrid.utils.</code><code class="descname">GridPadding</code><span class="sig-paren">(</span><em>mesh_topology_var</em>, <em>face_dim</em>, <em>node_dim</em>, <em>padding</em><span class="sig-paren">)</span><a class="headerlink" href="#gridded.pysgrid.utils.GridPadding" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">tuple</span></code></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
 <dl class="attribute">
 <dt id="gridded.pysgrid.utils.GridPadding.face_dim">
 <code class="descname">face_dim</code><a class="headerlink" href="#gridded.pysgrid.utils.GridPadding.face_dim" title="Permalink to this definition">¶</a></dt>
@@ -752,7 +753,7 @@ iterable are the same.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">result of element equality check</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -774,8 +775,8 @@ centers; grid cell nodes will be supported later.</p>
 netCDF4.Dataset object.</li>
 <li><strong>nc_dataset</strong> (<em>netCDF4.Dataset</em>) – a netCDF4.Dataset object from which
 the sgrid_obj was derived.</li>
-<li><strong>variable</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – the name of a variable to be sliced.</li>
-<li><strong>method</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – slice method for analysis at grid cell centers or grid
+<li><strong>variable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the name of a variable to be sliced.</li>
+<li><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – slice method for analysis at grid cell centers or grid
 cell nodes; accepts either ‘center’ or ‘node’.</li>
 </ul>
 </td>
@@ -783,7 +784,7 @@ cell nodes; accepts either ‘center’ or ‘node’.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the slice for the variable for the given method.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/2/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a></p>
 </td>
 </tr>
 </tbody>
@@ -863,7 +864,7 @@ contains it. Returns array of True/False</p>
 <dl class="class">
 <dt id="gridded.pysgrid.variables.SGridVariable">
 <em class="property">class </em><code class="descclassname">gridded.pysgrid.variables.</code><code class="descname">SGridVariable</code><span class="sig-paren">(</span><em>center_axis=None</em>, <em>center_slicing=None</em>, <em>coordinates=None</em>, <em>dimensions=None</em>, <em>dtype=None</em>, <em>grid=None</em>, <em>location=None</em>, <em>node_axis=None</em>, <em>node_slicing=None</em>, <em>standard_name=None</em>, <em>variable=None</em>, <em>vector_axis=None</em>, <em>x_axis=None</em>, <em>y_axis=None</em>, <em>z_axis=None</em>, <em>data=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pysgrid/variables.html#SGridVariable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pysgrid.variables.SGridVariable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Object of variables found and inferred
 from an SGRID compliant dataset.</p>
 <dl class="classmethod">
@@ -911,9 +912,7 @@ from an SGRID compliant dataset.</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -935,7 +934,7 @@ from an SGRID compliant dataset.</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -954,6 +953,7 @@ from an SGRID compliant dataset.</p>
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'0.0.8',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -966,19 +966,13 @@ from an SGRID compliant dataset.</p>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

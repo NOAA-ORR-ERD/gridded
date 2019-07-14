@@ -24,27 +24,18 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="gridded 0.0.8 documentation" href="index.html"/>
-        <link rel="up" title="gridded package" href="gridded.html"/>
-        <link rel="prev" title="gridded.pyugrid.grid_io package" href="gridded.pyugrid.grid_io.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="gridded.pyugrid.grid_io package" href="gridded.pyugrid.grid_io.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -103,8 +94,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="non_conforming_data.html">Loading Non Conforming Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-conform-to-the-underlying-data-model">If your files conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#unstructured-grids">Unstructured Grids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#gridded-dataset"><code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#grid-objects">Grid objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#variable-objects">Variable objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#time-object">Time object</a></li>
@@ -143,7 +143,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">gridded</a>
@@ -151,9 +151,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -176,7 +177,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-          <li><a href="api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a> &raquo;</li>
+          <li><a href="api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a> &raquo;</li>
         
           <li><a href="gridded.html">gridded package</a> &raquo;</li>
         
@@ -274,42 +275,42 @@
 
 <dl class="function">
 <dt id="gridded.tests.test_grid.example_rg">
-<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">example_rg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#example_rg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.example_rg" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">example_rg</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#example_rg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.example_rg" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="gridded.tests.test_grid.rg_data">
-<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">rg_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#rg_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.rg_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">rg_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#rg_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.rg_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="gridded.tests.test_grid.sg">
-<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">sg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#sg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.sg" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">sg</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#sg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.sg" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="gridded.tests.test_grid.sg_data">
-<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">sg_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#sg_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.sg_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">sg_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#sg_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.sg_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="gridded.tests.test_grid.sg_topology">
-<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">sg_topology</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#sg_topology"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.sg_topology" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">sg_topology</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#sg_topology"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.sg_topology" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="gridded.tests.test_grid.ug">
-<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">ug</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#ug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.ug" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">ug</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#ug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.ug" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="gridded.tests.test_grid.ug_data">
-<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">ug_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#ug_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.ug_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">ug_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#ug_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.ug_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="gridded.tests.test_grid.ug_topology">
-<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">ug_topology</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#ug_topology"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.ug_topology" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.tests.test_grid.</code><code class="descname">ug_topology</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_grid.html#ug_topology"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_grid.ug_topology" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -347,12 +348,12 @@
 
 <dl class="function">
 <dt id="gridded.tests.test_property.sg_data">
-<code class="descclassname">gridded.tests.test_property.</code><code class="descname">sg_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_property.html#sg_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_property.sg_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.tests.test_property.</code><code class="descname">sg_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/test_property.html#sg_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_property.sg_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="data">
 <dt id="gridded.tests.test_property.test_dir">
-<code class="descclassname">gridded.tests.test_property.</code><code class="descname">test_dir</code><em class="property"> = u'/Users/chris.barker/HAZMAT/ERD-PythonPackages/gridded/gridded/tests/data'</em><a class="headerlink" href="#gridded.tests.test_property.test_dir" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.tests.test_property.</code><code class="descname">test_dir</code><em class="property"> = u'/Users/chris.barker/miniconda2/lib/python2.7/site-packages/gridded/tests/test_data'</em><a class="headerlink" href="#gridded.tests.test_property.test_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>Need to hook this up to existing test data infrastructure</p>
 </dd></dl>
 
@@ -371,7 +372,7 @@
 <dl class="class">
 <dt id="gridded.tests.test_utilities.DummyArrayLike">
 <em class="property">class </em><code class="descclassname">gridded.tests.test_utilities.</code><code class="descname">DummyArrayLike</code><a class="reference internal" href="_modules/gridded/tests/test_utilities.html#DummyArrayLike"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.test_utilities.DummyArrayLike" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Class that will look like an array to this function, even
 though it won’t work!</p>
 <p>Just for tests. All it does is add a few expected attributes</p>
@@ -435,6 +436,15 @@ though it won’t work!</p>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="gridded.tests.utilities.get_temp_test_file">
+<code class="descclassname">gridded.tests.utilities.</code><code class="descname">get_temp_test_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/utilities.html#get_temp_test_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.utilities.get_temp_test_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the path to a temporary test file.</p>
+<p>If it exists, it will return it directly.</p>
+<p>If not, it will attempt to download it.</p>
+<p>If it can’t download, it will return None</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="gridded.tests.utilities.get_test_file_dir">
 <code class="descclassname">gridded.tests.utilities.</code><code class="descname">get_test_file_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/utilities.html#get_test_file_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.utilities.get_test_file_dir" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the test file dir path</p>
@@ -442,13 +452,13 @@ though it won’t work!</p>
 
 <dl class="function">
 <dt id="gridded.tests.utilities.twenty_one_triangles">
-<code class="descclassname">gridded.tests.utilities.</code><code class="descname">twenty_one_triangles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/utilities.html#twenty_one_triangles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.utilities.twenty_one_triangles" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.tests.utilities.</code><code class="descname">twenty_one_triangles</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/utilities.html#twenty_one_triangles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.utilities.twenty_one_triangles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a basic triangular grid:  21 triangles, a hole, and a tail.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="gridded.tests.utilities.two_triangles">
-<code class="descclassname">gridded.tests.utilities.</code><code class="descname">two_triangles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/utilities.html#two_triangles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.utilities.two_triangles" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">gridded.tests.utilities.</code><code class="descname">two_triangles</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/tests/utilities.html#two_triangles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.tests.utilities.two_triangles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a simple triangular grid: 4 nodes, two triangles, five edges.</p>
 </dd></dl>
 
@@ -460,9 +470,7 @@ though it won’t work!</p>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -482,7 +490,7 @@ though it won’t work!</p>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -501,6 +509,7 @@ though it won’t work!</p>
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'0.0.8',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -513,19 +522,13 @@ though it won’t work!</p>
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

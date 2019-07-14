@@ -24,26 +24,17 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="gridded 0.0.8 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -102,8 +93,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../non_conforming_data.html">Loading Non Conforming Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../non_conforming_data.html#if-your-files-conform-to-the-underlying-data-model">If your files conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../non_conforming_data.html#unstructured-grids">Unstructured Grids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#gridded-dataset"><code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#grid-objects">Grid objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#variable-objects">Variable objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#time-object">Time object</a></li>
@@ -142,7 +142,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">gridded</a>
@@ -150,9 +150,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -181,8 +182,6 @@
     
     
       <li class="wy-breadcrumbs-aside">
-        
-            
         
       </li>
     
@@ -334,8 +333,8 @@
             <span class="s1">&#39;sgrid_vel&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">dvx</span><span class="p">,</span> <span class="n">dvy</span><span class="p">),</span>
             <span class="s1">&#39;sgrid_depth_vel&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">tdvx</span><span class="p">,</span> <span class="n">tdvy</span><span class="p">),</span>
             <span class="s1">&#39;ugrid&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">lin_nodes</span><span class="p">,</span> <span class="n">lin_faces</span><span class="p">),</span>
-            <span class="s1">&#39;ugrid_depth_vel&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">lin_tdvx</span><span class="p">,</span> <span class="n">lin_tdvy</span><span class="p">)}</span></div>
-
+            <span class="s1">&#39;ugrid_depth_vel&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">lin_tdvx</span><span class="p">,</span> <span class="n">lin_tdvy</span><span class="p">)}</span>
+</div>
 
 <div class="viewcode-block" id="gen_sinusoid"><a class="viewcode-back" href="../../../gridded.tests.html#gridded.tests.gen_analytical_datasets.gen_sinusoid">[docs]</a><span class="k">def</span> <span class="nf">gen_sinusoid</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">:(</span><span class="mi">6</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">):</span><span class="mi">25</span><span class="n">j</span><span class="p">]</span>
@@ -413,8 +412,8 @@
     <span class="k">if</span> <span class="n">ds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Need to test the dataset...</span>
         <span class="n">sg</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">)</span>
-        <span class="n">ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
-
+        <span class="n">ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
 
 
 <div class="viewcode-block" id="gen_ring"><a class="viewcode-back" href="../../../gridded.tests.html#gridded.tests.gen_analytical_datasets.gen_ring">[docs]</a><span class="k">def</span> <span class="nf">gen_ring</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -461,8 +460,8 @@
             <span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="s1">&#39;m/s&#39;</span>
 
-        <span class="n">ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
-
+        <span class="n">ds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
 
 
 <div class="viewcode-block" id="gen_all"><a class="viewcode-back" href="../../../gridded.tests.html#gridded.tests.gen_analytical_datasets.gen_all">[docs]</a><span class="k">def</span> <span class="nf">gen_all</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -470,8 +469,8 @@
     <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">fn</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="p">(</span><span class="n">gen_sinusoid</span><span class="p">,</span> <span class="n">gen_vortex_3D</span><span class="p">,</span> <span class="n">gen_ring</span><span class="p">)):</span>
-        <span class="n">func</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span></div>
-
+        <span class="n">func</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+</div>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">gen_sinusoid</span><span class="p">(</span><span class="s1">&#39;staggered_sine_channel.nc&#39;</span><span class="p">)</span>
     <span class="n">gen_vortex_3D</span><span class="p">(</span><span class="s1">&#39;3D_circular.nc&#39;</span><span class="p">)</span>
@@ -479,9 +478,7 @@
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -494,7 +491,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -513,6 +510,7 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
             VERSION:'0.0.8',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -525,19 +523,13 @@
 
   
 
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

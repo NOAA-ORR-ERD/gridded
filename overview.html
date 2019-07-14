@@ -24,27 +24,19 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="gridded 0.0.8 documentation" href="index.html"/>
-        <link rel="next" title="Installing" href="installing.html"/>
-        <link rel="prev" title="Welcome to gridded’s documentation!" href="index.html"/> 
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installing" href="installing.html" />
+    <link rel="prev" title="Welcome to gridded’s documentation!" href="index.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -103,8 +95,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="non_conforming_data.html">Loading Non Conforming Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-conform-to-the-underlying-data-model">If your files conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#unstructured-grids">Unstructured Grids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#gridded-dataset"><code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#grid-objects">Grid objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#variable-objects">Variable objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#time-object">Time object</a></li>
@@ -143,7 +144,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">gridded</a>
@@ -151,9 +152,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -201,35 +203,33 @@
 <h2>Goals<a class="headerlink" href="#goals" title="Permalink to this headline">¶</a></h2>
 <p>The goal of this package is to present a single way to work with results from ANY hydrodynamic/oceanographic model – regardless of what type of grid it was computed on. In particular:</p>
 <ul class="simple">
-<li>Regular Structured Grids ([CF Conventions](<a class="reference external" href="http://cfconventions.org/">http://cfconventions.org/</a>)), with API embedded in [Iris](<a class="reference external" href="http://scitools.org.uk/iris/">http://scitools.org.uk/iris/</a>) and to some degree in [xarray](<a class="reference external" href="https://github.com/pydata/xarray">https://github.com/pydata/xarray</a>)</li>
-<li>Unstructured Grids (CF + [UGRID Conventions](<a class="reference external" href="https://github.com/ugrid-conventions/ugrid-conventions/blob/master/README.md">https://github.com/ugrid-conventions/ugrid-conventions/blob/master/README.md</a>)), with nascent API in [pyugrid](<a class="reference external" href="https://github.com/pyugrid/pyugrid">https://github.com/pyugrid/pyugrid</a>)</li>
-<li>Staggered Grids (CF + [SGRID Conventions](<a class="reference external" href="https://publicwiki.deltares.nl/display/NETCDF/Deltares+proposal+for+Staggered+Grid+data+model">https://publicwiki.deltares.nl/display/NETCDF/Deltares+proposal+for+Staggered+Grid+data+model</a>)) with nascent API in [pysgrid](<a class="reference external" href="https://github.com/sgrid/pysgrid">https://github.com/sgrid/pysgrid</a>)</li>
+<li>Regular Structured Grids (<a class="reference external" href="http://cfconventions.org/">CF Conventions</a>), with API embedded in <a class="reference external" href="http://scitools.org.uk/iris/">Iris</a> and to some degree in <a class="reference external" href="https://github.com/pydata/xarray">xarray</a></li>
+<li>Unstructured Grids (CF + <a class="reference external" href="https://github.com/ugrid-conventions/ugrid-conventions/blob/master/README.md">UGRID Conventions</a>), with nascent API in <a class="reference external" href="https://github.com/pyugrid/pyugrid">pyugrid</a></li>
+<li>Staggered Grids (CF + <a class="reference external" href="https://publicwiki.deltares.nl/display/NETCDF/Deltares+proposal+for+Staggered+Grid+data+model">SGRID Conventions</a>) with nascent API in <a class="reference external" href="https://github.com/sgrid/pysgrid">pysgrid</a></li>
 </ul>
-<p><code class="docutils literal"><span class="pre">gridded</span></code> could/should be useful for other types of gridded data, in particular meteorological models, but so far has motly been developed/tested with oceanographic models.</p>
+<p><code class="docutils literal notranslate"><span class="pre">gridded</span></code> could/should be useful for other types of gridded data, in particular meteorological models, but so far has motly been developed/tested with oceanographic models.</p>
 </div>
 <div class="section" id="why-gridded">
 <h2>Why gridded?<a class="headerlink" href="#why-gridded" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal"><span class="pre">gridded</span></code> has been developed because a number of us need to work with multiple model types, and have found ourselves writing a lot of custom code for each type. In particular, inter-comparison of results is an ugly process. To preserve the integrity of the results, it’s best to NOT interpolate on to a common grid. <code class="docutils literal"><span class="pre">gridded</span></code> lets one work with multiple model types with the same API, while preserving the native grid as much as possible.</p>
-<p>Other solutions have (so far) built assumptions about the underlying grid type into the code and API, making it difficult to adapt to other grid types. Nevertheless, <code class="docutils literal"><span class="pre">gridded</span></code> hopes to learn from the the fabulous work done by other packages, such as:</p>
+<p><code class="docutils literal notranslate"><span class="pre">gridded</span></code> has been developed because a number of us need to work with multiple model types, and have found ourselves writing a lot of custom code for each type. In particular, inter-comparison of results is an ugly process. To preserve the integrity of the results, it’s best to NOT interpolate on to a common grid. <code class="docutils literal notranslate"><span class="pre">gridded</span></code> lets one work with multiple model types with the same API, while preserving the native grid as much as possible.</p>
+<p>Other solutions have (so far) built assumptions about the underlying grid type into the code and API, making it difficult to adapt to other grid types. Nevertheless, <code class="docutils literal notranslate"><span class="pre">gridded</span></code> hopes to learn from the the fabulous work done by other packages, such as:</p>
 <p>Iris: <a class="reference external" href="http://scitools.org.uk/iris/">http://scitools.org.uk/iris/</a> and xarray: <a class="reference external" href="https://github.com/pydata/xarray">https://github.com/pydata/xarray</a></p>
 </div>
 <div class="section" id="data-standards">
 <h2>Data standards<a class="headerlink" href="#data-standards" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal"><span class="pre">gridded</span></code> seeks to support data standards such as:</p>
+<p><code class="docutils literal notranslate"><span class="pre">gridded</span></code> seeks to support data standards such as:</p>
 <ul class="simple">
 <li>The CF Conventions: <a class="reference external" href="http://cfconventions.org/">http://cfconventions.org/</a></li>
 <li>UGRID Conventions: <a class="reference external" href="http://ugrid-conventions.github.io/ugrid-conventions/">http://ugrid-conventions.github.io/ugrid-conventions/</a></li>
 <li>SGRID Conventions: <a class="reference external" href="http://sgrid.github.io/sgrid/">http://sgrid.github.io/sgrid/</a></li>
 </ul>
-<p><code class="docutils literal"><span class="pre">gridded</span></code> also provided APIs for reading results that do not conform to the conventions, allowing one to work with non-confirming datasets with the same API, as well as providing tools to convert non-confirming files to conforming files.</p>
+<p><code class="docutils literal notranslate"><span class="pre">gridded</span></code> also provided APIs for reading results that do not conform to the conventions, allowing one to work with non-confirming datasets with the same API, as well as providing tools to convert non-confirming files to conforming files (incomplete).</p>
 </div>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -251,7 +251,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -270,6 +270,7 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'0.0.8',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -282,19 +283,13 @@
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

@@ -1,0 +1,437 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Loading Non Conforming Data &mdash; gridded 0.0.8 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="gridded API" href="api_reference.html" />
+    <link rel="prev" title="Tutorial" href="tutorial.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> gridded
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#goals">Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#why-gridded">Why gridded?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#data-standards">Data standards</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installing.html#pip">pip</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installing.html#from-source">From source</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installing.html#conda">conda</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installing.html#conda-forge">conda-forge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installing.html#environments">Environments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Loading Non Conforming Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#if-your-files-conform-to-the-underlying-data-model">If your files conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#unstructured-grids">Unstructured Grids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#curvilinear-grids">Curvilinear Grids</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#gridded-dataset"><code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#grid-objects">Grid objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#variable-objects">Variable objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#time-object">Time object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#depth-object">Depth object</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html#design-principles">Design Principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#grid-independence">Grid Independence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#duck-typing">Duck Typing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#lazy-loading-data-arrays">Lazy loading / data arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html#reference">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gridded.html">gridded package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.depth">gridded.depth module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.gridded">gridded.gridded module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.grids">gridded.grids module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.time">gridded.time module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.utilities">gridded.utilities module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded.variable">gridded.variable module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridded.html#module-gridded">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">gridded</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Loading Non Conforming Data</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/non_conforming_data.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="loading-non-conforming-data">
+<h1>Loading Non Conforming Data<a class="headerlink" href="#loading-non-conforming-data" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">gridded</span></code> is designed to conform to the data model desribed by the following standards:</p>
+<p>CF: <a class="reference external" href="http://cfconventions.org/">http://cfconventions.org/</a></p>
+<p>UGRID: <a class="reference external" href="http://ugrid-conventions.github.io/ugrid-conventions/">http://ugrid-conventions.github.io/ugrid-conventions/</a></p>
+<p>SGRID: <a class="reference external" href="http://sgrid.github.io/sgrid/">http://sgrid.github.io/sgrid/</a></p>
+<p>If your data files conform to those convensions, the <code class="docutils literal notranslate"><span class="pre">gridded</span></code> should load them automatically:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gridded</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;the_name_of_the_file&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>However, if your files do not conform to those convensions, <code class="docutils literal notranslate"><span class="pre">gridded</span></code> may not be able to figure out what to do, or may do the wrong thing. You have to provide it with more information.</p>
+<div class="section" id="if-your-files-conform-to-the-underlying-data-model">
+<h2>If your files conform to the underlying data model<a class="headerlink" href="#if-your-files-conform-to-the-underlying-data-model" title="Permalink to this headline">¶</a></h2>
+<p>Many times, the data in your files (in particular netcdf) conform to the underlying data model, but does not have the full metadata to describe the relationship between the variables. In this case, you can provide a mapping of netcdf variable names to the role in the grid:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">names_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nodes_lon&#39;</span><span class="p">:</span> <span class="s1">&#39;lon&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;nodes_lat&#39;</span><span class="p">:</span> <span class="s1">&#39;lat&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;faces&#39;</span><span class="p">:</span> <span class="s1">&#39;nbe&#39;</span><span class="p">,</span>
+                 <span class="p">}</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">gridded</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="o">=</span><span class="s2">&quot;COOPS_SFBOFS.nc&quot;</span><span class="p">,</span>
+      <span class="n">grid_topology</span><span class="o">=</span><span class="n">names_mapping</span>
+      <span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="unstructured-grids">
+<h3>Unstructured Grids<a class="headerlink" href="#unstructured-grids" title="Permalink to this headline">¶</a></h3>
+<p>(See the UGRID standard for more detailed explanation)</p>
+<p>The core “parts” of the grid are:</p>
+<p>Minimum Required (You can make a UGrid that has no actual mesh, but it’s not very useful)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nodes</span>  <span class="p">(</span><span class="n">Nx2</span> <span class="n">array</span> <span class="n">of</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span> <span class="n">coordinates</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nodes_lat</span>
+<span class="n">nodes_lon</span>
+</pre></div>
+</div>
+<p>UGrid internally requires a single Nx2 array of coordinates for the nodes. It will concatenate separate arrays for you when constructing the grid object.</p>
+<p>Usually Required (You can make a UGrid that has no actual mesh, but it’s not very useful):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">faces</span>
+</pre></div>
+</div>
+<p>The faces define the grid itself, in terms of the nodes. “face” is a 2D cell.</p>
+<p>Optional: (a number of these can be constructed for you by <code class="docutils literal notranslate"><span class="pre">gridded</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">edges</span>
+<span class="n">boundaries</span>
+<span class="n">face_face_connectivity</span>
+<span class="n">face_edge_connectivity</span>
+<span class="n">edge_coordinates</span>
+<span class="n">face_coordinates</span>
+<span class="n">boundary_coordinates</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="curvilinear-grids">
+<h3>Curvilinear Grids<a class="headerlink" href="#curvilinear-grids" title="Permalink to this headline">¶</a></h3>
+<p>(See the SGRID standard for more detailed explanation)</p>
+<p>The core “parts” of the grid are:</p>
+<div class="section" id="minimum-required">
+<h4>Minimum Required<a class="headerlink" href="#minimum-required" title="Permalink to this headline">¶</a></h4>
+<p>Nodes of the grid – MxNx2 arrays:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">node_lon</span>
+<span class="n">node_lat</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="optional">
+<h4>Optional<a class="headerlink" href="#optional" title="Permalink to this headline">¶</a></h4>
+<p>If some elements in the node arrays are invalid, the mask:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">node_mask</span>
+</pre></div>
+</div>
+<p>If there are data on cell centers:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">center_lon</span>
+<span class="n">center_lat</span>
+<span class="n">center_mask</span>
+</pre></div>
+</div>
+<p>If there are data on the cell edges:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">edge1_lon</span>
+<span class="n">edge1_lat</span>
+<span class="n">edge1_mask</span>
+<span class="n">edge2_lon</span>
+<span class="n">edge2_lat</span>
+<span class="n">edge2_mask</span>
+</pre></div>
+</div>
+<p>For staggered grids, if there is padding: “none”, high”, “low”, “both”</p>
+<blockquote>
+<div>node_padding
+edge1_padding
+edge2_padding
+face_padding</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="if-your-files-do-not-conform-to-the-underlying-data-model">
+<h2>If your files do not conform to the underlying data model<a class="headerlink" href="#if-your-files-do-not-conform-to-the-underlying-data-model" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">gridded</span></code> Datasets can be initialized entirely with direct data in anything that can be “turned in to” a numpy array: lists, numpy arrays, etc.</p>
+<p>So your files can be in a totally different file format (text, etc), or be in netcdf in a form that is incompatible with the standards, you can pre-process the input data, and construct the parts of the <code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code>:</p>
+<p>Here is an example of an unstructured grid:</p>
+<p>(Complete example in the Examples dir: <code class="docutils literal notranslate"><span class="pre">gridded/Examples/load_arbitrary_ugrid.py</span></code>)</p>
+<p>A complete <code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code> has:</p>
+<ul class="simple">
+<li>A Grid object</li>
+</ul>
+<p>Optionally:</p>
+<ul class="simple">
+<li>Variables containing data on that grid.</li>
+<li>A Time object if the data are time dependent</li>
+<li>A Depth object, if the data are 3-d</li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nc</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;SanDiego.nc&quot;</span><span class="p">)</span>
+
+<span class="c1"># need to convert to zero-indexing</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;nodes&#39;</span><span class="p">][:]</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">faces</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;E3T&#39;</span><span class="p">][:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+
+<span class="c1"># make the grid</span>
+<span class="c1"># gridded.grids.Grid_U</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">gridded</span><span class="o">.</span><span class="n">grids</span><span class="o">.</span><span class="n">Grid_U</span><span class="p">(</span><span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">,</span>
+                            <span class="n">faces</span><span class="o">=</span><span class="n">faces</span><span class="p">,</span>
+                            <span class="p">)</span>
+
+<span class="c1"># make the time object (handles time interpolation, etc)</span>
+<span class="n">times_var</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;times&#39;</span><span class="p">][:]</span>
+
+<span class="c1"># Time axis needs to be a list of datetime objects.</span>
+<span class="c1"># If the meta data are not there in the netcdf file, you have to do it by hand.</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2019</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+<span class="n">times</span> <span class="o">=</span> <span class="p">[</span><span class="n">start</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">times_var</span><span class="p">]</span>
+
+<span class="c1"># This isn&#39;t a compliant file, so this will not work.</span>
+<span class="c1"># time_obj = gridded.time.Time.from_netCDF(dataset=nc,</span>
+<span class="c1">#                                          varname=&#39;times&#39;)</span>
+
+<span class="n">time_obj</span> <span class="o">=</span> <span class="n">gridded</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">times</span><span class="p">,</span>
+                             <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                             <span class="n">varname</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                             <span class="n">tz_offset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                             <span class="n">origin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                             <span class="n">displacement</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">0</span><span class="p">),)</span>
+
+<span class="c1"># make the variables</span>
+<span class="n">depth</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;Depth&#39;</span><span class="p">]</span>
+
+<span class="n">depth_var</span> <span class="o">=</span> <span class="n">gridded</span><span class="o">.</span><span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                      <span class="n">units</span><span class="o">=</span><span class="s2">&quot;meters&quot;</span><span class="p">,</span>
+                                      <span class="n">time</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                      <span class="n">data</span><span class="o">=</span><span class="n">depth</span><span class="p">,</span>
+                                      <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
+                                      <span class="n">depth</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                      <span class="n">data_file</span><span class="o">=</span><span class="n">nc</span><span class="p">,</span>
+                                      <span class="n">grid_file</span><span class="o">=</span><span class="n">nc</span><span class="p">,</span>
+                                      <span class="n">dataset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                      <span class="n">varname</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="c1"># huh??</span>
+                                      <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                      <span class="n">attributes</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+
+<span class="c1"># global attributes</span>
+<span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">nc</span><span class="o">.</span><span class="n">getncattr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">()}</span>
+
+<span class="c1"># now make a dataset out of it all:</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">gridded</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                     <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
+                     <span class="n">variables</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Depth&#39;</span><span class="p">:</span> <span class="n">depth_var</span><span class="p">},</span>
+                     <span class="n">attributes</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api_reference.html" class="btn btn-neutral float-right" title="gridded API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="tutorial.html" class="btn btn-neutral" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright .
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.8',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -24,26 +24,17 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="gridded 0.0.8 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -102,8 +93,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../non_conforming_data.html">Loading Non Conforming Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../non_conforming_data.html#if-your-files-conform-to-the-underlying-data-model">If your files conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../non_conforming_data.html#unstructured-grids">Unstructured Grids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#gridded-dataset"><code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#grid-objects">Grid objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#variable-objects">Variable objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#time-object">Time object</a></li>
@@ -142,7 +142,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">gridded</a>
@@ -150,9 +150,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -181,8 +182,6 @@
     
     
       <li class="wy-breadcrumbs-aside">
-        
-            
         
       </li>
     
@@ -237,8 +236,8 @@
                <span class="s1">&#39;Got </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">(</span><span class="n">topology_dimension</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">grid_topology</span><span class="o">.</span><span class="n">name</span></div>
-
+    <span class="k">return</span> <span class="n">grid_topology</span><span class="o">.</span><span class="n">name</span>
+</div>
 
 <div class="viewcode-block" id="parse_padding"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.read_netcdf.parse_padding">[docs]</a><span class="k">def</span> <span class="nf">parse_padding</span><span class="p">(</span><span class="n">padding_str</span><span class="p">,</span> <span class="n">mesh_topology_var</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -285,8 +284,8 @@
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;The netCDF file appears to have conform to SGRID conventions, &#39;</span>
                <span class="s1">&#39;but padding values cannot be found.&#39;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">final_padding_types</span></div>
-
+    <span class="k">return</span> <span class="n">final_padding_types</span>
+</div>
 
 <div class="viewcode-block" id="parse_axes"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.read_netcdf.parse_axes">[docs]</a><span class="k">def</span> <span class="nf">parse_axes</span><span class="p">(</span><span class="n">axes_attr</span><span class="p">):</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;([a-zA-Z]: [a-zA-Z_]+)&#39;</span><span class="p">)</span>
@@ -304,8 +303,8 @@
             <span class="n">y_axis</span> <span class="o">=</span> <span class="n">axis_coordinate</span>
         <span class="k">elif</span> <span class="n">axis_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span>
             <span class="n">z_axis</span> <span class="o">=</span> <span class="n">axis_coordinate</span>
-    <span class="k">return</span> <span class="n">x_axis</span><span class="p">,</span> <span class="n">y_axis</span><span class="p">,</span> <span class="n">z_axis</span></div>
-
+    <span class="k">return</span> <span class="n">x_axis</span><span class="p">,</span> <span class="n">y_axis</span><span class="p">,</span> <span class="n">z_axis</span>
+</div>
 
 <div class="viewcode-block" id="parse_vector_axis"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.read_netcdf.parse_vector_axis">[docs]</a><span class="k">def</span> <span class="nf">parse_vector_axis</span><span class="p">(</span><span class="n">variable_standard_name</span><span class="p">):</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;[a-z_]+_[xyz]_[a-z_]+&#39;</span><span class="p">)</span>
@@ -316,8 +315,8 @@
         <span class="n">vector_direction</span> <span class="o">=</span> <span class="n">direction_substr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">vector_direction</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="n">vector_direction</span></div>
-
+    <span class="k">return</span> <span class="n">vector_direction</span>
+</div>
 
 <div class="viewcode-block" id="NetCDFDataset"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.read_netcdf.NetCDFDataset">[docs]</a><span class="k">class</span> <span class="nc">NetCDFDataset</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
@@ -363,8 +362,8 @@
         <span class="k">if</span> <span class="n">x_node_coordinate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y_node_coordinate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x_node_coordinate</span><span class="p">,</span> <span class="n">y_node_coordinate</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
-
+            <span class="k">return</span> <span class="kc">None</span>
+</div>
 <div class="viewcode-block" id="NetCDFDataset.find_variables_by_attr"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.read_netcdf.NetCDFDataset.find_variables_by_attr">[docs]</a>    <span class="k">def</span> <span class="nf">find_variables_by_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">nc_vars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc</span><span class="o">.</span><span class="n">variables</span>
         <span class="n">matches</span> <span class="o">=</span> <span class="p">[]</span>
@@ -381,8 +380,8 @@
                     <span class="n">attr_tracking</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">nc_var_attr_value</span>
                 <span class="k">if</span> <span class="n">attr_tracking</span> <span class="o">==</span> <span class="n">kwargs</span><span class="p">:</span>
                     <span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nc_var</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">matches</span></div>
-
+        <span class="k">return</span> <span class="n">matches</span>
+</div>
 <div class="viewcode-block" id="NetCDFDataset.find_coordinates_by_location"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.read_netcdf.NetCDFDataset.find_coordinates_by_location">[docs]</a>    <span class="k">def</span> <span class="nf">find_coordinates_by_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location_str</span><span class="p">,</span> <span class="n">topology_dim</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find a grid coordinates variables with a location attribute equal</span>
@@ -461,8 +460,8 @@
             <span class="n">coordinate_result</span> <span class="o">=</span> <span class="n">coordinates</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">coordinate_result</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">coordinate_result</span></div>
-
+        <span class="k">return</span> <span class="n">coordinate_result</span>
+</div>
 <div class="viewcode-block" id="NetCDFDataset.sgrid_compliant_file"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.read_netcdf.NetCDFDataset.sgrid_compliant_file">[docs]</a>    <span class="k">def</span> <span class="nf">sgrid_compliant_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine whether a dataset is</span>
@@ -477,13 +476,11 @@
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">e</span>
 
-        <span class="k">return</span> <span class="kc">True</span></div></div>
-</pre></div>
+        <span class="k">return</span> <span class="kc">True</span>
+</pre></div></div></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -496,7 +493,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -515,6 +512,7 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
             VERSION:'0.0.8',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -527,19 +525,13 @@
 
   
 
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

@@ -24,26 +24,17 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="gridded 0.0.8 documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/> 
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -102,8 +93,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../non_conforming_data.html">Loading Non Conforming Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../non_conforming_data.html#if-your-files-conform-to-the-underlying-data-model">If your files conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../non_conforming_data.html#unstructured-grids">Unstructured Grids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#gridded-dataset"><code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#grid-objects">Grid objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#variable-objects">Variable objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#time-object">Time object</a></li>
@@ -142,7 +142,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">gridded</a>
@@ -150,9 +150,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -181,8 +182,6 @@
     
     
       <li class="wy-breadcrumbs-aside">
-        
-            
         
       </li>
     
@@ -229,7 +228,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_def_count</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">obj_type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1">#JAH- Does this have a purpose?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_def_count</span> <span class="o">+=</span> <span class="mi">1</span>
 
@@ -332,7 +330,7 @@
     <span class="k">def</span> <span class="nf">_find_required_grid_attrs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">grid_topology</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
         <span class="n">gf_vars</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span> <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">variables</span>
-        <span class="n">gf_vars</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">gf_vars</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span> <span class="p">)</span>
+        <span class="n">gf_vars</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">gf_vars</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
         <span class="c1"># Get superset attributes</span>
         <span class="n">init_args</span><span class="p">,</span> <span class="n">gt</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Grid_U</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">_find_required_grid_attrs</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
                                                                      <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
@@ -365,17 +363,19 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Nodes of a quad grid must be 2 dimensional&#39;</span><span class="p">)</span>
         <span class="n">lin_nodes</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">):</span>
-            <span class="n">lin_nodes</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)[</span><span class="n">nodes</span><span class="p">]</span></div></div>
+            <span class="n">lin_nodes</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)[</span><span class="n">nodes</span><span class="p">]</span></div></div>
+
 
 <div class="viewcode-block" id="Grid_S"><a class="viewcode-back" href="../../gridded.html#gridded.grids.Grid_S">[docs]</a><span class="k">class</span> <span class="nc">Grid_S</span><span class="p">(</span><span class="n">GridBase</span><span class="p">,</span> <span class="n">SGrid</span><span class="p">):</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_find_required_grid_attrs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">grid_topology</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-        <span class="c1"># THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional attributes are dealt with</span>
+        <span class="c1"># THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional attributes</span>
+        <span class="c1">#   are dealt with</span>
         <span class="c1"># Get superset attributes</span>
         <span class="n">gf_vars</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span> <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">variables</span>
-        <span class="n">gf_vars</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">gf_vars</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span> <span class="p">)</span>
+        <span class="n">gf_vars</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">gf_vars</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
         <span class="n">init_args</span><span class="p">,</span> <span class="n">gt</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Grid_S</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">_find_required_grid_attrs</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
                                                                      <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
                                                                      <span class="n">grid_topology</span><span class="o">=</span><span class="n">grid_topology</span><span class="p">)</span>
@@ -428,7 +428,8 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_find_required_grid_attrs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">grid_topology</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-        <span class="c1"># THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional attributes are dealt with</span>
+        <span class="c1"># THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional attributes</span>
+        <span class="c1"># are dealt with</span>
         <span class="c1"># Get superset attributes</span>
         <span class="n">gf_vars</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span> <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">variables</span>
         <span class="n">gf_vars</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">gf_vars</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span> <span class="p">)</span>
@@ -436,12 +437,12 @@
                                                                      <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
                                                                      <span class="n">grid_topology</span><span class="o">=</span><span class="n">grid_topology</span><span class="p">)</span>
 
-        <span class="c1">#Grid_R only needs node_lon and node_lat. However, they must be a specific shape (1D)</span>
+        <span class="c1"># Grid_R only needs node_lon and node_lat. However, they must be a specific shape (1D)</span>
         <span class="n">node_lon</span> <span class="o">=</span> <span class="n">init_args</span><span class="p">[</span><span class="s1">&#39;node_lon&#39;</span><span class="p">]</span>
         <span class="n">node_lat</span> <span class="o">=</span> <span class="n">init_args</span><span class="p">[</span><span class="s1">&#39;node_lat&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_lon</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Too many dimensions in node_lon. Must be 1D, was </span><span class="si">{0}</span><span class="s1">D&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">node_lon</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
-        <span class="k">if</span>  <span class="nb">len</span><span class="p">(</span><span class="n">node_lat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_lat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Too many dimensions in node_lat. Must be 1D, was </span><span class="si">{0}</span><span class="s1">D&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">node_lat</span><span class="o">.</span><span class="n">shape</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">init_args</span><span class="p">,</span> <span class="n">gt</span>
 
@@ -451,11 +452,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">center_lon</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">/</span><span class="mi">2</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">center_lat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_lat</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lat</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">/</span><span class="mi">2</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_lat</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lat</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">centers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -480,8 +481,8 @@
         <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">just_one</span> <span class="o">=</span> <span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">lons</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">lats</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">lons</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">lats</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="n">lon_idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">lons</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lon_idxs</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
@@ -518,11 +519,15 @@
             <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="p">[</span><span class="n">slices</span><span class="p">]</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span> <span class="k">if</span> <span class="n">variable</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lat</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lat</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span>
-        <span class="n">interp_func</span> <span class="o">=</span> <span class="n">RegularGridInterpolator</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">variable</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">interp_func</span> <span class="o">=</span> <span class="n">RegularGridInterpolator</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
+                                              <span class="n">variable</span><span class="p">,</span>
+                                              <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+                                              <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                              <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_lon</span><span class="p">:</span>
             <span class="n">vals</span> <span class="o">=</span> <span class="n">interp_func</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">vals</span> <span class="o">=</span> <span class="n">interp_func</span><span class="p">(</span><span class="n">points</span><span class="p">[:,::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="n">interp_func</span><span class="p">(</span><span class="n">points</span><span class="p">[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">just_one</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -530,12 +535,14 @@
 
 <div class="viewcode-block" id="Grid_R.infer_location"><a class="viewcode-back" href="../../gridded.html#gridded.grids.Grid_R.infer_location">[docs]</a>    <span class="k">def</span> <span class="nf">infer_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Assuming default is node grid, check variable dimensions to determine which grid</span>
-<span class="sd">        it is on.</span>
+<span class="sd">        fixme: should first look for &quot;location&quot; attribute.</span>
+
+<span class="sd">        But now we are checking variable dimensions to which part</span>
+<span class="sd">        of the grid it is on.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">node_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">centers_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">centers</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># centers_shape = self.centers.shape[0:-1]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
@@ -557,8 +564,8 @@
 
 <div class="viewcode-block" id="Grid"><a class="viewcode-back" href="../../gridded.html#gridded.grids.Grid">[docs]</a><span class="k">class</span> <span class="nc">Grid</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Factory class that generates grid objects. Also handles common loading and</span>
-<span class="sd">    parsing operations</span>
+<span class="sd">    Factory class that generates grid objects. Also handles common</span>
+<span class="sd">    loading and parsing operations</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -592,7 +599,9 @@
                     <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">grid_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">grid_topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">_default_types</span><span class="o">=</span><span class="p">((</span><span class="s1">&#39;ugrid&#39;</span><span class="p">,</span> <span class="n">Grid_U</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;sgrid&#39;</span><span class="p">,</span> <span class="n">Grid_S</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;rgrid&#39;</span><span class="p">,</span> <span class="n">Grid_R</span><span class="p">)),</span>
+                    <span class="n">_default_types</span><span class="o">=</span><span class="p">((</span><span class="s1">&#39;ugrid&#39;</span><span class="p">,</span> <span class="n">Grid_U</span><span class="p">),</span>
+                                    <span class="p">(</span><span class="s1">&#39;sgrid&#39;</span><span class="p">,</span> <span class="n">Grid_S</span><span class="p">),</span>
+                                    <span class="p">(</span><span class="s1">&#39;rgrid&#39;</span><span class="p">,</span> <span class="n">Grid_R</span><span class="p">)),</span>
                     <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
@@ -610,8 +619,9 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No filename or dataset provided&#39;</span><span class="p">)</span>
 
         <span class="bp">cls</span> <span class="o">=</span> <span class="n">grid_type</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">grid_type</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">grid_type</span><span class="p">,</span> <span class="n">string_types</span><span class="p">)</span> <span class="ow">or</span>
-                                 <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">grid_type</span><span class="p">,</span> <span class="n">GridBase</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">grid_type</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">grid_type</span><span class="p">,</span> <span class="n">string_types</span><span class="p">)</span> <span class="ow">or</span>
+                <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">grid_type</span><span class="p">,</span> <span class="n">GridBase</span><span class="p">)):</span>
             <span class="bp">cls</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">_get_grid_type</span><span class="p">(</span><span class="n">gf</span><span class="p">,</span> <span class="n">grid_type</span><span class="p">,</span> <span class="n">grid_topology</span><span class="p">,</span> <span class="n">_default_types</span><span class="p">)</span>
         <span class="n">compliant</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">_find_topology_var</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">gf</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">compliant</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -626,8 +636,13 @@
         <span class="k">return</span> <span class="n">c</span></div>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_grid_type</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">grid_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">grid_topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_default_types</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-
+    <span class="k">def</span> <span class="nf">_get_grid_type</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span>
+                       <span class="n">grid_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">grid_topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">_default_types</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># fixme: this logic should probably be defered to</span>
+        <span class="c1">#        the grid type code -- that is, ask each grid</span>
+        <span class="c1">#        type if this dataset is its type.</span>
         <span class="k">if</span> <span class="n">_default_types</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">_default_types</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -639,7 +654,7 @@
 
         <span class="n">sgrid_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sgrid&#39;</span><span class="p">,</span> <span class="s1">&#39;pygrid_s&#39;</span><span class="p">,</span> <span class="s1">&#39;staggered&#39;</span><span class="p">,</span> <span class="s1">&#39;curvilinear&#39;</span><span class="p">,</span> <span class="s1">&#39;roms&#39;</span><span class="p">]</span>
         <span class="n">ugrid_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ugrid&#39;</span><span class="p">,</span> <span class="s1">&#39;pygrid_u&#39;</span><span class="p">,</span> <span class="s1">&#39;triangular&#39;</span><span class="p">,</span> <span class="s1">&#39;unstructured&#39;</span><span class="p">]</span>
-        <span class="n">rgrid_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rgrid&#39;</span><span class="p">,</span><span class="s1">&#39;regular&#39;</span><span class="p">,</span> <span class="s1">&#39;rectangular&#39;</span><span class="p">,</span> <span class="s1">&#39;rectilinear&#39;</span><span class="p">]</span>
+        <span class="n">rgrid_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rgrid&#39;</span><span class="p">,</span> <span class="s1">&#39;regular&#39;</span><span class="p">,</span> <span class="s1">&#39;rectangular&#39;</span><span class="p">,</span> <span class="s1">&#39;rectilinear&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">grid_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">grid_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">sgrid_names</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">Grid_S</span>
@@ -651,7 +666,7 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Specified grid_type not recognized/supported&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">grid_topology</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;faces&#39;</span> <span class="ow">in</span> <span class="n">grid_topology</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">or</span>
-                <span class="n">grid_topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grid_type&#39;</span><span class="p">,</span> <span class="s1">&#39;notype&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ugrid_names</span><span class="p">):</span>
+                    <span class="n">grid_topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grid_type&#39;</span><span class="p">,</span> <span class="s1">&#39;notype&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ugrid_names</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">Grid_U</span>
             <span class="k">elif</span> <span class="n">grid_topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grid_type&#39;</span><span class="p">,</span> <span class="s1">&#39;notype&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">rgrid_names</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">Grid_R</span>
@@ -660,7 +675,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># no topology, so search dataset for grid_type variable</span>
             <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s1">&#39;grid_type&#39;</span><span class="p">)</span> <span class="ow">and</span>
-                <span class="n">dataset</span><span class="o">.</span><span class="n">grid_type</span> <span class="ow">in</span> <span class="n">sgrid_names</span> <span class="o">+</span> <span class="n">ugrid_names</span><span class="p">):</span>
+                    <span class="n">dataset</span><span class="o">.</span><span class="n">grid_type</span> <span class="ow">in</span> <span class="n">sgrid_names</span> <span class="o">+</span> <span class="n">ugrid_names</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">dataset</span><span class="o">.</span><span class="n">grid_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ugrid_names</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">Grid_U</span>
                 <span class="k">elif</span> <span class="n">dataset</span><span class="o">.</span><span class="n">grid_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">rgrid_names</span><span class="p">:</span>
@@ -668,13 +683,14 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">Grid_S</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># TODO: Determine an effective decision tree for picking if a topology variable is present</span>
+                <span class="c1"># TODO: Determine an effective decision tree for picking if</span>
+                <span class="c1">#       a topology variable is present</span>
                 <span class="c1"># no grid type explicitly specified. is a topology variable present?</span>
                 <span class="n">topology</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">_find_topology_var</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="n">topology</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="s1">&#39;node_coordinates&#39;</span><span class="p">)</span> <span class="ow">and</span>
-                          <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="s1">&#39;node_dimensions&#39;</span><span class="p">)):</span>
+                            <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="s1">&#39;node_dimensions&#39;</span><span class="p">)):</span>
                         <span class="k">return</span> <span class="n">Grid_U</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="k">return</span> <span class="n">Grid_S</span>
@@ -708,9 +724,7 @@
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -723,7 +737,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -742,6 +756,7 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
             VERSION:'0.0.8',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -754,19 +769,13 @@
 
   
 
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

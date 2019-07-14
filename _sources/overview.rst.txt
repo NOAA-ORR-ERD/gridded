@@ -8,11 +8,11 @@ Goals
 The goal of this package is to present a single way to work with results from ANY hydrodynamic/oceanographic model -- regardless of what type of grid it was computed on. In particular:
 
 
-* Regular Structured Grids ([CF Conventions](http://cfconventions.org/)), with API embedded in [Iris](http://scitools.org.uk/iris/) and to some degree in [xarray](https://github.com/pydata/xarray)
+* Regular Structured Grids (`CF Conventions <http://cfconventions.org/>`_), with API embedded in `Iris <http://scitools.org.uk/iris/>`_ and to some degree in `xarray <https://github.com/pydata/xarray>`_
 
-* Unstructured Grids (CF + [UGRID Conventions](https://github.com/ugrid-conventions/ugrid-conventions/blob/master/README.md)), with nascent API in [pyugrid](https://github.com/pyugrid/pyugrid)
+* Unstructured Grids (CF + `UGRID Conventions <https://github.com/ugrid-conventions/ugrid-conventions/blob/master/README.md>`_), with nascent API in `pyugrid <https://github.com/pyugrid/pyugrid>`_
 
-* Staggered Grids (CF + [SGRID Conventions](https://publicwiki.deltares.nl/display/NETCDF/Deltares+proposal+for+Staggered+Grid+data+model)) with nascent API in [pysgrid](https://github.com/sgrid/pysgrid)
+* Staggered Grids (CF + `SGRID Conventions <https://publicwiki.deltares.nl/display/NETCDF/Deltares+proposal+for+Staggered+Grid+data+model>`_) with nascent API in `pysgrid <https://github.com/sgrid/pysgrid>`_
 
 ``gridded`` could/should be useful for other types of gridded data, in particular meteorological models, but so far has motly been developed/tested with oceanographic models.
 
@@ -36,5 +36,5 @@ Data standards
 
 * SGRID Conventions: http://sgrid.github.io/sgrid/
 
-``gridded`` also provided APIs for reading results that do not conform to the conventions, allowing one to work with non-confirming datasets with the same API, as well as providing tools to convert non-confirming files to conforming files.
+``gridded`` also provided APIs for reading results that do not conform to the conventions, allowing one to work with non-confirming datasets with the same API, as well as providing tools to convert non-confirming files to conforming files (incomplete).
 

@@ -24,26 +24,17 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="gridded 0.0.8 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -102,8 +93,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../non_conforming_data.html">Loading Non Conforming Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../non_conforming_data.html#if-your-files-conform-to-the-underlying-data-model">If your files conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../non_conforming_data.html#unstructured-grids">Unstructured Grids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#gridded-dataset"><code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#grid-objects">Grid objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#variable-objects">Variable objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#time-object">Time object</a></li>
@@ -142,7 +142,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">gridded</a>
@@ -150,9 +150,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -182,8 +183,6 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
-        
       </li>
     
   </ul>
@@ -203,18 +202,22 @@
 <span class="sd">https://github.com/ugrid-conventions/ugrid-conventions/</span>
 
 <span class="sd">This code is called by the UGrid class to load into a UGRID object.</span>
-
-<span class="sd">    NOTE: passing the UGrid object in to avoid circular references,</span>
-<span class="sd">    while keeping the netcdf reading code in its own file.</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="c1"># NOTE: passing the UGrid object in to avoid circular references,</span>
+<span class="c1"># while keeping the netcdf reading code in its own file.</span>
+
+
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">netCDF4</span>
 
 <span class="kn">from</span> <span class="nn">.uvar</span> <span class="k">import</span> <span class="n">UVar</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="find_mesh_names"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.read_netcdf.find_mesh_names">[docs]</a><span class="k">def</span> <span class="nf">find_mesh_names</span><span class="p">(</span><span class="n">nc</span><span class="p">):</span>
@@ -244,14 +247,19 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">mesh_var</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Key error </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">varname</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">mesh_var</span><span class="o">.</span><span class="n">cf_role</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;mesh_topology&#39;</span> <span class="ow">and</span>
-           <span class="nb">int</span><span class="p">(</span><span class="n">mesh_var</span><span class="o">.</span><span class="n">topology_dimension</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+                <span class="n">mesh_var</span><span class="o">.</span><span class="n">cf_role</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;mesh_topology&#39;</span> <span class="ow">and</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">mesh_var</span><span class="o">.</span><span class="n">topology_dimension</span><span class="p">)</span> <span class="ow">in</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">}</span>
+        <span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="c1"># not a valid mesh variable</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Attribute error </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">mesh_var</span><span class="p">)</span>
+        <span class="c1"># not a valid mesh variable</span>
         <span class="k">return</span> <span class="kc">False</span></div>
+
 
 <span class="c1"># Defining properties of various connectivity arrays</span>
 <span class="c1"># so that the same code can load all of them.</span>
@@ -292,41 +300,7 @@
               <span class="p">]</span>
 
 
-<div class="viewcode-block" id="find_variables"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.read_netcdf.find_variables">[docs]</a><span class="k">def</span> <span class="nf">find_variables</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">mesh_name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    find thenames of variables that are assocaited with the grid</span>
-
-<span class="sd">    this is kind of a kludge, but should be useful</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ncvars</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span>
-
-    <span class="n">var_names</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="c1"># Look for data arrays -- they should have a &quot;location&quot; attribute.</span>
-    <span class="c1"># we can add more logic in here for checking compatible array sizes, etc.</span>
-    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="c1"># Data Arrays should have &quot;location&quot; and &quot;mesh&quot; attributes.</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">location</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">location</span>
-            <span class="c1"># The mesh attribute should match the mesh we&#39;re loading:</span>
-            <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">mesh</span> <span class="o">!=</span> <span class="n">mesh_name</span><span class="p">:</span>
-                <span class="k">continue</span>
-        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="k">continue</span>
-
-        <span class="c1"># Get the attributes.</span>
-        <span class="c1"># FIXME: Is there a way to get the attributes a Variable directly?</span>
-        <span class="n">attributes</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">getncattr</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">var</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">()</span>
-                      <span class="k">if</span> <span class="n">n</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="s1">&#39;coordinates&#39;</span><span class="p">,</span> <span class="s1">&#39;mesh&#39;</span><span class="p">)}</span>
-
-        <span class="c1"># Trick with the name: FIXME: Is this a good idea?</span>
-        <span class="c1"># name = name.lstrip(mesh_name).lstrip(&#39;_&#39;)</span>
-        <span class="c1"># uvar = UVar(name, data=var[:],</span>
-        <span class="c1">#             location=location, attributes=attributes)</span>
-        <span class="n">var_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">var_names</span></div>
-
-
-<div class="viewcode-block" id="load_grid_from_nc_dataset"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.read_netcdf.load_grid_from_nc_dataset">[docs]</a><span class="k">def</span> <span class="nf">load_grid_from_nc_dataset</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">mesh_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">load_data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="load_grid_from_nc_dataset"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.read_netcdf.load_grid_from_nc_dataset">[docs]</a><span class="k">def</span> <span class="nf">load_grid_from_nc_dataset</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">mesh_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># , load_data=True):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    loads UGrid object from a netCDF4.DataSet object, adding the data</span>
 <span class="sd">    to the passed-in grid object.</span>
@@ -343,12 +317,12 @@
 <span class="sd">    :param mesh_name=None: name of the mesh to load</span>
 <span class="sd">    :type mesh_name: string</span>
 
-<span class="sd">    :param load_data=False: flag to indicate whether you want to load the</span>
-<span class="sd">                            associated data or not.  The mesh will be loaded</span>
-<span class="sd">                            in any case.  If False, only the mesh will be</span>
-<span class="sd">                            loaded.  If True, then all the data associated</span>
-<span class="sd">                            with the mesh will be loaded.  This could be huge!</span>
-<span class="sd">    :type load_data: boolean</span>
+<span class="sd">    # :param load_data=False: flag to indicate whether you want to load the</span>
+<span class="sd">    #                         associated data or not.  The mesh will be loaded</span>
+<span class="sd">    #                         in any case.  If False, only the mesh will be</span>
+<span class="sd">    #                         loaded.  If True, then all the data associated</span>
+<span class="sd">    #                         with the mesh will be loaded.  This could be huge!</span>
+<span class="sd">    # :type load_data: boolean</span>
 
 <span class="sd">    NOTE: passing the UGrid object in to avoid circular references,</span>
 <span class="sd">    while keeping the netcdf reading code in its own file.</span>
@@ -415,13 +389,15 @@
                     <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> variable&#39;s units value (</span><span class="si">{}</span><span class="s2">) doesn&#39;t look &quot;</span>
                            <span class="s2">&quot;like latitude or longitude&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">units</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">standard_name</span> <span class="o">==</span> <span class="s1">&#39;latitude&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">standard_name</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;latitude&#39;</span><span class="p">,</span> <span class="s1">&#39;projection_y_coordinate&#39;</span><span class="p">}:</span>
                 <span class="n">nodes</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span><span class="p">[:]</span>
-            <span class="k">elif</span> <span class="n">standard_name</span> <span class="o">==</span> <span class="s1">&#39;longitude&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">standard_name</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;longitude&#39;</span><span class="p">,</span> <span class="s1">&#39;projection_x_coordinate&#39;</span><span class="p">}:</span>
                 <span class="n">nodes</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span><span class="p">[:]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Node coordinates standard_name is neither &#39;</span>
-                                 <span class="s1">&#39;&quot;longitude&quot; nor &quot;latitude&quot; &#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Node coordinates standard_name is neither&#39;</span>
+                                 <span class="s1">&#39; &quot;longitude&quot; nor &quot;latitude&quot; nor &#39;</span>
+                                 <span class="s1">&#39;&quot;projection_x_coordinate&quot; nor &#39;</span>
+                                 <span class="s1">&#39; &quot;projection_y_coordinate&quot;&#39;</span><span class="p">)</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">defs</span><span class="p">[</span><span class="s1">&#39;grid_attr&#39;</span><span class="p">],</span> <span class="n">nodes</span><span class="p">)</span>
 
     <span class="c1"># Load assorted connectivity arrays.</span>
@@ -446,40 +422,41 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="c1"># FIXME: This won&#39;t work for more than one flag value.</span>
                     <span class="n">flag_value</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">flag_values</span>
-                    <span class="n">array</span><span class="p">[</span><span class="n">array</span> <span class="o">==</span> <span class="n">flag_value</span><span class="o">-</span><span class="n">start_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_value</span>
+                    <span class="n">array</span><span class="p">[</span><span class="n">array</span> <span class="o">==</span> <span class="n">flag_value</span> <span class="o">-</span> <span class="n">start_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_value</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="k">pass</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">defs</span><span class="p">[</span><span class="s1">&#39;grid_attr&#39;</span><span class="p">],</span> <span class="n">array</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">pass</span>  <span class="c1"># OK not to have this...</span>
+            <span class="k">pass</span>  <span class="c1"># OK not to have this...</span></div>
 
     <span class="c1"># Load the associated data:</span>
 
-    <span class="k">if</span> <span class="n">load_data</span><span class="p">:</span>
-        <span class="c1"># Look for data arrays -- they should have a &quot;location&quot; attribute.</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="c1"># Data Arrays should have &quot;location&quot; and &quot;mesh&quot; attributes.</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">location</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">location</span>
-                <span class="c1"># The mesh attribute should match the mesh we&#39;re loading:</span>
-                <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">mesh</span> <span class="o">!=</span> <span class="n">mesh_name</span><span class="p">:</span>
-                    <span class="k">continue</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="k">continue</span>
+    <span class="c1"># if load_data:</span>
+    <span class="c1">#     # Look for data arrays -- they should have a &quot;location&quot; attribute.</span>
+    <span class="c1">#     for name, var in nc.variables.items():</span>
+    <span class="c1">#         # Data Arrays should have &quot;location&quot; and &quot;mesh&quot; attributes.</span>
+    <span class="c1">#         try:</span>
+    <span class="c1">#             location = var.location</span>
+    <span class="c1">#             # The mesh attribute should match the mesh we&#39;re loading:</span>
+    <span class="c1">#             if var.mesh != mesh_name:</span>
+    <span class="c1">#                 continue</span>
+    <span class="c1">#         except AttributeError:</span>
+    <span class="c1">#             continue</span>
 
-            <span class="c1"># Get the attributes.</span>
-            <span class="c1"># FIXME: Is there a way to get the attributes a Variable directly?</span>
-            <span class="n">attributes</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="n">var</span><span class="o">.</span><span class="n">getncattr</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">var</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">()</span>
-                          <span class="k">if</span> <span class="n">n</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="s1">&#39;coordinates&#39;</span><span class="p">,</span> <span class="s1">&#39;mesh&#39;</span><span class="p">)}</span>
+    <span class="c1">#         # Get the attributes.</span>
+    <span class="c1">#         # FIXME: Is there a way to get the attributes a Variable directly?</span>
+    <span class="c1">#         attributes = {n: var.getncattr(n) for n in var.ncattrs()</span>
+    <span class="c1">#                       if n not in (&#39;location&#39;, &#39;coordinates&#39;, &#39;mesh&#39;)}</span>
 
-            <span class="c1"># Trick with the name: FIXME: Is this a good idea?</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="n">mesh_name</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
-            <span class="n">uvar</span> <span class="o">=</span> <span class="n">UVar</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">var</span><span class="p">[:],</span>
-                        <span class="n">location</span><span class="o">=</span><span class="n">location</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="n">attributes</span><span class="p">)</span>
-            <span class="n">grid</span><span class="o">.</span><span class="n">add_data</span><span class="p">(</span><span class="n">uvar</span><span class="p">)</span></div>
+    <span class="c1">#         # Trick with the name: FIXME: Is this a good idea?</span>
+    <span class="c1">#         if name.startswith(mesh_name+&quot;_&quot;):</span>
+    <span class="c1">#             name = name[len(mesh_name)+1:]</span>
+    <span class="c1">#         uvar = UVar(name, data=var[:],</span>
+    <span class="c1">#                     location=location, attributes=attributes)</span>
+    <span class="c1">#         grid.add_data(uvar)</span>
 
 
-<div class="viewcode-block" id="load_grid_from_ncfilename"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.read_netcdf.load_grid_from_ncfilename">[docs]</a><span class="k">def</span> <span class="nf">load_grid_from_ncfilename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">mesh_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">load_data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="load_grid_from_ncfilename"><a class="viewcode-back" href="../../../gridded.pyugrid.html#gridded.pyugrid.read_netcdf.load_grid_from_ncfilename">[docs]</a><span class="k">def</span> <span class="nf">load_grid_from_ncfilename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">mesh_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># , load_data=True):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    loads UGrid object from a netcdf file, adding the data</span>
 <span class="sd">    to the passed-in grid object.</span>
@@ -495,22 +472,20 @@
 <span class="sd">    :param mesh_name=None: name of the mesh to load</span>
 <span class="sd">    :type mesh_name: string</span>
 
-<span class="sd">    :param load_data=False: flag to indicate whether you want to load the</span>
-<span class="sd">                            associated data or not.  The mesh will be loaded</span>
-<span class="sd">                            in any case.  If False, only the mesh will be</span>
-<span class="sd">                            loaded.  If True, then all the data associated</span>
-<span class="sd">                            with the mesh will be loaded.  This could be huge!</span>
-<span class="sd">    :type load_data: boolean</span>
+<span class="sd">    # :param load_data=False: flag to indicate whether you want to load the</span>
+<span class="sd">    #                         associated data or not.  The mesh will be loaded</span>
+<span class="sd">    #                         in any case.  If False, only the mesh will be</span>
+<span class="sd">    #                         loaded.  If True, then all the data associated</span>
+<span class="sd">    #                         with the mesh will be loaded.  This could be huge!</span>
+<span class="sd">    # :type load_data: boolean</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">with</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">nc</span><span class="p">:</span>
-        <span class="n">load_grid_from_nc_dataset</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">mesh_name</span><span class="p">,</span> <span class="n">load_data</span><span class="p">)</span></div>
+        <span class="n">load_grid_from_nc_dataset</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">mesh_name</span><span class="p">)</span>  <span class="c1"># , load_data)</span></div>
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -523,7 +498,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -542,6 +517,7 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
             VERSION:'0.0.8',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -554,19 +530,13 @@
 
   
 
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

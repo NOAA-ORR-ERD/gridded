@@ -24,26 +24,17 @@
 
   
 
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="gridded 0.0.8 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
 
   
   <script src="../../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -102,8 +93,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html"><code class="docutils literal"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#gridded-dataset"><code class="docutils literal"><span class="pre">gridded.Dataset</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../non_conforming_data.html">Loading Non Conforming Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../non_conforming_data.html#if-your-files-conform-to-the-underlying-data-model">If your files conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../non_conforming_data.html#unstructured-grids">Unstructured Grids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#gridded-dataset"><code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#grid-objects">Grid objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#variable-objects">Variable objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api_reference.html#time-object">Time object</a></li>
@@ -142,7 +142,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">gridded</a>
@@ -150,9 +150,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -181,8 +182,6 @@
     
     
       <li class="wy-breadcrumbs-aside">
-        
-            
         
       </li>
     
@@ -235,8 +234,8 @@
     <span class="n">paired_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">paired_array_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">paired_array</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_array</span><span class="p">[:]</span>
     <span class="n">paired_array</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_array</span><span class="p">[:]</span>
-    <span class="k">return</span> <span class="n">paired_array</span></div>
-
+    <span class="k">return</span> <span class="n">paired_array</span>
+</div>
 
 <div class="viewcode-block" id="check_element_equal"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.utils.check_element_equal">[docs]</a><span class="k">def</span> <span class="nf">check_element_equal</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -249,8 +248,8 @@
 <span class="sd">    :rtype: bool</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">lst</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">lst</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
-
+    <span class="k">return</span> <span class="n">lst</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">lst</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</div>
 
 <div class="viewcode-block" id="does_intersection_exist"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.utils.does_intersection_exist">[docs]</a><span class="k">def</span> <span class="nf">does_intersection_exist</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="n">set_a</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
@@ -264,8 +263,8 @@
             <span class="n">intersect_exists</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">intersect_exists</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">return</span> <span class="n">intersect_exists</span></div>
-
+    <span class="k">return</span> <span class="n">intersect_exists</span>
+</div>
 
 <div class="viewcode-block" id="determine_variable_slicing"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.utils.determine_variable_slicing">[docs]</a><span class="k">def</span> <span class="nf">determine_variable_slicing</span><span class="p">(</span><span class="n">sgrid_obj</span><span class="p">,</span> <span class="n">nc_variable</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -314,8 +313,8 @@
                 <span class="n">slice_indices</span> <span class="o">+=</span> <span class="p">(</span><span class="n">slice_index</span><span class="p">,)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">pass</span>
-    <span class="k">return</span> <span class="n">slice_indices</span></div>
-
+    <span class="k">return</span> <span class="n">slice_indices</span>
+</div>
 
 <div class="viewcode-block" id="infer_avg_axes"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.utils.infer_avg_axes">[docs]</a><span class="k">def</span> <span class="nf">infer_avg_axes</span><span class="p">(</span><span class="n">sgrid_obj</span><span class="p">,</span> <span class="n">nc_var_obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -355,8 +354,8 @@
         <span class="n">node_avg_axis</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">node_avg_axis</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="n">center_avg_axis</span><span class="p">,</span> <span class="n">node_avg_axis</span></div>
-
+    <span class="k">return</span> <span class="n">center_avg_axis</span><span class="p">,</span> <span class="n">node_avg_axis</span>
+</div>
 
 <div class="viewcode-block" id="infer_variable_location"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.utils.infer_variable_location">[docs]</a><span class="k">def</span> <span class="nf">infer_variable_location</span><span class="p">(</span><span class="n">sgrid</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
     <span class="n">node_dims_val</span> <span class="o">=</span> <span class="n">sgrid</span><span class="o">.</span><span class="n">node_dimensions</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
@@ -376,8 +375,8 @@
         <span class="n">inferred_location</span> <span class="o">=</span> <span class="s1">&#39;edge&#39;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">inferred_location</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="n">inferred_location</span></div>
-
+    <span class="k">return</span> <span class="n">inferred_location</span>
+</div>
 
 <div class="viewcode-block" id="calculate_bearing"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.utils.calculate_bearing">[docs]</a><span class="k">def</span> <span class="nf">calculate_bearing</span><span class="p">(</span><span class="n">lon_lat_1</span><span class="p">,</span> <span class="n">lon_lat_2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -394,8 +393,8 @@
     <span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat_1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat_2</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lat_1</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lat_2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lon_2</span> <span class="o">-</span> <span class="n">lon_1</span><span class="p">)</span>  <span class="c1"># noqa</span>
     <span class="n">bearing_radians</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
     <span class="n">bearing_degrees</span> <span class="o">=</span> <span class="n">bearing_radians</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">bearing_degrees</span> <span class="o">+</span> <span class="mi">360</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span></div>
-
+    <span class="k">return</span> <span class="p">(</span><span class="n">bearing_degrees</span> <span class="o">+</span> <span class="mi">360</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span>
+</div>
 
 <div class="viewcode-block" id="calculate_angle_from_true_east"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.utils.calculate_angle_from_true_east">[docs]</a><span class="k">def</span> <span class="nf">calculate_angle_from_true_east</span><span class="p">(</span><span class="n">lon_lat_1</span><span class="p">,</span> <span class="n">lon_lat_2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -410,8 +409,8 @@
     <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bearing_from_true_east_radians</span><span class="p">,</span>
                        <span class="n">bearing_from_true_east_radians</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">:],</span>
                        <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">angles</span></div>
-
+    <span class="k">return</span> <span class="n">angles</span>
+</div>
 
 <div class="viewcode-block" id="points_in_polys"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.utils.points_in_polys">[docs]</a><span class="k">def</span> <span class="nf">points_in_polys</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">polys</span><span class="p">,</span> <span class="n">polyy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -450,13 +449,11 @@
             <span class="p">(</span><span class="n">v1y</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">-</span> <span class="n">v2y</span><span class="p">[</span><span class="n">m</span><span class="p">])</span> <span class="o">+</span> <span class="n">v2x</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
         <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">test1</span><span class="p">,</span> <span class="n">test2</span><span class="p">,</span> <span class="n">test1</span><span class="p">)</span>
         <span class="n">np</span><span class="o">.</span><span class="n">logical_xor</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">test1</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span></div>
-</pre></div>
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -469,7 +466,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -488,6 +485,7 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
             VERSION:'0.0.8',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -500,19 +498,13 @@
 
   
 
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
