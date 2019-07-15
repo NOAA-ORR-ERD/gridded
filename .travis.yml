@@ -27,11 +27,11 @@ before_install:
     conda config --set channel_priority strict
     conda create --name TEST python=$PY --file conda_requirements.txt --file conda_requirements_test.txt --quiet
     source activate TEST
-    conda info --all
-    conda list
+    # conda info --all
+    # conda list
 
 install:
-    - pip install -e --no-deps .
+    - pip install -e . --no-deps
 
 script:
     - pytest --pyargs gridded
