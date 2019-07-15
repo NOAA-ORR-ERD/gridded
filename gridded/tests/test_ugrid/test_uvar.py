@@ -12,7 +12,7 @@ import numpy as np
 import pytest
 
 from gridded.pyugrid.uvar import UVar
-from utilities import chdir
+from .utilities import chdir
 
 # pytestmark = pytest.mark.skipif(True, reason="gridded does not support UVars anymore")
 

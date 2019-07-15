@@ -116,8 +116,6 @@ class UGrid(object):
         mesh section in the convention for further details.
         """
 
-        print(node_lat, node_lon)
-
         if ((nodes is not None) and
             ((node_lon is not None) or
              (node_lat is not None))):
@@ -900,7 +898,7 @@ class UGrid(object):
         self.save(filename, format='netcdf4')
 
 
-    def save(self, filepath, format='netcdf4', variables=()):
+    def save(self, filepath, format='netcdf4', variables={}):
         """
         Save the ugrid object as a netcdf file.
 
@@ -1059,6 +1057,7 @@ class UGrid(object):
         """
         Save the Variables
         """
+        mesh_name = self.mesh_name
         for name, var in variables.items():
             if var.location == 'node':
                 shape = (mesh_name + '_num_node',)

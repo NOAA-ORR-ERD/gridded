@@ -61,7 +61,6 @@ class Dataset():
         If a filename is passed in, the attributes will be pulled from the file, and
         the input ones ignored.
         """
-
         if ncfile is not None:
             if (grid is not None or
                   variables is not None or

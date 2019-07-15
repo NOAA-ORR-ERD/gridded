@@ -15,7 +15,7 @@ import pytest
 import numpy as np
 import netCDF4
 
-from utilities import chdir
+from .utilities import chdir
 from gridded.pyugrid import ugrid
 from gridded.pyugrid import read_netcdf
 

@@ -11,7 +11,7 @@ import numpy as np
 
 import pytest
 
-from utilities import two_triangles, twenty_one_triangles
+from .utilities import two_triangles, twenty_one_triangles
 
 
 def test_build_face_face_connectivity_small(two_triangles):

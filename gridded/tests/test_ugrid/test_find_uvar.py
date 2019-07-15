@@ -18,7 +18,7 @@ import numpy as np
 from gridded.pyugrid.ugrid import UGrid
 from gridded.pyugrid.uvar import UVar
 
-from utilities import chdir, two_triangles, twenty_one_triangles
+from .utilities import chdir, two_triangles, twenty_one_triangles
 
 pytestmark = pytest.mark.skipif(True, reason="add_data not yet suported")
 

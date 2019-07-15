@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-from utilities import twenty_one_triangles
+from .utilities import twenty_one_triangles
 
 
 # used to parametrize tests for both methods

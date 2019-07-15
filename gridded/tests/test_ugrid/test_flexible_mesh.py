@@ -4,7 +4,7 @@ import pytest
 import gridded.pyugrid.ugrid as ugrid
 
 # test stuff
-from write_nc_test_files import quad_and_triangle # noqa: ignore=F401
+from .write_nc_test_files import quad_and_triangle # noqa: ignore=F401
 
 
 def test_read_flexible_mesh(quad_and_triangle):  # noqa: ignore=F811

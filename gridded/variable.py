@@ -56,6 +56,7 @@ class Variable(object):
                  dataset=None,
                  varname=None,
                  fill_value=0,
+                 location="",
                  attributes=None,
                  **kwargs):
         '''
@@ -87,7 +88,11 @@ class Variable(object):
 
         :param fill_value: the fill value used for undefined data
 
-        :param attributes: attributes associated with the VAriable
+        :param location: location on the grid -- possible values
+                         depend on the grid type
+        :type location: str
+
+        :param attributes: attributes associated with the Variable
                            (analogous to netcdf variable attributes)
         :type attributes: dict of key:value pairs
         '''
@@ -113,6 +118,7 @@ class Variable(object):
         self.varname = varname
         self._result_memo = collections.OrderedDict()
         self.fill_value = fill_value
+        self.location = location
 
         self.attributes = {} if attributes is None else attributes
         # if the data is a netcdf variable, pull the attributes from there
@@ -778,8 +784,8 @@ class VectorVariable(object):
 
         if grid is None:
             grid = Grid.from_netCDF(grid_file,
-                                      dataset=dg,
-                                      grid_topology=grid_topology)
+                                    dataset=dg,
+                                    grid_topology=grid_topology)
         if varnames is None:
             varnames = cls._gen_varnames(data_file,
                                          dataset=ds)
@@ -823,7 +829,7 @@ class VectorVariable(object):
                                                           units=units,
                                                           time=time,
                                                           grid=grid,
-                                                           depth=depth,
+                                                          depth=depth,
                                                           data_file=data_file,
                                                           grid_file=grid_file,
                                                           dataset=ds,
@@ -1067,3 +1073,21 @@ class VectorVariable(object):
                 return func(*args, **kws)
             return wrapper
         return getvars
+
+    def save(self, filepath, format='netcdf4'):
+        """
+        Save the variable object to a netcdf file.
+
+        :param filepath: path to file you want o save to. or a writable
+                         netCDF4 Dataset An existing one
+                         If a path, an existing file will be clobbered.
+
+        Follows the convention established by the netcdf UGRID working group:
+
+        http://ugrid-conventions.github.io/ugrid-conventions
+
+        """
+        format_options = ('netcdf3', 'netcdf4')
+        if format not in format_options:
+            raise ValueError("format: {} not supported. Options are: {}".format(format, format_options))
+

@@ -15,7 +15,7 @@ import pytest
 from gridded.pyugrid.ugrid import UGrid
 from gridded.pyugrid.uvar import UVar
 
-from utilities import chdir, two_triangles
+from .utilities import chdir, two_triangles
 
 pytestmark = pytest.mark.skipif(True, reason="gridded does not support UVars anymore")
 
