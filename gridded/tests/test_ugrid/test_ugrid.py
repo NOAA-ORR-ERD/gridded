@@ -13,11 +13,12 @@ import numpy as np
 
 import pytest
 
-from gridded.pyugrid.ugrid import UGrid
+from gridded.grids import Grid_U as UGrid
 from gridded.pyugrid.ugrid import IND_DT, NODE_DT
 
 # FIXME: Break `test_full_set` into small unittests and check if the grid here
 # is the same as `two_triangles`. If so use that.
+
 # Some sample grid data: about the simplest triangle grid possible.
 # 4 nodes, two triangles, five edges.
 

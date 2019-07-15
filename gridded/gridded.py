@@ -6,7 +6,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from gridded.grids import Grid
 from gridded.variable import Variable
 
-from gridded.utilities import get_dataset, get_dataset_attrs
+from gridded.utilities import (get_dataset,
+                               get_writable_dataset,
+                               get_dataset_attrs,
+                               )
 
 """
 The main gridded.Dataset code
@@ -15,8 +18,8 @@ The main gridded.Dataset code
 
 class Dataset():
     """
-    An object that represent an entire complete dataset -- a collection of Variables
-    and the Grid that they are stored on.
+    An object that represent an entire complete dataset --
+    a collection of Variables and the Grid that they are stored on.
     """
 
     def __init__(self,
@@ -75,7 +78,7 @@ class Dataset():
         else:  # no file passed in -- create from grid and variables
             self.filename = None
             self.grid = grid
-            self.variables = variables
+            self.variables = {} if variables is None else variables
             self.attributes = {} if attributes is None else attributes
 
     def __getitem__(self, key):
@@ -132,7 +135,17 @@ class Dataset():
         :param format: format to save -- 'netcdf3' or 'netcdf4'
                        are the only options at this point.
         """
-        raise NotImplementedError
+        format_options = ('netcdf3', 'netcdf4')
+        if format not in format_options:
+            raise ValueError("format: {} not supported. Options are: {}".format(format, format_options))
+
+        # create an ncdataset
+        ncds = get_writable_dataset(filename)
+
+        # Save the grid and variables
+        self.grid.save(ncds, format='netcdf4', variables=self.variables)
+
+        ncds.close()
 
     def get_variables_by_attribute(self, attr, value):
         """

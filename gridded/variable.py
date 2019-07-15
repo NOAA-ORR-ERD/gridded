@@ -9,8 +9,10 @@ import os
 import numpy as np
 import netCDF4 as nc4
 
-from gridded.utilities import get_dataset, _reorganize_spatial_data,\
-    _align_results_to_spatial_data
+from gridded.utilities import (get_dataset,
+                               _reorganize_spatial_data,
+                               _align_results_to_spatial_data,
+                               asarraylike)
 from gridded.grids import Grid, Grid_U, Grid_S, Grid_R
 from gridded.depth import Depth
 from gridded.time import Time
@@ -306,6 +308,7 @@ class Variable(object):
 
     @data.setter
     def data(self, d):
+        d = asarraylike(d)
         if self.time is not None and len(d) != len(self.time):
             raise ValueError("Data/time interval mismatch")
         if self.grid is not None and self.grid.infer_location(d) is None:
