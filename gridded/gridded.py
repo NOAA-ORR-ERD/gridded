@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+"""
+gridded module:
+
+This module defines the gridded.Dataset --
+The core class that encapsulates the gridded data model
+
+"""
+
+
+
 # py2/3 compatibility
 from __future__ import absolute_import, division, print_function, unicode_literals
 
@@ -92,18 +102,31 @@ class Dataset():
         """
         variables = {}
         for k in ds.variables.keys():
+            # find which netcdf variables are used to define the grid
             is_not_grid_attr = all([k not in str(v).split()
                                     for v in self.grid.grid_topology.values()])
-            if is_not_grid_attr and self.grid.infer_location(ds[k]) is not None:
+            if is_not_grid_attr:
+                ncvar = ds[k]
+                # find the location of the variable
                 try:
-                    ln = ds[k].long_name
-                except:  # fixme: what Exception are we expecting???
-                    ln = ds[k].name
-                variables[k] = Variable.from_netCDF(dataset=ds,
-                                                    name=ln,
-                                                    varname=k,
-                                                    grid=self.grid,
-                                                    )
+                    location = ncvar.location
+                except AttributeError:
+                    # that didn't work, need to try to infer it
+                    location = self.grid.infer_location(ncvar)
+
+                if location is not None:
+                    try:
+                        ln = ds[k].long_name
+                    except AttributeError:  # no long_name attribute
+                        ln = ds[k].name # use the name attribute
+                    # fixme: Variable.from_netCDF should really be able to figure out the location itself
+                    #        maybe we need multiple Variable subclasses for different grid types?
+                    variables[k] = Variable.from_netCDF(dataset=ds,
+                                                        name=ln,
+                                                        varname=k,
+                                                        grid=self.grid,
+                                                        location=location,
+                                                        )
         return variables
 
     # This should be covered by Grid.from_netCDF

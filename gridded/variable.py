@@ -13,6 +13,7 @@ from gridded.utilities import (get_dataset,
                                _reorganize_spatial_data,
                                _align_results_to_spatial_data,
                                asarraylike)
+from gridded import VALID_LOCATIONS
 from gridded.grids import Grid, Grid_U, Grid_S, Grid_R
 from gridded.depth import Depth
 from gridded.time import Time
@@ -56,7 +57,7 @@ class Variable(object):
                  dataset=None,
                  varname=None,
                  fill_value=0,
-                 location="",
+                 location=None,
                  attributes=None,
                  **kwargs):
         '''
@@ -109,6 +110,7 @@ class Variable(object):
 
         self.name = name
         self.units = units
+        self.location = location
         self.data = data
         self.time = time if time is not None else self._default_component_types['time'].constant_time()
         self.data_file = data_file
@@ -118,7 +120,6 @@ class Variable(object):
         self.varname = varname
         self._result_memo = collections.OrderedDict()
         self.fill_value = fill_value
-        self.location = location
 
         self.attributes = {} if attributes is None else attributes
         # if the data is a netcdf variable, pull the attributes from there
@@ -146,7 +147,7 @@ class Variable(object):
                     dataset=None,
                     data_file=None,
                     grid_file=None,
-                    load_all=False,
+                    load_all=False,  # Do we need this? I think not --- maybe a method to fully load later if wanted.
                     fill_value=0,
                     **kwargs
                     ):
@@ -269,6 +270,18 @@ class Variable(object):
                 ')').format(self)
 
     @property
+    def location(self):
+        return self._location
+
+    @location.setter
+    def location(self, location):
+        # Fixme: perhaps we need Variable subclasses,
+        #        to distingish between variable types.
+        if location not in VALID_LOCATIONS:
+            raise ValueError("Invalid location: {}, must be one of: {}".format(location, VALID_LOCATIONS))
+        self._location = location
+
+    @property
     def info(self):
         """
         Information about the variable object
@@ -315,11 +328,20 @@ class Variable(object):
     @data.setter
     def data(self, d):
         d = asarraylike(d)
+        # Fixme: maybe all this checking should be done when it gets added to the Dataset??
         if self.time is not None and len(d) != len(self.time):
             raise ValueError("Data/time interval mismatch")
-        if self.grid is not None and self.grid.infer_location(d) is None:
-            raise ValueError("Data/grid shape mismatch. Data shape is {0}, Grid shape is {1}".format(d.shape, self.grid.node_lon.shape))
+        ## fixme: we should check Depth, too.
+        # if self.grid is not None and self.grid.infer_location(d) is None:
+        #     raise ValueError("Data/grid shape mismatch. Data shape is {0}, Grid shape is {1}".format(d.shape, self.grid.node_lon.shape))
+        if self.grid is not None:  # if there is not a grid, we can't check this
+            if self.location is None:  # not set, let's try to figure it out
+                self.location = self.grid.infer_location(d)
+            if self.location is None:
+                raise ValueError("Data/grid shape mismatch: Data shape is {0}, "
+                                 "Grid shape is {1}".format(d.shape, self.grid.node_lon.shape))
         self._data = d
+
 
     @property
     def units(self):
@@ -731,6 +753,7 @@ class VectorVariable(object):
                     dataset=None,
                     load_all=False,
                     variables=None,
+                    location=None,
                     **kwargs
                     ):
         '''
@@ -823,6 +846,7 @@ class VectorVariable(object):
             variables = []
             for vn in varnames:
                 if vn is not None:
+                    # Fixme: We're calling from_netCDF from itself ?!?!?
                     variables.append(Variable.from_netCDF(filename=filename,
                                                           varname=vn,
                                                           grid_topology=grid_topology,
@@ -834,6 +858,7 @@ class VectorVariable(object):
                                                           grid_file=grid_file,
                                                           dataset=ds,
                                                           load_all=load_all,
+                                                          location=None,
                                                           **kwargs))
         if units is None:
             units = [v.units for v in variables]
@@ -852,6 +877,7 @@ class VectorVariable(object):
                    grid_file=grid_file,
                    dataset=ds,
                    load_all=load_all,
+                   location=None,
                    **kwargs)
 
     @classmethod

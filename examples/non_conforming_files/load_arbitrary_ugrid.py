@@ -5,7 +5,7 @@ This example uses a data file available in this gitHub repo:
 
 https://github.com/erdc/AdhModel
 
-You should be able to directly download it at:
+You should be able to directly download it from:
 
 https://github.com/erdc/AdhModel/blob/master/tests/test_files/SanDiego/SanDiego.nc
 """
@@ -13,7 +13,6 @@ https://github.com/erdc/AdhModel/blob/master/tests/test_files/SanDiego/SanDiego.
 from datetime import datetime, timedelta
 import gridded
 import netCDF4
-# ds = gridded.Dataset("SanDiego.nc")
 
 nc = netCDF4.Dataset("SanDiego.nc")
 
@@ -49,18 +48,17 @@ time_obj = gridded.time.Time(data=times,
 # make the variables
 depth = nc.variables['Depth']
 
+
+
 depth_var = gridded.variable.Variable(name=None,
                                       units="meters",
-                                      time=None,
                                       data=depth,
-                                      grid=grid,
-                                      depth=None,
                                       data_file=nc,
                                       grid_file=nc,
-                                      dataset=None,
-                                      varname=None, # huh??
                                       fill_value=0,
-                                      attributes=None)
+                                      location='nodes',
+                                      attributes=None,
+                                      )
 
 # global attributes
 attrs = {key: nc.getncattr(key) for key in nc.ncattrs()}
@@ -69,10 +67,12 @@ attrs = {key: nc.getncattr(key) for key in nc.ncattrs()}
 ds = gridded.Dataset(ncfile=None,
                      grid=grid,
                      variables={'Depth': depth_var},
-                     attributes=attrs)
+                     attributes=attrs
+                     )
 
 ## now learn a bit about it:
-# What is it's grid type?
+
+# What is its grid type?
 print("The dataset Grid is:", type(ds.grid))
 
 print("It has these variables:", list(ds.variables.keys()))
@@ -85,9 +85,8 @@ print(Depth)
 print('you can access the Variables data directly:')
 print(Depth.data)
 
-
-
-# You can get the value at an arbitrary time and place:
+# Now save it out as a conforming netcdf file:
+ds.save("SanDiego_ugrid.nc", format="netcdf4") # only netcdf4 is supporte for now
 
 
 

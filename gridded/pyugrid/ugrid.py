@@ -396,24 +396,25 @@ class UGrid(object):
 
         None otherwise.
         """
-        try:
-            loc = data.location
-            if loc == "face":
-                # FIXME: should we check the array size in this case?
-                return "faces"
-        except AttributeError:
-            pass # try checking array size
-        # fixme: should use UGRID compliant nc_attributes if possible
+        # We should never be caling infer_locations is it was already defined
+        # try:
+        #     loc = data.location
+        #     if loc == "face":
+        #         # FIXME: should we check the array size in this case?
+        #         return "face"
+        # except AttributeError:
+        #     pass # try checking array size
+        # # fixme: should use UGRID compliant nc_attributes if possible
         try:
             size = data.shape[-1]
         except IndexError:
             return None  # Variable has a size-zero data array
         if size == self.nodes.shape[0]:
-            return 'nodes'
+            return 'node'
         if self.faces is not None and size == self.faces.shape[0]:
-            return 'faces'
+            return 'face'
         if self.boundaries is not None and size == self.boundaries.shape[0]:
-            return 'boundaries'
+            return 'boundary'
         return None
 
     # def add_data(self, uvar):
@@ -691,13 +692,18 @@ class UGrid(object):
                                   _memo=True,
                                   _hash=None):
         """
-        interpolates teh passed-in variable to the points in points
+        interpolates the passed-in variable to the points in points
 
         used linear interpolation from the nodes.
         """
         points = np.asarray(points, dtype=np.float64).reshape(-1, 2)
-        location = self.infer_location(variable)
-        # FixMe: should it get location from variable object?
+        # location should be already known by the variable
+        location = variable.location
+        # But if it's not, then it can be infered
+        # (for compatibilty with old code)
+        if location is None:
+            location = self.infer_location(variable)
+            variable.location = location
         if location is None:
             raise ValueError("Data is incompatible with grid nodes or faces")
 
@@ -1082,6 +1088,8 @@ class UGrid(object):
                 coordinates = (coord(mesh_name) if bcoord
                                is not None else None)
                 chunksizes = (len(self.boundaries),)
+            else:
+                raise ValueError("I dont' know how to save a variable located on: {}".format(var.location))
             data_var = nclocal.createVariable(var.name,
                                               var.data.dtype,
                                               shape,
