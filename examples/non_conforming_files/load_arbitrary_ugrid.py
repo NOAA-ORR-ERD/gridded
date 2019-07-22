@@ -50,13 +50,13 @@ depth = nc.variables['Depth']
 
 
 
-depth_var = gridded.variable.Variable(name=None,
+depth_var = gridded.variable.Variable(name="Depth",
                                       units="meters",
                                       data=depth,
                                       data_file=nc,
                                       grid_file=nc,
                                       fill_value=0,
-                                      location='nodes',
+                                      location='node',
                                       attributes=None,
                                       )
 
@@ -78,15 +78,16 @@ print("The dataset Grid is:", type(ds.grid))
 print("It has these variables:", list(ds.variables.keys()))
 
 print('You can access the variable with indexing: ds["Depth"]')
+
 Depth = ds["Depth"]
 
 print(Depth)
 
-print('you can access the Variables data directly:')
+print("you can access the Variable's data directly:")
 print(Depth.data)
 
 # Now save it out as a conforming netcdf file:
-ds.save("SanDiego_ugrid.nc", format="netcdf4") # only netcdf4 is supporte for now
+ds.save("SanDiego_ugrid.nc", format="netcdf4") # only netcdf4 is supported for now
 
 
 

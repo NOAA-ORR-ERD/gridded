@@ -1089,7 +1089,12 @@ class UGrid(object):
                                is not None else None)
                 chunksizes = (len(self.boundaries),)
             else:
-                raise ValueError("I dont' know how to save a variable located on: {}".format(var.location))
+                raise ValueError("I don't know how to save a variable located on: {}".format(var.location))
+            # does this variable have a time coodinate?
+            if var.time:
+                print("Yes, it has a time", var.time)
+                print("length of time:", len(var.time.data))
+                raise NotImplementedError("can't save ugrid variables with time")
             data_var = nclocal.createVariable(var.name,
                                               var.data.dtype,
                                               shape,
@@ -1097,7 +1102,9 @@ class UGrid(object):
                                               # zlib=False,
                                               # complevel=0,
                                               )
-            data_var[:] = var.data
+            print("shape", shape)
+            print(var.data[:])
+            data_var[:] = var.data[:]
             # Add the standard attributes:
             data_var.location = var.location
             data_var.mesh = mesh_name

@@ -263,11 +263,12 @@ class Variable(object):
 
     def __repr__(self):
         return ('{0.__class__.__module__}.{0.__class__.__name__}('
-                'name="{0.name}", '
-                'time="{0.time}", '
-                'units="{0.units}", '
-                'data="{0.data}", '
-                ')').format(self)
+                'name="{0.name}", \n'
+                'time="{0.time}", \n'
+                'units="{0.units}", \n'
+                'location="{0.location}" \n'
+                'data=Type:{1}, shape:{0.data.shape}", '
+                ')').format(self, type(self.data))
 
     @property
     def location(self):
