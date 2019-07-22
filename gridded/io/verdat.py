@@ -9,15 +9,13 @@ It is used by NOAA's Emergegency Response Division for its CATS model
 It is limited to storing points with associated depths, and grid boudnaries
 (including islands), but that's about it.
 """
-
+import numpy as np
 import gridded
-import gridded.pyugrid.ugrid
 
 
-def dataset_from_verdat(filename):
+def load_verdat(filename):
 
-    # create an empty UGrid object
-    grid = gridded.pyugrid.ugrid.UGrid()
+    grid = gridded.grids.Grid_U()
 
     # read the file
     with open(filename) as infile:
@@ -26,7 +24,6 @@ def dataset_from_verdat(filename):
             units = header.split()[1].lower()
         except IndexError:
             units = ""
-        print("units:", units)
 
         # read the points:
         lons, lats, depths = [], [], []
@@ -48,20 +45,75 @@ def dataset_from_verdat(filename):
             if line == "":
                 num_bounds = 0
             else:
-                raise ValueError("somethign wrong with file after the end of the points\n"
+                raise ValueError("something wrong with file after the end of the points\n"
                                  "(The line after the line with all zeros should be the\n"
                                  "number of boundaries)")
         bounds = []
+        start_point = 0
         for _ in range(num_bounds):
-            start_point = 0
             end_point = int(infile.readline().strip())
             bound = []
-            for i in range(start_point, end_point):
-                print(bound, bounds)
-                bound.append((i, i+1))
-            bounds = bounds.append(bound)
+            for i in range(start_point, end_point-1):
+                bound.append((i, i + 1))
+            bound.append(((i + 1), start_point))
+            start_point = end_point
+            bounds.extend(bound)
 
-        print(bounds)
+
+    nodes = np.c_[lons, lats]
+
+    print("nodes:", nodes)
+    print("bounds:", bounds)
+
+    grid = gridded.grids.Grid_U(nodes=nodes,
+                                boundaries=bounds)
+
+    depth_var = gridded.variable.Variable(name="depth",
+                                          units=units.lower(),
+                                          data=depths,
+                                          location='node',
+                                          )
+    ds = gridded.Dataset(grid=grid,
+                         variables={'depth': depth_var},
+                         )
+
+    return ds
+
+
+
+
+def save_verdat(ds, filename, depth_var="depth"):
+    """
+    Saves and approriate dataset as a verdat file
+
+    :param ds: The gridded.Dataset you want to save
+
+    :param filename: name (full or relative path) of the file to save
+
+    :param depth_var="depth": name of the variable iwth the depths in it.
+
+    The dataset must:
+
+    * Have a UGrid grid
+    * Have a variable for the depth
+
+    If it has boundaries, they will be used. Otherwise,
+    it will create them from the grid.
+    """
+
+    depth = ds[depth_var]
+    with open(filename, 'w') as outfile:
+        outfile.write("DOGS ")
+        if depth.units:
+            outfile.write(depth.units.upper())
+        outfile.write("\n")
+        for i, ((lon, lat), d) in enumerate(zip(ds.grid.nodes, depth.data)):
+            outfile.write("{0:d},{1:.6f},{1:.6f}{1:.3f}".format(i + 1,
+                                                                lon,
+                                                                lat,
+                                                                d))
+
+
 
 
 

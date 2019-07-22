@@ -13,5 +13,5 @@ types can go here.
 
 """
 
-from .verdat import dataset_from_verdat
+from .verdat import load_verdat
 
