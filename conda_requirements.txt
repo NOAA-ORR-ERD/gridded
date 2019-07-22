@@ -4,7 +4,7 @@
 # requires python, but if you leve it out, it will use python already in
 # the conda environment, rather than upgrading
 # python>=2.7.*
-numpy>=1.13.*
+numpy>=1.15.*
 scipy
 netcdf4>=1.4.*
 cell_tree2d>=0.3.*

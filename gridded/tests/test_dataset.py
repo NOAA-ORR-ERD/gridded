@@ -2,12 +2,12 @@
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-# import pytest
+import pytest
 import os
 import netCDF4 as nc
 
 from gridded import Dataset
-from gridded.tests.utilities import get_test_file_dir
+from .utilities import get_test_file_dir
 
 test_dir = get_test_file_dir()
 
@@ -45,4 +45,12 @@ def test_info():
 #     print(gds.varibles)
 
 #     assert False
+
+
+def test_save_invalid_format():
+    ds = Dataset()
+
+    with pytest.raises(ValueError):
+        ds.save("a_filename.txt", format="text")
+
 

@@ -1,12 +1,25 @@
 #!/usr/bin/env python
 
+"""
+gridded module:
+
+This module defines the gridded.Dataset --
+The core class that encapsulates the gridded data model
+
+"""
+
+
+
 # py2/3 compatibility
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 from gridded.grids import Grid
 from gridded.variable import Variable
 
-from gridded.utilities import get_dataset, get_dataset_attrs
+from gridded.utilities import (get_dataset,
+                               get_writable_dataset,
+                               get_dataset_attrs,
+                               )
 
 """
 The main gridded.Dataset code
@@ -15,8 +28,8 @@ The main gridded.Dataset code
 
 class Dataset():
     """
-    An object that represent an entire complete dataset -- a collection of Variables
-    and the Grid that they are stored on.
+    An object that represent an entire complete dataset --
+    a collection of Variables and the Grid that they are stored on.
     """
 
     def __init__(self,
@@ -58,7 +71,6 @@ class Dataset():
         If a filename is passed in, the attributes will be pulled from the file, and
         the input ones ignored.
         """
-
         if ncfile is not None:
             if (grid is not None or
                   variables is not None or
@@ -75,7 +87,7 @@ class Dataset():
         else:  # no file passed in -- create from grid and variables
             self.filename = None
             self.grid = grid
-            self.variables = variables
+            self.variables = {} if variables is None else variables
             self.attributes = {} if attributes is None else attributes
 
     def __getitem__(self, key):
@@ -90,18 +102,31 @@ class Dataset():
         """
         variables = {}
         for k in ds.variables.keys():
+            # find which netcdf variables are used to define the grid
             is_not_grid_attr = all([k not in str(v).split()
                                     for v in self.grid.grid_topology.values()])
-            if is_not_grid_attr and self.grid.infer_location(ds[k]) is not None:
+            if is_not_grid_attr:
+                ncvar = ds[k]
+                # find the location of the variable
                 try:
-                    ln = ds[k].long_name
-                except:  # fixme: what Exception are we expecting???
-                    ln = ds[k].name
-                variables[k] = Variable.from_netCDF(dataset=ds,
-                                                    name=ln,
-                                                    varname=k,
-                                                    grid=self.grid,
-                                                    )
+                    location = ncvar.location
+                except AttributeError:
+                    # that didn't work, need to try to infer it
+                    location = self.grid.infer_location(ncvar)
+
+                if location is not None:
+                    try:
+                        ln = ds[k].long_name
+                    except AttributeError:  # no long_name attribute
+                        ln = ds[k].name # use the name attribute
+                    # fixme: Variable.from_netCDF should really be able to figure out the location itself
+                    #        maybe we need multiple Variable subclasses for different grid types?
+                    variables[k] = Variable.from_netCDF(dataset=ds,
+                                                        name=ln,
+                                                        varname=k,
+                                                        grid=self.grid,
+                                                        location=location,
+                                                        )
         return variables
 
     # This should be covered by Grid.from_netCDF
@@ -132,7 +157,17 @@ class Dataset():
         :param format: format to save -- 'netcdf3' or 'netcdf4'
                        are the only options at this point.
         """
-        raise NotImplementedError
+        format_options = ('netcdf3', 'netcdf4')
+        if format not in format_options:
+            raise ValueError("format: {} not supported. Options are: {}".format(format, format_options))
+
+        # create an ncdataset
+        ncds = get_writable_dataset(filename)
+
+        # Save the grid and variables
+        self.grid.save(ncds, format='netcdf4', variables=self.variables)
+
+        ncds.close()
 
     def get_variables_by_attribute(self, attr, value):
         """

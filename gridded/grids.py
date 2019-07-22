@@ -7,8 +7,6 @@ import numpy as np
 from gridded.utilities import get_dataset, gen_mask
 from six import string_types
 
-from scipy.interpolate import RegularGridInterpolator
-
 
 class GridBase(object):
     '''
@@ -347,6 +345,12 @@ class Grid_R(GridBase):
                                   slices=None,
                                   mask=None,
                                   **kwargs):
+        try:
+            from scipy.interpolate import RegularGridInterpolator
+        except ImportError:
+            raise ImportError("The scipy package is required to use "
+                              "Grid_R.interpolate_var_to_points\n"
+                              " -- interpolating a regular grid")
         points = np.asarray(points, dtype=np.float64)
         just_one = (points.ndim == 1)
         points = points.reshape(-1, 2)

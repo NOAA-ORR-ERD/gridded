@@ -61,7 +61,7 @@ class SGrid(object):
                  face_dimensions=None,
                  vertical_padding=None,
                  vertical_dimensions=None,
-                 tree=None,
+                 tree=None,    #Fixme: should this be initilizable here?
                  use_masked_boundary=False,
                  *args,
                  **kwargs):
@@ -78,7 +78,7 @@ class SGrid(object):
         self.edge2_lon = edge2_lon
         self.edge2_lat = edge2_lat
         self.edge2_mask = edge2_mask
-        self.edges = edges
+        self.edges = edges  # Fixme: is this needed?
         self.node_padding = node_padding
         self.edge1_padding = edge1_padding
         self.edge2_padding = edge2_padding
@@ -103,6 +103,24 @@ class SGrid(object):
         self.use_masked_boundary = use_masked_boundary
         self._l_coeffs = {}
         self._m_coeffs = {}
+
+        # used for nearest neighbor interpolation
+        self._kd_trees = {'node': None,
+                          'edge1': None,
+                          'edge2': None,
+                          'center': None}
+        self._cell_trees = {'node': None,
+                            'edge1': None,
+                            'edge2': None,
+                            'center': None}
+        self._ind_memo_dict = {'node': None,
+                               'edge1': None,
+                               'edge2': None,
+                               'center': None}
+        self._masks = {'node': None,
+                       'center': None,
+                       'edge1': None,
+                       'edge2': None}
 
     @classmethod
     def load_grid(cls, nc):
@@ -461,16 +479,6 @@ class SGrid(object):
         This version utilizes the CellTree data structure.
 
         """
-        if not hasattr(self, '_ind_memo_dict'):
-            self._ind_memo_dict = {'node': None,
-                                   'edge1': None,
-                                   'edge2': None,
-                                   'center': None}
-        if not hasattr(self, '_cell_trees'):
-            self._cell_trees = {'node': None,
-                                'edge1': None,
-                                'edge2': None,
-                                'center': None}
         if _memo:
             if _hash is None:
                 _hash = self._hash_of_pts(points)
@@ -512,11 +520,6 @@ class SGrid(object):
                        _memo=False,
                        _copy=False,
                        _hash=None):
-        if not hasattr(self, '_kd_trees'):
-            self._kd_trees = {'node': None,
-                              'edge1': None,
-                              'edge2': None,
-                              'center': None}
         points = np.asarray(points, dtype=np.float64)
         points = points.reshape(-1, 2)
 
@@ -525,7 +528,7 @@ class SGrid(object):
         tree = self._kd_trees[grid]
         lin_indices = np.array(tree.query(points))[1].astype(np.int32)
         lon, lat = self._get_grid_vars(grid)
-        ind = np.unravel_index(lin_indices, dims=lon.shape)
+        ind = np.unravel_index(lin_indices, shape=lon.shape)
         ind = np.array(ind).T
         return ind
 
@@ -576,43 +579,28 @@ class SGrid(object):
 
     def build_kdtree(self, grid='node'):
         """Builds the kdtree for the specified grid"""
-        from scipy.spatial import KDTree
-        if not hasattr(self, '_kd_trees'):
-            self._kd_trees = {'node': None,
-                              'edge1': None,
-                              'edge2': None,
-                              'center': None}
+        try:
+            from scipy.spatial import cKDTree
+        except ImportError:
+            raise ImportError("The scipy package is required to use "
+                              "SGrid.locate_nearest\n"
+                              " -- nearest neighbor interpolation")
         lon, lat = self._get_grid_vars(grid)
         if lon is None or lat is None:
             raise ValueError("{0}_lon and {0}_lat must be defined in order to "
                              "create and use KDTree for this grid".format(grid))
         lin_points = np.column_stack((lon.ravel(), lat.ravel()))
-        self._kd_trees[grid] = KDTree(lin_points, leafsize=4)
-
+        self._kd_trees[grid] = cKDTree(lin_points, leafsize=4)
 
     def build_celltree(self, grid='node', use_mask=True):
         """
-        Tries to build the celltree for grid defined by the node coordinates of the specified grid.
+        Tries to build the celltree for grid defined by the node coordinates of
+        the specified grid.
 
-        :param grid: which grid to biuld the celltree for. options are:
+        :param grid: which grid to build the celltree for. Options are:
                      'node', 'edge1', 'edge2', 'center'
         """
 
-        if not hasattr(self, '_ind_memo_dict'):
-            self._ind_memo_dict = {'node': None,
-                                   'edge1': None,
-                                   'edge2': None,
-                                   'center': None}
-        if not hasattr(self, '_cell_trees'):
-            self._cell_trees = {'node': None,
-                                'edge1': None,
-                                'edge2': None,
-                                'center': None}
-        if not hasattr(self, '_masks'):
-            self._masks = {'node':None,
-                           'center':None,
-                           'edge1':None,
-                           'edge2':None}
         try:
             from cell_tree2d import CellTree
         except ImportError:

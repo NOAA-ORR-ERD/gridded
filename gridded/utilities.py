@@ -370,6 +370,27 @@ def get_dataset(ncfile, dataset=None):
         return nc4.MFDataset(ncfile)
 
 
+def get_writable_dataset(ncfile, format="netcdf4"):
+    """
+    Utility to create a writable netCDF4 Dataset from a filename, list of filenames,
+    or just pass it through if it's already a netCDF4.Dataset
+
+    if dataset is not None, it should be a valid netCDF4 Dataset object,
+    and it will simply be returned
+    """
+    if isinstance(ncfile, nc4.Dataset):
+        # fixme: check for writable
+        return ncfile
+    elif isstring(ncfile):  # Fixme: should be pathlike...
+        print("filename is:", ncfile)
+        return nc4.Dataset(ncfile,
+                           mode="w",
+                           clobber=True,
+                           format="NETCDF4")
+    else:
+        raise ValueError("Must be a string path or a netcdf4 Dataset")
+
+
 def get_dataset_attrs(ds):
     """
     get all the attributes of the dataset as a single dict
