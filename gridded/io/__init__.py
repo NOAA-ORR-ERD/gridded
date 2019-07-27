@@ -13,5 +13,6 @@ types can go here.
 
 """
 
-from .verdat import load_verdat
-
+from .verdat import (load_verdat,
+                     save_verdat
+                     )

@@ -62,9 +62,6 @@ def load_verdat(filename):
 
     nodes = np.c_[lons, lats]
 
-    print("nodes:", nodes)
-    print("bounds:", bounds)
-
     grid = gridded.grids.Grid_U(nodes=nodes,
                                 boundaries=bounds)
 
@@ -102,16 +99,122 @@ def save_verdat(ds, filename, depth_var="depth"):
     """
 
     depth = ds[depth_var]
+    nodes = ds.grid.nodes
+    f_string = "{0:4d}, {1:10.6f}, {2:10.6f}, {3:8.3f}\n"
     with open(filename, 'w') as outfile:
         outfile.write("DOGS ")
         if depth.units:
             outfile.write(depth.units.upper())
         outfile.write("\n")
-        for i, ((lon, lat), d) in enumerate(zip(ds.grid.nodes, depth.data)):
-            outfile.write("{0:d},{1:.6f},{1:.6f}{1:.3f}".format(i + 1,
-                                                                lon,
-                                                                lat,
-                                                                d))
+
+        depth = depth.data
+        # write out the boundaries first
+        bounds, open_bounds = order_boundary_segments(ds.grid.boundaries)
+        points_written = []
+        i = 1
+        for bound in bounds:
+            for p in bound:
+                lon = nodes[p, 0]
+                lat = nodes[p, 1]
+                d = depth[p]
+                outfile.write(f_string.format(i,
+                                              lon,
+                                              lat,
+                                              d))
+                points_written.append(p)
+                i += 1
+        # write the field points.
+        points_written.sort()
+        for j in range(len(nodes)):
+            if j not in points_written:
+                outfile.write(f_string.format(i,
+                                              lon,
+                                              lat,
+                                              depth[j]))
+                i += 1
+        outfile.write(f_string.format(0, 0, 0, 0))
+        outfile.write("{:d}\n".format(len(bounds)))
+        i = 0
+        for bound in bounds:
+            print(bound)
+            i += len(bound)
+            outfile.write("{:d}\n".format(i))
+
+
+def order_boundary_segments(bound_segs):
+    """
+    verdat requires that the boundary segments all be in order
+
+    this code re-orders the segments as required
+    """
+    # make a list so they can be removed as processed
+    bound_segs = bound_segs.tolist()
+    # sort just in case the point numbers are close
+    # to each other and reverse so that we can work from the
+    # back
+    bound_segs.sort(reverse=True)
+
+    # There can be zero or more boundaries
+    closed_bounds = []
+    open_bounds = []
+    # start with the first boundary segment:
+    while bound_segs:
+        seg = bound_segs.pop()
+        first_p, second_p = seg
+        bound = [first_p, second_p]
+        # find a connecting segment
+        done = False
+        while not done:
+            for i in range(len(bound_segs) - 1, -1, -1):
+                p0, p1 = bound_segs[i]
+                if p0 == bound[-1]:
+                    bound.append(p1)
+                    bound_segs.pop(i)
+                elif p1 == bound[-1]:
+                    bound.append(p0)
+                    bound_segs.pop(i)
+                elif p0 == bound[0]:
+                    bound.insert(p1)
+                    bound_segs.pop(i)
+                elif p1 == bound[0]:
+                    bound.insert(0, p0)
+                    bound_segs.pop(i)
+                else:
+                    continue
+                if bound[0] == bound[-1]:  # closed the bound
+                    bound.pop()  # take the duplicate point off
+                    closed_bounds.append(bound)
+                    done = True
+                    break
+                else:
+                    done = False
+                    break
+            else:  # didn't find any more -- not closed
+                # didn't get closed
+                open_bounds.append(bound)
+                done = True
+    return closed_bounds, open_bounds
+
+def make_outer_first(bounds, nodes):
+    """
+    figures out which boundary is the outer boundary,
+    and puts it first in the list
+    """
+    try:
+        import geometry_utils
+    except ImportError:
+        print("writing verdat requires the geometry_utils module:\n"
+              "github.com/NOAA-ORR-ERD/geometry_utils")
+
+    #Assume the first bound is the outer one to start
+    outer = bounds[0]
+    for bound in bounds[1:]:
+        pass
+
+
+def set_winding_order(bounds, nodes, order="clockwise"):
+    raise NotImplementedError
+
 
 
 
