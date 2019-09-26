@@ -4,7 +4,7 @@ from gridded.pysgrid.sgrid import SGrid
 from gridded.pyugrid.ugrid import UGrid
 import numpy as np
 
-from gridded.utilities import get_dataset, gen_mask
+from gridded.utilities import get_dataset, gen_celltree_mask_from_center_mask
 from six import string_types
 
 
@@ -207,9 +207,9 @@ class Grid_S(GridBase, SGrid):
                 for n1, n2 in names:
                     if n1 in gf_vars and n2 in gf_vars:
                         mask = False
-                        for n in maskname:
-                            if n in gf_vars:
-                                mask = gen_mask(gf_vars[n])
+                        #for n in maskname:
+                            #if n in gf_vars:
+                                #mask = gen_mask(gf_vars[n])
                         a1 = gf_vars[n1][:]
                         a2 = gf_vars[n2][:]
                         init_args[attr[0]] = a1
@@ -222,9 +222,9 @@ class Grid_S(GridBase, SGrid):
                         break
             if 'node_lon' in init_args and 'node_lat' in init_args:
                 mask = False
-                for name in node_mask_names:
-                    if name in gf_vars:
-                        mask = gen_mask(gf_vars[name])
+                #for name in node_mask_names:
+                    #if name in gf_vars:
+                        #mask = gen_mask(gf_vars[name])
                 init_args['node_lon'].mask = mask
                 init_args['node_lat'].mask = mask
                 if name in gf_vars:
@@ -236,10 +236,9 @@ class Grid_S(GridBase, SGrid):
                 if n in center_attrs + edge1_attrs + edge2_attrs and v in gf_vars:
                     init_args[n] = gf_vars[v][:]
         return init_args, gt
-
+        
 
 class Grid_R(GridBase):
-    topology_dimension = 2
 
     def __init__(self,
                  node_lon=None,
