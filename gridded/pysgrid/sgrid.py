@@ -454,8 +454,7 @@ class SGrid(object):
             _hash = self._hash_of_pts(points)
         if D is not None and len(D) > 6:
             D.popitem(last=False)
-        else:
-            D[_hash] = item
+        D[_hash] = item
         D[_hash].setflags(write=False)
 
     def _get_memoed(self, points, D, _copy=False, _hash=None):
@@ -522,8 +521,8 @@ class SGrid(object):
             indices = self.locate_faces(points, _memo, _copy, _hash)
         xmin = indices[:, 0].astype('uint32').min()
         ymin = indices[:, 1].astype('uint32').min()
-        xmax = indices[:, 0].astype('uint32').max()
-        ymax = indices[:, 1].astype('uint32').max()
+        xmax = indices[:, 0].astype('uint32').max() + 1
+        ymax = indices[:, 1].astype('uint32').max() + 1
 
         if location in edge1_alternate_names:
             xmax += 1
@@ -537,8 +536,8 @@ class SGrid(object):
         else:
             raise ValueError('location not recognized')
 
-        x_slice = slice(ymin, ymax)
-        y_slice = slice(xmin, xmax)
+        x_slice = slice(xmin, xmax)
+        y_slice = slice(ymin, ymax)
         return (x_slice, y_slice)
 
     def locate_faces(self,
@@ -638,12 +637,12 @@ class SGrid(object):
         return idxs
 
     def get_padding_by_location(self, location):
-        d = {center_alternate_names: self.center_padding,
-            edge1_alternate_names: self.edge1_padding,
-            edge1_alternate_names: self.edge2_padding,
-            node_alternate_names: self.node_padding}
+        d = {'center': self.center_padding,
+            'edge1': self.edge1_padding,
+            'edge2': self.edge2_padding,
+            'node': self.node_padding}
         for k, v in d.items():
-            if location in k:
+            if location == k:
                 return v
 
     def get_padding_slices(self,
@@ -859,7 +858,6 @@ class SGrid(object):
                                   alphas=None,
                                   padding=None,
                                   slices=None,
-                                  slice_grid=True,
                                   _memo=False,
                                   _hash=None,
                                   _copy=False):
@@ -872,14 +870,19 @@ class SGrid(object):
         slice collection to reduce it to 2 dimensions.
 
         :param location: One of ('node', 'center', 'edge1', 'edge2') 'edge1' is conventionally associated with the
-        'vertical' edges and likewise 'edge2' with the 'horizontal'
+        'vertical' edges and likewise 'edge2' with the 'horizontal'. Determines type of interpolation, see below for details
 
         :param fill_value: If masked values are encountered in interpolation, this value takes the place of the masked value
 
         :param indices: If computed already, array of Nx2 cell indices can be passed in to increase speed. # noqa
         :param alphas: If computed already, array of alphas can be passed in to increase speed. # noqa
 
+        Depending on the location specified, different interpolation will be used.
+        For 'center', no interpolation
+        For 'edge1' or 'edge2', interpolation is linear, edge to edge across the cell
+        For 'node', interpolation is bilinear from the four nodes of each cell
 
+        The variable specified may be any array-like.
         - With a numpy array:
         sgrid.interpolate_var_to_points(points, sgrid.u[time_idx, depth_idx])
         - With a raw netCDF Variable:
@@ -927,7 +930,7 @@ class SGrid(object):
         #Setup done. Determine slicing and zero-align indices and slice variable
 
         idxs = self.apply_padding_to_idxs(ind.copy(), padding=padding)
-        [xslice, yslice] = self.get_efficient_slice(indices=idxs, location=location, _memo, _copy, _hash)
+        [xslice, yslice] = self.get_efficient_slice(indices=idxs, location=location, _memo=_memo, _copy=_copy, _hash=_hash)
         if slices is not None:
             slices = slices + (xslice,)
             slices = slices + (yslice,)
@@ -959,8 +962,8 @@ class SGrid(object):
             alpha_dim_idx = 1
             alpha = per_cell_log_offset[:,alpha_dim_idx]
 
-            v1 = self.get_variable_at_index(var, edge2_idxs).filled(fill_value)
-            v2 = self.get_variable_at_index(var, edge2_idxs + v2_offset).filled(fill_value)
+            v1 = self.get_variable_at_index(var, zero_aligned_idxs).filled(fill_value)
+            v2 = self.get_variable_at_index(var, zero_aligned_idxs + v2_offset).filled(fill_value)
 
             result = v1 + (alpha[:,np.newaxis] * (v2-v1))
 
@@ -1003,8 +1006,8 @@ class SGrid(object):
             if result is not None:
                 return result
 
-        if self._l_coeffs.get('node', None) is None:
-            self._compute_transform_coeffs('node')
+        if self._l_coeffs is None:
+            self._compute_transform_coeffs()
 
         if indices is None:
             indices = self.locate_faces(points,
@@ -1012,8 +1015,8 @@ class SGrid(object):
                                         _copy=_copy,
                                         _hash=_hash)
 
-        a = self._l_coeffs['node'][indices[:, 0], indices[:, 1]]
-        b = self._m_coeffs['node'][indices[:, 0], indices[:, 1]]
+        a = self._l_coeffs[indices[:, 0], indices[:, 1]]
+        b = self._m_coeffs[indices[:, 0], indices[:, 1]]
         (l, m) = self.x_to_l(points[:,0], points[:,1], a, b)
 
         result = indices.copy() + np.stack((l, m), axis=-1)

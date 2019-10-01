@@ -148,7 +148,9 @@ class UGrid(object):
         # A kdtree is used to locate nodes.
         # It will be created if/when it is needed.
         self._kdtree = None
-        self._tree = None
+        self._cell_tree = None
+        self._ind_memo_dict = OrderedDict()
+        self._alpha_memo_dict = OrderedDict()
 
     @classmethod
     def from_ncfile(klass, nc_url, mesh_name=None):  # , load_data=False):
@@ -575,8 +577,6 @@ class UGrid(object):
         points = np.asarray(points, dtype=np.float64)
         just_one = (points.ndim == 1)
         points.shape = (-1, 2)
-        if not hasattr(self, '_ind_memo_dict'):
-            self._ind_memo_dict = OrderedDict()
 
         if _memo:
             if _hash is None:
@@ -591,9 +591,9 @@ class UGrid(object):
             except ImportError:
                 raise ImportError("the cell_tree2d package must be installed to use the celltree search:\n"
                                   "https://github.com/NOAA-ORR-ERD/cell_tree2d/")
-            if self._tree is None:
+            if self._cell_tree is None:
                 self.build_celltree()
-            indices = self._tree.locate(points)
+            indices = self._cell_tree.locate(points)
         elif method == 'simple':
             indices = np.zeros((points.shape[0]), dtype=IND_DT)
             for n, point in enumerate(points):
@@ -624,7 +624,7 @@ class UGrid(object):
         if self.nodes is None or self.faces is None:
             raise ValueError(
                 "Nodes and faces must be defined in order to create and use CellTree")
-        self._tree = CellTree(self.nodes, self.faces)
+        self._cell_tree = CellTree(self.nodes, self.faces)
 
     def interpolation_alphas(self, points, indices=None, _copy=False, _memo=True, _hash=None):
         """
@@ -640,9 +640,6 @@ class UGrid(object):
 
         TODO: mask the indices that aren't on the grid properly.
         """
-
-        if not hasattr(self, '_alpha_memo_dict'):
-            self._alpha_memo_dict = OrderedDict()
 
         if _memo:
             if _hash is None:
@@ -682,19 +679,44 @@ class UGrid(object):
     def interpolate_var_to_points(self,
                                   points,
                                   variable,
+                                  location=None,
+                                  fill_value=0,
                                   indices=None,
-                                  grid=None,
                                   alphas=None,
-                                  mask=None,
                                   slices=None,
-                                  slice_grid=True,
                                   _copy=False,
                                   _memo=True,
                                   _hash=None):
         """
-        interpolates the passed-in variable to the points in points
+        Interpolates a variable on one of the grids to an array of points.
+        :param points: Nx2 Array of lon/lat coordinates to be interpolated to.
 
-        used linear interpolation from the nodes.
+        :param variable: Array-like of values to associate at location on grid (node, center, edge1, edge2).
+        This may be more than a 2 dimensional array, but you must pass 'slices' kwarg with appropriate
+        slice collection to reduce it to 2 dimensions.
+
+        :param location: One of ('node', 'center', 'edge1', 'edge2') 'edge1' is conventionally associated with the
+        'vertical' edges and likewise 'edge2' with the 'horizontal'
+
+        :param fill_value: If masked values are encountered in interpolation, this value takes the place of the masked value
+
+        :param indices: If computed already, array of Nx2 cell indices can be passed in to increase speed. # noqa
+        :param alphas: If computed already, array of alphas can be passed in to increase speed. # noqa
+
+
+        - With a numpy array:
+        sgrid.interpolate_var_to_points(points, sgrid.u[time_idx, depth_idx])
+        - With a raw netCDF Variable:
+        sgrid.interpolate_var_to_points(points, nc.variables['u'], slices=[time_idx, depth_idx])
+
+        If you have pre-computed information, you can pass it in to avoid unnecessary
+        computation and increase performance.
+        - ind = # precomputed indices of points
+        - alphas = # precomputed alphas (useful if interpolating to the same points frequently)
+
+        sgrid.interpolate_var_to_points(points, sgrid.u, indices=ind, alphas=alphas,
+        slices=[time_idx, depth_idx])
+
         """
         points = np.asarray(points, dtype=np.float64).reshape(-1, 2)
         # location should be already known by the variable
@@ -727,6 +749,8 @@ class UGrid(object):
             vals[inds == -1] = vals[inds == -1] * 0
             return np.sum(vals * pos_alphas, axis=1)
         return None
+
+    interpolate = interpolate_var_to_points
 
     def build_face_face_connectivity(self):
         """

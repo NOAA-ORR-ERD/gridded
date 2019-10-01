@@ -147,6 +147,7 @@ class Variable(object):
                     dataset=None,
                     data_file=None,
                     grid_file=None,
+                    location=None,
                     load_all=False,  # Do we need this? I think not --- maybe a method to fully load later if wanted.
                     fill_value=0,
                     **kwargs
@@ -154,18 +155,33 @@ class Variable(object):
         '''
         Allows one-function creation of a Variable from a file.
 
-        :param filename: Default data source. Parameters below take precedence
-        :param varname: Name of the variable in the data source file
-        :param grid_topology: Description of the relationship between grid attributes and variable names.
-        :param name: Name of property
-        :param units: Units
-        :param time: Time axis of the data
-        :param data: Underlying data source
+        :param filename: Default data source. Has lowest priority; 
+        if dataset, grid_file, or data_file are provided, this function 
+        uses them first
+
+        :param varname: Explicit name of the data in the data source file.
+        Equivalent to the key used to look the item up directly eg 'ds["lon_u"]'
+        for a netCDF4 Dataset.
+
+        :param grid_topology: Description of the relationship between grid attributes
+        and variable names.
+        :param name: Name of this object
+        :param units: string such as 'm/s'
+
+        :param time: Time axis of the data. May be a constructed gridded.Time
+        object, or collection of datetime.datetime objects
+
+        :param data: Underlying data object. May be any array-like,
+        including netCDF4 Variable, etc
+
         :param grid: Grid that the data corresponds with
-        :param depth: Depth axis object
-        :param dataset: Instance of open Dataset
-        :param data_file: Name of data source file
-        :param grid_file: Name of grid source file
+        :param location: The feature where the data aligns with the grid.
+
+        :param depth: Depth axis object from gridded.depth
+
+        :param dataset: Instance of open netCDF4.Dataset
+        :param data_file: Name of data source file, if data and grid files are separate
+        :param grid_file: Name of grid source file, if data and grid files are separate
         :type filename: string
         :type varname: string
         :type grid_topology: {string : string, ...}
@@ -174,6 +190,7 @@ class Variable(object):
         :type time: [] of datetime.datetime, netCDF4 Variable, or Time object
         :type data: netCDF4.Variable or numpy.array
         :type grid: pysgrid or pyugrid
+        :type location: string
         :type depth: Depth, S_Depth or L_Depth
         :type dataset: netCDF4.Dataset
         :type data_file: string
@@ -271,7 +288,10 @@ class Variable(object):
 
     @property
     def location(self):
-        return self._location
+        if self._location is None and self.data is not None and hasattr(self.data, 'location'):
+            return self.data.location
+        else:
+            return self._location
 
     @location.setter
     def location(self, location):
@@ -535,6 +555,8 @@ class Variable(object):
             self._memoize_result(pts, time, value, self._result_memo, _hash=_hash)
         return value
 
+    interpolate = at #common request
+
     def _xy_interp(self, points, time, extrapolate, slices=(), **kwargs):
         '''
         Uses the py(s/u)grid interpolation to determine the values at the points, and returns it
@@ -552,6 +574,7 @@ class Variable(object):
 
         value = self.grid.interpolate_var_to_points(points[:, 0:2],
                                                     self.data,
+                                                    location=self.location,
                                                     _hash=self._get_hash(points[:, 0:2],
                                                                          time),
                                                     slices=slices, _memo=True)
@@ -753,7 +776,6 @@ class VectorVariable(object):
                     dataset=None,
                     load_all=False,
                     variables=None,
-                    location=None,
                     **kwargs
                     ):
         '''
@@ -935,6 +957,12 @@ class VectorVariable(object):
                 'variables="{0.variables}", '
                 'grid="{0.grid}", '
                 ')').format(self)
+
+    @property
+    def location(self):
+        return [v.location for v in self.variables]
+    
+    locations = location
 
     @property
     def is_data_on_nodes(self):
