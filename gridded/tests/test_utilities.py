@@ -15,55 +15,44 @@ from gridded.tests.test_depth import get_s_depth
 data_dir = os.path.join(os.path.split(__file__)[0], 'test_data')
 
 
-def test_gen_mask():
-    mask = np.array(([True, True, True, True],
-                     [True, False, False, True],
-                     [True, False, False, True],
-                     [True, True, True, True]))
+def test_gen_celltree_mask_from_center_mask():
+    center_mask = np.array(([True, True, True, True, True],
+                     [True, False, True, True, True],
+                     [True, False, False, False, True],
+                     [True, True, True, True, True]))
+    center_sl = np.s_[1:-1,1:-1] #'both' padding
 
-    m = utilities.gen_mask(mask, add_boundary=False)
+    m = utilities.gen_celltree_mask_from_center_mask(center_mask, center_sl)
 
-    assert np.all(m == mask)
+    expected_mask = np.array(([False, True, True],
+                              [False, False, False]))
 
-    m2 = utilities.gen_mask(mask, add_boundary=True)
-
-    expected_mask = np.array(([True, False, False, True],
-                              [False, False, False, False],
-                              [False, False, False, False],
-                              [True, False, False, True]))
-
-    assert np.all(m2 == expected_mask)
+    assert np.all(m == expected_mask)
 
     testds = nc.Dataset('foo', mode='w', diskless=True)
-    testds.createDimension('x', 4)
+    testds.createDimension('x', 5)
     testds.createDimension('y', 4)
     testds.createVariable('mask', 'b', dimensions=('y', 'x'))
-    testds['mask'][:] = mask
+    testds['mask'][:] = center_mask
 
-    m3 = utilities.gen_mask(testds['mask'], add_boundary=True)
+    m3 = utilities.gen_celltree_mask_from_center_mask(center_mask, center_sl)
 
     assert np.all(m3 == expected_mask)
 
-    testds['mask'][:] = ~mask
+    testds['mask'][:] = ~center_mask
     testds['mask'].flag_values = [0, 1]
     testds['mask'].flag_meanings = ['land', 'water']
 
-    m4 = utilities.gen_mask(testds['mask'], add_boundary=True)
+    m4 = utilities.gen_celltree_mask_from_center_mask(center_mask, center_sl)
 
     assert np.all(m4 == expected_mask)
 
-    testds['mask'][:, 2] = [0, 2, 2, 0]
-    testds['mask'].flag_values = [0, 1, 2]
-    testds['mask'].flag_meanings = ['land', 'water', 'water2']
-
-    m5 = utilities.gen_mask(testds['mask'], add_boundary=True)
-
-    assert np.all(m5 == expected_mask)
-
+    testds['mask'][:] = ~center_mask
+    testds['mask'].flag_values = [0, 1]
     # because sometimes it's a damn string
-    testds['mask'].flag_meanings = 'land water water2'
+    testds['mask'].flag_meanings = 'land water'
 
-    m5 = utilities.gen_mask(testds['mask'], add_boundary=True)
+    m5 = utilities.gen_celltree_mask_from_center_mask(center_mask, center_sl)
 
     assert np.all(m5 == expected_mask)
     testds.close()

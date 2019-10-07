@@ -637,13 +637,13 @@ class SGrid(object):
         return idxs
 
     def get_padding_by_location(self, location):
-        d = {'center': self.center_padding,
-            'edge1': self.edge1_padding,
-            'edge2': self.edge2_padding,
-            'node': self.node_padding}
+        d = {'center': 'center_padding',
+            'edge1': 'edge1_padding',
+            'edge2': 'edge2_padding',
+            'node': 'node_padding'}
         for k, v in d.items():
             if location == k:
-                return v
+                return getattr(self, v)
 
     def get_padding_slices(self,
                            padding=('none','none')):
@@ -711,7 +711,8 @@ class SGrid(object):
         mask = np.zeros((index.shape[0], 1), dtype=bool)
         raw = np.ravel_multi_index(index.T, var.shape, mode='clip')
         rv[:, 0] = np.take(var, raw)
-        mask[:, 0] = np.take(var.mask, raw)
+        if var.mask is False:
+            mask[:, 0] = np.take(var.mask, raw)
         return np.ma.array(rv, mask=mask)
 
     def build_kdtree(self, grid='node'):
@@ -769,14 +770,13 @@ class SGrid(object):
             lat = np.ma.MaskedArray(lat[:].copy())
             #Water cells grab all nodes that belong to them
             node_mask = np.zeros_like(lon, dtype=np.bool)
-            node_mask[:-1,:-1] += cell_mask
-            node_mask[:-1,1:] += cell_mask
-            node_mask[1:,1:] += cell_mask
-            node_mask[1:,:-1] += cell_mask
+            node_mask[:-1,:-1] += ~cell_mask
+            node_mask[:-1,1:] += ~cell_mask
+            node_mask[1:,1:] += ~cell_mask
+            node_mask[1:,:-1] += ~cell_mask
             node_mask = ~node_mask
             lon.mask = node_mask
             lat.mask = node_mask
-
             masked_faces_idxs = np.zeros_like(node_mask, dtype=np.int32)
             masked_faces_idxs[node_mask] = -1
             tmp = np.where(~ node_mask.ravel())[0]
@@ -787,13 +787,13 @@ class SGrid(object):
             lin_faces[:,2] = np.ravel(masked_faces_idxs[1:, 1:])
             lin_faces[:,3] = np.ravel(masked_faces_idxs[1:, 0:-1])
 
-            lin_faces[~cell_mask.reshape(-1)] = [-1,-1,-1,-1]
+            lin_faces[cell_mask.reshape(-1)] = [-1,-1,-1,-1]
             lin_faces = np.ma.masked_less(lin_faces, 0).compressed().reshape(-1,4)
             #need to make a reversal_array. This is an array of the same length
             #as the unmasked nodes that contains the 'true' LINEAR index of the
             #unmasked node. When CellTree gives back an index, it's 'true'
             #index is discovered using this array
-            reversal_array = np.where(cell_mask.reshape(-1))[0].astype(np.int32)
+            reversal_array = np.where(~cell_mask.reshape(-1))[0].astype(np.int32)
             #append a -1 to preserve -1 entries when back-translating the indices
             reversal_array = np.concatenate((reversal_array, np.array([-1,])))
             self._cell_tree_mask = (node_mask, reversal_array)
@@ -938,7 +938,7 @@ class SGrid(object):
             slices = (xslice, yslice)
         zero_aligned_idxs = idxs.copy() - [xslice.start, yslice.start]
         var = variable[slices]
-        if len(variable.shape) > 2:
+        if len(var.shape) > 2:
             raise ValueError("Variable has too many dimensions to \
             associate with grid. Please specify slices.")
 

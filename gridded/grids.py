@@ -222,13 +222,9 @@ class Grid_S(GridBase, SGrid):
                         break
             if 'node_lon' in init_args and 'node_lat' in init_args:
                 mask = False
-                #for name in node_mask_names:
-                    #if name in gf_vars:
-                        #mask = gen_mask(gf_vars[name])
-                init_args['node_lon'].mask = mask
-                init_args['node_lat'].mask = mask
-                if name in gf_vars:
-                    init_args[node_mask] = gf_vars[name]
+                for name in node_mask_names:
+                    if name in gf_vars:
+                        init_args[node_mask] = gf_vars[name]
                 gt[node_mask] = name
 
         else:

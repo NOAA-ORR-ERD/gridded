@@ -254,6 +254,9 @@ class Variable(object):
                 depth = Depth.from_netCDF(grid_file,
                                           dataset=dg,
                                           )
+        if location is None:
+            if hasattr(data, 'location'):
+                location = data.location
 #             if len(data.shape) == 4 or (len(data.shape) == 3 and time is None):
 #                 from gnome.environment.environment_objects import S_Depth
 #                 depth = S_Depth.from_netCDF(grid=grid,
@@ -272,6 +275,7 @@ class Variable(object):
                    grid_file=grid_file,
                    data_file=data_file,
                    fill_value=fill_value,
+                   location=location,
                    varname=varname,
                    **kwargs)
 

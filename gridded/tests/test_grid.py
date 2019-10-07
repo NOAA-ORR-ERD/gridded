@@ -13,7 +13,7 @@ from .utilities import get_test_file_dir
 
 @pytest.fixture()
 def sg_data():
-    filename = os.path.join(get_test_file_dir(), 'staggered_sine_channel.nc')
+    filename = os.path.join(get_test_file_dir(), 'arakawa_c_test_grid.nc')
     return filename, nc.Dataset(filename)
 
 
@@ -44,6 +44,9 @@ def ug():
 
 
 class TestGrid_S:
+
+    #TODO: Add padding tests, index translation and offset tests
+
     def test_construction(self, sg_data, sg_topology):
         filename = sg_data[0]
         dataset = sg_data[1]
@@ -68,58 +71,31 @@ class TestGrid_S:
         sg = Grid_S.from_netCDF(filename, dataset, grid_topology=grid_topology)
 
         assert sg.node_mask is not None
-        assert all(sg.node_mask[0,:] == True)
-        assert all(sg.edge1_mask[-1,:] == True)
 
-        sg.build_celltree(grid='node', use_mask=False)
-        assert sg._cell_trees['node'][1].shape == sg.nodes.reshape(-1,2).shape
-        on_grid_result = sg.locate_faces([0.5,0], 'node')
-        off_grid_result = sg.locate_faces([0,0.5], 'node')
-        masked_territory_result = sg.locate_faces([0.5,0.9], 'node')
-        sg.build_celltree(grid='node', use_mask=True)
-        assert sg._cell_trees['node'][1].shape == (48,2)
+        pts = {'on': [1.1,33.6],
+               'off': [0.9,30.6],
+               'masked': [1.1,31.6]
+        }
+
+        sg.build_celltree(use_mask=False)
+        assert sg._cell_tree[1].shape == sg.nodes.reshape(-1,2).shape
+        on_grid_result = sg.locate_faces(pts['on'])
+        off_grid_result = sg.locate_faces(pts['off'])
+        masked_territory_result = sg.locate_faces(pts['masked'])
+        sg.build_celltree(use_mask=True)
         #locate a point that is on the grid in unmasked territory, and make
         #sure that with or without the mask returns the same result
-        assert all(sg.locate_faces([0.5,0], 'node') == on_grid_result)
+        assert all(sg.locate_faces(pts['on']) == on_grid_result)
         #locate a point off-grid, and make sure the same result is returned
-        assert all(sg.locate_faces([0,0.5], 'node') == off_grid_result)
+        assert all(sg.locate_faces(pts['off']) == off_grid_result)
         #masked territory should be different.
-        assert all(sg.locate_faces([0.5,0.9], 'node') != masked_territory_result)
+        assert all(sg.locate_faces(pts['masked']) != masked_territory_result)
 
         #rebuild without the mask, and make sure results match
-        sg.build_celltree(grid='node', use_mask=False)
-        assert all(sg.locate_faces([0.5,0], 'node') == on_grid_result)
-        assert all(sg.locate_faces([0,0.5], 'node') == off_grid_result)
-        assert all(sg.locate_faces([0.5,0.9], 'node') == masked_territory_result)
-
-        sg.build_celltree(grid='node', use_mask=True)
-        sg.use_masked_boundary=True
-        sg.build_celltree(grid='node', use_mask=True)
-        #because masked nodes that are adjacent to at least one unmasked node
-        #now get unmasked, and this grid has a one-node-thick border,
-        #all nodes should be unmasked
-        assert len(np.where(sg._masks['node'][0])[0]) == 0
-        #behavior should be identical as well
-        assert all(sg.locate_faces([0.5,0], 'node') == on_grid_result)
-        assert all(sg.locate_faces([0,0.5], 'node') == off_grid_result)
-        assert all(sg.locate_faces([0.5,0.9], 'node') == masked_territory_result)
-
-        #rerun with center just to make sure
-        sg.use_masked_boundary=False
-        sg.build_celltree(grid='center', use_mask=False)
-        assert sg._cell_trees['center'][1].shape == sg.centers.reshape(-1,2).shape
-        on_grid_result = sg.locate_faces([0.3,0], 'center')
-        off_grid_result = sg.locate_faces([-1,0.5], 'center')
-        masked_territory_result = sg.locate_faces([0.1,-0.9], 'center')
-        sg.build_celltree(grid='center', use_mask=True)
-        #locate a point that is on the grid in unmasked territory, and make
-        #sure that with or without the mask returns the same result
-        assert all(sg.locate_faces([0.5,0], 'center') == on_grid_result)
-        #locate a point off-grid, and make sure the same result is returned
-        assert all(sg.locate_faces([-1,0.5], 'center') == off_grid_result)
-        #masked territory should be different.
-        assert all(sg.locate_faces([0.1, -0.9], 'center') != masked_territory_result)
-
+        sg.build_celltree(use_mask=False)
+        assert all(sg.locate_faces(pts['on']) == on_grid_result)
+        assert all(sg.locate_faces(pts['off']) == off_grid_result)
+        assert all(sg.locate_faces(pts['masked']) == masked_territory_result)
 
 
 class TestPyGrid_U:

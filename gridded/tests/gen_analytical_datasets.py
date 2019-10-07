@@ -19,7 +19,7 @@ def gen_vortex_3D(filename=None):
     g = Grid_S(node_lon=x,
                node_lat=y)
     g.build_celltree()
-    lin_nodes = g._cell_trees['node'][1]
+    lin_nodes = g._cell_tree[1]
     lin_faces = np.array([np.array([([lx, lx + x_size + 1, lx + 1], [lx, lx + x_size, lx + x_size + 1]) for lx in range(0, x_size - 1, 1)]) + ly * x_size for ly in range(0, y_size - 1)])
     lin_faces = lin_faces.reshape(-1, 3)
     # y += np.sin(x) / 1
@@ -287,15 +287,256 @@ def gen_ring(filename=None):
         ds.close()
 
 
+def gen_arakawa_c_test_grid(filename=None): #added 9/2019 by Jay Hennen
+    #Initialization for a 4 cell wide east-west channel that has two one cell wide 'inlets'
+    #on the north side and two one cell wide outlets. The north and south side have one outlet each. Also included are
+    #various boundary conditions set at the corners of the inlets and outlets. The u/v velocities on this grid
+    #have been manually tuned to conserve mass across cell boundaries. The mask information and naming style are 
+    #similar to what NOAA GOODS ROMS output looks like circa 9/2019
+
+    #TODO Add depth dimensions (needs s_rho, s_w, h, zeta, Cs_r, Cs_w, and w)
+
+    lat_rho, lon_rho = np.mgrid[30.5:41.5:12j, 0.5:11.5:12j]
+
+    lat_psi = (lat_rho[0:-1, 0:-1] + lat_rho[1:, 1:]) /2
+    lon_psi = (lon_rho[0:-1, 0:-1] + lon_rho[1:, 1:]) /2
+
+    lat_v = (lat_rho[0:-1,:] + lat_rho[1:,:]) /2
+    lon_v = (lon_rho[0:-1,:] + lon_rho[1:,:]) /2
+
+    lat_u = (lat_rho[:, 0:-1] + lat_rho[:, 1:]) /2
+    lon_u = (lon_rho[:, 0:-1] + lon_rho[:, 1:]) /2
+
+    mask_rho = np.zeros_like(lat_rho, dtype=np.uint8) #0 = land, 1 = water
+    mask_rho[3:7,:] = 1
+    mask_rho[6:,2] = 1
+    mask_rho[6:,5] = 1
+    mask_rho[7:10,9] = 1
+    mask_rho[9,7:9] = 1
+    mask_rho[1:3,9] = 1
+    mask_rho[1,7:9] = 1
+
+    mask_psi = np.zeros_like(lat_psi, dtype=np.uint8) # 0 = land, 1 = water (free-slip?), 2 = no-slip
+
+    #This mask is what will be replacing the current gridded.utilities.gen_mask
+    #and be used as the cell tree mask ONLY
+    #TODO: Find a more efficient implementation, if reasonable!
+    mask_p_from_r = mask_psi.copy()
+    cellmask = mask_rho[1:-1,1:-1]
+    for i, r in enumerate(cellmask):
+        mask_p_from_r[i,1::] += r
+        mask_p_from_r[i,:-1:] += r
+        mask_p_from_r[i+1,1::] += r
+        mask_p_from_r[i+1,:-1:] += r
+
+    mask_psi[2,:] = 2
+    mask_psi[6,:] = 2
+    mask_psi[6,4:6] = 1
+    mask_psi[3:6,:] = 1
+    mask_psi[6:,1:3] = 2
+    mask_psi[7:,4:6] = 2
+    mask_psi[7:10,8:10] = 2
+    mask_psi[8:10,7] = 2
+    mask_psi[0:2,7:10] = 2
+    mask_psi[0:2,6] = 1
+    mask_psi[1,8] = 1
+    mask_psi[[6,8],8] = 1
+
+    #mask_psi[3,4] = 2 #No-slip in middle of channel!
+
+    # 0 = land, 1 = water
+    mask_u = np.zeros_like(lat_u, dtype=np.uint8)
+    mask_u[3:7,:] = 1
+    mask_u[9,7:9] = 1
+    mask_u[1,6:9] = 1
+
+    # 0 = land, 1 = water
+    mask_v = np.zeros_like(lat_v, dtype=np.uint8)
+    mask_v[3:6,:] = 1
+    mask_v[6:,2] = 1
+    mask_v[6:,5] = 1
+    mask_v[6:9,9] = 1
+    mask_v[1:3,9] = 1
+
+    #Below contains demo u/v initialization
+
+    u = np.ma.MaskedArray(np.zeros_like(lon_u), mask = ~(mask_u == 1))
+    u.data[3:7,0:2] = 1.0
+    u.data[3:7,2] = [1.4375, 1.375,1.125, 1.0625][::-1]
+    u.data[3:7,3:5] = [1.25,1.25]
+    u.data[3:7,5] = [1.7, 1.625, 1.375, 1.325][::-1]
+    u.data[3:7,6:9] = [1.5, 1.5, 1.5]
+    u.data[3:7,9:11] = 1.0
+    u.data[9,7:9] = -1.0 #Outlet 1
+    u.data[1,6:9] = -1.0 #Outlet 2
+
+    v = np.ma.MaskedArray(np.zeros_like(lon_v), mask = ~(mask_v == 1))
+    v.data[3:6,:] = 0 #Main Channel
+    v.data[6:11,2] = -1 #Inlet #1
+    v.data[5,2] = -0.5625
+    v.data[4,2] = -0.1875
+    v.data[3,2] = -0.0625
+    v.data[5,3] = -0.1875
+    v.data[4,3] = -0.3125
+    v.data[3,3] = -0.0625
+    v.data[6:11,5] = -1 #Inlet #2
+    v.data[5,5] = -0.5625 
+    v.data[4,5] = -0.1875
+    v.data[3,5] = -0.0625
+    v.data[5,6] = -0.1875
+    v.data[4,6] = -0.3125
+    v.data[3,6] = -0.0625
+    v.data[5,9] = 0.5 #Outlet #1
+    v.data[3,9] = -0.5 #Outlet #2
+    v.data[6:9,9] = 1
+    v.data[1:3,9] = -1
+    if filename is not None:
+        ds = nc4.Dataset(filename, 'w', diskless=True, persist=True)
+        for k, val in {'xi_rho': 12,
+                     'xi_u': 11,
+                     'xi_v': 12,
+                     'xi_psi': 11,
+                     'eta_rho': 12,
+                     'eta_u': 12,
+                     'eta_v': 11,
+                     'eta_psi': 11,
+                     'ocean_time': None}.items():
+            ds.createDimension(k, val)
+        for k, val in {'lon_rho': {'dimensions':('eta_rho', 'xi_rho'),
+                                 'data':lon_rho,
+                                 'long_name':'longitude of RHO-points',
+                                 'units':'degrees_east',
+                                 'standard_name': 'longitude',
+                                 'field':'lon_rho, scalar'},
+                     'lat_rho': {'dimensions':('eta_rho', 'xi_rho'),
+                                 'data':lat_rho,
+                                 'long_name':'latitude of RHO-points',
+                                 'units':'degrees_north',
+                                 'standard_name': 'latitude',
+                                 'field':'lat_rho, scalar'},
+                     'lon_psi': {'dimensions':('eta_psi', 'xi_psi'),
+                                 'data':lon_psi,
+                                 'long_name':'longitude of PSI-points',
+                                 'units':'degrees_east',
+                                 'standard_name': 'longitude',
+                                 'field':'lon_psi, scalar'},
+                     'lat_psi': {'dimensions':('eta_psi', 'xi_psi'),
+                                'data':lat_psi,
+                                'long_name':'latitude of PSI-points',
+                                'units':'degrees_north',
+                                'standard_name': 'latitude',
+                                'field':'lat_psi, scalar'},
+                     'lon_u': {'dimensions':('eta_psi', 'xi_rho'),
+                                'data':lon_u,
+                                'long_name':'longitude of U-points',
+                                'units':'degrees_east',
+                                'standard_name': 'longitude',
+                                'field':'lon_u, scalar'},
+                     'lat_u': {'dimensions':('eta_psi', 'xi_rho'),
+                                'data':lat_u,
+                                'long_name':'latitude of U-points',
+                                'units':'degrees_north',
+                                'standard_name': 'latitude',
+                                'field':'lat_u, scalar'},
+                     'lon_v': {'dimensions':('eta_rho', 'xi_psi'),
+                                'data':lon_v,
+                                'long_name':'longitude of V-points',
+                                'units':'degrees_east',
+                                'standard_name': 'longitude',
+                                'field':'lon_v, scalar'},
+                     'lat_v': {'dimensions':('eta_rho', 'xi_psi'),
+                                'data':lat_v,
+                                'long_name':'latitude of V-points',
+                                'units':'degrees_north',
+                                'standard_name': 'latitude',
+                                'field':'lat_v, scalar'},
+                     'u': {'dimensions':('ocean_time', 'eta_u', 'xi_u'),
+                            'data': u[np.newaxis],
+                            'long_name': 'u-momentum component',
+                            'units': 'meter second-1',
+                            'time': 'ocean_time',
+                            'grid': 'grid',
+                            'location': 'edge1',
+                            'coordinates': 'lon_u lat_u ocean_time',
+                            'field': 'u-velocity, scalar, series'},
+                     'v': {'dimensions':('ocean_time', 'eta_v', 'xi_v'),
+                            'data': v[np.newaxis],
+                            'long_name': 'v-momentum component',
+                            'units': 'meter second-1',
+                            'time': 'ocean_time',
+                            'grid': 'grid',
+                            'location': 'edge2',
+                            'coordinates': 'lon_v lat_v ocean_time',
+                            'field': 'v-velocity, scalar, series'},
+                     'mask_rho': {'dimensions':('eta_rho', 'xi_rho'),
+                                  'data': mask_rho,
+                                  'long_name': 'mask on RHO-points',
+                                  'flag_values': np.array([0, 1]),
+                                  'flag_meanings': 'land water',
+                                  'grid': 'grid',
+                                  'location': 'face',
+                                  'coordinates': 'lon_rho lat_rho'},
+                     'mask_psi': {'dimensions':('eta_psi', 'xi_psi'),
+                                  'data': mask_psi, #In real data, there is also '2', which denotes 'no-slip'
+                                  'long_name': 'mask on psi-points',
+                                  'flag_values': np.array([0, 1]), #Is this the real life? Is this just fantasy?
+                                  'flag_meanings': 'land water', #Caught in a landslide, no escape from reality
+                                  'grid': 'grid', 
+                                  'location': 'node', 
+                                  'coordinates': 'lon_psi lat_psi'},
+                     'mask_u': {'dimensions':('eta_u', 'xi_u'),
+                                  'data': mask_u,
+                                  'long_name': 'mask on U-points',
+                                  'flag_values': np.array([0, 1]),
+                                  'flag_meanings': 'land water',
+                                  'grid': 'grid',
+                                  'location': 'edge1',
+                                  'coordinates': 'lon_u lat_u'},
+                     'mask_v': {'dimensions':('eta_v', 'xi_v'),
+                                  'data': mask_v,
+                                  'long_name': 'mask on V-points',
+                                  'flag_values': np.array([0, 1]),
+                                  'flag_meanings': 'land water',
+                                  'grid': 'grid',
+                                  'location': 'edge2',
+                                  'coordinates': 'lon_v lat_v'},
+                     'ocean_time': {'dimensions':('ocean_time'),
+                                    'data': np.array([65520000.,]),
+                                    'long_name': 'time since initialization',
+                                    'units': 'seconds since 2016-01-01 00:00:00',
+                                    'calendar': 'gregorian_proleptic',
+                                    'field': 'time, scalar, series'},
+                     'grid': {'dimensions':(),
+                              'data':1,
+                              'cf_role': 'grid_topology',
+                              'topology_dimension': 2,
+                              'node_dimensions': 'xi_psi eta_psi',
+                              'face_dimensions': 'xi_rho: xi_psi (padding: both) eta_rho: eta_psi (padding: both)',
+                              'edge1_dimensions': 'xi_u: xi_psi eta_u: eta_psi (padding: both)',
+                              'edge2_dimensions': 'xi_v: xi_psi (padding: both) eta_v: eta_psi',
+                              'node_coordinates': 'lon_psi lat_psi',
+                              'face_coordinates': 'lon_rho lat_rho',
+                              'edge1_coordinates': 'lon_u lat_u',
+                              'edge2_coordinates': 'lon_v lat_v',
+                              'vertical_dimensions': 's_rho: s_w (padding: none)',
+                              }
+                     }.items():
+            var = ds.createVariable(k, 'f8', dimensions=val.pop('dimensions'))
+            data = val.pop('data')
+            var[:] = data
+            var.setncatts(val)
+    if ds is not None:
+        ds.close()
 
 def gen_all(path=None):
-    filenames = ['staggered_sine_channel.nc', '3D_circular.nc', 'tri_ring.nc']
+    filenames = ['arakawa_c_test_grid.nc', 'staggered_sine_channel.nc', '3D_circular.nc', 'tri_ring.nc']
     if path is not None:
         filenames = [os.path.join(path, fn) for fn in filenames]
-    for fn, func in zip(filenames, (gen_sinusoid, gen_vortex_3D, gen_ring)):
+    for fn, func in zip(filenames, (gen_arakawa_c_test_grid, gen_sinusoid, gen_vortex_3D, gen_ring)):
         func(fn)
 
 if __name__ == '__main__':
+    gen_arakawa_c_test_grid('arakawa_c_test_grid.nc')
     gen_sinusoid('staggered_sine_channel.nc')
     gen_vortex_3D('3D_circular.nc')
     gen_ring('tri_ring.nc')
