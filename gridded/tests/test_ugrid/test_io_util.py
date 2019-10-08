@@ -14,13 +14,13 @@ from gridded.pyugrid.grid_io import load_from_varnames
 
 # @pytest.fixture
 @contextlib.contextmanager
-def non_compliante_mesh(fname):
+def non_compliant_mesh(fname):
     """
     Dummy file based on:
     https://gnome.orr.noaa.gov/py_gnome_testdata/COOPSu_CREOFS.nc
 
     """
-    nc = Dataset(fname, 'w')
+    nc = Dataset(fname, 'w', diskless=True)
     nc.grid_type = 'Triangular'
     nc.createDimension('nbi', 4)
     nc.createDimension('three', 3)
@@ -47,8 +47,6 @@ def non_compliante_mesh(fname):
         yield nc
     finally:
         nc.close()
-        os.remove(fname)
-
 
 def test_load_from_varnames_good_mapping():
     mapping = {'attribute_check': ('grid_type', 'triangular'),
@@ -59,7 +57,7 @@ def test_load_from_varnames_good_mapping():
                'face_face_connectivity': 'nbe'}
 
     fname = 'non_compliant_ugrid.nc'
-    with non_compliante_mesh(fname):
+    with non_compliant_mesh(fname):
         ug = load_from_varnames(fname, mapping)
     assert isinstance(ug, UGrid)
 
@@ -73,6 +71,6 @@ def test_load_from_varnames_bad_mapping():
                'face_face_connectivity': 'nbe'}
 
     fname = 'non_compliant_ugrid.nc'
-    with non_compliante_mesh(fname):
+    with non_compliant_mesh(fname):
         with pytest.raises(KeyError):
             load_from_varnames(fname, mapping)

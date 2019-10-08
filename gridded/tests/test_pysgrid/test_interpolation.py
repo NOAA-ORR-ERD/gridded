@@ -71,36 +71,6 @@ def test_points_in_polys():
     assert(res)
 
 
-def test_interpolation_alphas():
-    points = np.array(([2, 2], [2, 4], [4, 2], [4, 4]))
-    alphas_c = sgrid.interpolation_alphas(points, grid='center')
-    alphas_e1 = sgrid.interpolation_alphas(points, grid='edge1')
-    alphas_e2 = sgrid.interpolation_alphas(points, grid='edge2')
-    alphas_n = sgrid.interpolation_alphas(points, grid='node')
-
-    answer_c = np.array([[1., 0., 0., 0.],
-                         [1., 0., 0., 0.],
-                         [1., 0., 0., 0.],
-                         [1., 0., 0., 0.]])
-    answer_e1 = np.array([[0.5, 0., 0., 0.5],
-                          [0.5, 0., 0., 0.5],
-                          [0.5, 0., 0., 0.5],
-                          [0.5, 0., 0., 0.5]])
-    answer_e2 = np.array([[0.5, 0.5, 0., 0.],
-                          [0.5, 0.5, 0., 0.],
-                          [0.5, 0.5, 0., 0.],
-                          [0.5, 0.5, 0., 0.]])
-    answer_n = np.array([[0.25, 0.25, 0.25, 0.25],
-                         [0.25, 0.25, 0.25, 0.25],
-                         [0.25, 0.25, 0.25, 0.25],
-                         [0.25, 0.25, 0.25, 0.25]])
-
-    assert(np.all(alphas_c == answer_c))
-    assert(np.all(alphas_n == answer_n))
-    assert(np.all(alphas_e1 == answer_e1))
-    assert(np.all(alphas_e2 == answer_e2))
-
-
 def test_points_in_polys2():
     rectangle = np.array(([0, 0],
                           [2, 0],
@@ -116,7 +86,7 @@ def test_points_in_polys2():
                            [2, 1]])
     pinp = np.array([points_in_polys(point.reshape(1, 2), rectangle)
                      for point in boundaries]).reshape(-1)
-    answer = sgrid.locate_faces(boundaries + 1, 'node') == [0, 0]
+    answer = sgrid.locate_faces(boundaries + 1) == [0, 0]
     answer = np.logical_and(answer[:, 0], answer[:, 1])
     assert (answer == pinp).all()
 

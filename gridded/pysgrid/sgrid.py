@@ -110,7 +110,7 @@ class SGrid(object):
         self._m_coeffs = None
 
         # used for nearest neighbor interpolation
-        self._kd_trees = None
+        self._kd_trees = {}
         self._cell_tree = None
 
         self._log_ind_memo_dict = OrderedDict()
@@ -280,7 +280,10 @@ class SGrid(object):
         if hasattr(self, '_edge1_padding') and self._edge1_padding:
             return self._edge1_padding
         else:
-            return (None, self.center_padding[0])
+            if self.center_padding is not None:
+                return (None, self.center_padding[0])
+            else:
+                return None
     
     @edge1_padding.setter
     def edge1_padding(self, val):
@@ -291,7 +294,10 @@ class SGrid(object):
         if hasattr(self, '_edge2_padding') and self._edge2_padding:
             return self._edge2_padding
         else:
-            return (self.center_padding[1], None)
+            if self.center_padding is not None:
+                return (self.center_padding[1], None)
+            else:
+                return None
     
     @edge2_padding.setter
     def edge2_padding(self, val):
@@ -567,16 +573,16 @@ class SGrid(object):
         This version utilizes the CellTree data structure.
 
         """
+        points = np.asarray(points, dtype=np.float64)
+        just_one = (points.ndim == 1)
+        points = points.reshape(-1, 2)
+
         if _memo:
             if _hash is None:
                 _hash = self._hash_of_pts(points)
             result = self._get_memoed(points, self._cell_ind_memo_dict, _copy, _hash)
             if result is not None:
                 return result
-
-        points = np.asarray(points, dtype=np.float64)
-        just_one = (points.ndim == 1)
-        points = points.reshape(-1, 2)
 
         if self._cell_tree is None:
             self.build_celltree(use_mask=use_mask)
