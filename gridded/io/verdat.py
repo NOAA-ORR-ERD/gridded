@@ -203,7 +203,7 @@ def make_outer_first(bounds, nodes):
     try:
         import geometry_utils
     except ImportError:
-        print("writing verdat requires the geometry_utils module:\n"
+        print("writting verdat requires the geometry_utils module:\n"
               "github.com/NOAA-ORR-ERD/geometry_utils")
 
     #Assume the first bound is the outer one to start
