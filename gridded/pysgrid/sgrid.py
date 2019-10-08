@@ -260,7 +260,7 @@ class SGrid(object):
     def center_padding(self):
         if hasattr(self, '_center_padding') and self._center_padding:
             return self._center_padding
-        else:
+        elif hasattr(self, 'center_lon') and self.center_lon is not None:
             face_shape = self.center_lon.shape
             node_shape = self.node_lon.shape
             diff = np.array(face_shape) - node_shape
@@ -270,6 +270,8 @@ class SGrid(object):
                 if rv[-1] == 'low':
                     warnings.warn('Assuming low padding for faces')
             return tuple(rv)
+        else:
+            return (None, None)
             
     @center_padding.setter
     def center_padding(self, val):
@@ -280,10 +282,7 @@ class SGrid(object):
         if hasattr(self, '_edge1_padding') and self._edge1_padding:
             return self._edge1_padding
         else:
-            if self.center_padding is not None:
-                return (None, self.center_padding[0])
-            else:
-                return None
+            return (None, self.center_padding[0])
     
     @edge1_padding.setter
     def edge1_padding(self, val):
@@ -294,10 +293,7 @@ class SGrid(object):
         if hasattr(self, '_edge2_padding') and self._edge2_padding:
             return self._edge2_padding
         else:
-            if self.center_padding is not None:
-                return (self.center_padding[1], None)
-            else:
-                return None
+            return (self.center_padding[1], None)
     
     @edge2_padding.setter
     def edge2_padding(self, val):
