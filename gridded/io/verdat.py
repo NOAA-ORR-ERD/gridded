@@ -195,15 +195,17 @@ def order_boundary_segments(bound_segs):
                 done = True
     return closed_bounds, open_bounds
 
+
 def make_outer_first(bounds, nodes):
     """
     figures out which boundary is the outer boundary,
     and puts it first in the list
     """
+    raise NotImplementedError("this code needs to be written")
     try:
         import geometry_utils
     except ImportError:
-        print("writting verdat requires the geometry_utils module:\n"
+        print("writing verdat requires the geometry_utils module:\n"
               "github.com/NOAA-ORR-ERD/geometry_utils")
 
     #Assume the first bound is the outer one to start
@@ -213,7 +215,7 @@ def make_outer_first(bounds, nodes):
 
 
 def set_winding_order(bounds, nodes, order="clockwise"):
-    raise NotImplementedError
+    raise NotImplementedError("This code needs to be written")
 
 
 
