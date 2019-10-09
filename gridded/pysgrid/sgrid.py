@@ -12,6 +12,7 @@ import hashlib
 import warnings
 from collections import OrderedDict
 
+from gridded.pysgrid.utils import GridPadding #TODO Remove this from the loading system
 from gridded.pysgrid.read_netcdf import NetCDFDataset, parse_padding, find_grid_topology_var
 from gridded.pysgrid.utils import calculate_angle_from_true_east, pair_arrays
 from gridded.pysgrid.variables import SGridVariable
@@ -204,10 +205,10 @@ class SGrid(object):
 
     def get_all_edge_padding(self):
         all_edge_padding = []
-        if self.edge1_padding is not None:
-            all_edge_padding += self.edge1_padding
-        if self.edge2_padding is not None:
-            all_edge_padding += self.edge2_padding
+        if self._edge1_padding is not None:
+            all_edge_padding += self._edge1_padding
+        if self._edge2_padding is not None:
+            all_edge_padding += self._edge2_padding
         return all_edge_padding
 
     def all_padding(self):
@@ -280,9 +281,12 @@ class SGrid(object):
     @property
     def edge1_padding(self):
         if hasattr(self, '_edge1_padding') and self._edge1_padding:
-            return self._edge1_padding
+            if isinstance(self._edge1_padding[0], GridPadding):
+                return (self._edge1_padding[0].padding, None)
+            else:
+                return self._edge1_padding
         else:
-            return (None, self.center_padding[0])
+            return (self.center_padding[0], None)
     
     @edge1_padding.setter
     def edge1_padding(self, val):
@@ -291,9 +295,12 @@ class SGrid(object):
     @property
     def edge2_padding(self):
         if hasattr(self, '_edge2_padding') and self._edge2_padding:
-            return self._edge2_padding
+            if isinstance(self._edge2_padding[0], GridPadding):
+                return (None, self._edge2_padding[0].padding)
+            else:
+                return self._edge2_padding
         else:
-            return (self.center_padding[1], None)
+            return (None, self.center_padding[1])
     
     @edge2_padding.setter
     def edge2_padding(self, val):
