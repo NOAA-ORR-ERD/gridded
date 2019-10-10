@@ -716,8 +716,8 @@ class SGrid(object):
     def get_variable_at_index(self, var, index):
         var = var[:]
 
-        rv = np.zeros((index.shape[0], 1), dtype=np.float64)
-        mask = np.zeros((index.shape[0], 1), dtype=bool)
+        rv = np.ma.zeros((index.shape[0], 1), dtype=np.float64)
+        mask = np.ma.zeros((index.shape[0], 1), dtype=bool)
         raw = np.ravel_multi_index(index.T, var.shape, mode='clip')
         rv[:, 0] = np.take(var, raw)
         if var.mask is False:
