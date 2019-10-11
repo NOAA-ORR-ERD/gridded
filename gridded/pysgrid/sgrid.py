@@ -951,6 +951,10 @@ class SGrid(object):
             raise ValueError("Variable has too many dimensions to \
             associate with grid. Please specify slices.")
 
+        center_idxs = self.apply_padding_to_idxs(ind.copy(), padding=self.get_padding_by_location('center'))
+        cm = gen_celltree_mask_from_center_mask(self.center_mask, np.s_[:])
+        cm = np.ma.MaskedArray(cm, mask=False)
+
         if location in center_alternate_names:
             #No interpolation across the cell
             result = self.get_variable_at_index(var, zero_aligned_idxs).filled(fill_value)
@@ -961,8 +965,15 @@ class SGrid(object):
             alpha_dim_idx = 0
             alpha = per_cell_log_offset[:,alpha_dim_idx]
 
-            u1 = self.get_variable_at_index(var, zero_aligned_idxs).filled(fill_value)
-            u2 = self.get_variable_at_index(var, zero_aligned_idxs + u2_offset).filled(fill_value)
+            u1 = self.get_variable_at_index(var, zero_aligned_idxs)
+            m1 = np.logical_xor(self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs - u2_offset))
+            u1.mask = np.logical_or(u1.mask, m1)
+            u1 = u1.filled(fill_value)
+            u2 = self.get_variable_at_index(var, zero_aligned_idxs + u2_offset)
+            m2 = np.logical_xor(self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs + u2_offset))
+            u2.mask = np.logical_or(u2.mask, m2)
+            u2 = u2.filled(fill_value)
+
             result = u1 + (alpha[:,np.newaxis] * (u2-u1))
 
         elif location in edge2_alternate_names:
@@ -971,8 +982,14 @@ class SGrid(object):
             alpha_dim_idx = 1
             alpha = per_cell_log_offset[:,alpha_dim_idx]
 
-            v1 = self.get_variable_at_index(var, zero_aligned_idxs).filled(fill_value)
-            v2 = self.get_variable_at_index(var, zero_aligned_idxs + v2_offset).filled(fill_value)
+            v1 = self.get_variable_at_index(var, zero_aligned_idxs)
+            m1 = np.logical_xor(self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs - v2_offset))
+            v1.mask = np.logical_or(v1.mask, m1)
+            v1 = v1.filled(fill_value)
+            v2 = self.get_variable_at_index(var, zero_aligned_idxs + v2_offset)
+            m2 = np.logical_xor(self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs + v2_offset))
+            v2.mask = np.logical_or(v2.mask, m2)
+            v2 = v2.filled(fill_value)
 
             result = v1 + (alpha[:,np.newaxis] * (v2-v1))
 
