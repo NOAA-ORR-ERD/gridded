@@ -493,16 +493,16 @@ class SGrid(object):
         polyx = self.get_variable_by_index(lon, indices)
         polyy = self.get_variable_by_index(lat, indices)
         # for every cell
-        # A = np.array(([1, 0, 0, 0],
-        #               [1, 0, 1, 0],
-        #               [1, 1, 1, 1],
-        #               [1, 1, 0, 0],
-        #               ))
         A = np.array(([1, 0, 0, 0],
-                      [1, 1, 0, 0],
-                      [1, 1, 1, 1],
                       [1, 0, 1, 0],
+                      [1, 1, 1, 1],
+                      [1, 1, 0, 0],
                       ))
+        # A = np.array(([1, 0, 0, 0],
+        #               [1, 1, 0, 0],
+        #               [1, 1, 1, 1],
+        #               [1, 0, 1, 0],
+        #               ))
         # polyx = np.matrix(polyx)
         # polyy = np.matrix(polyy)
         AI = np.linalg.inv(A)
@@ -957,7 +957,7 @@ class SGrid(object):
 
         elif location in edge1_alternate_names:
             #interpolate as a uniform gradient from 'left side' to 'right side'
-            u2_offset = [1, 0]
+            u2_offset = [0, 1]
             alpha_dim_idx = 0
             alpha = per_cell_log_offset[:,alpha_dim_idx]
 
@@ -967,7 +967,7 @@ class SGrid(object):
 
         elif location in edge2_alternate_names:
             #interpolate as a uniform gradient from 'bottom' to 'top'
-            v2_offset = [0, 1]
+            v2_offset = [1, 0]
             alpha_dim_idx = 1
             alpha = per_cell_log_offset[:,alpha_dim_idx]
 
