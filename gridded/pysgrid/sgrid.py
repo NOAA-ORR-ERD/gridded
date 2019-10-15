@@ -951,16 +951,16 @@ class SGrid(object):
             raise ValueError("Variable has too many dimensions to \
             associate with grid. Please specify slices.")
 
-        center_idxs = self.apply_padding_to_idxs(ind.copy(), padding=self.get_padding_by_location('center'))
-        cm = gen_celltree_mask_from_center_mask(self.center_mask, np.s_[:])
-        cm = np.ma.MaskedArray(cm, mask=False)
-
         if location in center_alternate_names:
             #No interpolation across the cell
             result = self.get_variable_at_index(var, zero_aligned_idxs).filled(fill_value)
 
         elif location in edge1_alternate_names:
             #interpolate as a uniform gradient from 'left side' to 'right side'
+            center_idxs = self.apply_padding_to_idxs(ind.copy(), padding=self.get_padding_by_location('center'))
+            cm = gen_celltree_mask_from_center_mask(self.center_mask, np.s_[:])
+            cm = np.ma.MaskedArray(cm, mask=False)\
+
             u2_offset = [0, 1]
             alpha_dim_idx = 0
             alpha = per_cell_log_offset[:,alpha_dim_idx]
@@ -978,6 +978,10 @@ class SGrid(object):
 
         elif location in edge2_alternate_names:
             #interpolate as a uniform gradient from 'bottom' to 'top'
+            center_idxs = self.apply_padding_to_idxs(ind.copy(), padding=self.get_padding_by_location('center'))
+            cm = gen_celltree_mask_from_center_mask(self.center_mask, np.s_[:])
+            cm = np.ma.MaskedArray(cm, mask=False)
+            
             v2_offset = [1, 0]
             alpha_dim_idx = 1
             alpha = per_cell_log_offset[:,alpha_dim_idx]
