@@ -950,6 +950,10 @@ class SGrid(object):
         if len(var.shape) > 2:
             raise ValueError("Variable has too many dimensions to \
             associate with grid. Please specify slices.")
+        if not isinstance(var, np.ma.MaskedArray):
+            #this is because MFDataset isn't always returning a masked array, the same as pre netCDF 1.4 behavior
+            #Until they fix this, we need to ensure it gets masked.
+            var = np.ma.MaskedArray(var, mask=False)
 
         if location in center_alternate_names:
             #No interpolation across the cell
