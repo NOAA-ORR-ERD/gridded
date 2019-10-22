@@ -57,8 +57,8 @@ def test_load_from_varnames_good_mapping():
                'face_face_connectivity': 'nbe'}
 
     fname = 'non_compliant_ugrid.nc'
-    with non_compliant_mesh(fname):
-        ug = load_from_varnames(fname, mapping)
+    with non_compliant_mesh(fname) as ds:
+        ug = load_from_varnames(ds, mapping)
     assert isinstance(ug, UGrid)
 
 
@@ -71,6 +71,7 @@ def test_load_from_varnames_bad_mapping():
                'face_face_connectivity': 'nbe'}
 
     fname = 'non_compliant_ugrid.nc'
-    with non_compliant_mesh(fname):
+    with non_compliant_mesh(fname) as ds:
         with pytest.raises(KeyError):
-            load_from_varnames(fname, mapping)
+            load_from_varnames(ds, mapping)
+
