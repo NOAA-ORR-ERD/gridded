@@ -15,6 +15,7 @@ import netCDF4
 import numpy as np
 
 from gridded.pyugrid.ugrid import UGrid
+from gridded.utilities import get_dataset
 
 
 def load_from_varnames(filename,
@@ -46,7 +47,8 @@ def load_from_varnames(filename,
     ug = UGrid()
     attribute_check = {} if attribute_check is None else attribute_check
 
-    nc = netCDF4.Dataset(filename)
+    nc = get_dataset(filename)
+    # nc = netCDF4.Dataset(filename)
 
     # Check for the specified attributes.
     for name, value in attribute_check:
