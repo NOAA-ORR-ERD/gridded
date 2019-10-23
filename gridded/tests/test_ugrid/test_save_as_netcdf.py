@@ -55,7 +55,7 @@ def ncds():
     if not KEEP_TEMP_FILES:
         try:
             os.remove(fname)
-        except FileNotFoundError:
+        except OSError:
             pass
 
 
