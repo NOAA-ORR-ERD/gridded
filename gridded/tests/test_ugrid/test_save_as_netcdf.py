@@ -23,9 +23,13 @@ from .utilities import chdir, two_triangles, twenty_one_triangles
 
 temp_files = os.path.join(os.path.dirname(__file__), 'temp_files')
 
-# KEEP_TEMP_FILES = False
-KEEP_TEMP_FILES = True
+# Set this to True if you want to see what gets written to debug
+KEEP_TEMP_FILES = False
+# KEEP_TEMP_FILES = True
 
+
+# kludge to keep a counter going
+file_counter = [0]
 @pytest.fixture
 def ncds():
     """
@@ -33,8 +37,8 @@ def ncds():
     """
     if not os.path.isdir(temp_files):
         os.mkdir(temp_files)
-    fname = os.path.join(temp_files, 'temp.nc')
-    # remove file if it's already there
+    fname = os.path.join(temp_files, 'temp_{}.nc'.format(file_counter[0]))
+    file_counter[0] = file_counter[0] + 1    # remove file if it's already there
     # "clobber=True" should do this, but
     # it doesn't always clean up properly
     if os.path.isfile(fname):
