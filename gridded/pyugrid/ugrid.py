@@ -720,7 +720,8 @@ class UGrid(object):
         """
         points = np.asarray(points, dtype=np.float64).reshape(-1, 2)
         # location should be already known by the variable
-        location = variable.location
+        if hasattr(variable, 'location'):
+            location = variable.location
         # But if it's not, then it can be infered
         # (for compatibilty with old code)
         if location is None:
@@ -737,13 +738,13 @@ class UGrid(object):
         _hash = self._hash_of_pts(points)
 
         inds = self.locate_faces(points, 'celltree', _copy, _memo, _hash)
-        if location == 'faces':
+        if location == 'face':
             vals = variable[inds]
             vals[inds == -1] = vals[inds == -1] * 0
             return vals
 #             raise NotImplementedError("Currently does not support interpolation of a "
 #                                       "variable defined on the faces")
-        if location == 'nodes':
+        if location == 'node':
             pos_alphas = self.interpolation_alphas(points, inds, _copy, _memo, _hash)
             vals = variable[self.faces[inds]]
             vals[inds == -1] = vals[inds == -1] * 0
