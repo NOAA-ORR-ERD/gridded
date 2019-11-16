@@ -49,9 +49,9 @@ Design Principles
 Grid Independence
 -----------------
 
-The primary goal of ``gridded`` is for an end-user to be able to do data analysis and visualization without needing to understand the intricacies of the grid structure, and ideally to no have to even know what grid a particular dataset or variable is using.
+The primary goal of ``gridded`` is for an end-user to be able to do data analysis and visualization without needing to understand the intricacies of the grid structure, and ideally to not have to even know what grid a particular dataset or variable is using.
 
-For example one should be able to plot a time series of a parameter, like sea surface temperature, with exactly the same code regardless of the underlying grid:
+For example, one should be able to plot a time series of a parameter, like sea surface temperature, with exactly the same code regardless of the underlying grid:
 
 .. code-block:: python
 
@@ -65,7 +65,7 @@ The user can now plot the time series for a given location and times, without ha
 Duck Typing
 -----------
 
-These are for the most part "duck typed", rather than strict subclassing. Though there are base classes that provide shared functionality.
+The Grid objects (Grid, Time, Depth) are for the most part "duck typed", rather than strict subclassing. Though there are base classes that provide shared functionality.
 
 We are trying to be clear about the "public" vs "private" API by using leading underscores for methods and attributes not intended for external use.
 
@@ -75,7 +75,7 @@ Lazy loading / data arrays
 
 Many of the datasets users need to work with can be quite large. As a result it is impractical to load entire datasets into memory at once. ``gridded`` for the most part shifts the burden of handling lazy loading to external libraries, and does this by keeping data stored in a "numpy array-like" objects. Users can use pure numpy arrays, or any object that "acts" like a numpy array. This should allow ``gridded`` to work with netcdf variables, hdf5 arrays, dask arrays, etc.
 
-In practice, there is no clear definition of "array-like", so ``gridded`` has defined its own definition, based on features we know we need. But it is assumed that nd indexing behaves that same as numpy arrays -- as there is no way to easily confirm that.
+In practice, there is no clear definition of "array-like", so ``gridded`` has defined its own definition, based on features we know we need. But it is assumed that nd indexing behaves that same as numpy arrays -- as there is no way to easily confirm that. This is a goal, but in fact, only numpy arrays and ``netCDF4 Variables`` have been implimented and tested. In the future, we may use ``xarray`` as a single abstration layer, rather than rolling our own.
 
 To support that, we support converting and testing for array-like with:
 
@@ -85,6 +85,7 @@ and
 
 ``gridded.utils.isarraylike()``
 
+Those utilities will be updated as new needs arrise.
 
 Reference
 =========
