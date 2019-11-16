@@ -1257,20 +1257,20 @@ class SGridAttributes(object):
         return edge2_lon, edge2_lat
 
     def get_masks(self, node, center, edge1, edge2):
-        node_shape = node.shape if node.shape else None
-        center_shape = center.shape if center.shape else None
-        edge1_shape = edge1.shape if edge1.shape else None
-        edge2_shape = edge2.shape if edge2.shape else None
+        node_shape = node.shape if node and node.shape else None
+        center_shape = center.shape if center and center.shape else None
+        edge1_shape = edge1.shape if edge1 and edge1.shape else None
+        edge2_shape = edge2.shape if edge2 and edge2.shape else None
         mask_candidates = [var.name for var in self.nc.variables.values() if 'mask' in var.name or (hasattr(var, 'long_name') and 'mask' in var.long_name)]
         node_mask = center_mask = edge1_mask = edge2_mask = None
         for mc in mask_candidates:
-            if self.nc.variables[mc].shape == node_shape and node_mask is None:
+            if node_shape and self.nc.variables[mc].shape == node_shape and node_mask is None:
                 node_mask = self.nc.variables[mc]
-            if self.nc.variables[mc].shape == center_shape and center_mask is None:
+            if center_shape and self.nc.variables[mc].shape == center_shape and center_mask is None:
                 center_mask = self.nc.variables[mc]
-            if self.nc.variables[mc].shape == edge1_shape and edge1_mask is None:
+            if edge1_shape and self.nc.variables[mc].shape == edge1_shape and edge1_mask is None:
                 edge1_mask = self.nc.variables[mc]
-            if self.nc.variables[mc].shape == edge2_shape and edge2_mask is None:
+            if edge2_shape and self.nc.variables[mc].shape == edge2_shape and edge2_mask is None:
                 edge2_mask = self.nc.variables[mc]
 
         return node_mask, center_mask, edge1_mask, edge2_mask
