@@ -1114,7 +1114,11 @@ class UGrid(object):
                                is not None else None)
                 chunksizes = (len(self.boundaries),)
             else:
-                raise ValueError("I dont' know how to save a variable located on: {}".format(var.location))
+                raise ValueError("I don't know how to save a variable located on: {}".format(var.location))
+            print("Saving:", var)
+            print("name is:", var.name)
+            print("var data is:", var.data)
+            print("var data shape is:", var.data.shape)
             data_var = nclocal.createVariable(var.name,
                                               var.data.dtype,
                                               shape,
@@ -1122,7 +1126,8 @@ class UGrid(object):
                                               # zlib=False,
                                               # complevel=0,
                                               )
-            data_var[:] = var.data
+            print("new dat var shape:", shape)
+            data_var[:] = var.data[:]
             # Add the standard attributes:
             data_var.location = var.location
             data_var.mesh = mesh_name
