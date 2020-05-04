@@ -4,10 +4,10 @@
 assorted utility functions needed by gridded
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
-import collections
+
+from collections import Iterable
 import numpy as np
 import netCDF4 as nc4
-import six
 
 must_have = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute__']
 
@@ -19,17 +19,24 @@ def gen_celltree_mask_from_center_mask(center_mask, sl):
 
     input_mask = center_mask[sl]
     ret_mask = np.ones(input_mask.shape, dtype=bool)
-    type1 = (isinstance(center_mask, nc4.Variable) and hasattr(center_mask, 'flag_values') and hasattr(center_mask, 'flag_meanings'))
-    type2 = (isinstance(center_mask, nc4.Variable) and hasattr(center_mask, 'option_0'))
+    type1 = (isinstance(center_mask, nc4.Variable)
+             and hasattr(center_mask, 'flag_values')
+             and hasattr(center_mask, 'flag_meanings'))
+    type2 = (isinstance(center_mask, nc4.Variable)
+             and hasattr(center_mask, 'option_0'))
     if type1:
         fm = center_mask.flag_meanings
-        if isinstance(fm, six.string_types):
-            fm = fm.split(' ')
+        try:
+            fm = fm.split()
+        except AttributeError:
+            pass  # must not be a string -- we assume it's a sequence already
         meaning_mask = [False if ('water' in s or 'lake' in s) else True for s in fm]
         tfmap = dict(zip(center_mask.flag_values, meaning_mask))
         for k, v in tfmap.items():
             ret_mask[input_mask == k] = v
-    elif type2: #special case where option_0 == land, option_1 == water, etc #TODO generalize this properly
+    elif type2:  # special case where option_0 == land,
+                 # option_1 == water, etc
+                 # TODO: generalize this properly
         meaning_mask = [True, False]
         tfmap = dict(zip([0, 1], meaning_mask))
         for k, v in tfmap.items():
@@ -71,10 +78,10 @@ def regrid_variable(grid, o_var, location='node'):
             dest_points = grid.face_coordinates
         else:
             dest_points = grid.centers
-    dest_points = dest_points.reshape(-1,2)
+    dest_points = dest_points.reshape(-1, 2)
     if 'edge' in location:
         raise NotImplementedError("Cannot regrid variable to edges at this time")
-    dest_indices = o_var.grid.locate_faces(dest_points,'node')
+    dest_indices = o_var.grid.locate_faces(dest_points, 'node')
     if np.all(dest_indices == -1):
         raise ValueError("Grid {0} has no destination points overlapping\
         the grid of the source variable {1}".format(grid, o_var))
@@ -100,7 +107,7 @@ def regrid_variable(grid, o_var, location='node'):
     location_shp = grid.node_lon.shape
 
     pts = np.zeros((dest_points.shape[0], 3))
-    pts[:,0:2] = dest_points
+    pts[:, 0:2] = dest_points
     if o_var.time is not None:
         for t_idx, t in enumerate(o_var.time.data):
             if n_depth is not None and isinstance(n_depth, S_Depth):
@@ -109,12 +116,12 @@ def regrid_variable(grid, o_var, location='node'):
                                    data=lev_data,
                                    grid=o_var.grid)
                     zs = lev.at(pts, t)
-                    pts[:,2] = zs
+                    pts[:, 2] = zs
                     n_data[t_idx, lev_idx] = o_var.at(pts, t).reshape(location_shp)
             else:
-                n_data[t_idx] = o_var.at(pts,t).reshape(location_shp)
+                n_data[t_idx] = o_var.at(pts, t).reshape(location_shp)
     else:
-        n_data = o_var.at(pts,None).reshape(location_shp)
+        n_data = o_var.at(pts, None).reshape(location_shp)
 
     n_var = Variable(name='regridded {0}'.format(o_var.name),
                      grid=grid,
@@ -123,6 +130,7 @@ def regrid_variable(grid, o_var, location='node'):
                      data=n_data,
                      units=o_var.units)
     return n_var
+
 
 def _regrid_s_depth(grid, o_depth):
     """
@@ -307,11 +315,11 @@ def asarraylike(obj):
 
 def isstring(obj):
     """
-    py2/3 compaitlbie wayto test for a string
+    py2/3 compaitlbie way to test for a string
     """
     try:
         return isinstance(obj, basestring)
-    except:
+    except NameError:
         return isinstance(obj, str)
 
 
@@ -327,7 +335,7 @@ def get_dataset(ncfile, dataset=None):
         return dataset
     if isinstance(ncfile, nc4.Dataset):
         return ncfile
-    elif isinstance(ncfile, collections.Iterable) and len(ncfile) == 1:
+    elif isinstance(ncfile, Iterable) and len(ncfile) == 1:
         return nc4.Dataset(ncfile[0])
     elif isstring(ncfile):
         return nc4.Dataset(ncfile)
