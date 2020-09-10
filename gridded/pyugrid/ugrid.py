@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+
+# fixme: could this be refactored to subclass from the NoGRid class?
+
 """
 ugrid classes
 
@@ -58,7 +61,6 @@ class UGrid(object):
                  edge_coordinates=None,
                  face_coordinates=None,
                  boundary_coordinates=None,
-                 data=None,
                  mesh_name="mesh",
                  ):
         """
@@ -66,6 +68,12 @@ class UGrid(object):
 
         :param nodes=None : the coordinates of the nodes
         :type nodes: (NX2) array of floats
+
+        :param node_lon=None: latitudes of nodes
+        :param node_lat=None: longitudes of nodes
+
+        The nodes can be passed in as either a single (NX2) (lon, lat) array
+        or as two separate arrays of lon and lat
 
         :param faces=None : the faces of the grid. Indexes for the nodes array.
         :type faces: (NX3) array of integers
@@ -99,10 +107,6 @@ class UGrid(object):
         :param boundary_coordinates=None: representative coordinate of the
                                           boundaries
         :type boundary_coordinates: (NX2) array of floats
-
-
-        :param data = None: associated variables
-        :type data: dict of UVar objects
 
         :param mesh_name = "mesh": optional name for the mesh
         :type mesh_name: string
@@ -138,17 +142,14 @@ class UGrid(object):
 
         self.mesh_name = mesh_name
 
-        # # the data associated with the grid
-        # # should be a dict of UVar objects
-        # self._data = {}  # The data associated with the grid.
-        # if data is not None:
-        #     for dataset in data.values():
-        #         self.add_data(dataset)
-
-        # A kdtree is used to locate nodes.
+        # A kdtree is used to locate nodes for nearest neighbor
         # It will be created if/when it is needed.
         self._kdtree = None
+        # A cell_tree is used to locate faces
+        # It will be created if/when it is needed.
         self._cell_tree = None
+        # dict(s) for memoizing calls so that multiple calls for the
+        # same points can be fast.
         self._ind_memo_dict = OrderedDict()
         self._alpha_memo_dict = OrderedDict()
 
@@ -171,7 +172,7 @@ class UGrid(object):
     @classmethod
     def from_nc_dataset(klass, nc, mesh_name=None):  # , load_data=False):
         """
-        create a UGrid object from a netcdf file (or opendap url)
+        create a UGrid object from a open netcdf4 Dataset
 
         :param nc: An already open Dataset object
         :type nc: netCDF4.DataSet
@@ -180,16 +181,6 @@ class UGrid(object):
                                you'll get the only mesh in the file. If there
                                is more than one mesh in the file, a ValueError
                                Will be raised
-
-        # :param load_data=False: flag to indicate whether you want to load the
-        #                         associated data or not.  The mesh will be
-        #                         loaded in any case.  If False, only the mesh
-        #                         will be loaded.  If True, then all the data
-        #                         associated with the mesh will be loaded.
-        #                         This could be huge!
-
-        # :type load_data: boolean
-
         """
         grid = klass()
         read_netcdf.load_grid_from_nc_dataset(nc, grid, mesh_name)  # , load_data)
@@ -235,14 +226,6 @@ class UGrid(object):
     def nodes(self):
         return self._nodes
 
-    @property
-    def node_lon(self):
-        return self._nodes[:, 0]
-
-    @property
-    def node_lat(self):
-        return self._nodes[:, 1]
-
     @nodes.setter
     def nodes(self, nodes_coords):
         # Room here to do consistency checking, etc.
@@ -259,6 +242,14 @@ class UGrid(object):
         self._edges = None
         self._faces = None
         self._boundaries = None
+
+    @property
+    def node_lon(self):
+        return self._nodes[:, 0]
+
+    @property
+    def node_lat(self):
+        return self._nodes[:, 1]
 
     @property
     def faces(self):
