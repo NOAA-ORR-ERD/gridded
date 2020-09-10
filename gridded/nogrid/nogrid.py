@@ -11,10 +11,10 @@ It can provide data access through interpolation however
 
 from __future__ import (absolute_import, division, print_function)
 
-# import hashlib
-# from collections import OrderedDict
+import hashlib
+from collections import OrderedDict
 
-# import numpy as np
+import numpy as np
 
 # import gridded.pyugrid.read_netcdf as read_netcdf
 # from gridded.pyugrid.util import point_in_tri
