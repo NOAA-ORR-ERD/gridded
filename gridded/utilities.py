@@ -182,7 +182,7 @@ def _reorganize_spatial_data(points):
 
     Since the user may organize their spatial data in a number of ways, this
     function should be used to standardize the format so math can be done
-    consistently. It is also worth using the _spatial_data_metadata function
+    consistently. It is also worth using the _align_results_to_spatial_data function
     in case it is appropriate to reformat calculation results to be more
     like the spatial data input.
 

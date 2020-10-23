@@ -38,7 +38,10 @@ class Time(object):
         '''
 
         if isinstance(data, (nc4.Variable, nc4._netCDF4._Variable)):
-            self.data = nc4.num2date(data[:], units=data.units)
+            if (hasattr(nc4, 'num2pydate')):
+                self.data = nc4.num2pydate(data[:], units=data.units)
+            else:
+                self.data = nc4.num2date(data[:], units=data.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
         elif data is None:
             self.data = np.array([datetime.now()])
         else:
