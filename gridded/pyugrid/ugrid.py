@@ -28,7 +28,7 @@ from gridded.pyugrid.util import point_in_tri
 
 from gridded.utilities import get_writable_dataset
 
-#from gridded.pyugrid.uvar import UVar
+# from gridded.pyugrid.uvar import UVar
 
 # __all__ = ['UGrid',
 #            'UVar']
@@ -163,14 +163,6 @@ class UGrid(object):
                                you'll get the only mesh in the file. If there
                                is more than one mesh in the file, a ValueError
                                Will be raised
-        # :param load_data=False: flag to indicate whether you want to load the
-        #                         associated data or not.  The mesh will be
-        #                         loaded in any case.  If False, only the mesh
-        #                         will be loaded.  If True, then all the data
-        #                         associated with the mesh will be loaded.
-        #                         This could be huge!
-        # :type load_data: boolean
-
         """
         grid = klass()
         read_netcdf.load_grid_from_ncfilename(nc_url, grid, mesh_name)  # , load_data)
@@ -386,19 +378,14 @@ class UGrid(object):
         """
         :param data:
 
-        Returns:
-
-        'nodes' if data will fit to the nodes,
-
-        'faces' if the data will fit to the faces,
-
-        'boundaries' if the data will fit the boundaries.
+        :returns: 'nodes' if data will fit to the nodes,
+                  'faces' if the data will fit to the faces,
+                  'boundaries' if the data will fit the boundaries.
+                  None otherwise.
 
         If data is a netcdf variable, the "location" attribute is checked.
-
-        None otherwise.
         """
-        # We should never be caling infer_locations is it was already defined
+        # We should never be calling infer_locations if it was already defined
         # try:
         #     loc = data.location
         #     if loc == "face":
@@ -689,41 +676,49 @@ class UGrid(object):
                                   _hash=None):
         """
         Interpolates a variable on one of the grids to an array of points.
+
         :param points: Nx2 Array of lon/lat coordinates to be interpolated to.
 
-        :param variable: Array-like of values to associate at location on grid (node, center, edge1, edge2).
-        This may be more than a 2 dimensional array, but you must pass 'slices' kwarg with appropriate
-        slice collection to reduce it to 2 dimensions.
+        :param variable: Array-like of values to associate at location on grid
+                         (node, center, edge1, edge2). This may be more than a
+                         2-dimensional array, but you must pass 'slices' kwarg
+                         with appropriate slice collection to reduce it to
+                         2 dimensions.
 
-        :param location: One of ('node', 'center', 'edge1', 'edge2') 'edge1' is conventionally associated with the
-        'vertical' edges and likewise 'edge2' with the 'horizontal'
+        :param location: One of ('node', 'center', 'edge1', 'edge2') 'edge1' is
+                         conventionally associated with the 'vertical' edges and
+                         likewise 'edge2' with the 'horizontal'
 
-        :param fill_value: If masked values are encountered in interpolation, this value takes the place of the masked value
+        :param fill_value: If masked values are encountered in interpolation, this
+                           value takes the place of the masked value
 
-        :param indices: If computed already, array of Nx2 cell indices can be passed in to increase speed. # noqa
-        :param alphas: If computed already, array of alphas can be passed in to increase speed. # noqa
+        :param indices: If computed already, array of Nx2 cell indices can be passed
+                        in to increase speed.
+        :param alphas: If computed already, array of alphas can be passed in to increase
+                       speed.
 
 
-        - With a numpy array:
+        With a numpy array:
+
         sgrid.interpolate_var_to_points(points, sgrid.u[time_idx, depth_idx])
-        - With a raw netCDF Variable:
+
+        With a raw netCDF Variable:
+
         sgrid.interpolate_var_to_points(points, nc.variables['u'], slices=[time_idx, depth_idx])
 
         If you have pre-computed information, you can pass it in to avoid unnecessary
         computation and increase performance.
+
         - ind = # precomputed indices of points
+
         - alphas = # precomputed alphas (useful if interpolating to the same points frequently)
-
-        sgrid.interpolate_var_to_points(points, sgrid.u, indices=ind, alphas=alphas,
-        slices=[time_idx, depth_idx])
-
         """
         points = np.asarray(points, dtype=np.float64).reshape(-1, 2)
         # location should be already known by the variable
         if hasattr(variable, 'location'):
             location = variable.location
-        # But if it's not, then it can be infered
-        # (for compatibilty with old code)
+        # But if it's not, then it can be inferred
+        # (for compatibility with old code)
         if location is None:
             location = self.infer_location(variable)
             variable.location = location
