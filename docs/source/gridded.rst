@@ -8,7 +8,6 @@ Subpackages
 
     gridded.pysgrid
     gridded.pyugrid
-    gridded.tests
 
 Submodules
 ----------

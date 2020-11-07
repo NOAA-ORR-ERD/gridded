@@ -155,47 +155,53 @@ class Variable(object):
         '''
         Allows one-function creation of a Variable from a file.
 
-        :param filename: Default data source. Has lowest priority; 
-        if dataset, grid_file, or data_file are provided, this function 
-        uses them first
+        :param filename: Default data source. Has lowest priority.
+                         If dataset, grid_file, or data_file are provided,
+                         this function uses them first
+        :type filename: string
 
         :param varname: Explicit name of the data in the data source file.
-        Equivalent to the key used to look the item up directly eg 'ds["lon_u"]'
-        for a netCDF4 Dataset.
+                        Equivalent to the key used to look the item up
+                        directly eg 'ds["lon_u"]' for a netCDF4 Dataset.
+        :type varname: string
 
-        :param grid_topology: Description of the relationship between grid attributes
-        and variable names.
+        :param grid_topology: Description of the relationship between grid
+                              attributes and variable names.
+        :type grid_topology: {string : string, ...}
+
         :param name: Name of this object
-        :param units: string such as 'm/s'
+        :type name: string
 
-        :param time: Time axis of the data. May be a constructed gridded.Time
-        object, or collection of datetime.datetime objects
+        :param units: string such as 'm/s'
+        :type units: string
+
+        :param time: Time axis of the data. May be a constructed ``gridded.Time``
+                     object, or collection of datetime.datetime objects
+        :type time: [] of datetime.datetime, netCDF4 Variable, or Time object
 
         :param data: Underlying data object. May be any array-like,
-        including netCDF4 Variable, etc
+                     including netCDF4 Variable, etc
+        :type data: netCDF4.Variable or numpy.array
 
-        :param grid: Grid that the data corresponds with
+        :param grid: Grid that the data corresponds to
+        :type grid: pysgrid or pyugrid
+
         :param location: The feature where the data aligns with the grid.
+        :type location: string
 
-        :param depth: Depth axis object from gridded.depth
+        :param depth: Depth axis object from ``gridded.depth``
+        :type depth: Depth, S_Depth or L_Depth
 
         :param dataset: Instance of open netCDF4.Dataset
-        :param data_file: Name of data source file, if data and grid files are separate
-        :param grid_file: Name of grid source file, if data and grid files are separate
-        :type filename: string
-        :type varname: string
-        :type grid_topology: {string : string, ...}
-        :type name: string
-        :type units: string
-        :type time: [] of datetime.datetime, netCDF4 Variable, or Time object
-        :type data: netCDF4.Variable or numpy.array
-        :type grid: pysgrid or pyugrid
-        :type location: string
-        :type depth: Depth, S_Depth or L_Depth
         :type dataset: netCDF4.Dataset
+
+        :param data_file: Name of data source file, if data and grid files are separate
         :type data_file: string
+
+        :param grid_file: Name of grid source file, if data and grid files are separate
         :type grid_file: string
         '''
+
         Grid = cls._default_component_types['grid']
         Time = cls._default_component_types['time']
         Depth = cls._default_component_types['depth']
@@ -965,7 +971,7 @@ class VectorVariable(object):
     @property
     def location(self):
         return [v.location for v in self.variables]
-    
+
     locations = location
 
     @property

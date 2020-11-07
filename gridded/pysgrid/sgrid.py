@@ -273,7 +273,7 @@ class SGrid(object):
             return tuple(rv)
         else:
             return (None, None)
-            
+
     @center_padding.setter
     def center_padding(self, val):
         self._center_padding = val
@@ -287,11 +287,11 @@ class SGrid(object):
                 return self._edge1_padding
         else:
             return (self.center_padding[0], None)
-    
+
     @edge1_padding.setter
     def edge1_padding(self, val):
         self._edge1_padding = val
-    
+
     @property
     def edge2_padding(self):
         if hasattr(self, '_edge2_padding') and self._edge2_padding:
@@ -301,7 +301,7 @@ class SGrid(object):
                 return self._edge2_padding
         else:
             return (None, self.center_padding[1])
-    
+
     @edge2_padding.setter
     def edge2_padding(self, val):
         self._edge2_padding = val
@@ -657,7 +657,7 @@ class SGrid(object):
     def get_padding_slices(self,
                            padding=('none','none')):
         '''
-        Given a pair of padding types, return a numpy slice object you can use directly on 
+        Given a pair of padding types, return a numpy slice object you can use directly on
         data or lon/lat variables
         '''
         lo_offsets = [0,0]
@@ -675,7 +675,7 @@ class SGrid(object):
             else:
                 hi_offsets[dim] = None
                 lo_offsets[dim] = 0
-            
+
         return (np.s_[lo_offsets[0]:hi_offsets[0], lo_offsets[1]:hi_offsets[1]])
 
     def get_variable_by_index(self, var, index):
@@ -743,12 +743,14 @@ class SGrid(object):
         """
         Builds the celltree across the grid defined by nodes (self.node_lon, self.node_lat)
         If center masking is provided in self.center_mask, it will remove masked cells, and
-        take precedence over any node masking for celltree insertion
+        take precedence over any node masking for celltree insertion.
+
         If node masking is provided in self.node_mask and self.center_mask is not provided,
         it will remove masked nodes from the grid, which also removes all adjacent cells
 
-        :param use_mask: If False, ignores all masks and builds the celltree over the raw arrays.
-        Does nothing if self.node_mask or self.center_mask are not present
+        :param use_mask: If False, ignores all masks and builds the celltree over the raw
+                         arrays. Does nothing if self.node_mask or self.center_mask are not
+                         present
         """
 
         try:
@@ -764,17 +766,17 @@ class SGrid(object):
                              "use CellTree for this grid")
 
         if (use_mask and
-            ((self.node_mask is not None and self.node_mask is not False) or 
+            ((self.node_mask is not None and self.node_mask is not False) or
             (self.center_mask is not None and self.center_mask is not False))):
             if np.any(self.center_mask):
                 cell_mask = gen_celltree_mask_from_center_mask(self.center_mask, self.get_padding_slices(self.center_padding))
             else:
                 pass
-                
+
             lin_faces = np.empty(shape=(lon[1::,1::].size,4))
             if lin_faces.shape[0] != cell_mask.size:
                 raise ValueError("Could not match mask and faces array length. If padding is in use, please set self.center_padding")
-                
+
             lon = np.ma.MaskedArray(lon[:].copy())
             lat = np.ma.MaskedArray(lat[:].copy())
             #Water cells grab all nodes that belong to them
@@ -874,39 +876,53 @@ class SGrid(object):
         Interpolates a variable on one of the grids to an array of points.
         :param points: Nx2 Array of lon/lat coordinates to be interpolated to.
 
-        :param variable: Array-like of values to associate at location on grid (node, center, edge1, edge2).
-        This may be more than a 2 dimensional array, but you must pass 'slices' kwarg with appropriate
-        slice collection to reduce it to 2 dimensions.
+        :param variable: Array-like of values to associate at location on grid
+                         (node, center, edge1, edge2). This may be more than a
+                         2 dimensional array, but you must pass 'slices' kwarg
+                         with appropriate slice collection to reduce it to 2 dimensions.
 
-        :param location: One of ('node', 'center', 'edge1', 'edge2') 'edge1' is conventionally associated with the
-        'vertical' edges and likewise 'edge2' with the 'horizontal'. Determines type of interpolation, see below for details
+        :param location: One of ('node', 'center', 'edge1', 'edge2').
+                         'edge1' is conventionally associated with the 'vertical' edges
+                         and likewise 'edge2' with the 'horizontal'. Determines type of
+                         interpolation, see below for details
 
-        :param fill_value: If masked values are encountered in interpolation, this value takes the place of the masked value
+        :param fill_value: If masked values are encountered in interpolation, this value
+                           takes the place of the masked value
 
-        :param indices: If computed already, array of Nx2 cell indices can be passed in to increase speed. # noqa
-        :param alphas: If computed already, array of alphas can be passed in to increase speed. # noqa
+        :param indices: If computed already, array of Nx2 cell indices can be passed in
+                        to increase speed.
+
+        :param alphas: If computed already, array of alphas can be passed in to increase
+                       speed.
 
         Depending on the location specified, different interpolation will be used.
+
         For 'center', no interpolation
+
         For 'edge1' or 'edge2', interpolation is linear, edge to edge across the cell
+
         For 'node', interpolation is bilinear from the four nodes of each cell
 
         The variable specified may be any array-like.
         - With a numpy array:
+
         sgrid.interpolate_var_to_points(points, sgrid.u[time_idx, depth_idx])
         - With a raw netCDF Variable:
+
         sgrid.interpolate_var_to_points(points, nc.variables['u'], slices=[time_idx, depth_idx])
 
         If you have pre-computed information, you can pass it in to avoid unnecessary
         computation and increase performance.
+
         - ind = # precomputed indices of points
+
         - alphas = # precomputed alphas (useful if interpolating to the same points frequently)
 
         sgrid.interpolate_var_to_points(points, sgrid.u, indices=ind, alphas=alphas,
         slices=[time_idx, depth_idx])
 
         """
-        # eventually should remove next line one celltree can support it
+        # eventually should remove next line once celltree can support it
 
         points = points.reshape(-1, 2)
 
@@ -993,7 +1009,7 @@ class SGrid(object):
             else:
                 cm = gen_celltree_mask_from_center_mask(self.center_mask, np.s_[:])
                 cm = np.ma.MaskedArray(cm, mask=False)
-            
+
             v2_offset = [1, 0]
             alpha_dim_idx = 1
             alpha = per_cell_log_offset[:,alpha_dim_idx]
@@ -1091,7 +1107,7 @@ class SGrid(object):
             m = (-bb +- sqrt(bb^2 - 4*aa*cc))/(2*aa)
             l = (l-a1 - a3*m)/(a2 + a4*m)
             """
-            if len(aa) is 0:
+            if len(aa) == 0:
                 return
             k = bb * bb - 4 * aa * cc
             k = np.ma.masked_less(k, 0)
