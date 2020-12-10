@@ -844,11 +844,12 @@ class UGrid(object):
         Not implemented yet.
 
         """
+
         try:
-            import pandas
-        except ImportError as err:
-            err.args = ("The pandas package is required to compute the face_edge_connectivity",)
-            raise
+            from scipy.spatial import cKDTree
+        except ImportError:
+            raise ImportError("The scipy package is required to use "
+                              "UGrid.locatbuild_face_edge_connectivity")
 
         faces = self.faces
         edges = self.edges.copy()
@@ -860,9 +861,7 @@ class UGrid(object):
         face_edges.sort(axis=-1)
         edges.sort(axis=-1)
 
-        index = pd.MultiIndex.from_arrays(edges.T)
-
-        df = pd.DataFrame(np.arange(len(edges))[:, None], index=index)
+        tree = cKDTree(edges)
 
         face_edge_2d = face_edges.reshape((-1, 2))
 
@@ -872,12 +871,13 @@ class UGrid(object):
                 len(face_edge_2d), dtype=face_edge_2d.dtype,
             )
             connectivity.mask = mask
-            query = pd.MultiIndex.from_arrays(face_edge_2d[~mask].T)
-            connectivity[~mask] = df.loc[query, 0].values
+            connectivity[~mask] = tree.query(
+                face_edge_2d[~mask], eps=1e-5
+            )[1]
         else:
-            connectivity = df.loc[
-                list(map(tuple, face_edge_2d)), 0
-            ].values
+            connectivity = tree.query(
+                face_edge_2d, eps=1e-5
+            )[1]
         self.face_edge_connectivity = np.roll(
             connectivity.reshape(faces.shape), -1, -1
         )

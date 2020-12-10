@@ -12,6 +12,5 @@
 pytest
 pytest-cov
 progressbar
-pandas
 
 
