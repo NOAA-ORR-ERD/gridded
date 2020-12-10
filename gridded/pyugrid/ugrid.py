@@ -871,13 +871,9 @@ class UGrid(object):
                 len(face_edge_2d), dtype=face_edge_2d.dtype,
             )
             connectivity.mask = mask
-            connectivity[~mask] = tree.query(
-                face_edge_2d[~mask], eps=1e-5
-            )[1]
+            connectivity[~mask] = tree.query(face_edge_2d[~mask])[1]
         else:
-            connectivity = tree.query(
-                face_edge_2d, eps=1e-5
-            )[1]
+            connectivity = tree.query(face_edge_2d)[1]
         self.face_edge_connectivity = np.roll(
             connectivity.reshape(faces.shape), -1, -1
         )
