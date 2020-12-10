@@ -874,7 +874,9 @@ class UGrid(object):
             connectivity = df.loc[
                 list(map(tuple, face_edge_2d)), 0
             ].values
-        self.face_edge_connectivity = connectivity.reshape(faces.shape)
+        self.face_edge_connectivity = np.roll(
+            connectivity.reshape(faces.shape), -1, -1
+        )
 
     def build_face_coordinates(self):
         """

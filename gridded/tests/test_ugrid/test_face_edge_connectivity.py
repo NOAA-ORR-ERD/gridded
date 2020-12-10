@@ -12,7 +12,7 @@ def test_build_face_edge_connectivity():
         node_lon=nodes, node_lat=nodes, faces=faces, edges=edges
     )
 
-    ref = [[2, 0, 1], [4, 1, 3]]
+    ref = [[0, 1, 2], [1, 3, 4]]
     grid.build_face_edge_connectivity()
 
     assert grid.face_edge_connectivity.tolist() == ref
@@ -29,7 +29,7 @@ def test_build_face_edge_connectivity_na():
         node_lon=nodes, node_lat=nodes, faces=faces, edges=edges
     )
 
-    ref = [[3, 0, 1, 2], [-999, 1, 2, -999]]
+    ref = [[0, 1, 2, 3], [1, 2, -999, -999]]
     grid.build_face_edge_connectivity()
 
     assert grid.face_edge_connectivity.filled(-999).tolist() == ref
