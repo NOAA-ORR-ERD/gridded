@@ -844,7 +844,11 @@ class UGrid(object):
         Not implemented yet.
 
         """
-        import pandas as pd
+        try:
+            import pandas
+        except ImportError as err:
+            err.args = ("The pandas package is required to compute the face_edge_connectivity",)
+            raise
 
         faces = self.faces
         edges = self.edges.copy()
@@ -1163,4 +1167,3 @@ class UGrid(object):
             # Add the extra attributes.
             for att_name, att_value in var.attributes.items():
                 setattr(data_var, att_name, att_value)
-
