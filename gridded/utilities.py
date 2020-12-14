@@ -5,9 +5,14 @@ assorted utility functions needed by gridded
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from collections import Iterable
+try:
+    from collections.abc import Iterable
+except ImportError:  # py2
+    from collections import Iterable
+
 import numpy as np
 import netCDF4 as nc4
+
 
 must_have = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute__']
 
