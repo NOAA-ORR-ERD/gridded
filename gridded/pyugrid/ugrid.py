@@ -844,7 +844,39 @@ class UGrid(object):
         Not implemented yet.
 
         """
-        raise NotImplementedError
+
+        try:
+            from scipy.spatial import cKDTree
+        except ImportError:
+            raise ImportError("The scipy package is required to use "
+                              "UGrid.locatbuild_face_edge_connectivity")
+
+        faces = self.faces
+        edges = self.edges.copy()
+        face_edges = np.dstack([faces, np.roll(faces, 1, 1)])
+        if np.ma.isMA(faces) and np.ndim(faces.mask):
+            face_edges.mask = np.dstack([
+                faces.mask, np.roll(faces.mask, 1, 1)
+            ])
+        face_edges.sort(axis=-1)
+        edges.sort(axis=-1)
+
+        tree = cKDTree(edges)
+
+        face_edge_2d = face_edges.reshape((-1, 2))
+
+        if np.ma.isMA(faces) and faces.mask.any():
+            mask = face_edge_2d.mask.any(-1)
+            connectivity = np.ma.ones(
+                len(face_edge_2d), dtype=face_edge_2d.dtype,
+            )
+            connectivity.mask = mask
+            connectivity[~mask] = tree.query(face_edge_2d[~mask])[1]
+        else:
+            connectivity = tree.query(face_edge_2d)[1]
+        self.face_edge_connectivity = np.roll(
+            connectivity.reshape(faces.shape), -1, -1
+        )
 
     def build_face_coordinates(self):
         """
@@ -869,7 +901,7 @@ class UGrid(object):
 
     def build_edge_coordinates(self):
         """
-        Builds the face_coordinates array, using the average of the
+        Builds the edge_coordinates array, using the average of the
         nodes defining each edge.
 
         Note that you may want a different definition of the edge
@@ -877,7 +909,7 @@ class UGrid(object):
         an easy default.
 
 
-        This will write-over an existing face_coordinates array
+        This will write-over an existing edge_coordinates array
 
         Useful if you want this in the output file
 
@@ -1131,4 +1163,3 @@ class UGrid(object):
             # Add the extra attributes.
             for att_name, att_value in var.attributes.items():
                 setattr(data_var, att_name, att_value)
-
