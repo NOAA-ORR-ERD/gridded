@@ -840,43 +840,75 @@ class UGrid(object):
     def build_face_edge_connectivity(self):
         """
         Builds the face-edge connectivity array
-
-        Not implemented yet.
-
         """
+        self.face_edge_connectivity = self._build_face_edge_connectivity()
 
+    def _build_face_edge_connectivity(self, sort=True):
         try:
             from scipy.spatial import cKDTree
         except ImportError:
             raise ImportError("The scipy package is required to use "
-                              "UGrid.locatbuild_face_edge_connectivity")
+                              "UGrid.build_face_edge_connectivity")
 
-        faces = self.faces
+        faces = self.faces.copy()
+        if self.edges is None:
+            self.build_edges()
         edges = self.edges.copy()
+
+        is_masked = np.ma.isMA(faces)
+        if is_masked:
+            first = faces.copy()
+            first[:] = faces[:, :1]
+            save_mask = faces.mask.copy()
+            faces[save_mask] = first.data[faces.mask]
+
         face_edges = np.dstack([faces, np.roll(faces, 1, 1)])
-        if np.ma.isMA(faces) and np.ndim(faces.mask):
+
+        if is_masked and np.ndim(save_mask):
             face_edges.mask = np.dstack([
-                faces.mask, np.roll(faces.mask, 1, 1)
+                np.zeros_like(save_mask), np.roll(save_mask, 1, 1)
             ])
-        face_edges.sort(axis=-1)
-        edges.sort(axis=-1)
+
+        if sort:
+            face_edges.sort(axis=-1)
+            edges.sort(axis=-1)
 
         tree = cKDTree(edges)
 
         face_edge_2d = face_edges.reshape((-1, 2))
 
-        if np.ma.isMA(faces) and faces.mask.any():
+        if is_masked and save_mask.any():
             mask = face_edge_2d.mask.any(-1)
             connectivity = np.ma.ones(
                 len(face_edge_2d), dtype=face_edge_2d.dtype,
             )
             connectivity.mask = mask
-            connectivity[~mask] = tree.query(face_edge_2d[~mask])[1]
+            connectivity[~mask] = tree.query(
+                face_edge_2d[~mask], distance_upper_bound=0.1
+            )[1]
         else:
-            connectivity = tree.query(face_edge_2d)[1]
-        self.face_edge_connectivity = np.roll(
-            connectivity.reshape(faces.shape), -1, -1
-        )
+            connectivity = tree.query(
+                face_edge_2d, distance_upper_bound=0.1
+            )[1]
+        return np.roll(connectivity.reshape(faces.shape), -1, -1)
+
+    def get_face_edge_orientation(self):
+        """
+        Get the orientation for each edge in the corresponding face
+
+        This method returns an array with the same shape as :attr:`faces` that
+        is one if the corresponding edge has the same orientation as in
+        :attr:`edges`, and -1 otherwise
+        """
+        # we build the face edge connectivity but do not sort the edge nodes.
+        # With this, we will get `num_edges` where the edge is flipped compared
+        # to the definition in :attr:`edges`
+        face_edge_connectivity = self._build_face_edge_connectivity(sort=False)
+        num_edges = self.edges.shape[0]
+        if np.ma.isMA(face_edge_connectivity):
+            return np.ma.where(face_edge_connectivity == num_edges, 1, -1)
+        else:
+            return np.where(face_edge_connectivity == num_edges, 1, -1)
 
     def build_face_coordinates(self):
         """
