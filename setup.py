@@ -1,7 +1,31 @@
 #!/usr/bin/env python
+import os
+import os.path as osp
 
 from setuptools import setup
 from setuptools import find_packages
+from setuptools import Extension
+
+
+USE_CYTHON = os.getenv('USE_CYTHON', '').lower()
+USE_CYTHON = USE_CYTHON and (not USE_CYTHON.startswith('f') and
+                             not USE_CYTHON.startswith('n'))
+
+
+ext = '.pyx' if USE_CYTHON else '.c'
+
+
+extensions = [
+    Extension(
+        'gridded.pyugrid.inverse_lookup',
+        sources=[osp.join("gridded", "pyugrid", "inverse_lookup" + ext)],
+    )
+]
+
+
+if USE_CYTHON:
+    from Cython.Build import cythonize
+    extensions = cythonize(extensions)
 
 
 def get_version():
@@ -36,6 +60,7 @@ config = {'name': 'gridded',
                                        'tests/test_ugrid/files/*'
                                        ]},
           'scripts': [],
+          'ext_modules': extensions,
           }
 
 # Add in any extra build steps for cython, etc.

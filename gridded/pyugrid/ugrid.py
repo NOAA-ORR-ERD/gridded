@@ -910,6 +910,126 @@ class UGrid(object):
         else:
             return np.where(face_edge_connectivity == num_edges, 1, -1)
 
+    def _create_dual_edge_mesh(self):
+        """Create a :class:`UGrid` instance that represents the dual edge mesh.
+        """
+        try:
+            from scipy.spatial import cKDTree
+        except ImportError:
+            raise ImportError("The scipy package is required to use "
+                              "UGrid.locatbuild_face_edge_connectivity")
+
+        from .inverse_lookup import lookup
+
+        if self.face_edge_connectivity is None:
+            self.build_face_edge_connectivity()
+
+        face_edge_connectivty = self.face_edge_connectivity
+        orientation = self.get_face_edge_orientation()
+        edges = self.edges
+
+        if np.ma.isMA(face_edge_connectivty):
+            face_edge_connectivty = face_edge_connectivty.filled(len(edges))
+
+        # use -999 as fill value (necessary for edges at the domain boundary)
+        dual_face_node_connectivity = np.ones((len(edges), 4)) * -999
+        dual_face_node_connectivity[:, 0] = edges[:, 0]
+        dual_face_node_connectivity[:, 2] = edges[:, 1]
+
+        # get the first index for the face center nodes
+        if self.face_coordinates is None:
+            self.build_face_coordinates()
+        dual_nodes = np.r_[self.nodes, self.face_coordinates]
+        face_node_start = len(self.nodes)
+
+        # now we have to reverse the face_edge_connectivity and get the
+        # *edge_face_connectivity* (i.e. for every edge, get the (up to) two
+        # adjacent faces
+        edge_idx = np.arange(
+            edges.shape[0], dtype=face_edge_connectivty.dtype
+        )
+
+        edge_face_connectivity = np.asarray(lookup(
+            face_edge_connectivty.ravel().astype(np.int32),
+            edge_idx.astype(np.int32), k=2, fill_value=len(edge_idx),
+        ))
+
+        # now get the orientation for each edge from the `orientation` array
+        mask = edge_face_connectivity < face_edge_connectivty.size
+        edge_orientation = np.ones_like(edge_face_connectivity) * -999
+        edge_orientation[mask] = orientation.ravel()[
+            edge_face_connectivity[mask]
+        ]
+
+        # and transform the indices in edge_face_connectivity back to the
+        # length of the faces array (remember that we ravelled the
+        # `face_edge_connectivty` above then creating the cKDTree).
+        # We also add the `face_node_start` because we append the centers of
+        # the faces afterwards
+        edge_face_connectivity = np.where(
+            edge_face_connectivity < face_edge_connectivty.size,
+            (edge_face_connectivity // face_edge_connectivty.shape[-1] +
+             face_node_start),
+            -999
+        )
+
+        # now handle the case where the orientation is -1. This should be at
+        # dual_face_node_connectivity[:, 1]
+        mask = edge_orientation == -1
+        dual_face_node_connectivity[mask.any(axis=-1), 3] = \
+            edge_face_connectivity[mask]
+
+        # the same for +1, should be at dual_face_node_connectivity[:, 3]
+        mask = edge_orientation == 1
+        dual_face_node_connectivity[mask.any(axis=-1), 1] = \
+            edge_face_connectivity[mask]
+
+        # now we need to roll where dual_face_node_connectivity[:, 1] == -999
+        # to make sure that the fill values are at the end
+        roll_at = dual_face_node_connectivity[:, 1] == -999
+        dual_face_node_connectivity[roll_at] = np.roll(
+            dual_face_node_connectivity[roll_at], 2, axis=1
+        )
+
+        # now turn dual_face_node_connectivity into a masked array
+        # NOTE: There is no definititive policy yet how to deal with fill
+        # values within the gridded package, see
+        # https://github.com/NOAA-ORR-ERD/gridded/pull/60#issuecomment-744810919
+        dual_face_node_connectivity = np.ma.masked_where(
+            dual_face_node_connectivity == -999, dual_face_node_connectivity
+        )
+
+        return dual_face_node_connectivity.astype(int), dual_nodes
+
+    def create_dual_mesh(self, location="edge"):
+        """Create the dual mesh for edge or nodes.
+
+        This method creates the dual mesh, either specified through the nodes,
+        or specified through the edges. For a Delaunay triangulation case with
+        ``location == "node"``, this is commonly known as Voronoi Polygons.
+
+        :param location="edge" : the source for the dual mash. can be one of
+                                 ``"node"`` or ``"edge"``
+        :type location: str
+
+        :returns: A :class:`UGrid` with `nodes` and `faces` of the dual mesh.
+        """
+        if location == "edge":
+            face_node_connectivity, nodes = self._create_dual_edge_mesh()
+        elif location == "node":
+            raise NotImplementedError(
+                "the dual mesh for nodes is not yet implemented"
+            )
+        else:
+            raise ValueError(
+                f"location must be `edge` or `node`, found `{location}`"
+            )
+        if self.mesh_name:
+            mesh_name = self.mesh_name + "_dual_" + location
+        else:
+            mesh_name = "dual_" + location
+        return UGrid(nodes, faces=face_node_connectivity, mesh_name=mesh_name)
+
     def build_face_coordinates(self):
         """
         Builds the face_coordinates array, using the average of the
@@ -924,12 +1044,16 @@ class UGrid(object):
         Useful if you want this in the output file.
 
         """
-        face_coordinates = np.zeros((len(self.faces), 2), dtype=NODE_DT)
-        # FIXME: there has got to be a way to vectorize this.
-        for i, face in enumerate(self.faces):
-            coords = self.nodes[face]
-            face_coordinates[i] = coords.mean(axis=0)
-        self.face_coordinates = face_coordinates
+        if not np.ma.isMA(self.faces):
+            self.face_coordinates = self.nodes[self.faces].mean(axis=1)
+        else:
+            face_coordinates = np.zeros((len(self.faces), 2), dtype=NODE_DT)
+            # FIXME: there has got to be a way to vectorize this.
+            for i, face in enumerate(self.faces):
+                face = face[~face.mask]
+                coords = self.nodes[face]
+                face_coordinates[i] = coords.mean(axis=0)
+            self.face_coordinates = face_coordinates
 
     def build_edge_coordinates(self):
         """
