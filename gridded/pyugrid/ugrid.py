@@ -1022,7 +1022,7 @@ class UGrid(object):
             )
         else:
             raise ValueError(
-                f"location must be `edge` or `node`, found `{location}`"
+                "location must be `edge` or `node`, found `%s`" % (location, )
             )
         if self.mesh_name:
             mesh_name = self.mesh_name + "_dual_" + location
