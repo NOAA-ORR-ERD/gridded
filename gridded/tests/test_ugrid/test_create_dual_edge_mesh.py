@@ -1,3 +1,4 @@
+# coding: utf-8
 """Test file for building the face_edge_connectivity"""
 import numpy as np
 
