@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import os
+import os.path as osp
 
 from setuptools import setup
 from setuptools import find_packages
