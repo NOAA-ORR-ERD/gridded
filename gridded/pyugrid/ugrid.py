@@ -973,6 +973,52 @@ class UGrid(object):
             edge_orientation == -999, edge_orientation
         )
 
+    def _get_node_edge_connectivity_unsorted(self):
+        """Build the node_edge_connectivity.
+
+        The node_edge_connectivity is the mapping from each node in the
+        :attr:`nodes` to the attached edge in :attr:`edges`. Note that this
+        method does not sort the edges so they are in general not in
+        anti-clockwise order.
+        """
+        if self.edges is None:
+            self.build_edges()
+        edge_node_connectivity = self.edges
+
+        n_edge = len(self.edges)
+        n_edge, nmax_node = edge_node_connectivity.shape
+        n_node = fill_value = len(self.nodes)
+
+        if np.ma.isMA(edge_node_connectivity):
+            edge_node_connectivity = edge_node_connectivity.filled(fill_value)
+
+        # Get rid of the fill_value, create a 1:1 mapping between edges and
+        # nodes
+        isnode = (edge_node_connectivity != fill_value).ravel()
+        edge_index = np.repeat(np.arange(n_edge), nmax_node).ravel()[isnode]
+        node_index = edge_node_connectivity.ravel()[isnode]
+
+        node_counts = np.bincount(node_index)
+        nmax_edge = node_counts.max()
+
+        # We know that every edge will have either one or two associated faces
+        isedge = np.empty((n_node, nmax_edge), dtype=np.bool)
+        for i in range(nmax_edge):
+            isedge[:, i] = node_counts > i
+
+        # Allocate the output array
+        node_edge_connectivity = np.full(
+            (n_node, nmax_edge), n_edge, dtype=np.int64
+        )
+        # Invert the face_index, and use the boolean array to place them
+        # appropriately
+        node_edge_connectivity.ravel()[isedge.ravel()] = edge_index[
+            np.argsort(node_index)
+        ]
+        return np.ma.masked_where(
+            node_edge_connectivity == n_edge, node_edge_connectivity
+        )
+
     def _create_dual_edge_mesh(self):
         """Create a :class:`UGrid` instance that represents the dual edge mesh.
         """
@@ -1033,6 +1079,101 @@ class UGrid(object):
         )
 
         return dual_face_node_connectivity.astype(int), dual_nodes
+
+    def _create_dual_node_mesh(self):
+        """Create the dual mesh for the nodes."""
+
+        dual_edge_face_node_connectivity, dual_nodes = \
+            self._create_dual_edge_mesh()
+
+        # create a node_edge_connectivty
+        node_edge_connectivity = self._get_node_edge_connectivity_unsorted()
+
+        if self.edge_coordinates is None:
+            self.build_edge_coordinates()
+
+        edge_coordinates = self.edge_coordinates
+
+        n_edge = len(self.edges)
+        n_node = len(self.nodes)
+        n_dual_node = len(dual_nodes)
+        n_dual_node_max = n_dual_node + n_edge
+
+
+        face_node_connectivity = self.faces
+        if np.ma.isMA(face_node_connectivity):
+            face_node_connectivity = face_node_connectivity.filled(
+                len(self.nodes)
+            )
+        nmax_face = np.bincount(
+            face_node_connectivity[face_node_connectivity < n_node]
+        ).max() + 3
+
+        nmax_edge = node_edge_connectivity.shape[1]
+        edge_index = np.arange(n_edge)
+
+        node_edge_connectivity = node_edge_connectivity.filled(n_edge)
+        dual_edge_face_node_connectivity = \
+            dual_edge_face_node_connectivity.filled(n_dual_node_max)
+
+        dual_node_face_node_connectivity = np.full(
+            (n_node, nmax_face), n_dual_node_max, dtype=np.int64
+        )
+
+        # list of new nodes that are created from the edge_coordinates
+        new_nodes = np.array([], dtype=np.int64)
+
+        for node, edges in enumerate(node_edge_connectivity):
+            edges = edges[edges != n_edge]
+            dual_cells = dual_edge_face_node_connectivity[edges].copy()
+            for i, cell in enumerate(dual_cells):
+                if node in cell:
+                    dual_cells[i] = np.roll(
+                        cell, -np.where(cell == node)[0][0]
+                    )
+            dual_edges = dual_cells[:, 1::2]
+            ismissing = dual_edges == n_dual_node_max
+            if ismissing.any():
+                new_node_edges = edges[ismissing.any(axis=1)]
+                new_nodes = np.r_[
+                    new_nodes,
+                    new_node_edges[~np.isin(new_node_edges, new_nodes)]
+                ]
+                sort = np.argsort(new_nodes)
+                new_node_idx = new_nodes.searchsorted(
+                    new_node_edges, sorter=sort
+                )
+                new_node_idx = n_dual_node + sort[new_node_idx]
+                dual_edges[ismissing] = new_node_idx
+
+                # add two edges from the midpoints to the original node
+                new_edges = np.full((2, 2), node, dtype=np.int64)
+                new_edges[ismissing[ismissing.any(axis=1)]] = new_node_idx
+
+                dual_edges = np.r_[
+                    dual_edges,
+                    new_edges[:, ::-1],
+                ]
+
+            sorted_edges = dual_edges.copy()
+            for i in range(1, len(sorted_edges)):
+                s1, e1 = sorted_edges[i-1]
+                for j, (s2, e2) in enumerate(dual_edges[1:], 1):
+                    if e1 == s2:
+                        sorted_edges[i] = dual_edges[j]
+                        break
+            dual_node_face_node_connectivity[node,:len(sorted_edges)] = \
+                sorted_edges[:, 0]
+
+        return (
+            np.ma.masked_where(
+                dual_node_face_node_connectivity == n_dual_node_max,
+                dual_node_face_node_connectivity
+            ),
+            np.r_[dual_nodes, edge_coordinates[new_nodes]],
+        )
+
+
 
     def create_dual_mesh(self, location="edge"):
         """Create the dual mesh for edge or nodes.
