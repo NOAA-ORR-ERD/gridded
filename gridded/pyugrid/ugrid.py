@@ -1082,6 +1082,9 @@ class UGrid(object):
 
     def _create_dual_node_mesh(self):
         """Create the dual mesh for the nodes."""
+        from gridded.pyugrid._create_dual_node_mesh import (
+            get_face_node_connectivity
+        )
 
         dual_edge_face_node_connectivity, dual_nodes = \
             self._create_dual_edge_mesh()
@@ -1117,63 +1120,34 @@ class UGrid(object):
             dual_edge_face_node_connectivity.filled(n_dual_node_max)
 
         dual_node_face_node_connectivity = np.full(
-            (n_node, nmax_face), n_dual_node_max, dtype=np.int64
+            (n_node, nmax_face), int(n_dual_node_max), dtype=np.int64
         )
 
-        # list of new nodes that are created from the edge_coordinates
-        new_nodes = np.array([], dtype=np.int64)
+        dual_node_face_node_connectivity = np.asarray(
+            get_face_node_connectivity(
+                dual_edge_face_node_connectivity, node_edge_connectivity,
+                n_dual_node, nmax_face
+            )
+        )
 
-        for node, edges in enumerate(node_edge_connectivity):
-            edges = edges[edges != n_edge]
-            dual_cells = dual_edge_face_node_connectivity[edges].copy()
-            for i, cell in enumerate(dual_cells):
-                if node in cell:
-                    dual_cells[i] = np.roll(
-                        cell, -np.where(cell == node)[0][0]
-                    )
-            dual_edges = dual_cells[:, 1::2]
-            ismissing = dual_edges == n_dual_node_max
-            if ismissing.any():
-                new_node_edges = edges[ismissing.any(axis=1)]
-                new_nodes = np.r_[
-                    new_nodes,
-                    new_node_edges[~np.isin(new_node_edges, new_nodes)]
-                ]
-                sort = np.argsort(new_nodes)
-                new_node_idx = new_nodes.searchsorted(
-                    new_node_edges, sorter=sort
-                )
-                new_node_idx = n_dual_node + sort[new_node_idx]
-                dual_edges[ismissing] = new_node_idx
+        is_new_node = dual_node_face_node_connectivity >= n_dual_node
+        all_new = dual_node_face_node_connectivity[is_new_node]
+        new_nodes = np.unique(
+            dual_node_face_node_connectivity[is_new_node]
+        )
 
-                # add two edges from the midpoints to the original node
-                new_edges = np.full((2, 2), node, dtype=np.int64)
-                new_edges[ismissing[ismissing.any(axis=1)]] = new_node_idx
-
-                dual_edges = np.r_[
-                    dual_edges,
-                    new_edges[:, ::-1],
-                ]
-
-            sorted_edges = dual_edges.copy()
-            for i in range(1, len(sorted_edges)):
-                s1, e1 = sorted_edges[i-1]
-                for j, (s2, e2) in enumerate(dual_edges[1:], 1):
-                    if e1 == s2:
-                        sorted_edges[i] = dual_edges[j]
-                        break
-            dual_node_face_node_connectivity[node,:len(sorted_edges)] = \
-                sorted_edges[:, 0]
+        dual_node_face_node_connectivity[is_new_node] = (
+            n_dual_node + new_nodes.searchsorted(all_new)
+        )
+        n_dual_node_max = n_dual_node + len(new_nodes) - 1
 
         return (
             np.ma.masked_where(
                 dual_node_face_node_connectivity == n_dual_node_max,
                 dual_node_face_node_connectivity
             ),
-            np.r_[dual_nodes, edge_coordinates[new_nodes]],
+            np.r_[dual_nodes, edge_coordinates[new_nodes[:-1] - n_dual_node]],
         )
-
-
 
     def create_dual_mesh(self, location="edge"):
         """Create the dual mesh for edge or nodes.
@@ -1191,9 +1165,7 @@ class UGrid(object):
         if location == "edge":
             face_node_connectivity, nodes = self._create_dual_edge_mesh()
         elif location == "node":
-            raise NotImplementedError(
-                "the dual mesh for nodes is not yet implemented"
-            )
+            face_node_connectivity, nodes = self._create_dual_node_mesh()
         else:
             raise ValueError(
                 "location must be `edge` or `node`, found `%s`" % (location, )

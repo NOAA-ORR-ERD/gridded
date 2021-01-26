@@ -33,8 +33,14 @@ def test_create_dual_node_mesh():
         [8, 5, 9, 3, -999]
     ]
 
-    dual_faces = grid._create_dual_node_mesh()[0]
+    dual_faces, dual_nodes = grid._create_dual_node_mesh()
 
+    # check length of nodes.
+    # 4 original nodes + 2 face centers + 4 edge centers
+    # (edge 1-2 does not appear)
+    assert len(dual_nodes) == 10
+
+    # check faces
     assert np.ma.isMA(dual_faces)
     assert dual_faces.filled(-999).tolist() == ref
 
@@ -58,13 +64,20 @@ def test_create_dual_node_mesh_na():
     )
 
     ref = [
-        [5, 7, 0, 8, -999],
-        [7, 5, 9, 1, -999],
-        [9, 5, 6, 10, 2],
-        [6, 5, 8, 3, 11],
+        [5, 7, 0, 9, -999],
+        [7, 5, 8, 1, -999],
+        [8, 5, 6, 10, 2],
+        [6, 5, 9, 3, 11],
         [10, 6, 11, 4, -999]
     ]
 
-    dual_faces = grid._create_dual_node_mesh()[0]
+    dual_faces, dual_nodes = grid._create_dual_node_mesh()
+
+    # check length of nodes.
+    # 5 original nodes + 2 face centers + 5 edge centers
+    # (edge 2-3 does not appear)
+    assert len(dual_nodes) == 12
+
+    # check faces
     assert np.ma.isMA(dual_faces)
     assert dual_faces.filled(-999).tolist() == ref
