@@ -813,26 +813,38 @@ class UGrid(object):
 
         NOTE: arbitrary order -- should the order be preserved?
         """
-
-        num_vertices = self.num_vertices
         if self.faces is None:
             # No faces means no edges
             self._edges = None
             return
-        num_faces = self.faces.shape[0]
-        face_face = np.zeros((num_faces, num_vertices), dtype=IND_DT)
-        face_face += -1  # Fill with -1.
 
-        # Loop through all the faces to find all the edges:
-        edges = set()  # Use a set so no duplicates.
-        for i, face in enumerate(self.faces):
-            # Loop through edges:
-            for j in range(num_vertices):
-                edge = (face[j - 1], face[j])
-                if edge[0] > edge[1]:  # Flip them
-                    edge = (edge[1], edge[0])
-                edges.add(edge)
-        self._edges = np.array(list(edges), dtype=IND_DT)
+        faces = self.faces
+
+        is_masked = np.ma.isMA(faces)
+        if is_masked:
+            first = faces.copy()
+            first[:] = faces[:, :1]
+            save_mask = faces.mask.copy()
+            faces[save_mask] = first.data[faces.mask]
+
+        face_edges = np.dstack([faces, np.roll(faces, 1, 1)])
+
+        if is_masked and np.ndim(save_mask):
+            face_edges.mask = np.dstack([
+                np.zeros_like(save_mask), np.roll(save_mask, 1, 1)
+            ])
+
+        face_edges.sort(axis=-1)
+
+        all_edges = face_edges.reshape((-1, 2))
+
+        if is_masked and np.ndim(save_mask):
+            edges = np.unique(
+                all_edges[~all_edges.mask.any(axis=-1)], axis=0
+            )
+        else:
+            edges = np.unique(all_edges, axis=0)
+        self._edges = edges
 
     def build_boundaries(self):
         """
@@ -1190,16 +1202,15 @@ class UGrid(object):
         Useful if you want this in the output file.
 
         """
-        if not np.ma.isMA(self.faces):
-            self.face_coordinates = self.nodes[self.faces].mean(axis=1)
+        faces = self.faces
+        if not np.ma.isMA(faces) or not np.ndim(faces.mask):
+            self.face_coordinates = self.nodes[faces].mean(axis=1)
         else:
-            face_coordinates = np.zeros((len(self.faces), 2), dtype=NODE_DT)
-            # FIXME: there has got to be a way to vectorize this.
-            for i, face in enumerate(self.faces):
-                face = face[~face.mask]
-                coords = self.nodes[face]
-                face_coordinates[i] = coords.mean(axis=0)
-            self.face_coordinates = face_coordinates
+            face_coordinates = np.zeros((len(faces), 2), dtype=NODE_DT)
+            mask = np.dstack([faces.mask, faces.mask])
+            coords = self.nodes[faces.filled(0)]
+            coords[mask] = np.nan
+            self.face_coordinates = np.nanmean(coords, axis=1)
 
     def build_edge_coordinates(self):
         """
@@ -1216,12 +1227,7 @@ class UGrid(object):
         Useful if you want this in the output file
 
         """
-        edge_coordinates = np.zeros((len(self.edges), 2), dtype=NODE_DT)
-        # FIXME: there has got to be a way to vectorize this.
-        for i, edge in enumerate(self.edges):
-            coords = self.nodes[edge]
-            edge_coordinates[i] = coords.mean(axis=0)
-        self.edge_coordinates = edge_coordinates
+        self.edge_coordinates = self.nodes[self.edges].mean(axis=1)
 
     def build_boundary_coordinates(self):
         """
