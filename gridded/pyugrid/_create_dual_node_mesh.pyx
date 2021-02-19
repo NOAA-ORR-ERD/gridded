@@ -52,6 +52,8 @@ def get_face_node_connectivity(
         dual_cells[:, :] = n_dual_node_max
         dual_edges[:, :] = n_dual_node_max
         sorted_edges[:, :] = n_dual_node_max
+        if edges[0] == n_edge:
+            continue
 
         for i in range(nmax_edge):
             i_edge = edges[i]

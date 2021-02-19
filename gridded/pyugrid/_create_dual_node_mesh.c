@@ -2202,12 +2202,12 @@ static PyObject *__pyx_pf_7gridded_7pyugrid_22_create_dual_node_mesh_get_face_no
   long __pyx_t_8;
   long __pyx_t_9;
   __Pyx_memviewslice __pyx_t_10 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  long __pyx_t_11;
-  long __pyx_t_12;
-  long __pyx_t_13;
-  Py_ssize_t __pyx_t_14;
-  int __pyx_t_15;
-  int __pyx_t_16;
+  Py_ssize_t __pyx_t_11;
+  int __pyx_t_12;
+  int __pyx_t_13;
+  long __pyx_t_14;
+  long __pyx_t_15;
+  long __pyx_t_16;
   __Pyx_memviewslice __pyx_t_17 = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_t_18 = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_t_19 = { 0, 0, { 0 }, { 0 }, { 0 } };
@@ -2594,7 +2594,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_edges, 1);
  *         dual_cells[:, :] = n_dual_node_max
  *         dual_edges[:, :] = n_dual_node_max             # <<<<<<<<<<<<<<
  *         sorted_edges[:, :] = n_dual_node_max
- * 
+ *         if edges[0] == n_edge:
  */
     {
         long __pyx_temp_scalar = __pyx_v_n_dual_node_max;
@@ -2623,8 +2623,8 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_edges, 1);
  *         dual_cells[:, :] = n_dual_node_max
  *         dual_edges[:, :] = n_dual_node_max
  *         sorted_edges[:, :] = n_dual_node_max             # <<<<<<<<<<<<<<
- * 
- *         for i in range(nmax_edge):
+ *         if edges[0] == n_edge:
+ *             continue
  */
     {
         long __pyx_temp_scalar = __pyx_v_n_dual_node_max;
@@ -2649,53 +2649,96 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_edges, 1);
         }
     }
 
-    /* "gridded/pyugrid/_create_dual_node_mesh.pyx":56
+    /* "gridded/pyugrid/_create_dual_node_mesh.pyx":55
+ *         dual_edges[:, :] = n_dual_node_max
  *         sorted_edges[:, :] = n_dual_node_max
+ *         if edges[0] == n_edge:             # <<<<<<<<<<<<<<
+ *             continue
+ * 
+ */
+    __pyx_t_11 = 0;
+    __pyx_t_12 = -1;
+    if (__pyx_t_11 < 0) {
+      __pyx_t_11 += __pyx_v_edges.shape[0];
+      if (unlikely(__pyx_t_11 < 0)) __pyx_t_12 = 0;
+    } else if (unlikely(__pyx_t_11 >= __pyx_v_edges.shape[0])) __pyx_t_12 = 0;
+    if (unlikely(__pyx_t_12 != -1)) {
+      __Pyx_RaiseBufferIndexError(__pyx_t_12);
+      __PYX_ERR(0, 55, __pyx_L1_error)
+    }
+    __pyx_t_4 = __Pyx_PyInt_From_long((*((long const  *) ( /* dim=0 */ (__pyx_v_edges.data + __pyx_t_11 * __pyx_v_edges.strides[0]) )))); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_2 = PyObject_RichCompare(__pyx_t_4, __pyx_v_n_edge, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_13 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_13 < 0)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (__pyx_t_13) {
+
+      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":56
+ *         sorted_edges[:, :] = n_dual_node_max
+ *         if edges[0] == n_edge:
+ *             continue             # <<<<<<<<<<<<<<
+ * 
+ *         for i in range(nmax_edge):
+ */
+      goto __pyx_L3_continue;
+
+      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":55
+ *         dual_edges[:, :] = n_dual_node_max
+ *         sorted_edges[:, :] = n_dual_node_max
+ *         if edges[0] == n_edge:             # <<<<<<<<<<<<<<
+ *             continue
+ * 
+ */
+    }
+
+    /* "gridded/pyugrid/_create_dual_node_mesh.pyx":58
+ *             continue
  * 
  *         for i in range(nmax_edge):             # <<<<<<<<<<<<<<
  *             i_edge = edges[i]
  *             if i_edge < n_edge:
  */
-    __pyx_t_11 = __pyx_v_nmax_edge;
-    __pyx_t_12 = __pyx_t_11;
-    for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
-      __pyx_v_i = __pyx_t_13;
+    __pyx_t_14 = __pyx_v_nmax_edge;
+    __pyx_t_15 = __pyx_t_14;
+    for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
+      __pyx_v_i = __pyx_t_16;
 
-      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":57
+      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":59
  * 
  *         for i in range(nmax_edge):
  *             i_edge = edges[i]             # <<<<<<<<<<<<<<
  *             if i_edge < n_edge:
  *                 dual_cell[:] = dual_edge_face_node_connectivity[i_edge]
  */
-      __pyx_t_14 = __pyx_v_i;
-      __pyx_t_15 = -1;
-      if (__pyx_t_14 < 0) {
-        __pyx_t_14 += __pyx_v_edges.shape[0];
-        if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 0;
-      } else if (unlikely(__pyx_t_14 >= __pyx_v_edges.shape[0])) __pyx_t_15 = 0;
-      if (unlikely(__pyx_t_15 != -1)) {
-        __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 57, __pyx_L1_error)
+      __pyx_t_11 = __pyx_v_i;
+      __pyx_t_12 = -1;
+      if (__pyx_t_11 < 0) {
+        __pyx_t_11 += __pyx_v_edges.shape[0];
+        if (unlikely(__pyx_t_11 < 0)) __pyx_t_12 = 0;
+      } else if (unlikely(__pyx_t_11 >= __pyx_v_edges.shape[0])) __pyx_t_12 = 0;
+      if (unlikely(__pyx_t_12 != -1)) {
+        __Pyx_RaiseBufferIndexError(__pyx_t_12);
+        __PYX_ERR(0, 59, __pyx_L1_error)
       }
-      __pyx_v_i_edge = (*((long const  *) ( /* dim=0 */ (__pyx_v_edges.data + __pyx_t_14 * __pyx_v_edges.strides[0]) )));
+      __pyx_v_i_edge = (*((long const  *) ( /* dim=0 */ (__pyx_v_edges.data + __pyx_t_11 * __pyx_v_edges.strides[0]) )));
 
-      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":58
+      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":60
  *         for i in range(nmax_edge):
  *             i_edge = edges[i]
  *             if i_edge < n_edge:             # <<<<<<<<<<<<<<
  *                 dual_cell[:] = dual_edge_face_node_connectivity[i_edge]
  *                 n_cell_edges = i + 1
  */
-      __pyx_t_4 = __Pyx_PyInt_From_long(__pyx_v_i_edge); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_2 = PyObject_RichCompare(__pyx_t_4, __pyx_v_n_edge, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_16 < 0)) __PYX_ERR(0, 58, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyInt_From_long(__pyx_v_i_edge); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_4 = PyObject_RichCompare(__pyx_t_2, __pyx_v_n_edge, Py_LT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 60, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (__pyx_t_16) {
+      __pyx_t_13 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_13 < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (__pyx_t_13) {
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":59
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":61
  *             i_edge = edges[i]
  *             if i_edge < n_edge:
  *                 dual_cell[:] = dual_edge_face_node_connectivity[i_edge]             # <<<<<<<<<<<<<<
@@ -2714,7 +2757,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_edges, 1);
         if (unlikely(!__Pyx_is_valid_index(__pyx_tmp_idx, __pyx_tmp_shape))) {
             PyErr_SetString(PyExc_IndexError,
                             "Index out of bounds (axis 0)");
-            __PYX_ERR(0, 59, __pyx_L1_error)
+            __PYX_ERR(0, 61, __pyx_L1_error)
         }
         __pyx_t_17.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
@@ -2723,12 +2766,12 @@ __pyx_t_17.shape[0] = __pyx_v_dual_edge_face_node_connectivity.shape[1];
 __pyx_t_17.strides[0] = __pyx_v_dual_edge_face_node_connectivity.strides[1];
     __pyx_t_17.suboffsets[0] = -1;
 
-if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_17, __pyx_v_dual_cell, 1, 1, 0) < 0)) __PYX_ERR(0, 59, __pyx_L1_error)
+if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_17, __pyx_v_dual_cell, 1, 1, 0) < 0)) __PYX_ERR(0, 61, __pyx_L1_error)
         __PYX_XDEC_MEMVIEW(&__pyx_t_17, 1);
         __pyx_t_17.memview = NULL;
         __pyx_t_17.data = NULL;
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":60
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":62
  *             if i_edge < n_edge:
  *                 dual_cell[:] = dual_edge_face_node_connectivity[i_edge]
  *                 n_cell_edges = i + 1             # <<<<<<<<<<<<<<
@@ -2737,27 +2780,27 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_17, __pyx_v_dual_cell, 1, 1,
  */
         __pyx_v_n_cell_edges = (__pyx_v_i + 1);
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":63
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":65
  * 
  *                 # make sure that the node is in the first position
  *                 if dual_cell[0] != node:             # <<<<<<<<<<<<<<
  *                     dual_cell[:2] = dual_cell[2:4]
  *                     dual_cell[2:4] = dual_edge_face_node_connectivity[i_edge, :2]
  */
-        __pyx_t_14 = 0;
-        __pyx_t_15 = -1;
-        if (__pyx_t_14 < 0) {
-          __pyx_t_14 += __pyx_v_dual_cell.shape[0];
-          if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 0;
-        } else if (unlikely(__pyx_t_14 >= __pyx_v_dual_cell.shape[0])) __pyx_t_15 = 0;
-        if (unlikely(__pyx_t_15 != -1)) {
-          __Pyx_RaiseBufferIndexError(__pyx_t_15);
-          __PYX_ERR(0, 63, __pyx_L1_error)
+        __pyx_t_11 = 0;
+        __pyx_t_12 = -1;
+        if (__pyx_t_11 < 0) {
+          __pyx_t_11 += __pyx_v_dual_cell.shape[0];
+          if (unlikely(__pyx_t_11 < 0)) __pyx_t_12 = 0;
+        } else if (unlikely(__pyx_t_11 >= __pyx_v_dual_cell.shape[0])) __pyx_t_12 = 0;
+        if (unlikely(__pyx_t_12 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_12);
+          __PYX_ERR(0, 65, __pyx_L1_error)
         }
-        __pyx_t_16 = (((*((long *) ( /* dim=0 */ (__pyx_v_dual_cell.data + __pyx_t_14 * __pyx_v_dual_cell.strides[0]) ))) != __pyx_v_node) != 0);
-        if (__pyx_t_16) {
+        __pyx_t_13 = (((*((long *) ( /* dim=0 */ (__pyx_v_dual_cell.data + __pyx_t_11 * __pyx_v_dual_cell.strides[0]) ))) != __pyx_v_node) != 0);
+        if (__pyx_t_13) {
 
-          /* "gridded/pyugrid/_create_dual_node_mesh.pyx":64
+          /* "gridded/pyugrid/_create_dual_node_mesh.pyx":66
  *                 # make sure that the node is in the first position
  *                 if dual_cell[0] != node:
  *                     dual_cell[:2] = dual_cell[2:4]             # <<<<<<<<<<<<<<
@@ -2767,13 +2810,13 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_17, __pyx_v_dual_cell, 1, 1,
           __pyx_t_7.data = __pyx_v_dual_cell.data;
           __pyx_t_7.memview = __pyx_v_dual_cell.memview;
           __PYX_INC_MEMVIEW(&__pyx_t_7, 0);
-          __pyx_t_15 = -1;
+          __pyx_t_12 = -1;
           if (unlikely(__pyx_memoryview_slice_memviewslice(
     &__pyx_t_7,
     __pyx_v_dual_cell.shape[0], __pyx_v_dual_cell.strides[0], __pyx_v_dual_cell.suboffsets[0],
     0,
     0,
-    &__pyx_t_15,
+    &__pyx_t_12,
     2,
     4,
     0,
@@ -2782,19 +2825,19 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_17, __pyx_v_dual_cell, 1, 1,
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 64, __pyx_L1_error)
+    __PYX_ERR(0, 66, __pyx_L1_error)
 }
 
 __pyx_t_18.data = __pyx_v_dual_cell.data;
           __pyx_t_18.memview = __pyx_v_dual_cell.memview;
           __PYX_INC_MEMVIEW(&__pyx_t_18, 0);
-          __pyx_t_15 = -1;
+          __pyx_t_12 = -1;
           if (unlikely(__pyx_memoryview_slice_memviewslice(
     &__pyx_t_18,
     __pyx_v_dual_cell.shape[0], __pyx_v_dual_cell.strides[0], __pyx_v_dual_cell.suboffsets[0],
     0,
     0,
-    &__pyx_t_15,
+    &__pyx_t_12,
     0,
     2,
     0,
@@ -2803,10 +2846,10 @@ __pyx_t_18.data = __pyx_v_dual_cell.data;
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 64, __pyx_L1_error)
+    __PYX_ERR(0, 66, __pyx_L1_error)
 }
 
-if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)) __PYX_ERR(0, 64, __pyx_L1_error)
+if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)) __PYX_ERR(0, 66, __pyx_L1_error)
           __PYX_XDEC_MEMVIEW(&__pyx_t_18, 1);
           __pyx_t_18.memview = NULL;
           __pyx_t_18.data = NULL;
@@ -2814,7 +2857,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)
           __pyx_t_7.memview = NULL;
           __pyx_t_7.data = NULL;
 
-          /* "gridded/pyugrid/_create_dual_node_mesh.pyx":65
+          /* "gridded/pyugrid/_create_dual_node_mesh.pyx":67
  *                 if dual_cell[0] != node:
  *                     dual_cell[:2] = dual_cell[2:4]
  *                     dual_cell[2:4] = dual_edge_face_node_connectivity[i_edge, :2]             # <<<<<<<<<<<<<<
@@ -2833,18 +2876,18 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)
         if (unlikely(!__Pyx_is_valid_index(__pyx_tmp_idx, __pyx_tmp_shape))) {
             PyErr_SetString(PyExc_IndexError,
                             "Index out of bounds (axis 0)");
-            __PYX_ERR(0, 65, __pyx_L1_error)
+            __PYX_ERR(0, 67, __pyx_L1_error)
         }
         __pyx_t_17.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
 
-__pyx_t_15 = -1;
+__pyx_t_12 = -1;
           if (unlikely(__pyx_memoryview_slice_memviewslice(
     &__pyx_t_17,
     __pyx_v_dual_edge_face_node_connectivity.shape[1], __pyx_v_dual_edge_face_node_connectivity.strides[1], __pyx_v_dual_edge_face_node_connectivity.suboffsets[1],
     1,
     0,
-    &__pyx_t_15,
+    &__pyx_t_12,
     0,
     2,
     0,
@@ -2853,19 +2896,19 @@ __pyx_t_15 = -1;
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 65, __pyx_L1_error)
+    __PYX_ERR(0, 67, __pyx_L1_error)
 }
 
 __pyx_t_7.data = __pyx_v_dual_cell.data;
           __pyx_t_7.memview = __pyx_v_dual_cell.memview;
           __PYX_INC_MEMVIEW(&__pyx_t_7, 0);
-          __pyx_t_15 = -1;
+          __pyx_t_12 = -1;
           if (unlikely(__pyx_memoryview_slice_memviewslice(
     &__pyx_t_7,
     __pyx_v_dual_cell.shape[0], __pyx_v_dual_cell.strides[0], __pyx_v_dual_cell.suboffsets[0],
     0,
     0,
-    &__pyx_t_15,
+    &__pyx_t_12,
     2,
     4,
     0,
@@ -2874,10 +2917,10 @@ __pyx_t_7.data = __pyx_v_dual_cell.data;
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 65, __pyx_L1_error)
+    __PYX_ERR(0, 67, __pyx_L1_error)
 }
 
-if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_17, __pyx_t_7, 1, 1, 0) < 0)) __PYX_ERR(0, 65, __pyx_L1_error)
+if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_17, __pyx_t_7, 1, 1, 0) < 0)) __PYX_ERR(0, 67, __pyx_L1_error)
           __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
           __pyx_t_7.memview = NULL;
           __pyx_t_7.data = NULL;
@@ -2885,7 +2928,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_17, __pyx_t_7, 1, 1, 0) < 0)
           __pyx_t_17.memview = NULL;
           __pyx_t_17.data = NULL;
 
-          /* "gridded/pyugrid/_create_dual_node_mesh.pyx":63
+          /* "gridded/pyugrid/_create_dual_node_mesh.pyx":65
  * 
  *                 # make sure that the node is in the first position
  *                 if dual_cell[0] != node:             # <<<<<<<<<<<<<<
@@ -2894,7 +2937,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_17, __pyx_t_7, 1, 1, 0) < 0)
  */
         }
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":67
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":69
  *                     dual_cell[2:4] = dual_edge_face_node_connectivity[i_edge, :2]
  * 
  *                 dual_cells[i, :] = dual_cell             # <<<<<<<<<<<<<<
@@ -2913,7 +2956,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_17, __pyx_t_7, 1, 1, 0) < 0)
         if (unlikely(!__Pyx_is_valid_index(__pyx_tmp_idx, __pyx_tmp_shape))) {
             PyErr_SetString(PyExc_IndexError,
                             "Index out of bounds (axis 0)");
-            __PYX_ERR(0, 67, __pyx_L1_error)
+            __PYX_ERR(0, 69, __pyx_L1_error)
         }
         __pyx_t_7.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
@@ -2922,12 +2965,12 @@ __pyx_t_7.shape[0] = __pyx_v_dual_cells.shape[1];
 __pyx_t_7.strides[0] = __pyx_v_dual_cells.strides[1];
     __pyx_t_7.suboffsets[0] = -1;
 
-if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_dual_cell, __pyx_t_7, 1, 1, 0) < 0)) __PYX_ERR(0, 67, __pyx_L1_error)
+if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_dual_cell, __pyx_t_7, 1, 1, 0) < 0)) __PYX_ERR(0, 69, __pyx_L1_error)
         __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
         __pyx_t_7.memview = NULL;
         __pyx_t_7.data = NULL;
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":58
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":60
  *         for i in range(nmax_edge):
  *             i_edge = edges[i]
  *             if i_edge < n_edge:             # <<<<<<<<<<<<<<
@@ -2937,7 +2980,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_dual_cell, __pyx_t_7, 1, 1, 
       }
     }
 
-    /* "gridded/pyugrid/_create_dual_node_mesh.pyx":69
+    /* "gridded/pyugrid/_create_dual_node_mesh.pyx":71
  *                 dual_cells[i, :] = dual_cell
  * 
  *         dual_edges[:nmax_edge] = dual_cells[:, 1::2]             # <<<<<<<<<<<<<<
@@ -2951,13 +2994,13 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_dual_cell, __pyx_t_7, 1, 1, 
 __pyx_t_5.strides[0] = __pyx_v_dual_cells.strides[0];
     __pyx_t_5.suboffsets[0] = -1;
 
-__pyx_t_15 = -1;
+__pyx_t_12 = -1;
     if (unlikely(__pyx_memoryview_slice_memviewslice(
     &__pyx_t_5,
     __pyx_v_dual_cells.shape[1], __pyx_v_dual_cells.strides[1], __pyx_v_dual_cells.suboffsets[1],
     1,
     1,
-    &__pyx_t_15,
+    &__pyx_t_12,
     1,
     0,
     2,
@@ -2966,19 +3009,19 @@ __pyx_t_15 = -1;
     1,
     1) < 0))
 {
-    __PYX_ERR(0, 69, __pyx_L1_error)
+    __PYX_ERR(0, 71, __pyx_L1_error)
 }
 
 __pyx_t_19.data = __pyx_v_dual_edges.data;
     __pyx_t_19.memview = __pyx_v_dual_edges.memview;
     __PYX_INC_MEMVIEW(&__pyx_t_19, 0);
-    __pyx_t_15 = -1;
+    __pyx_t_12 = -1;
     if (unlikely(__pyx_memoryview_slice_memviewslice(
     &__pyx_t_19,
     __pyx_v_dual_edges.shape[0], __pyx_v_dual_edges.strides[0], __pyx_v_dual_edges.suboffsets[0],
     0,
     0,
-    &__pyx_t_15,
+    &__pyx_t_12,
     0,
     __pyx_v_nmax_edge,
     0,
@@ -2987,14 +3030,14 @@ __pyx_t_19.data = __pyx_v_dual_edges.data;
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 69, __pyx_L1_error)
+    __PYX_ERR(0, 71, __pyx_L1_error)
 }
 
 __pyx_t_19.shape[1] = __pyx_v_dual_edges.shape[1];
 __pyx_t_19.strides[1] = __pyx_v_dual_edges.strides[1];
     __pyx_t_19.suboffsets[1] = -1;
 
-if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_5, __pyx_t_19, 2, 2, 0) < 0)) __PYX_ERR(0, 69, __pyx_L1_error)
+if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_5, __pyx_t_19, 2, 2, 0) < 0)) __PYX_ERR(0, 71, __pyx_L1_error)
     __PYX_XDEC_MEMVIEW(&__pyx_t_19, 1);
     __pyx_t_19.memview = NULL;
     __pyx_t_19.data = NULL;
@@ -3002,38 +3045,38 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_5, __pyx_t_19, 2, 2, 0) < 0)
     __pyx_t_5.memview = NULL;
     __pyx_t_5.data = NULL;
 
-    /* "gridded/pyugrid/_create_dual_node_mesh.pyx":73
+    /* "gridded/pyugrid/_create_dual_node_mesh.pyx":75
  *         # now check for missing nodes (indicates that the node is at the
  *         # edge of the mesh)
  *         for i in range(n_cell_edges):             # <<<<<<<<<<<<<<
  *             i_edge = edges[i]
  *             edge = dual_edges[i]
  */
-    __pyx_t_11 = __pyx_v_n_cell_edges;
-    __pyx_t_12 = __pyx_t_11;
-    for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
-      __pyx_v_i = __pyx_t_13;
+    __pyx_t_14 = __pyx_v_n_cell_edges;
+    __pyx_t_15 = __pyx_t_14;
+    for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
+      __pyx_v_i = __pyx_t_16;
 
-      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":74
+      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":76
  *         # edge of the mesh)
  *         for i in range(n_cell_edges):
  *             i_edge = edges[i]             # <<<<<<<<<<<<<<
  *             edge = dual_edges[i]
  *             if edge[0] == n_dual_node_max:
  */
-      __pyx_t_14 = __pyx_v_i;
-      __pyx_t_15 = -1;
-      if (__pyx_t_14 < 0) {
-        __pyx_t_14 += __pyx_v_edges.shape[0];
-        if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 0;
-      } else if (unlikely(__pyx_t_14 >= __pyx_v_edges.shape[0])) __pyx_t_15 = 0;
-      if (unlikely(__pyx_t_15 != -1)) {
-        __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 74, __pyx_L1_error)
+      __pyx_t_11 = __pyx_v_i;
+      __pyx_t_12 = -1;
+      if (__pyx_t_11 < 0) {
+        __pyx_t_11 += __pyx_v_edges.shape[0];
+        if (unlikely(__pyx_t_11 < 0)) __pyx_t_12 = 0;
+      } else if (unlikely(__pyx_t_11 >= __pyx_v_edges.shape[0])) __pyx_t_12 = 0;
+      if (unlikely(__pyx_t_12 != -1)) {
+        __Pyx_RaiseBufferIndexError(__pyx_t_12);
+        __PYX_ERR(0, 76, __pyx_L1_error)
       }
-      __pyx_v_i_edge = (*((long const  *) ( /* dim=0 */ (__pyx_v_edges.data + __pyx_t_14 * __pyx_v_edges.strides[0]) )));
+      __pyx_v_i_edge = (*((long const  *) ( /* dim=0 */ (__pyx_v_edges.data + __pyx_t_11 * __pyx_v_edges.strides[0]) )));
 
-      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":75
+      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":77
  *         for i in range(n_cell_edges):
  *             i_edge = edges[i]
  *             edge = dual_edges[i]             # <<<<<<<<<<<<<<
@@ -3052,7 +3095,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_5, __pyx_t_19, 2, 2, 0) < 0)
         if (unlikely(!__Pyx_is_valid_index(__pyx_tmp_idx, __pyx_tmp_shape))) {
             PyErr_SetString(PyExc_IndexError,
                             "Index out of bounds (axis 0)");
-            __PYX_ERR(0, 75, __pyx_L1_error)
+            __PYX_ERR(0, 77, __pyx_L1_error)
         }
         __pyx_t_7.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
@@ -3066,70 +3109,70 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_edge, 1);
       __pyx_t_7.memview = NULL;
       __pyx_t_7.data = NULL;
 
-      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":76
+      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":78
  *             i_edge = edges[i]
  *             edge = dual_edges[i]
  *             if edge[0] == n_dual_node_max:             # <<<<<<<<<<<<<<
  *                 edge[0] = n_dual_node + i_edge
  *                 dual_edges[n_cell_edges, 0] = node
  */
-      __pyx_t_14 = 0;
-      __pyx_t_15 = -1;
-      if (__pyx_t_14 < 0) {
-        __pyx_t_14 += __pyx_v_edge.shape[0];
-        if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 0;
-      } else if (unlikely(__pyx_t_14 >= __pyx_v_edge.shape[0])) __pyx_t_15 = 0;
-      if (unlikely(__pyx_t_15 != -1)) {
-        __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 76, __pyx_L1_error)
+      __pyx_t_11 = 0;
+      __pyx_t_12 = -1;
+      if (__pyx_t_11 < 0) {
+        __pyx_t_11 += __pyx_v_edge.shape[0];
+        if (unlikely(__pyx_t_11 < 0)) __pyx_t_12 = 0;
+      } else if (unlikely(__pyx_t_11 >= __pyx_v_edge.shape[0])) __pyx_t_12 = 0;
+      if (unlikely(__pyx_t_12 != -1)) {
+        __Pyx_RaiseBufferIndexError(__pyx_t_12);
+        __PYX_ERR(0, 78, __pyx_L1_error)
       }
-      __pyx_t_16 = (((*((long *) ( /* dim=0 */ (__pyx_v_edge.data + __pyx_t_14 * __pyx_v_edge.strides[0]) ))) == __pyx_v_n_dual_node_max) != 0);
-      if (__pyx_t_16) {
+      __pyx_t_13 = (((*((long *) ( /* dim=0 */ (__pyx_v_edge.data + __pyx_t_11 * __pyx_v_edge.strides[0]) ))) == __pyx_v_n_dual_node_max) != 0);
+      if (__pyx_t_13) {
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":77
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":79
  *             edge = dual_edges[i]
  *             if edge[0] == n_dual_node_max:
  *                 edge[0] = n_dual_node + i_edge             # <<<<<<<<<<<<<<
  *                 dual_edges[n_cell_edges, 0] = node
  *                 dual_edges[n_cell_edges, 1] = n_dual_node + i_edge
  */
-        __pyx_t_14 = 0;
-        __pyx_t_15 = -1;
-        if (__pyx_t_14 < 0) {
-          __pyx_t_14 += __pyx_v_edge.shape[0];
-          if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 0;
-        } else if (unlikely(__pyx_t_14 >= __pyx_v_edge.shape[0])) __pyx_t_15 = 0;
-        if (unlikely(__pyx_t_15 != -1)) {
-          __Pyx_RaiseBufferIndexError(__pyx_t_15);
-          __PYX_ERR(0, 77, __pyx_L1_error)
+        __pyx_t_11 = 0;
+        __pyx_t_12 = -1;
+        if (__pyx_t_11 < 0) {
+          __pyx_t_11 += __pyx_v_edge.shape[0];
+          if (unlikely(__pyx_t_11 < 0)) __pyx_t_12 = 0;
+        } else if (unlikely(__pyx_t_11 >= __pyx_v_edge.shape[0])) __pyx_t_12 = 0;
+        if (unlikely(__pyx_t_12 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_12);
+          __PYX_ERR(0, 79, __pyx_L1_error)
         }
-        *((long *) ( /* dim=0 */ (__pyx_v_edge.data + __pyx_t_14 * __pyx_v_edge.strides[0]) )) = (__pyx_v_n_dual_node + __pyx_v_i_edge);
+        *((long *) ( /* dim=0 */ (__pyx_v_edge.data + __pyx_t_11 * __pyx_v_edge.strides[0]) )) = (__pyx_v_n_dual_node + __pyx_v_i_edge);
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":78
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":80
  *             if edge[0] == n_dual_node_max:
  *                 edge[0] = n_dual_node + i_edge
  *                 dual_edges[n_cell_edges, 0] = node             # <<<<<<<<<<<<<<
  *                 dual_edges[n_cell_edges, 1] = n_dual_node + i_edge
  *                 n_cell_edges = n_cell_edges + 1
  */
-        __pyx_t_14 = __pyx_v_n_cell_edges;
+        __pyx_t_11 = __pyx_v_n_cell_edges;
         __pyx_t_20 = 0;
-        __pyx_t_15 = -1;
-        if (__pyx_t_14 < 0) {
-          __pyx_t_14 += __pyx_v_dual_edges.shape[0];
-          if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 0;
-        } else if (unlikely(__pyx_t_14 >= __pyx_v_dual_edges.shape[0])) __pyx_t_15 = 0;
+        __pyx_t_12 = -1;
+        if (__pyx_t_11 < 0) {
+          __pyx_t_11 += __pyx_v_dual_edges.shape[0];
+          if (unlikely(__pyx_t_11 < 0)) __pyx_t_12 = 0;
+        } else if (unlikely(__pyx_t_11 >= __pyx_v_dual_edges.shape[0])) __pyx_t_12 = 0;
         if (__pyx_t_20 < 0) {
           __pyx_t_20 += __pyx_v_dual_edges.shape[1];
-          if (unlikely(__pyx_t_20 < 0)) __pyx_t_15 = 1;
-        } else if (unlikely(__pyx_t_20 >= __pyx_v_dual_edges.shape[1])) __pyx_t_15 = 1;
-        if (unlikely(__pyx_t_15 != -1)) {
-          __Pyx_RaiseBufferIndexError(__pyx_t_15);
-          __PYX_ERR(0, 78, __pyx_L1_error)
+          if (unlikely(__pyx_t_20 < 0)) __pyx_t_12 = 1;
+        } else if (unlikely(__pyx_t_20 >= __pyx_v_dual_edges.shape[1])) __pyx_t_12 = 1;
+        if (unlikely(__pyx_t_12 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_12);
+          __PYX_ERR(0, 80, __pyx_L1_error)
         }
-        *((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_dual_edges.data + __pyx_t_14 * __pyx_v_dual_edges.strides[0]) ) + __pyx_t_20 * __pyx_v_dual_edges.strides[1]) )) = __pyx_v_node;
+        *((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_dual_edges.data + __pyx_t_11 * __pyx_v_dual_edges.strides[0]) ) + __pyx_t_20 * __pyx_v_dual_edges.strides[1]) )) = __pyx_v_node;
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":79
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":81
  *                 edge[0] = n_dual_node + i_edge
  *                 dual_edges[n_cell_edges, 0] = node
  *                 dual_edges[n_cell_edges, 1] = n_dual_node + i_edge             # <<<<<<<<<<<<<<
@@ -3137,23 +3180,23 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_edge, 1);
  *             elif edge[1] == n_dual_node_max:
  */
         __pyx_t_20 = __pyx_v_n_cell_edges;
-        __pyx_t_14 = 1;
-        __pyx_t_15 = -1;
+        __pyx_t_11 = 1;
+        __pyx_t_12 = -1;
         if (__pyx_t_20 < 0) {
           __pyx_t_20 += __pyx_v_dual_edges.shape[0];
-          if (unlikely(__pyx_t_20 < 0)) __pyx_t_15 = 0;
-        } else if (unlikely(__pyx_t_20 >= __pyx_v_dual_edges.shape[0])) __pyx_t_15 = 0;
-        if (__pyx_t_14 < 0) {
-          __pyx_t_14 += __pyx_v_dual_edges.shape[1];
-          if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 1;
-        } else if (unlikely(__pyx_t_14 >= __pyx_v_dual_edges.shape[1])) __pyx_t_15 = 1;
-        if (unlikely(__pyx_t_15 != -1)) {
-          __Pyx_RaiseBufferIndexError(__pyx_t_15);
-          __PYX_ERR(0, 79, __pyx_L1_error)
+          if (unlikely(__pyx_t_20 < 0)) __pyx_t_12 = 0;
+        } else if (unlikely(__pyx_t_20 >= __pyx_v_dual_edges.shape[0])) __pyx_t_12 = 0;
+        if (__pyx_t_11 < 0) {
+          __pyx_t_11 += __pyx_v_dual_edges.shape[1];
+          if (unlikely(__pyx_t_11 < 0)) __pyx_t_12 = 1;
+        } else if (unlikely(__pyx_t_11 >= __pyx_v_dual_edges.shape[1])) __pyx_t_12 = 1;
+        if (unlikely(__pyx_t_12 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_12);
+          __PYX_ERR(0, 81, __pyx_L1_error)
         }
-        *((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_dual_edges.data + __pyx_t_20 * __pyx_v_dual_edges.strides[0]) ) + __pyx_t_14 * __pyx_v_dual_edges.strides[1]) )) = (__pyx_v_n_dual_node + __pyx_v_i_edge);
+        *((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_dual_edges.data + __pyx_t_20 * __pyx_v_dual_edges.strides[0]) ) + __pyx_t_11 * __pyx_v_dual_edges.strides[1]) )) = (__pyx_v_n_dual_node + __pyx_v_i_edge);
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":80
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":82
  *                 dual_edges[n_cell_edges, 0] = node
  *                 dual_edges[n_cell_edges, 1] = n_dual_node + i_edge
  *                 n_cell_edges = n_cell_edges + 1             # <<<<<<<<<<<<<<
@@ -3162,80 +3205,80 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_edge, 1);
  */
         __pyx_v_n_cell_edges = (__pyx_v_n_cell_edges + 1);
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":76
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":78
  *             i_edge = edges[i]
  *             edge = dual_edges[i]
  *             if edge[0] == n_dual_node_max:             # <<<<<<<<<<<<<<
  *                 edge[0] = n_dual_node + i_edge
  *                 dual_edges[n_cell_edges, 0] = node
  */
-        goto __pyx_L11;
+        goto __pyx_L12;
       }
 
-      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":81
+      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":83
  *                 dual_edges[n_cell_edges, 1] = n_dual_node + i_edge
  *                 n_cell_edges = n_cell_edges + 1
  *             elif edge[1] == n_dual_node_max:             # <<<<<<<<<<<<<<
  *                 edge[1] = n_dual_node + i_edge
  *                 dual_edges[n_cell_edges, 1] = node
  */
-      __pyx_t_14 = 1;
-      __pyx_t_15 = -1;
-      if (__pyx_t_14 < 0) {
-        __pyx_t_14 += __pyx_v_edge.shape[0];
-        if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 0;
-      } else if (unlikely(__pyx_t_14 >= __pyx_v_edge.shape[0])) __pyx_t_15 = 0;
-      if (unlikely(__pyx_t_15 != -1)) {
-        __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 81, __pyx_L1_error)
+      __pyx_t_11 = 1;
+      __pyx_t_12 = -1;
+      if (__pyx_t_11 < 0) {
+        __pyx_t_11 += __pyx_v_edge.shape[0];
+        if (unlikely(__pyx_t_11 < 0)) __pyx_t_12 = 0;
+      } else if (unlikely(__pyx_t_11 >= __pyx_v_edge.shape[0])) __pyx_t_12 = 0;
+      if (unlikely(__pyx_t_12 != -1)) {
+        __Pyx_RaiseBufferIndexError(__pyx_t_12);
+        __PYX_ERR(0, 83, __pyx_L1_error)
       }
-      __pyx_t_16 = (((*((long *) ( /* dim=0 */ (__pyx_v_edge.data + __pyx_t_14 * __pyx_v_edge.strides[0]) ))) == __pyx_v_n_dual_node_max) != 0);
-      if (__pyx_t_16) {
+      __pyx_t_13 = (((*((long *) ( /* dim=0 */ (__pyx_v_edge.data + __pyx_t_11 * __pyx_v_edge.strides[0]) ))) == __pyx_v_n_dual_node_max) != 0);
+      if (__pyx_t_13) {
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":82
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":84
  *                 n_cell_edges = n_cell_edges + 1
  *             elif edge[1] == n_dual_node_max:
  *                 edge[1] = n_dual_node + i_edge             # <<<<<<<<<<<<<<
  *                 dual_edges[n_cell_edges, 1] = node
  *                 dual_edges[n_cell_edges, 0] = n_dual_node + i_edge
  */
-        __pyx_t_14 = 1;
-        __pyx_t_15 = -1;
-        if (__pyx_t_14 < 0) {
-          __pyx_t_14 += __pyx_v_edge.shape[0];
-          if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 0;
-        } else if (unlikely(__pyx_t_14 >= __pyx_v_edge.shape[0])) __pyx_t_15 = 0;
-        if (unlikely(__pyx_t_15 != -1)) {
-          __Pyx_RaiseBufferIndexError(__pyx_t_15);
-          __PYX_ERR(0, 82, __pyx_L1_error)
+        __pyx_t_11 = 1;
+        __pyx_t_12 = -1;
+        if (__pyx_t_11 < 0) {
+          __pyx_t_11 += __pyx_v_edge.shape[0];
+          if (unlikely(__pyx_t_11 < 0)) __pyx_t_12 = 0;
+        } else if (unlikely(__pyx_t_11 >= __pyx_v_edge.shape[0])) __pyx_t_12 = 0;
+        if (unlikely(__pyx_t_12 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_12);
+          __PYX_ERR(0, 84, __pyx_L1_error)
         }
-        *((long *) ( /* dim=0 */ (__pyx_v_edge.data + __pyx_t_14 * __pyx_v_edge.strides[0]) )) = (__pyx_v_n_dual_node + __pyx_v_i_edge);
+        *((long *) ( /* dim=0 */ (__pyx_v_edge.data + __pyx_t_11 * __pyx_v_edge.strides[0]) )) = (__pyx_v_n_dual_node + __pyx_v_i_edge);
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":83
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":85
  *             elif edge[1] == n_dual_node_max:
  *                 edge[1] = n_dual_node + i_edge
  *                 dual_edges[n_cell_edges, 1] = node             # <<<<<<<<<<<<<<
  *                 dual_edges[n_cell_edges, 0] = n_dual_node + i_edge
  *                 n_cell_edges = n_cell_edges + 1
  */
-        __pyx_t_14 = __pyx_v_n_cell_edges;
+        __pyx_t_11 = __pyx_v_n_cell_edges;
         __pyx_t_20 = 1;
-        __pyx_t_15 = -1;
-        if (__pyx_t_14 < 0) {
-          __pyx_t_14 += __pyx_v_dual_edges.shape[0];
-          if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 0;
-        } else if (unlikely(__pyx_t_14 >= __pyx_v_dual_edges.shape[0])) __pyx_t_15 = 0;
+        __pyx_t_12 = -1;
+        if (__pyx_t_11 < 0) {
+          __pyx_t_11 += __pyx_v_dual_edges.shape[0];
+          if (unlikely(__pyx_t_11 < 0)) __pyx_t_12 = 0;
+        } else if (unlikely(__pyx_t_11 >= __pyx_v_dual_edges.shape[0])) __pyx_t_12 = 0;
         if (__pyx_t_20 < 0) {
           __pyx_t_20 += __pyx_v_dual_edges.shape[1];
-          if (unlikely(__pyx_t_20 < 0)) __pyx_t_15 = 1;
-        } else if (unlikely(__pyx_t_20 >= __pyx_v_dual_edges.shape[1])) __pyx_t_15 = 1;
-        if (unlikely(__pyx_t_15 != -1)) {
-          __Pyx_RaiseBufferIndexError(__pyx_t_15);
-          __PYX_ERR(0, 83, __pyx_L1_error)
+          if (unlikely(__pyx_t_20 < 0)) __pyx_t_12 = 1;
+        } else if (unlikely(__pyx_t_20 >= __pyx_v_dual_edges.shape[1])) __pyx_t_12 = 1;
+        if (unlikely(__pyx_t_12 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_12);
+          __PYX_ERR(0, 85, __pyx_L1_error)
         }
-        *((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_dual_edges.data + __pyx_t_14 * __pyx_v_dual_edges.strides[0]) ) + __pyx_t_20 * __pyx_v_dual_edges.strides[1]) )) = __pyx_v_node;
+        *((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_dual_edges.data + __pyx_t_11 * __pyx_v_dual_edges.strides[0]) ) + __pyx_t_20 * __pyx_v_dual_edges.strides[1]) )) = __pyx_v_node;
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":84
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":86
  *                 edge[1] = n_dual_node + i_edge
  *                 dual_edges[n_cell_edges, 1] = node
  *                 dual_edges[n_cell_edges, 0] = n_dual_node + i_edge             # <<<<<<<<<<<<<<
@@ -3243,23 +3286,23 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_edge, 1);
  * 
  */
         __pyx_t_20 = __pyx_v_n_cell_edges;
-        __pyx_t_14 = 0;
-        __pyx_t_15 = -1;
+        __pyx_t_11 = 0;
+        __pyx_t_12 = -1;
         if (__pyx_t_20 < 0) {
           __pyx_t_20 += __pyx_v_dual_edges.shape[0];
-          if (unlikely(__pyx_t_20 < 0)) __pyx_t_15 = 0;
-        } else if (unlikely(__pyx_t_20 >= __pyx_v_dual_edges.shape[0])) __pyx_t_15 = 0;
-        if (__pyx_t_14 < 0) {
-          __pyx_t_14 += __pyx_v_dual_edges.shape[1];
-          if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 1;
-        } else if (unlikely(__pyx_t_14 >= __pyx_v_dual_edges.shape[1])) __pyx_t_15 = 1;
-        if (unlikely(__pyx_t_15 != -1)) {
-          __Pyx_RaiseBufferIndexError(__pyx_t_15);
-          __PYX_ERR(0, 84, __pyx_L1_error)
+          if (unlikely(__pyx_t_20 < 0)) __pyx_t_12 = 0;
+        } else if (unlikely(__pyx_t_20 >= __pyx_v_dual_edges.shape[0])) __pyx_t_12 = 0;
+        if (__pyx_t_11 < 0) {
+          __pyx_t_11 += __pyx_v_dual_edges.shape[1];
+          if (unlikely(__pyx_t_11 < 0)) __pyx_t_12 = 1;
+        } else if (unlikely(__pyx_t_11 >= __pyx_v_dual_edges.shape[1])) __pyx_t_12 = 1;
+        if (unlikely(__pyx_t_12 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_12);
+          __PYX_ERR(0, 86, __pyx_L1_error)
         }
-        *((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_dual_edges.data + __pyx_t_20 * __pyx_v_dual_edges.strides[0]) ) + __pyx_t_14 * __pyx_v_dual_edges.strides[1]) )) = (__pyx_v_n_dual_node + __pyx_v_i_edge);
+        *((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_dual_edges.data + __pyx_t_20 * __pyx_v_dual_edges.strides[0]) ) + __pyx_t_11 * __pyx_v_dual_edges.strides[1]) )) = (__pyx_v_n_dual_node + __pyx_v_i_edge);
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":85
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":87
  *                 dual_edges[n_cell_edges, 1] = node
  *                 dual_edges[n_cell_edges, 0] = n_dual_node + i_edge
  *                 n_cell_edges = n_cell_edges + 1             # <<<<<<<<<<<<<<
@@ -3268,7 +3311,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_edge, 1);
  */
         __pyx_v_n_cell_edges = (__pyx_v_n_cell_edges + 1);
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":81
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":83
  *                 dual_edges[n_cell_edges, 1] = n_dual_node + i_edge
  *                 n_cell_edges = n_cell_edges + 1
  *             elif edge[1] == n_dual_node_max:             # <<<<<<<<<<<<<<
@@ -3276,10 +3319,10 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_edge, 1);
  *                 dual_edges[n_cell_edges, 1] = node
  */
       }
-      __pyx_L11:;
+      __pyx_L12:;
     }
 
-    /* "gridded/pyugrid/_create_dual_node_mesh.pyx":88
+    /* "gridded/pyugrid/_create_dual_node_mesh.pyx":90
  * 
  *         # now sort the edges
  *         sorted_edges[0, :] = dual_edges[0]             # <<<<<<<<<<<<<<
@@ -3298,7 +3341,7 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_edge, 1);
         if (unlikely(!__Pyx_is_valid_index(__pyx_tmp_idx, __pyx_tmp_shape))) {
             PyErr_SetString(PyExc_IndexError,
                             "Index out of bounds (axis 0)");
-            __PYX_ERR(0, 88, __pyx_L1_error)
+            __PYX_ERR(0, 90, __pyx_L1_error)
         }
         __pyx_t_7.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
@@ -3319,7 +3362,7 @@ __pyx_t_18.data = __pyx_v_sorted_edges.data;
         if (unlikely(!__Pyx_is_valid_index(__pyx_tmp_idx, __pyx_tmp_shape))) {
             PyErr_SetString(PyExc_IndexError,
                             "Index out of bounds (axis 0)");
-            __PYX_ERR(0, 88, __pyx_L1_error)
+            __PYX_ERR(0, 90, __pyx_L1_error)
         }
         __pyx_t_18.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
@@ -3328,7 +3371,7 @@ __pyx_t_18.shape[0] = __pyx_v_sorted_edges.shape[1];
 __pyx_t_18.strides[0] = __pyx_v_sorted_edges.strides[1];
     __pyx_t_18.suboffsets[0] = -1;
 
-if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
+if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)) __PYX_ERR(0, 90, __pyx_L1_error)
     __PYX_XDEC_MEMVIEW(&__pyx_t_18, 1);
     __pyx_t_18.memview = NULL;
     __pyx_t_18.data = NULL;
@@ -3336,43 +3379,43 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)
     __pyx_t_7.memview = NULL;
     __pyx_t_7.data = NULL;
 
-    /* "gridded/pyugrid/_create_dual_node_mesh.pyx":89
+    /* "gridded/pyugrid/_create_dual_node_mesh.pyx":91
  *         # now sort the edges
  *         sorted_edges[0, :] = dual_edges[0]
  *         for i in range(1, n_cell_edges):             # <<<<<<<<<<<<<<
  *             end = sorted_edges[i - 1, 1]
  *             for j in range(1, n_cell_edges):
  */
-    __pyx_t_11 = __pyx_v_n_cell_edges;
-    __pyx_t_12 = __pyx_t_11;
-    for (__pyx_t_13 = 1; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
-      __pyx_v_i = __pyx_t_13;
+    __pyx_t_14 = __pyx_v_n_cell_edges;
+    __pyx_t_15 = __pyx_t_14;
+    for (__pyx_t_16 = 1; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
+      __pyx_v_i = __pyx_t_16;
 
-      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":90
+      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":92
  *         sorted_edges[0, :] = dual_edges[0]
  *         for i in range(1, n_cell_edges):
  *             end = sorted_edges[i - 1, 1]             # <<<<<<<<<<<<<<
  *             for j in range(1, n_cell_edges):
  *                 start = dual_edges[j, 0]
  */
-      __pyx_t_14 = (__pyx_v_i - 1);
+      __pyx_t_11 = (__pyx_v_i - 1);
       __pyx_t_20 = 1;
-      __pyx_t_15 = -1;
-      if (__pyx_t_14 < 0) {
-        __pyx_t_14 += __pyx_v_sorted_edges.shape[0];
-        if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 0;
-      } else if (unlikely(__pyx_t_14 >= __pyx_v_sorted_edges.shape[0])) __pyx_t_15 = 0;
+      __pyx_t_12 = -1;
+      if (__pyx_t_11 < 0) {
+        __pyx_t_11 += __pyx_v_sorted_edges.shape[0];
+        if (unlikely(__pyx_t_11 < 0)) __pyx_t_12 = 0;
+      } else if (unlikely(__pyx_t_11 >= __pyx_v_sorted_edges.shape[0])) __pyx_t_12 = 0;
       if (__pyx_t_20 < 0) {
         __pyx_t_20 += __pyx_v_sorted_edges.shape[1];
-        if (unlikely(__pyx_t_20 < 0)) __pyx_t_15 = 1;
-      } else if (unlikely(__pyx_t_20 >= __pyx_v_sorted_edges.shape[1])) __pyx_t_15 = 1;
-      if (unlikely(__pyx_t_15 != -1)) {
-        __Pyx_RaiseBufferIndexError(__pyx_t_15);
-        __PYX_ERR(0, 90, __pyx_L1_error)
+        if (unlikely(__pyx_t_20 < 0)) __pyx_t_12 = 1;
+      } else if (unlikely(__pyx_t_20 >= __pyx_v_sorted_edges.shape[1])) __pyx_t_12 = 1;
+      if (unlikely(__pyx_t_12 != -1)) {
+        __Pyx_RaiseBufferIndexError(__pyx_t_12);
+        __PYX_ERR(0, 92, __pyx_L1_error)
       }
-      __pyx_v_end = (*((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_sorted_edges.data + __pyx_t_14 * __pyx_v_sorted_edges.strides[0]) ) + __pyx_t_20 * __pyx_v_sorted_edges.strides[1]) )));
+      __pyx_v_end = (*((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_sorted_edges.data + __pyx_t_11 * __pyx_v_sorted_edges.strides[0]) ) + __pyx_t_20 * __pyx_v_sorted_edges.strides[1]) )));
 
-      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":91
+      /* "gridded/pyugrid/_create_dual_node_mesh.pyx":93
  *         for i in range(1, n_cell_edges):
  *             end = sorted_edges[i - 1, 1]
  *             for j in range(1, n_cell_edges):             # <<<<<<<<<<<<<<
@@ -3384,7 +3427,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)
       for (__pyx_t_23 = 1; __pyx_t_23 < __pyx_t_22; __pyx_t_23+=1) {
         __pyx_v_j = __pyx_t_23;
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":92
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":94
  *             end = sorted_edges[i - 1, 1]
  *             for j in range(1, n_cell_edges):
  *                 start = dual_edges[j, 0]             # <<<<<<<<<<<<<<
@@ -3392,33 +3435,33 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)
  *                     sorted_edges[i] = dual_edges[j]
  */
         __pyx_t_20 = __pyx_v_j;
-        __pyx_t_14 = 0;
-        __pyx_t_15 = -1;
+        __pyx_t_11 = 0;
+        __pyx_t_12 = -1;
         if (__pyx_t_20 < 0) {
           __pyx_t_20 += __pyx_v_dual_edges.shape[0];
-          if (unlikely(__pyx_t_20 < 0)) __pyx_t_15 = 0;
-        } else if (unlikely(__pyx_t_20 >= __pyx_v_dual_edges.shape[0])) __pyx_t_15 = 0;
-        if (__pyx_t_14 < 0) {
-          __pyx_t_14 += __pyx_v_dual_edges.shape[1];
-          if (unlikely(__pyx_t_14 < 0)) __pyx_t_15 = 1;
-        } else if (unlikely(__pyx_t_14 >= __pyx_v_dual_edges.shape[1])) __pyx_t_15 = 1;
-        if (unlikely(__pyx_t_15 != -1)) {
-          __Pyx_RaiseBufferIndexError(__pyx_t_15);
-          __PYX_ERR(0, 92, __pyx_L1_error)
+          if (unlikely(__pyx_t_20 < 0)) __pyx_t_12 = 0;
+        } else if (unlikely(__pyx_t_20 >= __pyx_v_dual_edges.shape[0])) __pyx_t_12 = 0;
+        if (__pyx_t_11 < 0) {
+          __pyx_t_11 += __pyx_v_dual_edges.shape[1];
+          if (unlikely(__pyx_t_11 < 0)) __pyx_t_12 = 1;
+        } else if (unlikely(__pyx_t_11 >= __pyx_v_dual_edges.shape[1])) __pyx_t_12 = 1;
+        if (unlikely(__pyx_t_12 != -1)) {
+          __Pyx_RaiseBufferIndexError(__pyx_t_12);
+          __PYX_ERR(0, 94, __pyx_L1_error)
         }
-        __pyx_v_start = (*((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_dual_edges.data + __pyx_t_20 * __pyx_v_dual_edges.strides[0]) ) + __pyx_t_14 * __pyx_v_dual_edges.strides[1]) )));
+        __pyx_v_start = (*((long *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_dual_edges.data + __pyx_t_20 * __pyx_v_dual_edges.strides[0]) ) + __pyx_t_11 * __pyx_v_dual_edges.strides[1]) )));
 
-        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":93
+        /* "gridded/pyugrid/_create_dual_node_mesh.pyx":95
  *             for j in range(1, n_cell_edges):
  *                 start = dual_edges[j, 0]
  *                 if start == end:             # <<<<<<<<<<<<<<
  *                     sorted_edges[i] = dual_edges[j]
  *                     break
  */
-        __pyx_t_16 = ((__pyx_v_start == __pyx_v_end) != 0);
-        if (__pyx_t_16) {
+        __pyx_t_13 = ((__pyx_v_start == __pyx_v_end) != 0);
+        if (__pyx_t_13) {
 
-          /* "gridded/pyugrid/_create_dual_node_mesh.pyx":94
+          /* "gridded/pyugrid/_create_dual_node_mesh.pyx":96
  *                 start = dual_edges[j, 0]
  *                 if start == end:
  *                     sorted_edges[i] = dual_edges[j]             # <<<<<<<<<<<<<<
@@ -3437,7 +3480,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)
         if (unlikely(!__Pyx_is_valid_index(__pyx_tmp_idx, __pyx_tmp_shape))) {
             PyErr_SetString(PyExc_IndexError,
                             "Index out of bounds (axis 0)");
-            __PYX_ERR(0, 94, __pyx_L1_error)
+            __PYX_ERR(0, 96, __pyx_L1_error)
         }
         __pyx_t_7.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
@@ -3458,7 +3501,7 @@ __pyx_t_18.data = __pyx_v_sorted_edges.data;
         if (unlikely(!__Pyx_is_valid_index(__pyx_tmp_idx, __pyx_tmp_shape))) {
             PyErr_SetString(PyExc_IndexError,
                             "Index out of bounds (axis 0)");
-            __PYX_ERR(0, 94, __pyx_L1_error)
+            __PYX_ERR(0, 96, __pyx_L1_error)
         }
         __pyx_t_18.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
@@ -3467,7 +3510,7 @@ __pyx_t_18.shape[0] = __pyx_v_sorted_edges.shape[1];
 __pyx_t_18.strides[0] = __pyx_v_sorted_edges.strides[1];
     __pyx_t_18.suboffsets[0] = -1;
 
-if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)) __PYX_ERR(0, 94, __pyx_L1_error)
+if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)) __PYX_ERR(0, 96, __pyx_L1_error)
           __PYX_XDEC_MEMVIEW(&__pyx_t_18, 1);
           __pyx_t_18.memview = NULL;
           __pyx_t_18.data = NULL;
@@ -3475,16 +3518,16 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)
           __pyx_t_7.memview = NULL;
           __pyx_t_7.data = NULL;
 
-          /* "gridded/pyugrid/_create_dual_node_mesh.pyx":95
+          /* "gridded/pyugrid/_create_dual_node_mesh.pyx":97
  *                 if start == end:
  *                     sorted_edges[i] = dual_edges[j]
  *                     break             # <<<<<<<<<<<<<<
  *         ret[node, :n_cell_edges] = sorted_edges[:n_cell_edges, 0]
  * 
  */
-          goto __pyx_L15_break;
+          goto __pyx_L16_break;
 
-          /* "gridded/pyugrid/_create_dual_node_mesh.pyx":93
+          /* "gridded/pyugrid/_create_dual_node_mesh.pyx":95
  *             for j in range(1, n_cell_edges):
  *                 start = dual_edges[j, 0]
  *                 if start == end:             # <<<<<<<<<<<<<<
@@ -3493,10 +3536,10 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)
  */
         }
       }
-      __pyx_L15_break:;
+      __pyx_L16_break:;
     }
 
-    /* "gridded/pyugrid/_create_dual_node_mesh.pyx":96
+    /* "gridded/pyugrid/_create_dual_node_mesh.pyx":98
  *                     sorted_edges[i] = dual_edges[j]
  *                     break
  *         ret[node, :n_cell_edges] = sorted_edges[:n_cell_edges, 0]             # <<<<<<<<<<<<<<
@@ -3506,13 +3549,13 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)
     __pyx_t_7.data = __pyx_v_sorted_edges.data;
     __pyx_t_7.memview = __pyx_v_sorted_edges.memview;
     __PYX_INC_MEMVIEW(&__pyx_t_7, 0);
-    __pyx_t_15 = -1;
+    __pyx_t_12 = -1;
     if (unlikely(__pyx_memoryview_slice_memviewslice(
     &__pyx_t_7,
     __pyx_v_sorted_edges.shape[0], __pyx_v_sorted_edges.strides[0], __pyx_v_sorted_edges.suboffsets[0],
     0,
     0,
-    &__pyx_t_15,
+    &__pyx_t_12,
     0,
     __pyx_v_n_cell_edges,
     0,
@@ -3521,7 +3564,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 96, __pyx_L1_error)
+    __PYX_ERR(0, 98, __pyx_L1_error)
 }
 
 {
@@ -3533,7 +3576,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)
         if (unlikely(!__Pyx_is_valid_index(__pyx_tmp_idx, __pyx_tmp_shape))) {
             PyErr_SetString(PyExc_IndexError,
                             "Index out of bounds (axis 1)");
-            __PYX_ERR(0, 96, __pyx_L1_error)
+            __PYX_ERR(0, 98, __pyx_L1_error)
         }
         __pyx_t_7.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
@@ -3550,18 +3593,18 @@ __pyx_t_18.data = __pyx_v_ret.data;
         if (unlikely(!__Pyx_is_valid_index(__pyx_tmp_idx, __pyx_tmp_shape))) {
             PyErr_SetString(PyExc_IndexError,
                             "Index out of bounds (axis 0)");
-            __PYX_ERR(0, 96, __pyx_L1_error)
+            __PYX_ERR(0, 98, __pyx_L1_error)
         }
         __pyx_t_18.data += __pyx_tmp_idx * __pyx_tmp_stride;
 }
 
-__pyx_t_15 = -1;
+__pyx_t_12 = -1;
     if (unlikely(__pyx_memoryview_slice_memviewslice(
     &__pyx_t_18,
     __pyx_v_ret.shape[1], __pyx_v_ret.strides[1], __pyx_v_ret.suboffsets[1],
     1,
     0,
-    &__pyx_t_15,
+    &__pyx_t_12,
     0,
     __pyx_v_n_cell_edges,
     0,
@@ -3570,28 +3613,29 @@ __pyx_t_15 = -1;
     0,
     1) < 0))
 {
-    __PYX_ERR(0, 96, __pyx_L1_error)
+    __PYX_ERR(0, 98, __pyx_L1_error)
 }
 
-if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)) __PYX_ERR(0, 96, __pyx_L1_error)
+if (unlikely(__pyx_memoryview_copy_contents(__pyx_t_7, __pyx_t_18, 1, 1, 0) < 0)) __PYX_ERR(0, 98, __pyx_L1_error)
     __PYX_XDEC_MEMVIEW(&__pyx_t_18, 1);
     __pyx_t_18.memview = NULL;
     __pyx_t_18.data = NULL;
     __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
     __pyx_t_7.memview = NULL;
     __pyx_t_7.data = NULL;
+    __pyx_L3_continue:;
   }
 
-  /* "gridded/pyugrid/_create_dual_node_mesh.pyx":98
+  /* "gridded/pyugrid/_create_dual_node_mesh.pyx":100
  *         ret[node, :n_cell_edges] = sorted_edges[:n_cell_edges, 0]
  * 
  *     return ret             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __pyx_memoryview_fromslice(__pyx_v_ret, 2, (PyObject *(*)(char *)) __pyx_memview_get_long, (int (*)(char *, PyObject *)) __pyx_memview_set_long, 0);; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_r = __pyx_t_2;
-  __pyx_t_2 = 0;
+  __pyx_t_4 = __pyx_memoryview_fromslice(__pyx_v_ret, 2, (PyObject *(*)(char *)) __pyx_memview_get_long, (int (*)(char *, PyObject *)) __pyx_memview_set_long, 0);; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_r = __pyx_t_4;
+  __pyx_t_4 = 0;
   goto __pyx_L0;
 
   /* "gridded/pyugrid/_create_dual_node_mesh.pyx":6
