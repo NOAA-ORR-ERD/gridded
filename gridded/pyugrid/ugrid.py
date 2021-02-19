@@ -60,6 +60,8 @@ class UGrid(object):
                  boundary_coordinates=None,
                  data=None,
                  mesh_name="mesh",
+                 edge_face_connectivity=None,
+                 edge_orientation=None,
                  ):
         """
         ugrid class -- holds, saves, etc. an unstructured grid
@@ -107,6 +109,20 @@ class UGrid(object):
         :param mesh_name = "mesh": optional name for the mesh
         :type mesh_name: string
 
+        :param edge_face_connectivity=None: optional mapping from edge to
+                                            attached face index
+        :type edge_face_connectivity: (Nx2) array of ints
+
+        :param edge_orientation=None: the orientation for each edge within the
+                                      corresponding face from the
+                                      `edge_face_connectivity`. ``1`` means,
+                                      the edge has the same orientation in
+                                      :attr:`faces` and :attr:`edges`, ``-1``
+                                      means the opposite.
+        :type edge_orientation: (Nx2) masked array of ints with the same shape
+                                      as the `edge_face_connectivity` (i.e.
+                                      shape ``(n_edges, 2)``)
+
         Often this is too much data to pass in as literals -- so usually
         specialized constructors will be used instead (load from file, etc).
 
@@ -131,6 +147,9 @@ class UGrid(object):
 
         self.face_face_connectivity = face_face_connectivity
         self.face_edge_connectivity = face_edge_connectivity
+
+        self.edge_face_connectivity = edge_face_connectivity
+        self.edge_orientation = edge_orientation
 
         self.edge_coordinates = edge_coordinates
         self.face_coordinates = face_coordinates
@@ -794,26 +813,38 @@ class UGrid(object):
 
         NOTE: arbitrary order -- should the order be preserved?
         """
-
-        num_vertices = self.num_vertices
         if self.faces is None:
             # No faces means no edges
             self._edges = None
             return
-        num_faces = self.faces.shape[0]
-        face_face = np.zeros((num_faces, num_vertices), dtype=IND_DT)
-        face_face += -1  # Fill with -1.
 
-        # Loop through all the faces to find all the edges:
-        edges = set()  # Use a set so no duplicates.
-        for i, face in enumerate(self.faces):
-            # Loop through edges:
-            for j in range(num_vertices):
-                edge = (face[j - 1], face[j])
-                if edge[0] > edge[1]:  # Flip them
-                    edge = (edge[1], edge[0])
-                edges.add(edge)
-        self._edges = np.array(list(edges), dtype=IND_DT)
+        faces = self.faces
+
+        is_masked = np.ma.isMA(faces)
+        if is_masked:
+            first = faces.copy()
+            first[:] = faces[:, :1]
+            save_mask = faces.mask.copy()
+            faces[save_mask] = first.data[faces.mask]
+
+        face_edges = np.dstack([faces, np.roll(faces, 1, 1)])
+
+        if is_masked and np.ndim(save_mask):
+            face_edges.mask = np.dstack([
+                np.zeros_like(save_mask), np.roll(save_mask, 1, 1)
+            ])
+
+        face_edges.sort(axis=-1)
+
+        all_edges = face_edges.reshape((-1, 2))
+
+        if is_masked and np.ndim(save_mask):
+            edges = np.unique(
+                all_edges[~all_edges.mask.any(axis=-1)], axis=0
+            )
+        else:
+            edges = np.unique(all_edges, axis=0)
+        self._edges = edges
 
     def build_boundaries(self):
         """
@@ -840,43 +871,322 @@ class UGrid(object):
     def build_face_edge_connectivity(self):
         """
         Builds the face-edge connectivity array
-
-        Not implemented yet.
-
         """
+        self.face_edge_connectivity = self._build_face_edge_connectivity()
 
+    def _build_face_edge_connectivity(self, sort=True):
         try:
             from scipy.spatial import cKDTree
         except ImportError:
             raise ImportError("The scipy package is required to use "
-                              "UGrid.locatbuild_face_edge_connectivity")
+                              "UGrid.build_face_edge_connectivity")
 
-        faces = self.faces
+        faces = self.faces.copy()
+        if self.edges is None:
+            self.build_edges()
         edges = self.edges.copy()
+
+        is_masked = np.ma.isMA(faces)
+        if is_masked:
+            first = faces.copy()
+            first[:] = faces[:, :1]
+            save_mask = faces.mask.copy()
+            faces[save_mask] = first.data[faces.mask]
+
         face_edges = np.dstack([faces, np.roll(faces, 1, 1)])
-        if np.ma.isMA(faces) and np.ndim(faces.mask):
+
+        if is_masked and np.ndim(save_mask):
             face_edges.mask = np.dstack([
-                faces.mask, np.roll(faces.mask, 1, 1)
+                np.zeros_like(save_mask), np.roll(save_mask, 1, 1)
             ])
-        face_edges.sort(axis=-1)
-        edges.sort(axis=-1)
+
+        if sort:
+            face_edges.sort(axis=-1)
+            edges.sort(axis=-1)
 
         tree = cKDTree(edges)
 
         face_edge_2d = face_edges.reshape((-1, 2))
 
-        if np.ma.isMA(faces) and faces.mask.any():
+        if is_masked and save_mask.any():
             mask = face_edge_2d.mask.any(-1)
             connectivity = np.ma.ones(
                 len(face_edge_2d), dtype=face_edge_2d.dtype,
             )
             connectivity.mask = mask
-            connectivity[~mask] = tree.query(face_edge_2d[~mask])[1]
+            connectivity[~mask] = tree.query(
+                face_edge_2d[~mask], distance_upper_bound=0.1
+            )[1]
         else:
-            connectivity = tree.query(face_edge_2d)[1]
-        self.face_edge_connectivity = np.roll(
-            connectivity.reshape(faces.shape), -1, -1
+            connectivity = tree.query(
+                face_edge_2d, distance_upper_bound=0.1
+            )[1]
+        return np.roll(connectivity.reshape(faces.shape), -1, -1)
+
+    def get_face_edge_orientation(self):
+        """
+        Get the orientation for each edge in the corresponding face
+
+        This method returns an array with the same shape as :attr:`faces` that
+        is one if the corresponding edge has the same orientation as in
+        :attr:`edges`, and -1 otherwise
+        """
+        # we build the face edge connectivity but do not sort the edge nodes.
+        # With this, we will get `num_edges` where the edge is flipped compared
+        # to the definition in :attr:`edges`
+        face_edge_connectivity = self._build_face_edge_connectivity(sort=False)
+        num_edges = self.edges.shape[0]
+        if np.ma.isMA(face_edge_connectivity):
+            return np.ma.where(face_edge_connectivity == num_edges, 1, -1)
+        else:
+            return np.where(face_edge_connectivity == num_edges, 1, -1)
+
+    def build_edge_face_connectivity(self):
+        """Build the edge_face_connectivity
+
+        The edge_face_connectivity is the mapping from each edge in the
+        :attr:`edges` to the attached face in `faces`.
+        """
+        if self.face_edge_connectivity is None:
+            self.build_face_edge_connectivity()
+        face_edge_connectivity = self.face_edge_connectivity
+        orientation = self.get_face_edge_orientation()
+
+        n_edge = fill_value = len(self.edges)
+        n_face = len(self.faces)
+
+        if np.ma.isMA(face_edge_connectivity):
+            face_edge_connectivity = face_edge_connectivity.filled(fill_value)
+
+        n_face, nmax_edge = face_edge_connectivity.shape
+        # Get rid of the fill_value, create a 1:1 mapping between faces and edges
+        isnode = (face_edge_connectivity != fill_value).ravel()
+        face_index = np.repeat(np.arange(n_face), nmax_edge).ravel()[isnode]
+        orientation_nodes = orientation.ravel()[isnode]
+        edge_index = face_edge_connectivity.ravel()[isnode]
+
+        # We know that every edge will have either one or two associated faces
+        isface = np.empty((n_edge, 2), dtype=np.bool)
+        isface[:, 0] = True
+        isface[:, 1] = (np.bincount(edge_index) == 2)
+
+        # Allocate the output array
+        edge_face_connectivity = np.full((n_edge, 2), n_face, dtype=np.int64)
+        # Invert the face_index, and use the boolean array to place them appropriately
+        edge_face_connectivity.ravel()[isface.ravel()] = face_index[np.argsort(edge_index)]
+        self.edge_face_connectivity = np.ma.masked_where(
+            edge_face_connectivity == n_face, edge_face_connectivity
         )
+
+        edge_orientation = np.full((n_edge, 2), -999, dtype=np.int64)
+        # Invert the face_index, and use the boolean array to place them appropriately
+        edge_orientation.ravel()[isface.ravel()] = orientation_nodes[np.argsort(edge_index)]
+        self.edge_orientation = np.ma.masked_where(
+            edge_orientation == -999, edge_orientation
+        )
+
+    def _get_node_edge_connectivity_unsorted(self):
+        """Build the node_edge_connectivity.
+
+        The node_edge_connectivity is the mapping from each node in the
+        :attr:`nodes` to the attached edge in :attr:`edges`. Note that this
+        method does not sort the edges so they are in general not in
+        anti-clockwise order.
+        """
+        if self.edges is None:
+            self.build_edges()
+        edge_node_connectivity = self.edges
+
+        n_edge = len(self.edges)
+        n_edge, nmax_node = edge_node_connectivity.shape
+        n_node = fill_value = len(self.nodes)
+
+        if np.ma.isMA(edge_node_connectivity):
+            edge_node_connectivity = edge_node_connectivity.filled(fill_value)
+
+        # Get rid of the fill_value, create a 1:1 mapping between edges and
+        # nodes
+        isnode = (edge_node_connectivity != fill_value).ravel()
+        edge_index = np.repeat(np.arange(n_edge), nmax_node).ravel()[isnode]
+        node_index = edge_node_connectivity.ravel()[isnode]
+
+        node_counts = np.bincount(node_index)
+        nmax_edge = node_counts.max()
+
+        # We know that every edge will have either one or two associated faces
+        isedge = np.empty((n_node, nmax_edge), dtype=np.bool)
+        for i in range(nmax_edge):
+            isedge[:, i] = node_counts > i
+
+        # Allocate the output array
+        node_edge_connectivity = np.full(
+            (n_node, nmax_edge), n_edge, dtype=np.int64
+        )
+        # Invert the face_index, and use the boolean array to place them
+        # appropriately
+        node_edge_connectivity.ravel()[isedge.ravel()] = edge_index[
+            np.argsort(node_index)
+        ]
+        return np.ma.masked_where(
+            node_edge_connectivity == n_edge, node_edge_connectivity
+        )
+
+    def _create_dual_edge_mesh(self):
+        """Create a :class:`UGrid` instance that represents the dual edge mesh.
+        """
+        if self.face_edge_connectivity is None:
+            self.build_face_edge_connectivity()
+
+        edges = self.edges
+
+        if self.edge_face_connectivity is None:
+            self.build_edge_face_connectivity()
+
+        n_face = len(self.faces)
+        n_node = len(self.nodes)
+
+        edge_face_connectivity = self.edge_face_connectivity.filled(n_face)
+
+        # now get the orientation for each edge from the `orientation` array
+        mask = edge_face_connectivity < n_face
+        edge_orientation = self.edge_orientation.filled(-999)
+
+        # use num_faces as fill value (necessary for edges at the domain boundary)
+        dual_face_node_connectivity = np.full(
+            (len(edges), 4), -999, dtype=self.edges.dtype
+        )
+        dual_face_node_connectivity[:, 0] = edges[:, 0]
+        dual_face_node_connectivity[:, 2] = edges[:, 1]
+
+        # get the first index for the face center nodes
+        if self.face_coordinates is None:
+            self.build_face_coordinates()
+
+        dual_nodes = np.r_[self.nodes, self.face_coordinates]
+
+        # now handle the case where the orientation is -1. This should be at
+        # dual_face_node_connectivity[:, 1]
+        mask = edge_orientation == -1
+        dual_face_node_connectivity[mask.any(axis=-1), 3] = \
+            edge_face_connectivity[mask] + n_node
+
+        # the same for +1, should be at dual_face_node_connectivity[:, 3]
+        mask = edge_orientation == 1
+        dual_face_node_connectivity[mask.any(axis=-1), 1] = \
+            edge_face_connectivity[mask] + n_node
+
+        # now we need to roll where dual_face_node_connectivity[:, 1] == -999
+        # to make sure that the fill values are at the end
+        roll_at = dual_face_node_connectivity[:, 1] == -999
+        dual_face_node_connectivity[roll_at] = np.roll(
+            dual_face_node_connectivity[roll_at], 2, axis=1
+        )
+
+        # now turn dual_face_node_connectivity into a masked array
+        # NOTE: There is no definititive policy yet how to deal with fill
+        # values within the gridded package, see
+        # https://github.com/NOAA-ORR-ERD/gridded/pull/60#issuecomment-744810919
+        dual_face_node_connectivity = np.ma.masked_where(
+            dual_face_node_connectivity == -999, dual_face_node_connectivity
+        )
+
+        return dual_face_node_connectivity.astype(int), dual_nodes
+
+    def _create_dual_node_mesh(self):
+        """Create the dual mesh for the nodes."""
+        from gridded.pyugrid._create_dual_node_mesh import (
+            get_face_node_connectivity
+        )
+
+        dual_edge_face_node_connectivity, dual_nodes = \
+            self._create_dual_edge_mesh()
+
+        # create a node_edge_connectivty
+        node_edge_connectivity = self._get_node_edge_connectivity_unsorted()
+
+        if self.edge_coordinates is None:
+            self.build_edge_coordinates()
+
+        edge_coordinates = self.edge_coordinates
+
+        n_edge = len(self.edges)
+        n_node = len(self.nodes)
+        n_dual_node = len(dual_nodes)
+        n_dual_node_max = n_dual_node + n_edge
+
+
+        face_node_connectivity = self.faces
+        if np.ma.isMA(face_node_connectivity):
+            face_node_connectivity = face_node_connectivity.filled(
+                len(self.nodes)
+            )
+        nmax_face = np.bincount(
+            face_node_connectivity[face_node_connectivity < n_node]
+        ).max() + 3
+
+        nmax_edge = node_edge_connectivity.shape[1]
+        edge_index = np.arange(n_edge)
+
+        node_edge_connectivity = node_edge_connectivity.filled(n_edge)
+        dual_edge_face_node_connectivity = \
+            dual_edge_face_node_connectivity.filled(n_dual_node_max)
+
+        dual_node_face_node_connectivity = np.full(
+            (n_node, nmax_face), int(n_dual_node_max), dtype=np.int64
+        )
+
+        dual_node_face_node_connectivity = np.asarray(
+            get_face_node_connectivity(
+                dual_edge_face_node_connectivity, node_edge_connectivity,
+                n_dual_node, nmax_face
+            )
+        )
+
+        is_new_node = dual_node_face_node_connectivity >= n_dual_node
+        all_new = dual_node_face_node_connectivity[is_new_node]
+        new_nodes = np.unique(
+            dual_node_face_node_connectivity[is_new_node]
+        )
+
+        dual_node_face_node_connectivity[is_new_node] = (
+            n_dual_node + new_nodes.searchsorted(all_new)
+        )
+        n_dual_node_max = n_dual_node + len(new_nodes) - 1
+
+        return (
+            np.ma.masked_where(
+                dual_node_face_node_connectivity == n_dual_node_max,
+                dual_node_face_node_connectivity
+            ),
+            np.r_[dual_nodes, edge_coordinates[new_nodes[:-1] - n_dual_node]],
+        )
+
+    def create_dual_mesh(self, location="edge"):
+        """Create the dual mesh for edge or nodes.
+
+        This method creates the dual mesh, either specified through the nodes,
+        or specified through the edges. For a Delaunay triangulation case with
+        ``location == "node"``, this is commonly known as Voronoi Polygons.
+
+        :param location="edge" : the source for the dual mash. can be one of
+                                 ``"node"`` or ``"edge"``
+        :type location: str
+
+        :returns: A :class:`UGrid` with `nodes` and `faces` of the dual mesh.
+        """
+        if location == "edge":
+            face_node_connectivity, nodes = self._create_dual_edge_mesh()
+        elif location == "node":
+            face_node_connectivity, nodes = self._create_dual_node_mesh()
+        else:
+            raise ValueError(
+                "location must be `edge` or `node`, found `%s`" % (location, )
+            )
+        if self.mesh_name:
+            mesh_name = self.mesh_name + "_dual_" + location
+        else:
+            mesh_name = "dual_" + location
+        return UGrid(nodes, faces=face_node_connectivity, mesh_name=mesh_name)
 
     def build_face_coordinates(self):
         """
@@ -892,12 +1202,15 @@ class UGrid(object):
         Useful if you want this in the output file.
 
         """
-        face_coordinates = np.zeros((len(self.faces), 2), dtype=NODE_DT)
-        # FIXME: there has got to be a way to vectorize this.
-        for i, face in enumerate(self.faces):
-            coords = self.nodes[face]
-            face_coordinates[i] = coords.mean(axis=0)
-        self.face_coordinates = face_coordinates
+        faces = self.faces
+        if not np.ma.isMA(faces) or not np.ndim(faces.mask):
+            self.face_coordinates = self.nodes[faces].mean(axis=1)
+        else:
+            face_coordinates = np.zeros((len(faces), 2), dtype=NODE_DT)
+            mask = np.dstack([faces.mask, faces.mask])
+            coords = self.nodes[faces.filled(0)]
+            coords[mask] = np.nan
+            self.face_coordinates = np.nanmean(coords, axis=1)
 
     def build_edge_coordinates(self):
         """
@@ -914,12 +1227,7 @@ class UGrid(object):
         Useful if you want this in the output file
 
         """
-        edge_coordinates = np.zeros((len(self.edges), 2), dtype=NODE_DT)
-        # FIXME: there has got to be a way to vectorize this.
-        for i, edge in enumerate(self.edges):
-            coords = self.nodes[edge]
-            edge_coordinates[i] = coords.mean(axis=0)
-        self.edge_coordinates = edge_coordinates
+        self.edge_coordinates = self.nodes[self.edges].mean(axis=1)
 
     def build_boundary_coordinates(self):
         """
