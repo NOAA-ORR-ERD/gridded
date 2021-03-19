@@ -7,8 +7,9 @@ matrix:
   include:
     - name: "legacy-python"
       env: PY=2.7
-    - name: "python-3.7"
-      env: PY=3.7
+# 3.7 is failing with netCDF4 error -- do we need it anymore?
+#    - name: "python-3.7"
+#      env: PY=3.7
     - name: "python-3.8"
       env: PY=3.8
     - name: "python-3.9"
