@@ -892,12 +892,7 @@ class UGrid(object):
         Useful if you want this in the output file.
 
         """
-        face_coordinates = np.zeros((len(self.faces), 2), dtype=NODE_DT)
-        # FIXME: there has got to be a way to vectorize this.
-        for i, face in enumerate(self.faces):
-            coords = self.nodes[face]
-            face_coordinates[i] = coords.mean(axis=0)
-        self.face_coordinates = face_coordinates
+        self.face_coordinates = self.nodes[self.faces].mean(axis=1)
 
     def build_edge_coordinates(self):
         """
@@ -914,12 +909,7 @@ class UGrid(object):
         Useful if you want this in the output file
 
         """
-        edge_coordinates = np.zeros((len(self.edges), 2), dtype=NODE_DT)
-        # FIXME: there has got to be a way to vectorize this.
-        for i, edge in enumerate(self.edges):
-            coords = self.nodes[edge]
-            edge_coordinates[i] = coords.mean(axis=0)
-        self.edge_coordinates = edge_coordinates
+        self.edge_coordinates = self.nodes[self.edges].mean(axis=1)
 
     def build_boundary_coordinates(self):
         """
@@ -935,14 +925,7 @@ class UGrid(object):
         Useful if you want this in the output file
 
         """
-        boundary_coordinates = np.zeros((len(self.boundaries), 2),
-                                        dtype=NODE_DT)
-        # FXIME: there has got to be a way to vectorize this.
-        for i, bound in enumerate(self.boundaries):
-            coords = self.nodes[bound]
-            boundary_coordinates[i] = coords.mean(axis=0)
-        self.boundary_coordinates = boundary_coordinates
-
+        self.boundary_coordinates = self.nodes[self.boundaries].mean(axis=1)
 
     def save_as_netcdf(self, filename, format='netcdf4'):
         """
