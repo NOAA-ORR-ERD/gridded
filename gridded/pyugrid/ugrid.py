@@ -1173,13 +1173,14 @@ class Mesh(dict):
         # What to do when error condition exists?
         mesh = ncfile.get_variables_by_attributes(cf_role="mesh_topology")[0]
         rv['name'] = mesh.name
-        
+
         # Ensure that the required attributes get copied (or raise an error)
         for k in set(chain(rv.REQUIRED, mesh.ncattrs())):
             rv[k] = getattr(mesh, k)
 
-        rv['dimensions'] = dimensions = {}
-        rv['variables'] = variables = {}
+
+        dimensions = rv['dimensions']
+        variables = rv['variables']
 
         for x in ncfile.dimensions.values():
             dimensions[x.name] = Dimension.from_ncdimension(x)
