@@ -19,9 +19,11 @@ NOTE: only tested for triangular and quad mesh grids at the moment.
 from __future__ import (absolute_import, division, print_function)
 
 import hashlib
+from itertools import chain
 from collections import OrderedDict
 
 import numpy as np
+import netCDF4
 
 import gridded.pyugrid.read_netcdf as read_netcdf
 from gridded.pyugrid.util import point_in_tri
@@ -1146,3 +1148,63 @@ class UGrid(object):
             # Add the extra attributes.
             for att_name, att_value in var.attributes.items():
                 setattr(data_var, att_name, att_value)
+
+
+class Mesh(dict):
+    REQUIRED = ('cf_role', 'topology_dimension', 'node_coordinates')
+    def __init__(self):
+        super().__init__()
+        self['cf_role'] = 'mesh_topology'
+        self['data_model'] = 'NETCDF4'
+
+
+        # populate required keys and fill with None
+        self.update(dict.fromkeys(self.REQUIRED, None))
+        self['dimension'] = {}
+        self['variables'] = {}
+
+    @classmethod
+    def from_nc(cls, ncfile):
+        rv = cls()
+
+        rv['data_model'] = ncfile.data_model
+
+        # find the first mesh variable
+        # What to do when error condition exists?
+        mesh = ncfile.get_variables_by_attributes(cf_role="mesh_topology")[0]
+        rv['name'] = mesh.name
+        
+        # Ensure that the required attributes get copied (or raise an error)
+        for k in set(chain(rv.REQUIRED, mesh.ncattrs())):
+            rv[k] = getattr(mesh, k)
+
+        rv['dimensions'] = dimensions = {}
+        rv['variables'] = variables = {}
+
+        for x in ncfile.dimensions.values():
+            dimensions[x.name] = Dimension.from_ncdimension(x)
+
+        for x in ncfile.variables.values():
+            variables[x.name] = Variable.from_ncvariable(x)
+
+        return rv
+
+class Dimension(dict):
+    @classmethod
+    def from_ncdimension(cls, dimension):
+        assert isinstance(dimension, netCDF4.Dimension)
+        rv = cls()
+        rv['name'] = dimension.name
+        rv['size'] = dimension.size
+        return rv
+
+class Variable(dict):
+    @classmethod
+    def from_ncvariable(cls, variable):
+        assert isinstance(variable, netCDF4.Variable)
+        rv = cls()
+        rv['name'] = variable.name
+        rv['dimension'] = variable.dimension
+        rv['dtype'] = variable.dtype
+        rv['attrs'] = dict((v, getattr(variable, v)) for v in variable.ncattrs())
+        return rv
