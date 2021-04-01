@@ -1154,6 +1154,9 @@ class Mesh(dict):
     REQUIRED = ('cf_role', 'topology_dimension', 'node_coordinates')
     def __init__(self):
         super().__init__()
+        self.update(dict.fromkeys(self.REQUIRED, None))
+        self['name'] = name
+        self['data_model'] = 'NETCDF4'
         self['cf_role'] = 'mesh_topology'
         self['data_model'] = 'NETCDF4'
 
@@ -1191,6 +1194,9 @@ class Mesh(dict):
         return rv
 
 class Dimension(dict):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
     @classmethod
     def from_ncdimension(cls, dimension):
         assert isinstance(dimension, netCDF4.Dimension)
@@ -1200,6 +1206,9 @@ class Dimension(dict):
         return rv
 
 class Variable(dict):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
     @classmethod
     def from_ncvariable(cls, variable):
         assert isinstance(variable, netCDF4.Variable)
