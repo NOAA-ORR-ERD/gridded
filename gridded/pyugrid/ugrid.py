@@ -237,6 +237,8 @@ class UGrid(object):
     def nodes(self):
         return self._nodes
 
+    node_coordinates = nodes
+
     @property
     def node_lon(self):
         return self._nodes[:, 0]
