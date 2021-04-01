@@ -1152,17 +1152,14 @@ class UGrid(object):
 
 class Mesh(dict):
     REQUIRED = ('cf_role', 'topology_dimension', 'node_coordinates')
-    def __init__(self):
+    FILTER = ('data_model', 'dimensions', 'variables', 'name')
+    def __init__(self, name=None):
         super().__init__()
         self.update(dict.fromkeys(self.REQUIRED, None))
         self['name'] = name
         self['data_model'] = 'NETCDF4'
         self['cf_role'] = 'mesh_topology'
-        self['data_model'] = 'NETCDF4'
 
-
-        # populate required keys and fill with None
-        self.update(dict.fromkeys(self.REQUIRED, None))
         self['dimension'] = {}
         self['variables'] = {}
 
@@ -1193,6 +1190,29 @@ class Mesh(dict):
 
         return rv
 
+    def add_dimension(self, name, size):
+        dim = Dimension(name=name, size=size)
+        self['dimensions'][name] = dim
+        
+    def add_variable(self, name, dtype, dimension):
+        v = Variable(name=name, dtype=dtype, dimension=dimension)
+        self['variables'][name] = v
+
+    def get_attribute(self, attr):
+        for var in self.keys() - self.FILTER:
+            value = self[var]
+            if attr == value or (isinstance(value, list) and attr in value):
+                return var
+
+    def get_values(self, attr, mesh):
+        var = self.get_attribute(attr)
+
+        values = getattr(mesh, var)
+        if isinstance(self[var], list):
+            index = self[var].index(attr)
+            return values[:, index]
+        return values
+
 class Dimension(dict):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -1200,9 +1220,7 @@ class Dimension(dict):
     @classmethod
     def from_ncdimension(cls, dimension):
         assert isinstance(dimension, netCDF4.Dimension)
-        rv = cls()
-        rv['name'] = dimension.name
-        rv['size'] = dimension.size
+        rv = cls(name=dimension.name, size=dimension.size)
         return rv
 
 class Variable(dict):
