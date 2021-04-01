@@ -1200,15 +1200,21 @@ class Mesh(dict):
         v = Variable(name=name, dtype=dtype, dimension=dimension)
         self['variables'][name] = v
 
+    def _filtered_keys(self):
+        return self.keys() - self.FILTER
+
     def get_attribute(self, attr):
-        for var in self.keys() - self.FILTER:
+        for var in self._filtered_keys():
             value = self[var]
             if attr == value or (isinstance(value, list) and attr in value):
                 return var
 
     def get_values(self, attr, mesh):
-        var = self.get_attribute(attr)
-
+        if attr in self._filtered_keys():
+            var = attr
+        else:
+            var = self.get_attribute(attr)
+        
         values = getattr(mesh, var)
         if isinstance(self[var], list):
             index = self[var].index(attr)
