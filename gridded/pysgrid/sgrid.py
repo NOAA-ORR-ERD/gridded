@@ -780,7 +780,7 @@ class SGrid(object):
             lon = np.ma.MaskedArray(lon[:].copy())
             lat = np.ma.MaskedArray(lat[:].copy())
             #Water cells grab all nodes that belong to them
-            node_mask = np.zeros_like(lon, dtype=np.bool)
+            node_mask = np.zeros_like(lon, dtype=np.bool_)
             node_mask[:-1,:-1] += ~cell_mask
             node_mask[:-1,1:] += ~cell_mask
             node_mask[1:,1:] += ~cell_mask
@@ -979,7 +979,7 @@ class SGrid(object):
             #interpolate as a uniform gradient from 'left side' to 'right side'
             center_idxs = self.apply_padding_to_idxs(ind.copy(), padding=self.get_padding_by_location('center'))
             if self.center_mask is None:
-                cm = np.zeros((self.node_lon.shape[0] - 1, self.node_lon.shape[1] - 1)).astype(np.bool)
+                cm = np.zeros((self.node_lon.shape[0] - 1, self.node_lon.shape[1] - 1)).astype(np.bool_)
                 cm = np.ma.MaskedArray(cm, mask=False)
             else:
                 cm = gen_celltree_mask_from_center_mask(self.center_mask, np.s_[:])
@@ -1004,7 +1004,7 @@ class SGrid(object):
             #interpolate as a uniform gradient from 'bottom' to 'top'
             center_idxs = self.apply_padding_to_idxs(ind.copy(), padding=self.get_padding_by_location('center'))
             if self.center_mask is None:
-                cm = np.zeros((self.node_lon.shape[0] - 1, self.node_lon.shape[1] - 1)).astype(np.bool)
+                cm = np.zeros((self.node_lon.shape[0] - 1, self.node_lon.shape[1] - 1)).astype(np.bool_)
                 cm = np.ma.MaskedArray(cm, mask=False)
             else:
                 cm = gen_celltree_mask_from_center_mask(self.center_mask, np.s_[:])

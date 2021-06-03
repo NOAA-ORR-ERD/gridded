@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def quad_and_triangle():
     """create a quad and triangle grid"""
 
@@ -224,22 +224,20 @@ def quad_and_triangle():
     )
     update_with_attributes(mesh2_edge_y, mesh2_edge_y_attrs)
 
-    '''
-    We're working with this grid:
-                     4
-                    / \
-                   /   \
-                  5     \
-                 /       4
-                /         \
-               /2     1    \
-              /  \          3
-             /    \        /
-            2      1      /
-           /   0    \    3
-          /          \  /
-         0-----0------1/
-    '''
+    # We're working with this grid:
+    #                  4
+    #                 / \
+    #                /   \
+    #               5     \
+    #              /       4
+    #             /         \
+    #            /2     1    \
+    #           /  \          3
+    #          /    \        /
+    #         2      1      /
+    #        /   0    \    3
+    #       /          \  /
+    #      0-----0------1/
 
     mesh2_face_nodes[:] = [
         [0, 1, 2, 999999],

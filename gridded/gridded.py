@@ -20,6 +20,7 @@ from gridded.utilities import (get_dataset,
                                get_writable_dataset,
                                get_dataset_attrs,
                                )
+from . import VALID_LOCATIONS
 
 """
 The main gridded.Dataset code
@@ -108,8 +109,11 @@ class Dataset():
             if is_not_grid_attr:
                 ncvar = ds[k]
                 # find the location of the variable
+                print("working with:", ncvar)
                 try:
                     location = ncvar.location
+                    if location not in VALID_LOCATIONS:
+                        raise AttributeError("not a valid location name")
                 except AttributeError:
                     # that didn't work, need to try to infer it
                     location = self.grid.infer_location(ncvar)
@@ -121,6 +125,7 @@ class Dataset():
                         ln = ds[k].name # use the name attribute
                     # fixme: Variable.from_netCDF should really be able to figure out the location itself
                     #        maybe we need multiple Variable subclasses for different grid types?
+                    #        CHB: yes, we really should do that!
                     variables[k] = Variable.from_netCDF(dataset=ds,
                                                         name=ln,
                                                         varname=k,
