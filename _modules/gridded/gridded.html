@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -99,7 +101,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../non_conforming_data.html#the-grid">The Grid</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
@@ -196,33 +201,44 @@
   <h1>Source code for gridded.gridded</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
 
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">gridded module:</span>
+
+<span class="sd">This module defines the gridded.Dataset --</span>
+<span class="sd">The core class that encapsulates the gridded data model</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+
 <span class="c1"># py2/3 compatibility</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="kn">import</span> <span class="n">Grid</span>
+<span class="kn">from</span> <span class="nn">gridded.variable</span> <span class="kn">import</span> <span class="n">Variable</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">netCDF4</span> <span class="k">as</span> <span class="nn">nc4</span>
-<span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="k">import</span> <span class="n">Grid</span>
-<span class="kn">from</span> <span class="nn">gridded.variable</span> <span class="k">import</span> <span class="n">Variable</span>
-
-<span class="kn">from</span> <span class="nn">gridded.utilities</span> <span class="k">import</span> <span class="n">asarraylike</span><span class="p">,</span> <span class="n">get_dataset</span>
-
+<span class="kn">from</span> <span class="nn">gridded.utilities</span> <span class="kn">import</span> <span class="p">(</span><span class="n">get_dataset</span><span class="p">,</span>
+                               <span class="n">get_writable_dataset</span><span class="p">,</span>
+                               <span class="n">get_dataset_attrs</span><span class="p">,</span>
+                               <span class="p">)</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">The main gridded.Dataset code</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">netCDF4</span>
-
 
 <div class="viewcode-block" id="Dataset"><a class="viewcode-back" href="../../gridded.html#gridded.gridded.Dataset">[docs]</a><span class="k">class</span> <span class="nc">Dataset</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    An object that represent an entire complete dataset -- a collection of Variable,</span>
-<span class="sd">    and the grid that they are stored on.</span>
+<span class="sd">    An object that represent an entire complete dataset --</span>
+<span class="sd">    a collection of Variables and the Grid that they are stored on.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ncfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">grid_topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">ncfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">grid_topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">attributes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a gridded.Dataset object. Can be constructed from a data file,</span>
 <span class="sd">        or also raw grid and variable objects.</span>
@@ -237,18 +253,29 @@
 
 <span class="sd">        :param grid: a dataset.Grid object or anything that presents the same API.</span>
 
-<span class="sd">        :param variables: a dict of dataset.Variable objects -- or anything that</span>
+<span class="sd">        :param variables: a dict</span>
+<span class="sd">        of dataset.Variable objects -- or anything that</span>
 <span class="sd">                          presents the same API.</span>
 
 <span class="sd">        :param grid_topology: mapping of grid topology components to netcdf variable names.</span>
-<span class="sd">                              used to load non-confirming files. **NotImplemented**</span>
+<span class="sd">                              used to load non-confirming files.</span>
 <span class="sd">        :type grid_topology: mapping with keys of topology components and values are</span>
 <span class="sd">                             variable names.</span>
 
+<span class="sd">        :param attributes: The global attributes of the dataset -- usually the global</span>
+<span class="sd">                           attributes of a netcdf file.</span>
+<span class="sd">        :type attributes: Mapping of attribute name to attributes themselves</span>
+<span class="sd">                          (usually strings)</span>
+
 <span class="sd">        Either a filename or grid and variable objects should be provided -- not both.</span>
+
+<span class="sd">        If a filename is passed in, the attributes will be pulled from the file, and</span>
+<span class="sd">        the input ones ignored.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ncfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">grid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">grid_topology</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">grid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span>
+                  <span class="n">variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span>
+                  <span class="n">attributes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You can create a Dataset from a file, or from raw data&quot;</span>
                                  <span class="s2">&quot;but not both.&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span>
@@ -257,10 +284,18 @@
                                          <span class="n">dataset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span><span class="p">,</span>
                                          <span class="n">grid_topology</span><span class="o">=</span><span class="n">grid_topology</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="n">get_dataset_attrs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># no file passed in -- create from grid and variables</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">variables</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">attributes</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        shortcut to getting a variable object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_load_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -268,18 +303,31 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="c1"># find which netcdf variables are used to define the grid</span>
             <span class="n">is_not_grid_attr</span> <span class="o">=</span> <span class="nb">all</span><span class="p">([</span><span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                                     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">grid_topology</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
-            <span class="k">if</span> <span class="n">is_not_grid_attr</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">infer_location</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_not_grid_attr</span><span class="p">:</span>
+                <span class="n">ncvar</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                <span class="c1"># find the location of the variable</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">ln</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">long_name</span>
-                <span class="k">except</span><span class="p">:</span>
-                    <span class="n">ln</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
-                <span class="n">variables</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">Variable</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span>
-                                                    <span class="n">name</span><span class="o">=</span><span class="n">ln</span><span class="p">,</span>
-                                                    <span class="n">varname</span><span class="o">=</span><span class="n">k</span><span class="p">,</span>
-                                                    <span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span>
-                                                    <span class="p">)</span>
+                    <span class="n">location</span> <span class="o">=</span> <span class="n">ncvar</span><span class="o">.</span><span class="n">location</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="c1"># that didn&#39;t work, need to try to infer it</span>
+                    <span class="n">location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">infer_location</span><span class="p">(</span><span class="n">ncvar</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">location</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">ln</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">long_name</span>
+                    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>  <span class="c1"># no long_name attribute</span>
+                        <span class="n">ln</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="c1"># use the name attribute</span>
+                    <span class="c1"># fixme: Variable.from_netCDF should really be able to figure out the location itself</span>
+                    <span class="c1">#        maybe we need multiple Variable subclasses for different grid types?</span>
+                    <span class="n">variables</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">Variable</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span>
+                                                        <span class="n">name</span><span class="o">=</span><span class="n">ln</span><span class="p">,</span>
+                                                        <span class="n">varname</span><span class="o">=</span><span class="n">k</span><span class="p">,</span>
+                                                        <span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span>
+                                                        <span class="n">location</span><span class="o">=</span><span class="n">location</span><span class="p">,</span>
+                                                        <span class="p">)</span>
         <span class="k">return</span> <span class="n">variables</span>
 
     <span class="c1"># This should be covered by Grid.from_netCDF</span>
@@ -310,7 +358,17 @@
 <span class="sd">        :param format: format to save -- &#39;netcdf3&#39; or &#39;netcdf4&#39;</span>
 <span class="sd">                       are the only options at this point.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="n">format_options</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;netcdf3&#39;</span><span class="p">,</span> <span class="s1">&#39;netcdf4&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">format_options</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;format: </span><span class="si">{}</span><span class="s2"> not supported. Options are: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="n">format_options</span><span class="p">))</span>
+
+        <span class="c1"># create an ncdataset</span>
+        <span class="n">ncds</span> <span class="o">=</span> <span class="n">get_writable_dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="c1"># Save the grid and variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">ncds</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;netcdf4&#39;</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span>
+
+        <span class="n">ncds</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Dataset.get_variables_by_attribute"><a class="viewcode-back" href="../../gridded.html#gridded.gridded.Dataset.get_variables_by_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">get_variables_by_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -329,15 +387,28 @@
                     <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">pass</span>
-        <span class="k">return</span> <span class="n">variables</span></div></div>
+        <span class="k">return</span> <span class="n">variables</span></div>
 
-
-
-
-
-
-
-
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Information about the Dataset object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">info</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="nb">vars</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">8</span> <span class="o">+</span> <span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">])</span>
+        <span class="nb">vars</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">8</span> <span class="o">+</span> <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">vars</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)])</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;        </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="mi">8</span> <span class="o">+</span> <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)])</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;gridded.Dataset:</span><span class="se">\n</span><span class="s2">&quot;</span>
+               <span class="s2">&quot;    filename: </span><span class="si">{0.filename}</span><span class="se">\n</span><span class="s2">&quot;</span>
+               <span class="s2">&quot;    grid:</span><span class="se">\n</span><span class="si">{3}</span><span class="se">\n</span><span class="s2">&quot;</span>
+               <span class="s2">&quot;    variables: </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span>
+               <span class="s2">&quot;    attributes:</span><span class="se">\n</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                             <span class="nb">vars</span><span class="p">,</span>
+                                             <span class="n">attrs</span><span class="p">,</span>
+                                             <span class="n">grid</span>
+                                             <span class="p">))</span>
+        <span class="k">return</span> <span class="n">msg</span></div>
 </pre></div>
 
            </div>
@@ -350,7 +421,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright .
+        &copy; Copyright 
 
     </p>
   </div>
@@ -367,32 +438,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.0.8',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

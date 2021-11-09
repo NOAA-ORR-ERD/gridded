@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -99,7 +101,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../non_conforming_data.html#the-grid">The Grid</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
@@ -199,12 +204,12 @@
 
 <span class="sd">@author: ayan</span>
 <span class="sd">&#39;&#39;&#39;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
-<span class="kn">from</span> <span class="nn">gridded.pysgrid.read_netcdf</span> <span class="k">import</span> <span class="n">parse_axes</span><span class="p">,</span> <span class="n">parse_vector_axis</span>
-<span class="kn">from</span> <span class="nn">gridded.pysgrid.utils</span> <span class="k">import</span> <span class="p">(</span><span class="n">determine_variable_slicing</span><span class="p">,</span> <span class="n">infer_avg_axes</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">gridded.pysgrid.read_netcdf</span> <span class="kn">import</span> <span class="n">parse_axes</span><span class="p">,</span> <span class="n">parse_vector_axis</span>
+<span class="kn">from</span> <span class="nn">gridded.pysgrid.utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">determine_variable_slicing</span><span class="p">,</span> <span class="n">infer_avg_axes</span><span class="p">,</span>
                                    <span class="n">infer_variable_location</span><span class="p">)</span>
 
 
@@ -215,7 +220,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">center_axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">center_slicing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -266,8 +271,8 @@
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">attrib</span><span class="p">):</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">attrib</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">var</span>
-</div>
+        <span class="k">return</span> <span class="n">var</span></div>
+
 <div class="viewcode-block" id="SGridVariable.create_variable"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.variables.SGridVariable.create_variable">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create_variable</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">nc_var_obj</span><span class="p">,</span> <span class="n">sgrid_obj</span><span class="p">):</span>
         <span class="n">variable</span> <span class="o">=</span> <span class="n">nc_var_obj</span><span class="o">.</span><span class="n">name</span>
@@ -333,8 +338,8 @@
                         <span class="n">coordinates</span><span class="o">=</span><span class="n">coordinates</span><span class="p">,</span>
                         <span class="n">data</span><span class="o">=</span><span class="n">nc_var_obj</span>
                         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">sgrid_var</span>
-</div>
+        <span class="k">return</span> <span class="n">sgrid_var</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">shape</span>
@@ -355,7 +360,7 @@
     <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transfers responsibility to the data&#39;s __getitem__.</span>
 <span class="sd">        Does not flatten any underlying data.</span>
@@ -373,9 +378,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">popitem</span><span class="p">(</span><span class="n">last</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">rv</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;SGridVariable object: </span><span class="si">{0:s}</span><span class="s2">, on the </span><span class="si">{1:s}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">standard_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
-</pre></div></div>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;SGridVariable object: </span><span class="si">{0:s}</span><span class="s2">, on the </span><span class="si">{1:s}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">standard_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">)</span></div>
+</pre></div>
 
            </div>
            
@@ -387,7 +392,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright .
+        &copy; Copyright 
 
     </p>
   </div>
@@ -404,32 +409,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../',
-            VERSION:'0.0.8',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

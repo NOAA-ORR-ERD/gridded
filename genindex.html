@@ -18,32 +18,34 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -100,7 +102,10 @@
 <li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#the-grid">The Grid</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
@@ -215,6 +220,7 @@
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#X"><strong>X</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -223,6 +229,8 @@
       <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UMVar.add_var">add_var() (gridded.pyugrid.uvar.UMVar method)</a>
 </li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.all_padding">all_padding() (gridded.pysgrid.sgrid.SGrid method)</a>
+</li>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.apply_padding_to_idxs">apply_padding_to_idxs() (gridded.pysgrid.sgrid.SGrid method)</a>
 </li>
       <li><a href="gridded.pyugrid.html#gridded.pyugrid.util.asarraylike">asarraylike() (in module gridded.pyugrid.util)</a>
 
@@ -235,11 +243,11 @@
       <li><a href="gridded.html#gridded.Variable.at">at() (gridded.Variable method)</a>
 
       <ul>
-        <li><a href="gridded.html#gridded.VectorVariable.at">(gridded.VectorVariable method)</a>
-</li>
         <li><a href="gridded.html#gridded.variable.Variable.at">(gridded.variable.Variable method)</a>
 </li>
         <li><a href="gridded.html#gridded.variable.VectorVariable.at">(gridded.variable.VectorVariable method)</a>
+</li>
+        <li><a href="gridded.html#gridded.VectorVariable.at">(gridded.VectorVariable method)</a>
 </li>
       </ul></li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.processing_2d.avg_to_cell_center">avg_to_cell_center() (in module gridded.pysgrid.processing_2d)</a>
@@ -250,7 +258,7 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.boundaries">boundaries (gridded.pyugrid.ugrid.UGrid attribute)</a>
+      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.boundaries">boundaries() (gridded.pyugrid.ugrid.UGrid property)</a>
 </li>
       <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.build_boundaries">build_boundaries() (gridded.pyugrid.ugrid.UGrid method)</a>
 </li>
@@ -286,9 +294,11 @@
 </li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.utils.calculate_bearing">calculate_bearing() (in module gridded.pysgrid.utils)</a>
 </li>
-      <li><a href="gridded.html#gridded.grids.Grid_R.center_lat">center_lat (gridded.grids.Grid_R attribute)</a>
+      <li><a href="gridded.html#gridded.grids.Grid_R.center_lat">center_lat() (gridded.grids.Grid_R property)</a>
 </li>
-      <li><a href="gridded.html#gridded.grids.Grid_R.center_lon">center_lon (gridded.grids.Grid_R attribute)</a>
+      <li><a href="gridded.html#gridded.grids.Grid_R.center_lon">center_lon() (gridded.grids.Grid_R property)</a>
+</li>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.center_padding">center_padding() (gridded.pysgrid.sgrid.SGrid property)</a>
 </li>
       <li><a href="gridded.html#gridded.Variable.center_values">center_values() (gridded.Variable method)</a>
 
@@ -296,26 +306,24 @@
         <li><a href="gridded.html#gridded.variable.Variable.center_values">(gridded.variable.Variable method)</a>
 </li>
       </ul></li>
-      <li><a href="gridded.html#gridded.grids.Grid_R.centers">centers (gridded.grids.Grid_R attribute)</a>
+      <li><a href="gridded.html#gridded.grids.Grid_R.centers">centers() (gridded.grids.Grid_R property)</a>
 
       <ul>
-        <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.centers">(gridded.pysgrid.sgrid.SGrid attribute)</a>
+        <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.centers">(gridded.pysgrid.sgrid.SGrid property)</a>
 </li>
       </ul></li>
       <li><a href="gridded.html#gridded.Variable.cf_names">cf_names (gridded.Variable attribute)</a>
 
       <ul>
-        <li><a href="gridded.html#gridded.VectorVariable.cf_names">(gridded.VectorVariable attribute)</a>
-</li>
         <li><a href="gridded.html#gridded.variable.Variable.cf_names">(gridded.variable.Variable attribute)</a>
 </li>
         <li><a href="gridded.html#gridded.variable.VectorVariable.cf_names">(gridded.variable.VectorVariable attribute)</a>
 </li>
+        <li><a href="gridded.html#gridded.VectorVariable.cf_names">(gridded.VectorVariable attribute)</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.tests.html#gridded.tests.utilities.chdir">chdir() (in module gridded.tests.utilities)</a>
-</li>
       <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.check_consistent">check_consistent() (gridded.pyugrid.ugrid.UGrid method)</a>
 </li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.utils.check_element_equal">check_element_equal() (in module gridded.pysgrid.utils)</a>
@@ -326,8 +334,12 @@
         <li><a href="gridded.html#gridded.VectorVariable.comp_order">(gridded.VectorVariable attribute)</a>
 </li>
       </ul></li>
-      <li><a href="gridded.html#gridded.time.Time.constant_time">constant_time() (gridded.time.Time class method)</a>
+      <li><a href="gridded.html#gridded.Time.constant_time">constant_time() (gridded.Time class method)</a>
+
+      <ul>
+        <li><a href="gridded.html#gridded.time.Time.constant_time">(gridded.time.Time class method)</a>
 </li>
+      </ul></li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.variables.SGridVariable.create_var">create_var() (gridded.pysgrid.variables.SGridVariable class method)</a>
 </li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.variables.SGridVariable.create_variable">create_variable() (gridded.pysgrid.variables.SGridVariable class method)</a>
@@ -338,24 +350,24 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.pysgrid.html#gridded.pysgrid.variables.SGridVariable.data">data (gridded.pysgrid.variables.SGridVariable attribute)</a>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.variables.SGridVariable.data">data() (gridded.pysgrid.variables.SGridVariable property)</a>
 
       <ul>
-        <li><a href="gridded.html#gridded.Variable.data">(gridded.Variable attribute)</a>
+        <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UVar.data">(gridded.pyugrid.uvar.UVar property)</a>
 </li>
-        <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UVar.data">(gridded.pyugrid.uvar.UVar attribute)</a>
+        <li><a href="gridded.html#gridded.Variable.data">(gridded.Variable property)</a>
 </li>
-        <li><a href="gridded.html#gridded.variable.Variable.data">(gridded.variable.Variable attribute)</a>
+        <li><a href="gridded.html#gridded.variable.Variable.data">(gridded.variable.Variable property)</a>
 </li>
       </ul></li>
-      <li><a href="gridded.html#gridded.Variable.data_shape">data_shape (gridded.Variable attribute)</a>
+      <li><a href="gridded.html#gridded.Variable.data_shape">data_shape() (gridded.Variable property)</a>
 
       <ul>
-        <li><a href="gridded.html#gridded.VectorVariable.data_shape">(gridded.VectorVariable attribute)</a>
+        <li><a href="gridded.html#gridded.variable.Variable.data_shape">(gridded.variable.Variable property)</a>
 </li>
-        <li><a href="gridded.html#gridded.variable.Variable.data_shape">(gridded.variable.Variable attribute)</a>
+        <li><a href="gridded.html#gridded.variable.VectorVariable.data_shape">(gridded.variable.VectorVariable property)</a>
 </li>
-        <li><a href="gridded.html#gridded.variable.VectorVariable.data_shape">(gridded.variable.VectorVariable attribute)</a>
+        <li><a href="gridded.html#gridded.VectorVariable.data_shape">(gridded.VectorVariable property)</a>
 </li>
       </ul></li>
       <li><a href="gridded.html#gridded.Dataset">Dataset (class in gridded)</a>
@@ -367,11 +379,11 @@
       <li><a href="gridded.html#gridded.Variable.default_names">default_names (gridded.Variable attribute)</a>
 
       <ul>
-        <li><a href="gridded.html#gridded.VectorVariable.default_names">(gridded.VectorVariable attribute)</a>
-</li>
         <li><a href="gridded.html#gridded.variable.Variable.default_names">(gridded.variable.Variable attribute)</a>
 </li>
         <li><a href="gridded.html#gridded.variable.VectorVariable.default_names">(gridded.variable.VectorVariable attribute)</a>
+</li>
+        <li><a href="gridded.html#gridded.VectorVariable.default_names">(gridded.VectorVariable attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -390,17 +402,15 @@
 </li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.utils.determine_variable_slicing">determine_variable_slicing() (in module gridded.pysgrid.utils)</a>
 </li>
-      <li><a href="gridded.html#gridded.Variable.dimension_ordering">dimension_ordering (gridded.Variable attribute)</a>
+      <li><a href="gridded.html#gridded.Variable.dimension_ordering">dimension_ordering() (gridded.Variable property)</a>
 
       <ul>
-        <li><a href="gridded.html#gridded.variable.Variable.dimension_ordering">(gridded.variable.Variable attribute)</a>
+        <li><a href="gridded.html#gridded.variable.Variable.dimension_ordering">(gridded.variable.Variable property)</a>
 </li>
       </ul></li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.utils.does_intersection_exist">does_intersection_exist() (in module gridded.pysgrid.utils)</a>
 </li>
-      <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UVar.dtype">dtype (gridded.pyugrid.uvar.UVar attribute)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_utilities.DummyArrayLike">DummyArrayLike (class in gridded.tests.test_utilities)</a>
+      <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UVar.dtype">dtype() (gridded.pyugrid.uvar.UVar property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -408,11 +418,13 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.edges">edges (gridded.pyugrid.ugrid.UGrid attribute)</a>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.edge1_padding">edge1_padding() (gridded.pysgrid.sgrid.SGrid property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.tests.html#gridded.tests.test_grid.example_rg">example_rg() (in module gridded.tests.test_grid)</a>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.edge2_padding">edge2_padding() (gridded.pysgrid.sgrid.SGrid property)</a>
+</li>
+      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.edges">edges() (gridded.pyugrid.ugrid.UGrid property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -422,11 +434,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.utils.GridPadding.face_dim">face_dim (gridded.pysgrid.utils.GridPadding attribute)</a>
 </li>
-      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.face_edge_connectivity">face_edge_connectivity (gridded.pyugrid.ugrid.UGrid attribute)</a>
+      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.face_edge_connectivity">face_edge_connectivity() (gridded.pyugrid.ugrid.UGrid property)</a>
 </li>
-      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.face_face_connectivity">face_face_connectivity (gridded.pyugrid.ugrid.UGrid attribute)</a>
+      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.face_face_connectivity">face_face_connectivity() (gridded.pyugrid.ugrid.UGrid property)</a>
 </li>
-      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.faces">faces (gridded.pyugrid.ugrid.UGrid attribute)</a>
+      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.faces">faces() (gridded.pyugrid.ugrid.UGrid property)</a>
 </li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.read_netcdf.NetCDFDataset.find_coordinates_by_location">find_coordinates_by_location() (gridded.pysgrid.read_netcdf.NetCDFDataset method)</a>
 </li>
@@ -438,38 +450,36 @@
 </li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.read_netcdf.NetCDFDataset.find_variables_by_attr">find_variables_by_attr() (gridded.pysgrid.read_netcdf.NetCDFDataset method)</a>
 </li>
-      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.fits_data">fits_data() (gridded.pysgrid.sgrid.SGrid method)</a>
-</li>
       <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.from_nc_dataset">from_nc_dataset() (gridded.pyugrid.ugrid.UGrid class method)</a>
 </li>
       <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.from_ncfile">from_ncfile() (gridded.pyugrid.ugrid.UGrid class method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="gridded.html#gridded.depth.Depth.from_netCDF">from_netCDF() (gridded.depth.Depth static method)</a>
 
       <ul>
-        <li><a href="gridded.html#gridded.Grid.from_netCDF">(gridded.Grid static method)</a>
-</li>
-        <li><a href="gridded.html#gridded.Variable.from_netCDF">(gridded.Variable class method)</a>
-</li>
-        <li><a href="gridded.html#gridded.VectorVariable.from_netCDF">(gridded.VectorVariable class method)</a>
-</li>
         <li><a href="gridded.html#gridded.depth.DepthBase.from_netCDF">(gridded.depth.DepthBase class method)</a>
 </li>
         <li><a href="gridded.html#gridded.depth.L_Depth.from_netCDF">(gridded.depth.L_Depth class method)</a>
 </li>
         <li><a href="gridded.html#gridded.depth.S_Depth.from_netCDF">(gridded.depth.S_Depth class method)</a>
 </li>
+        <li><a href="gridded.html#gridded.Grid.from_netCDF">(gridded.Grid static method)</a>
+</li>
         <li><a href="gridded.html#gridded.grids.Grid.from_netCDF">(gridded.grids.Grid static method)</a>
 </li>
         <li><a href="gridded.html#gridded.grids.GridBase.from_netCDF">(gridded.grids.GridBase class method)</a>
 </li>
+        <li><a href="gridded.html#gridded.Time.from_netCDF">(gridded.Time class method)</a>
+</li>
         <li><a href="gridded.html#gridded.time.Time.from_netCDF">(gridded.time.Time class method)</a>
+</li>
+        <li><a href="gridded.html#gridded.Variable.from_netCDF">(gridded.Variable class method)</a>
 </li>
         <li><a href="gridded.html#gridded.variable.Variable.from_netCDF">(gridded.variable.Variable class method)</a>
 </li>
         <li><a href="gridded.html#gridded.variable.VectorVariable.from_netCDF">(gridded.variable.VectorVariable class method)</a>
+</li>
+        <li><a href="gridded.html#gridded.VectorVariable.from_netCDF">(gridded.VectorVariable class method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -478,15 +488,11 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.tests.html#gridded.tests.gen_analytical_datasets.gen_all">gen_all() (in module gridded.tests.gen_analytical_datasets)</a>
+      <li><a href="gridded.html#gridded.utilities.gen_celltree_mask_from_center_mask">gen_celltree_mask_from_center_mask() (in module gridded.utilities)</a>
 </li>
       <li><a href="gridded.html#gridded.grids.Grid_U.gen_from_quads">gen_from_quads() (gridded.grids.Grid_U class method)</a>
 </li>
-      <li><a href="gridded.tests.html#gridded.tests.gen_analytical_datasets.gen_ring">gen_ring() (in module gridded.tests.gen_analytical_datasets)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.gen_analytical_datasets.gen_sinusoid">gen_sinusoid() (in module gridded.tests.gen_analytical_datasets)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.gen_analytical_datasets.gen_vortex_3D">gen_vortex_3D() (in module gridded.tests.gen_analytical_datasets)</a>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.geo_to_logical">geo_to_logical() (gridded.pysgrid.sgrid.SGrid method)</a>
 </li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.get_all_edge_padding">get_all_edge_padding() (gridded.pysgrid.sgrid.SGrid method)</a>
 </li>
@@ -508,22 +514,30 @@
 </li>
       <li><a href="gridded.html#gridded.utilities.get_dataset">get_dataset() (in module gridded.utilities)</a>
 </li>
+      <li><a href="gridded.html#gridded.utilities.get_dataset_attrs">get_dataset_attrs() (in module gridded.utilities)</a>
+</li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_dimensions">get_dimensions() (gridded.pysgrid.sgrid.SGridAttributes method)</a>
 </li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.get_efficient_slice">get_efficient_slice() (gridded.pysgrid.sgrid.SGrid method)</a>
 </li>
       <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.get_lines">get_lines() (gridded.pyugrid.ugrid.UGrid method)</a>
 </li>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_masks">get_masks() (gridded.pysgrid.sgrid.SGridAttributes method)</a>
+</li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_node_coordinates">get_node_coordinates() (gridded.pysgrid.sgrid.SGridAttributes method)</a>
+</li>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.get_padding_by_location">get_padding_by_location() (gridded.pysgrid.sgrid.SGrid method)</a>
+</li>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.get_padding_slices">get_padding_slices() (gridded.pysgrid.sgrid.SGrid method)</a>
 </li>
       <li><a href="gridded.html#gridded.depth.S_Depth.get_section">get_section() (gridded.depth.S_Depth method)</a>
 </li>
-      <li><a href="gridded.tests.html#gridded.tests.utilities.get_temp_test_file">get_temp_test_file() (in module gridded.tests.utilities)</a>
+      <li><a href="gridded.html#gridded.Time.get_time_array">get_time_array() (gridded.Time method)</a>
+
+      <ul>
+        <li><a href="gridded.html#gridded.time.Time.get_time_array">(gridded.time.Time method)</a>
 </li>
-      <li><a href="gridded.tests.html#gridded.tests.utilities.get_test_file_dir">get_test_file_dir() (in module gridded.tests.utilities)</a>
-</li>
-      <li><a href="gridded.html#gridded.time.Time.get_time_array">get_time_array() (gridded.time.Time method)</a>
-</li>
+      </ul></li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGridAttributes.get_topology_var">get_topology_var() (gridded.pysgrid.sgrid.SGridAttributes method)</a>
 </li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.get_variable_at_index">get_variable_at_index() (gridded.pysgrid.sgrid.SGrid method)</a>
@@ -538,6 +552,8 @@
         <li><a href="gridded.html#gridded.gridded.Dataset.get_variables_by_attribute">(gridded.gridded.Dataset method)</a>
 </li>
       </ul></li>
+      <li><a href="gridded.html#gridded.utilities.get_writable_dataset">get_writable_dataset() (in module gridded.utilities)</a>
+</li>
       <li><a href="gridded.html#gridded.Grid">Grid (class in gridded)</a>
 
       <ul>
@@ -548,76 +564,165 @@
 </li>
       <li><a href="gridded.html#gridded.grids.Grid_S">Grid_S (class in gridded.grids)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.html#gridded.Variable.grid_shape">grid_shape (gridded.Variable attribute)</a>
+      <li><a href="gridded.html#gridded.Variable.grid_shape">grid_shape() (gridded.Variable property)</a>
 
       <ul>
-        <li><a href="gridded.html#gridded.variable.Variable.grid_shape">(gridded.variable.Variable attribute)</a>
+        <li><a href="gridded.html#gridded.variable.Variable.grid_shape">(gridded.variable.Variable property)</a>
 </li>
       </ul></li>
       <li><a href="gridded.html#gridded.grids.Grid_U">Grid_U (class in gridded.grids)</a>
 </li>
       <li><a href="gridded.html#gridded.grids.GridBase">GridBase (class in gridded.grids)</a>
 </li>
-      <li><a href="gridded.html#module-gridded">gridded (module)</a>
+      <li>
+    gridded
+
+      <ul>
+        <li><a href="gridded.html#module-gridded">module</a>
 </li>
-      <li><a href="gridded.html#module-gridded.depth">gridded.depth (module)</a>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    gridded.depth
+
+      <ul>
+        <li><a href="gridded.html#module-gridded.depth">module</a>
 </li>
-      <li><a href="gridded.html#module-gridded.gridded">gridded.gridded (module)</a>
+      </ul></li>
+      <li>
+    gridded.gridded
+
+      <ul>
+        <li><a href="gridded.html#module-gridded.gridded">module</a>
 </li>
-      <li><a href="gridded.html#module-gridded.grids">gridded.grids (module)</a>
+      </ul></li>
+      <li>
+    gridded.grids
+
+      <ul>
+        <li><a href="gridded.html#module-gridded.grids">module</a>
 </li>
-      <li><a href="gridded.pysgrid.html#module-gridded.pysgrid">gridded.pysgrid (module)</a>
+      </ul></li>
+      <li>
+    gridded.pysgrid
+
+      <ul>
+        <li><a href="gridded.pysgrid.html#module-gridded.pysgrid">module</a>
 </li>
-      <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.lookup">gridded.pysgrid.lookup (module)</a>
+      </ul></li>
+      <li>
+    gridded.pysgrid.lookup
+
+      <ul>
+        <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.lookup">module</a>
 </li>
-      <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.processing_2d">gridded.pysgrid.processing_2d (module)</a>
+      </ul></li>
+      <li>
+    gridded.pysgrid.processing_2d
+
+      <ul>
+        <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.processing_2d">module</a>
 </li>
-      <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.read_netcdf">gridded.pysgrid.read_netcdf (module)</a>
+      </ul></li>
+      <li>
+    gridded.pysgrid.read_netcdf
+
+      <ul>
+        <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.read_netcdf">module</a>
 </li>
-      <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.sgrid">gridded.pysgrid.sgrid (module)</a>
+      </ul></li>
+      <li>
+    gridded.pysgrid.sgrid
+
+      <ul>
+        <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.sgrid">module</a>
 </li>
-      <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.utils">gridded.pysgrid.utils (module)</a>
+      </ul></li>
+      <li>
+    gridded.pysgrid.utils
+
+      <ul>
+        <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.utils">module</a>
 </li>
-      <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.variables">gridded.pysgrid.variables (module)</a>
+      </ul></li>
+      <li>
+    gridded.pysgrid.variables
+
+      <ul>
+        <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.variables">module</a>
 </li>
-      <li><a href="gridded.pyugrid.html#module-gridded.pyugrid">gridded.pyugrid (module)</a>
+      </ul></li>
+      <li>
+    gridded.pyugrid
+
+      <ul>
+        <li><a href="gridded.pyugrid.html#module-gridded.pyugrid">module</a>
 </li>
-      <li><a href="gridded.pyugrid.grid_io.html#module-gridded.pyugrid.grid_io">gridded.pyugrid.grid_io (module)</a>
+      </ul></li>
+      <li>
+    gridded.pyugrid.grid_io
+
+      <ul>
+        <li><a href="gridded.pyugrid.grid_io.html#module-gridded.pyugrid.grid_io">module</a>
 </li>
-      <li><a href="gridded.pyugrid.grid_io.html#module-gridded.pyugrid.grid_io.utils">gridded.pyugrid.grid_io.utils (module)</a>
+      </ul></li>
+      <li>
+    gridded.pyugrid.grid_io.utils
+
+      <ul>
+        <li><a href="gridded.pyugrid.grid_io.html#module-gridded.pyugrid.grid_io.utils">module</a>
 </li>
-      <li><a href="gridded.pyugrid.html#module-gridded.pyugrid.read_netcdf">gridded.pyugrid.read_netcdf (module)</a>
+      </ul></li>
+      <li>
+    gridded.pyugrid.read_netcdf
+
+      <ul>
+        <li><a href="gridded.pyugrid.html#module-gridded.pyugrid.read_netcdf">module</a>
 </li>
-      <li><a href="gridded.pyugrid.html#module-gridded.pyugrid.ugrid">gridded.pyugrid.ugrid (module)</a>
+      </ul></li>
+      <li>
+    gridded.pyugrid.ugrid
+
+      <ul>
+        <li><a href="gridded.pyugrid.html#module-gridded.pyugrid.ugrid">module</a>
 </li>
-      <li><a href="gridded.pyugrid.html#module-gridded.pyugrid.util">gridded.pyugrid.util (module)</a>
+      </ul></li>
+      <li>
+    gridded.pyugrid.util
+
+      <ul>
+        <li><a href="gridded.pyugrid.html#module-gridded.pyugrid.util">module</a>
 </li>
-      <li><a href="gridded.pyugrid.html#module-gridded.pyugrid.uvar">gridded.pyugrid.uvar (module)</a>
+      </ul></li>
+      <li>
+    gridded.pyugrid.uvar
+
+      <ul>
+        <li><a href="gridded.pyugrid.html#module-gridded.pyugrid.uvar">module</a>
 </li>
-      <li><a href="gridded.tests.html#module-gridded.tests">gridded.tests (module)</a>
+      </ul></li>
+      <li>
+    gridded.time
+
+      <ul>
+        <li><a href="gridded.html#module-gridded.time">module</a>
 </li>
-      <li><a href="gridded.tests.html#module-gridded.tests.gen_analytical_datasets">gridded.tests.gen_analytical_datasets (module)</a>
+      </ul></li>
+      <li>
+    gridded.utilities
+
+      <ul>
+        <li><a href="gridded.html#module-gridded.utilities">module</a>
 </li>
-      <li><a href="gridded.tests.html#module-gridded.tests.test_dataset">gridded.tests.test_dataset (module)</a>
+      </ul></li>
+      <li>
+    gridded.variable
+
+      <ul>
+        <li><a href="gridded.html#module-gridded.variable">module</a>
 </li>
-      <li><a href="gridded.tests.html#module-gridded.tests.test_grid">gridded.tests.test_grid (module)</a>
-</li>
-      <li><a href="gridded.tests.html#module-gridded.tests.test_property">gridded.tests.test_property (module)</a>
-</li>
-      <li><a href="gridded.tests.html#module-gridded.tests.test_time">gridded.tests.test_time (module)</a>
-</li>
-      <li><a href="gridded.tests.html#module-gridded.tests.test_utilities">gridded.tests.test_utilities (module)</a>
-</li>
-      <li><a href="gridded.tests.html#module-gridded.tests.utilities">gridded.tests.utilities (module)</a>
-</li>
-      <li><a href="gridded.html#module-gridded.time">gridded.time (module)</a>
-</li>
-      <li><a href="gridded.html#module-gridded.utilities">gridded.utilities (module)</a>
-</li>
-      <li><a href="gridded.html#module-gridded.variable">gridded.variable (module)</a>
-</li>
+      </ul></li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.utils.GridPadding">GridPadding (class in gridded.pysgrid.utils)</a>
 </li>
   </ul></td>
@@ -628,8 +733,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="gridded.html#gridded.grids.GridBase.import_variable">import_variable() (gridded.grids.GridBase method)</a>
 </li>
-      <li><a href="gridded.html#gridded.time.Time.index_of">index_of() (gridded.time.Time method)</a>
+      <li><a href="gridded.html#gridded.Time.index_of">index_of() (gridded.Time method)</a>
+
+      <ul>
+        <li><a href="gridded.html#gridded.time.Time.index_of">(gridded.time.Time method)</a>
 </li>
+      </ul></li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.utils.infer_avg_axes">infer_avg_axes() (in module gridded.pysgrid.utils)</a>
 </li>
       <li><a href="gridded.html#gridded.grids.Grid_R.infer_location">infer_location() (gridded.grids.Grid_R method)</a>
@@ -642,14 +751,42 @@
       </ul></li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.utils.infer_variable_location">infer_variable_location() (in module gridded.pysgrid.utils)</a>
 </li>
-      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.info">info (gridded.pysgrid.sgrid.SGrid attribute)</a>
+      <li><a href="gridded.html#gridded.Dataset.info">info() (gridded.Dataset property)</a>
 
       <ul>
-        <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.info">(gridded.pyugrid.ugrid.UGrid attribute)</a>
+        <li><a href="gridded.html#gridded.gridded.Dataset.info">(gridded.gridded.Dataset property)</a>
+</li>
+        <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.info">(gridded.pysgrid.sgrid.SGrid property)</a>
+</li>
+        <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.info">(gridded.pyugrid.ugrid.UGrid property)</a>
+</li>
+        <li><a href="gridded.html#gridded.Time.info">(gridded.Time property)</a>
+</li>
+        <li><a href="gridded.html#gridded.time.Time.info">(gridded.time.Time property)</a>
+</li>
+        <li><a href="gridded.html#gridded.Variable.info">(gridded.Variable property)</a>
+</li>
+        <li><a href="gridded.html#gridded.variable.Variable.info">(gridded.variable.Variable property)</a>
 </li>
       </ul></li>
-      <li><a href="gridded.html#gridded.time.Time.interp_alpha">interp_alpha() (gridded.time.Time method)</a>
+      <li><a href="gridded.html#gridded.Time.interp_alpha">interp_alpha() (gridded.Time method)</a>
+
+      <ul>
+        <li><a href="gridded.html#gridded.time.Time.interp_alpha">(gridded.time.Time method)</a>
 </li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.interpolate">interpolate() (gridded.pysgrid.sgrid.SGrid method)</a>
+
+      <ul>
+        <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.interpolate">(gridded.pyugrid.ugrid.UGrid method)</a>
+</li>
+        <li><a href="gridded.html#gridded.Variable.interpolate">(gridded.Variable method)</a>
+</li>
+        <li><a href="gridded.html#gridded.variable.Variable.interpolate">(gridded.variable.Variable method)</a>
+</li>
+      </ul></li>
       <li><a href="gridded.html#gridded.grids.Grid_R.interpolate_var_to_points">interpolate_var_to_points() (gridded.grids.Grid_R method)</a>
 
       <ul>
@@ -658,8 +795,6 @@
         <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.interpolate_var_to_points">(gridded.pyugrid.ugrid.UGrid method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="gridded.html#gridded.depth.DepthBase.interpolation_alphas">interpolation_alphas() (gridded.depth.DepthBase method)</a>
 
       <ul>
@@ -667,19 +802,17 @@
 </li>
         <li><a href="gridded.html#gridded.depth.S_Depth.interpolation_alphas">(gridded.depth.S_Depth method)</a>
 </li>
-        <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.interpolation_alphas">(gridded.pysgrid.sgrid.SGrid method)</a>
-</li>
         <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.interpolation_alphas">(gridded.pyugrid.ugrid.UGrid method)</a>
 </li>
       </ul></li>
-      <li><a href="gridded.html#gridded.Variable.is_data_on_nodes">is_data_on_nodes (gridded.Variable attribute)</a>
+      <li><a href="gridded.html#gridded.Variable.is_data_on_nodes">is_data_on_nodes() (gridded.Variable property)</a>
 
       <ul>
-        <li><a href="gridded.html#gridded.VectorVariable.is_data_on_nodes">(gridded.VectorVariable attribute)</a>
+        <li><a href="gridded.html#gridded.variable.Variable.is_data_on_nodes">(gridded.variable.Variable property)</a>
 </li>
-        <li><a href="gridded.html#gridded.variable.Variable.is_data_on_nodes">(gridded.variable.Variable attribute)</a>
+        <li><a href="gridded.html#gridded.variable.VectorVariable.is_data_on_nodes">(gridded.variable.VectorVariable property)</a>
 </li>
-        <li><a href="gridded.html#gridded.variable.VectorVariable.is_data_on_nodes">(gridded.variable.VectorVariable attribute)</a>
+        <li><a href="gridded.html#gridded.VectorVariable.is_data_on_nodes">(gridded.VectorVariable property)</a>
 </li>
       </ul></li>
       <li><a href="gridded.pyugrid.html#gridded.pyugrid.read_netcdf.is_valid_mesh">is_valid_mesh() (in module gridded.pyugrid.read_netcdf)</a>
@@ -714,8 +847,6 @@
       </ul></li>
       <li><a href="gridded.pyugrid.html#gridded.pyugrid.read_netcdf.load_grid_from_nc_dataset">load_grid_from_nc_dataset() (in module gridded.pyugrid.read_netcdf)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="gridded.pyugrid.html#gridded.pyugrid.read_netcdf.load_grid_from_ncfilename">load_grid_from_ncfilename() (in module gridded.pyugrid.read_netcdf)</a>
 </li>
       <li><a href="gridded.html#gridded.grids.Grid_R.locate_faces">locate_faces() (gridded.grids.Grid_R method)</a>
@@ -726,48 +857,117 @@
         <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.locate_faces">(gridded.pyugrid.ugrid.UGrid method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.locate_nearest">locate_nearest() (gridded.pysgrid.sgrid.SGrid method)</a>
 </li>
       <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.locate_nodes">locate_nodes() (gridded.pyugrid.ugrid.UGrid method)</a>
 </li>
+      <li><a href="gridded.html#gridded.Variable.location">location() (gridded.Variable property)</a>
+
+      <ul>
+        <li><a href="gridded.html#gridded.variable.Variable.location">(gridded.variable.Variable property)</a>
+</li>
+        <li><a href="gridded.html#gridded.variable.VectorVariable.location">(gridded.variable.VectorVariable property)</a>
+</li>
+        <li><a href="gridded.html#gridded.VectorVariable.location">(gridded.VectorVariable property)</a>
+</li>
+      </ul></li>
+      <li><a href="gridded.html#gridded.variable.VectorVariable.locations">locations() (gridded.variable.VectorVariable property)</a>
+
+      <ul>
+        <li><a href="gridded.html#gridded.VectorVariable.locations">(gridded.VectorVariable property)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.pysgrid.html#gridded.pysgrid.variables.SGridVariable.max">max (gridded.pysgrid.variables.SGridVariable attribute)</a>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.variables.SGridVariable.max">max() (gridded.pysgrid.variables.SGridVariable property)</a>
 
       <ul>
-        <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UVar.max">(gridded.pyugrid.uvar.UVar attribute)</a>
+        <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UVar.max">(gridded.pyugrid.uvar.UVar property)</a>
 </li>
       </ul></li>
-      <li><a href="gridded.html#gridded.time.Time.max_time">max_time (gridded.time.Time attribute)</a>
+      <li><a href="gridded.html#gridded.Time.max_time">max_time() (gridded.Time property)</a>
+
+      <ul>
+        <li><a href="gridded.html#gridded.time.Time.max_time">(gridded.time.Time property)</a>
 </li>
+      </ul></li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.utils.GridPadding.mesh_topology_var">mesh_topology_var (gridded.pysgrid.utils.GridPadding attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.pysgrid.html#gridded.pysgrid.variables.SGridVariable.min">min (gridded.pysgrid.variables.SGridVariable attribute)</a>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.variables.SGridVariable.min">min() (gridded.pysgrid.variables.SGridVariable property)</a>
 
       <ul>
-        <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UVar.min">(gridded.pyugrid.uvar.UVar attribute)</a>
+        <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UVar.min">(gridded.pyugrid.uvar.UVar property)</a>
 </li>
       </ul></li>
-      <li><a href="gridded.html#gridded.time.Time.min_time">min_time (gridded.time.Time attribute)</a>
+      <li><a href="gridded.html#gridded.Time.min_time">min_time() (gridded.Time property)</a>
+
+      <ul>
+        <li><a href="gridded.html#gridded.time.Time.min_time">(gridded.time.Time property)</a>
 </li>
-      <li><a href="gridded.tests.html#gridded.tests.test_utilities.DummyArrayLike.must_have">must_have (gridded.tests.test_utilities.DummyArrayLike attribute)</a>
+      </ul></li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="gridded.html#module-gridded">gridded</a>
 </li>
+        <li><a href="gridded.html#module-gridded.depth">gridded.depth</a>
+</li>
+        <li><a href="gridded.html#module-gridded.gridded">gridded.gridded</a>
+</li>
+        <li><a href="gridded.html#module-gridded.grids">gridded.grids</a>
+</li>
+        <li><a href="gridded.pysgrid.html#module-gridded.pysgrid">gridded.pysgrid</a>
+</li>
+        <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.lookup">gridded.pysgrid.lookup</a>
+</li>
+        <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.processing_2d">gridded.pysgrid.processing_2d</a>
+</li>
+        <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.read_netcdf">gridded.pysgrid.read_netcdf</a>
+</li>
+        <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.sgrid">gridded.pysgrid.sgrid</a>
+</li>
+        <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.utils">gridded.pysgrid.utils</a>
+</li>
+        <li><a href="gridded.pysgrid.html#module-gridded.pysgrid.variables">gridded.pysgrid.variables</a>
+</li>
+        <li><a href="gridded.pyugrid.html#module-gridded.pyugrid">gridded.pyugrid</a>
+</li>
+        <li><a href="gridded.pyugrid.grid_io.html#module-gridded.pyugrid.grid_io">gridded.pyugrid.grid_io</a>
+</li>
+        <li><a href="gridded.pyugrid.grid_io.html#module-gridded.pyugrid.grid_io.utils">gridded.pyugrid.grid_io.utils</a>
+</li>
+        <li><a href="gridded.pyugrid.html#module-gridded.pyugrid.read_netcdf">gridded.pyugrid.read_netcdf</a>
+</li>
+        <li><a href="gridded.pyugrid.html#module-gridded.pyugrid.ugrid">gridded.pyugrid.ugrid</a>
+</li>
+        <li><a href="gridded.pyugrid.html#module-gridded.pyugrid.util">gridded.pyugrid.util</a>
+</li>
+        <li><a href="gridded.pyugrid.html#module-gridded.pyugrid.uvar">gridded.pyugrid.uvar</a>
+</li>
+        <li><a href="gridded.html#module-gridded.time">gridded.time</a>
+</li>
+        <li><a href="gridded.html#module-gridded.utilities">gridded.utilities</a>
+</li>
+        <li><a href="gridded.html#module-gridded.variable">gridded.variable</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.pysgrid.html#gridded.pysgrid.variables.SGridVariable.ndim">ndim (gridded.pysgrid.variables.SGridVariable attribute)</a>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.variables.SGridVariable.ndim">ndim() (gridded.pysgrid.variables.SGridVariable property)</a>
 
       <ul>
-        <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UVar.ndim">(gridded.pyugrid.uvar.UVar attribute)</a>
+        <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UVar.ndim">(gridded.pyugrid.uvar.UVar property)</a>
 </li>
       </ul></li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.nearest_var_to_points">nearest_var_to_points() (gridded.pysgrid.sgrid.SGrid method)</a>
@@ -776,27 +976,29 @@
 </li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.utils.GridPadding.node_dim">node_dim (gridded.pysgrid.utils.GridPadding attribute)</a>
 </li>
-      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.node_lat">node_lat (gridded.pyugrid.ugrid.UGrid attribute)</a>
+      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.node_lat">node_lat() (gridded.pyugrid.ugrid.UGrid property)</a>
 </li>
-      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.node_lon">node_lon (gridded.pyugrid.ugrid.UGrid attribute)</a>
+      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.node_lon">node_lon() (gridded.pyugrid.ugrid.UGrid property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.html#gridded.grids.Grid_R.nodes">nodes (gridded.grids.Grid_R attribute)</a>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.node_padding">node_padding() (gridded.pysgrid.sgrid.SGrid property)</a>
+</li>
+      <li><a href="gridded.html#gridded.grids.Grid_R.nodes">nodes() (gridded.grids.Grid_R property)</a>
 
       <ul>
-        <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.nodes">(gridded.pysgrid.sgrid.SGrid attribute)</a>
+        <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.nodes">(gridded.pysgrid.sgrid.SGrid property)</a>
 </li>
-        <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.nodes">(gridded.pyugrid.ugrid.UGrid attribute)</a>
+        <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.nodes">(gridded.pyugrid.ugrid.UGrid property)</a>
 </li>
       </ul></li>
-      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.non_grid_variables">non_grid_variables (gridded.pysgrid.sgrid.SGrid attribute)</a>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.non_grid_variables">non_grid_variables() (gridded.pysgrid.sgrid.SGrid property)</a>
 </li>
-      <li><a href="gridded.html#gridded.depth.S_Depth.num_r_levels">num_r_levels (gridded.depth.S_Depth attribute)</a>
+      <li><a href="gridded.html#gridded.depth.S_Depth.num_r_levels">num_r_levels() (gridded.depth.S_Depth property)</a>
 </li>
-      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.num_vertices">num_vertices (gridded.pyugrid.ugrid.UGrid attribute)</a>
+      <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.num_vertices">num_vertices() (gridded.pyugrid.ugrid.UGrid property)</a>
 </li>
-      <li><a href="gridded.html#gridded.depth.S_Depth.num_w_levels">num_w_levels (gridded.depth.S_Depth attribute)</a>
+      <li><a href="gridded.html#gridded.depth.S_Depth.num_w_levels">num_w_levels() (gridded.depth.S_Depth property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -832,8 +1034,6 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.tests.html#gridded.tests.test_grid.rg_data">rg_data() (in module gridded.tests.test_grid)</a>
-</li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.processing_2d.rotate_vectors">rotate_vectors() (in module gridded.pysgrid.processing_2d)</a>
 </li>
   </ul></td>
@@ -849,6 +1049,12 @@
       <ul>
         <li><a href="gridded.html#gridded.gridded.Dataset.save">(gridded.gridded.Dataset method)</a>
 </li>
+        <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.save">(gridded.pyugrid.ugrid.UGrid method)</a>
+</li>
+        <li><a href="gridded.html#gridded.variable.VectorVariable.save">(gridded.variable.VectorVariable method)</a>
+</li>
+        <li><a href="gridded.html#gridded.VectorVariable.save">(gridded.VectorVariable method)</a>
+</li>
       </ul></li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.save_as_netcdf">save_as_netcdf() (gridded.pysgrid.sgrid.SGrid method)</a>
 
@@ -856,18 +1062,8 @@
         <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid.save_as_netcdf">(gridded.pyugrid.ugrid.UGrid method)</a>
 </li>
       </ul></li>
-      <li><a href="gridded.tests.html#gridded.tests.test_grid.sg">sg() (in module gridded.tests.test_grid)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_grid.sg_data">sg_data() (in module gridded.tests.test_grid)</a>
-
-      <ul>
-        <li><a href="gridded.tests.html#gridded.tests.test_property.sg_data">(in module gridded.tests.test_property)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.tests.html#gridded.tests.test_grid.sg_topology">sg_topology() (in module gridded.tests.test_grid)</a>
-</li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid">SGrid (class in gridded.pysgrid.sgrid)</a>
 </li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.read_netcdf.NetCDFDataset.sgrid_compliant_file">sgrid_compliant_file() (gridded.pysgrid.read_netcdf.NetCDFDataset method)</a>
@@ -876,12 +1072,12 @@
 </li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.variables.SGridVariable">SGridVariable (class in gridded.pysgrid.variables)</a>
 </li>
-      <li><a href="gridded.html#gridded.grids.GridBase.shape">shape (gridded.grids.GridBase attribute)</a>
+      <li><a href="gridded.html#gridded.grids.GridBase.shape">shape() (gridded.grids.GridBase property)</a>
 
       <ul>
-        <li><a href="gridded.pysgrid.html#gridded.pysgrid.variables.SGridVariable.shape">(gridded.pysgrid.variables.SGridVariable attribute)</a>
+        <li><a href="gridded.pysgrid.html#gridded.pysgrid.variables.SGridVariable.shape">(gridded.pysgrid.variables.SGridVariable property)</a>
 </li>
-        <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UVar.shape">(gridded.pyugrid.uvar.UVar attribute)</a>
+        <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UVar.shape">(gridded.pyugrid.uvar.UVar property)</a>
 </li>
       </ul></li>
       <li><a href="gridded.html#gridded.depth.Depth.surface_only">surface_only() (gridded.depth.Depth static method)</a>
@@ -892,118 +1088,60 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.tests.html#gridded.tests.test_utilities.test_as_test_asarraylike_dummy">test_as_test_asarraylike_dummy() (in module gridded.tests.test_utilities)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_utilities.test_asarraylike_array">test_asarraylike_array() (in module gridded.tests.test_utilities)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_utilities.test_asarraylike_list">test_asarraylike_list() (in module gridded.tests.test_utilities)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_property.TestVariable.test_at">test_at() (gridded.tests.test_property.TestVariable method)</a>
+      <li><a href="gridded.html#gridded.Time">Time (class in gridded)</a>
 
       <ul>
-        <li><a href="gridded.tests.html#gridded.tests.test_property.TestVectorVariable.test_at">(gridded.tests.test_property.TestVectorVariable method)</a>
+        <li><a href="gridded.html#gridded.time.Time">(class in gridded.time)</a>
 </li>
       </ul></li>
-      <li><a href="gridded.tests.html#gridded.tests.test_grid.TestGrid_R.test_construction">test_construction() (gridded.tests.test_grid.TestGrid_R method)</a>
+      <li><a href="gridded.html#gridded.Variable.time">time() (gridded.Variable property)</a>
 
       <ul>
-        <li><a href="gridded.tests.html#gridded.tests.test_grid.TestPyGrid_S.test_construction">(gridded.tests.test_grid.TestPyGrid_S method)</a>
+        <li><a href="gridded.html#gridded.variable.Variable.time">(gridded.variable.Variable property)</a>
 </li>
-        <li><a href="gridded.tests.html#gridded.tests.test_grid.TestPyGrid_U.test_construction">(gridded.tests.test_grid.TestPyGrid_U method)</a>
+        <li><a href="gridded.html#gridded.variable.VectorVariable.time">(gridded.variable.VectorVariable property)</a>
 </li>
-        <li><a href="gridded.tests.html#gridded.tests.test_property.TestVariable.test_construction">(gridded.tests.test_property.TestVariable method)</a>
-</li>
-        <li><a href="gridded.tests.html#gridded.tests.test_property.TestVectorVariable.test_construction">(gridded.tests.test_property.TestVectorVariable method)</a>
+        <li><a href="gridded.html#gridded.VectorVariable.time">(gridded.VectorVariable property)</a>
 </li>
       </ul></li>
-      <li><a href="gridded.tests.html#gridded.tests.test_property.test_dir">test_dir (in module gridded.tests.test_property)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_utilities.test_dummy_array_like">test_dummy_array_like() (in module gridded.tests.test_utilities)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_time.test_init">test_init() (in module gridded.tests.test_time)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_grid.TestGrid_R.test_interpolation">test_interpolation() (gridded.tests.test_grid.TestGrid_R method)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_grid.TestGrid_R.test_locate_faces">test_locate_faces() (gridded.tests.test_grid.TestGrid_R method)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_utilities.test_regrid_variable_StoS">test_regrid_variable_StoS() (in module gridded.tests.test_utilities)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_utilities.test_regrid_variable_TDStoS">test_regrid_variable_TDStoS() (in module gridded.tests.test_utilities)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_utilities.test_reorganize_spatial_data">test_reorganize_spatial_data() (in module gridded.tests.test_utilities)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.tests.html#gridded.tests.test_utilities.test_spatial_data_metadata">test_spatial_data_metadata() (in module gridded.tests.test_utilities)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_grid.TestGrid_R">TestGrid_R (class in gridded.tests.test_grid)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_grid.TestPyGrid_S">TestPyGrid_S (class in gridded.tests.test_grid)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_grid.TestPyGrid_U">TestPyGrid_U (class in gridded.tests.test_grid)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_property.TestVariable">TestVariable (class in gridded.tests.test_property)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_property.TestVectorVariable">TestVectorVariable (class in gridded.tests.test_property)</a>
-</li>
-      <li><a href="gridded.html#gridded.time.Time">Time (class in gridded.time)</a>
-</li>
-      <li><a href="gridded.html#gridded.Variable.time">time (gridded.Variable attribute)</a>
+      <li><a href="gridded.html#gridded.Time.time_in_bounds">time_in_bounds() (gridded.Time method)</a>
 
       <ul>
-        <li><a href="gridded.html#gridded.VectorVariable.time">(gridded.VectorVariable attribute)</a>
-</li>
-        <li><a href="gridded.html#gridded.variable.Variable.time">(gridded.variable.Variable attribute)</a>
-</li>
-        <li><a href="gridded.html#gridded.variable.VectorVariable.time">(gridded.variable.VectorVariable attribute)</a>
+        <li><a href="gridded.html#gridded.time.Time.time_in_bounds">(gridded.time.Time method)</a>
 </li>
       </ul></li>
-      <li><a href="gridded.html#gridded.time.Time.time_in_bounds">time_in_bounds() (gridded.time.Time method)</a>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.topology_dimension">topology_dimension (gridded.pysgrid.sgrid.SGrid attribute)</a>
 </li>
-      <li><a href="gridded.html#gridded.grids.Grid_R.topology_dimension">topology_dimension (gridded.grids.Grid_R attribute)</a>
-
-      <ul>
-        <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.topology_dimension">(gridded.pysgrid.sgrid.SGrid attribute)</a>
-</li>
-      </ul></li>
       <li><a href="gridded.html#gridded.Variable.transect">transect() (gridded.Variable method)</a>
 
       <ul>
         <li><a href="gridded.html#gridded.variable.Variable.transect">(gridded.variable.Variable method)</a>
 </li>
       </ul></li>
-      <li><a href="gridded.tests.html#gridded.tests.utilities.twenty_one_triangles">twenty_one_triangles() (in module gridded.tests.utilities)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.utilities.two_triangles">two_triangles() (in module gridded.tests.utilities)</a>
-</li>
   </ul></td>
 </tr></table>
 
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.tests.html#gridded.tests.test_grid.ug">ug() (in module gridded.tests.test_grid)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_grid.ug_data">ug_data() (in module gridded.tests.test_grid)</a>
-</li>
-      <li><a href="gridded.tests.html#gridded.tests.test_grid.ug_topology">ug_topology() (in module gridded.tests.test_grid)</a>
-</li>
       <li><a href="gridded.pyugrid.html#gridded.pyugrid.ugrid.UGrid">UGrid (class in gridded.pyugrid.ugrid)</a>
 </li>
       <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UMVar">UMVar (class in gridded.pyugrid.uvar)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.html#gridded.Variable.units">units (gridded.Variable attribute)</a>
+      <li><a href="gridded.html#gridded.Variable.units">units() (gridded.Variable property)</a>
 
       <ul>
-        <li><a href="gridded.html#gridded.VectorVariable.units">(gridded.VectorVariable attribute)</a>
+        <li><a href="gridded.html#gridded.variable.Variable.units">(gridded.variable.Variable property)</a>
 </li>
-        <li><a href="gridded.html#gridded.variable.Variable.units">(gridded.variable.Variable attribute)</a>
+        <li><a href="gridded.html#gridded.variable.VectorVariable.units">(gridded.variable.VectorVariable property)</a>
 </li>
-        <li><a href="gridded.html#gridded.variable.VectorVariable.units">(gridded.variable.VectorVariable attribute)</a>
+        <li><a href="gridded.html#gridded.VectorVariable.units">(gridded.VectorVariable property)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="gridded.pyugrid.html#gridded.pyugrid.uvar.UVar">UVar (class in gridded.pyugrid.uvar)</a>
 </li>
   </ul></td>
@@ -1012,22 +1150,26 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="gridded.html#gridded.time.Time.valid_time">valid_time() (gridded.time.Time method)</a>
+      <li><a href="gridded.html#gridded.Time.valid_time">valid_time() (gridded.Time method)</a>
+
+      <ul>
+        <li><a href="gridded.html#gridded.time.Time.valid_time">(gridded.time.Time method)</a>
 </li>
+      </ul></li>
       <li><a href="gridded.html#gridded.Variable">Variable (class in gridded)</a>
 
       <ul>
         <li><a href="gridded.html#gridded.variable.Variable">(class in gridded.variable)</a>
 </li>
       </ul></li>
-      <li><a href="gridded.html#gridded.variable.VectorVariable.varnames">varnames (gridded.variable.VectorVariable attribute)</a>
-
-      <ul>
-        <li><a href="gridded.html#gridded.VectorVariable.varnames">(gridded.VectorVariable attribute)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gridded.html#gridded.variable.VectorVariable.varnames">varnames() (gridded.variable.VectorVariable property)</a>
+
+      <ul>
+        <li><a href="gridded.html#gridded.VectorVariable.varnames">(gridded.VectorVariable property)</a>
+</li>
+      </ul></li>
       <li><a href="gridded.pysgrid.html#gridded.pysgrid.processing_2d.vector_sum">vector_sum() (in module gridded.pysgrid.processing_2d)</a>
 </li>
       <li><a href="gridded.html#gridded.VectorVariable">VectorVariable (class in gridded)</a>
@@ -1036,6 +1178,14 @@
         <li><a href="gridded.html#gridded.variable.VectorVariable">(class in gridded.variable)</a>
 </li>
       </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="X">X</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="gridded.pysgrid.html#gridded.pysgrid.sgrid.SGrid.x_to_l">x_to_l() (gridded.pysgrid.sgrid.SGrid static method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1051,7 +1201,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright .
+        &copy; Copyright 
 
     </p>
   </div>
@@ -1068,32 +1218,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.8',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

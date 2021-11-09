@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="gridded API" href="api_reference.html" />
     <link rel="prev" title="Tutorial" href="tutorial.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -101,7 +103,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#curvilinear-grids">Curvilinear Grids</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-grid">The Grid</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
@@ -286,10 +291,11 @@
 </div>
 <p>For staggered grids, if there is padding: “none”, high”, “low”, “both”</p>
 <blockquote>
-<div>node_padding
+<div><p>node_padding
 edge1_padding
 edge2_padding
-face_padding</div></blockquote>
+face_padding</p>
+</div></blockquote>
 </div>
 </div>
 </div>
@@ -301,14 +307,16 @@ face_padding</div></blockquote>
 <p>(Complete example in the Examples dir: <code class="docutils literal notranslate"><span class="pre">gridded/Examples/load_arbitrary_ugrid.py</span></code>)</p>
 <p>A complete <code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code> has:</p>
 <ul class="simple">
-<li>A Grid object</li>
+<li><p>A Grid object</p></li>
 </ul>
 <p>Optionally:</p>
 <ul class="simple">
-<li>Variables containing data on that grid.</li>
-<li>A Time object if the data are time dependent</li>
-<li>A Depth object, if the data are 3-d</li>
+<li><p>Variables containing data on that grid.</p></li>
+<li><p>A Time object if the data are time dependent</p></li>
+<li><p>A Depth object, if the data are 3-d</p></li>
 </ul>
+<div class="section" id="the-grid">
+<h3>The Grid<a class="headerlink" href="#the-grid" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nc</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;SanDiego.nc&quot;</span><span class="p">)</span>
 
 <span class="c1"># need to convert to zero-indexing</span>
@@ -334,37 +342,38 @@ face_padding</div></blockquote>
 <span class="c1">#                                          varname=&#39;times&#39;)</span>
 
 <span class="n">time_obj</span> <span class="o">=</span> <span class="n">gridded</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">times</span><span class="p">,</span>
-                             <span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                             <span class="n">varname</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                             <span class="n">tz_offset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                             <span class="n">origin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                             <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">varname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">tz_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">displacement</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">0</span><span class="p">),)</span>
 
 <span class="c1"># make the variables</span>
 <span class="n">depth</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;Depth&#39;</span><span class="p">]</span>
 
-<span class="n">depth_var</span> <span class="o">=</span> <span class="n">gridded</span><span class="o">.</span><span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<span class="n">depth_var</span> <span class="o">=</span> <span class="n">gridded</span><span class="o">.</span><span class="n">variable</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                       <span class="n">units</span><span class="o">=</span><span class="s2">&quot;meters&quot;</span><span class="p">,</span>
-                                      <span class="n">time</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                      <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                       <span class="n">data</span><span class="o">=</span><span class="n">depth</span><span class="p">,</span>
                                       <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
-                                      <span class="n">depth</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                      <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                       <span class="n">data_file</span><span class="o">=</span><span class="n">nc</span><span class="p">,</span>
                                       <span class="n">grid_file</span><span class="o">=</span><span class="n">nc</span><span class="p">,</span>
-                                      <span class="n">dataset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                                      <span class="n">varname</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="c1"># huh??</span>
+                                      <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                      <span class="n">varname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="c1"># huh??</span>
                                       <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                      <span class="n">attributes</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+                                      <span class="n">attributes</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
 <span class="c1"># global attributes</span>
 <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">nc</span><span class="o">.</span><span class="n">getncattr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">nc</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">()}</span>
 
 <span class="c1"># now make a dataset out of it all:</span>
-<span class="n">ds</span> <span class="o">=</span> <span class="n">gridded</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<span class="n">ds</span> <span class="o">=</span> <span class="n">gridded</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
                      <span class="n">variables</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Depth&#39;</span><span class="p">:</span> <span class="n">depth_var</span><span class="p">},</span>
                      <span class="n">attributes</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
 </pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -380,7 +389,7 @@ face_padding</div></blockquote>
         <a href="api_reference.html" class="btn btn-neutral float-right" title="gridded API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tutorial.html" class="btn btn-neutral" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tutorial.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -389,7 +398,7 @@ face_padding</div></blockquote>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright .
+        &copy; Copyright 
 
     </p>
   </div>
@@ -406,32 +415,16 @@ face_padding</div></blockquote>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.8',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Installing" href="installing.html" />
     <link rel="prev" title="Welcome to gridded’s documentation!" href="index.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -101,7 +103,10 @@
 <li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#the-grid">The Grid</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
@@ -203,9 +208,9 @@
 <h2>Goals<a class="headerlink" href="#goals" title="Permalink to this headline">¶</a></h2>
 <p>The goal of this package is to present a single way to work with results from ANY hydrodynamic/oceanographic model – regardless of what type of grid it was computed on. In particular:</p>
 <ul class="simple">
-<li>Regular Structured Grids (<a class="reference external" href="http://cfconventions.org/">CF Conventions</a>), with API embedded in <a class="reference external" href="http://scitools.org.uk/iris/">Iris</a> and to some degree in <a class="reference external" href="https://github.com/pydata/xarray">xarray</a></li>
-<li>Unstructured Grids (CF + <a class="reference external" href="https://github.com/ugrid-conventions/ugrid-conventions/blob/master/README.md">UGRID Conventions</a>), with nascent API in <a class="reference external" href="https://github.com/pyugrid/pyugrid">pyugrid</a></li>
-<li>Staggered Grids (CF + <a class="reference external" href="https://publicwiki.deltares.nl/display/NETCDF/Deltares+proposal+for+Staggered+Grid+data+model">SGRID Conventions</a>) with nascent API in <a class="reference external" href="https://github.com/sgrid/pysgrid">pysgrid</a></li>
+<li><p>Regular Structured Grids (<a class="reference external" href="http://cfconventions.org/">CF Conventions</a>), with API embedded in <a class="reference external" href="http://scitools.org.uk/iris/">Iris</a> and to some degree in <a class="reference external" href="https://github.com/pydata/xarray">xarray</a></p></li>
+<li><p>Unstructured Grids (CF + <a class="reference external" href="https://github.com/ugrid-conventions/ugrid-conventions/blob/master/README.md">UGRID Conventions</a>), with nascent API in <a class="reference external" href="https://github.com/pyugrid/pyugrid">pyugrid</a></p></li>
+<li><p>Staggered Grids (CF + <a class="reference external" href="https://publicwiki.deltares.nl/display/NETCDF/Deltares+proposal+for+Staggered+Grid+data+model">SGRID Conventions</a>) with nascent API in <a class="reference external" href="https://github.com/sgrid/pysgrid">pysgrid</a></p></li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">gridded</span></code> could/should be useful for other types of gridded data, in particular meteorological models, but so far has motly been developed/tested with oceanographic models.</p>
 </div>
@@ -219,9 +224,9 @@
 <h2>Data standards<a class="headerlink" href="#data-standards" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">gridded</span></code> seeks to support data standards such as:</p>
 <ul class="simple">
-<li>The CF Conventions: <a class="reference external" href="http://cfconventions.org/">http://cfconventions.org/</a></li>
-<li>UGRID Conventions: <a class="reference external" href="http://ugrid-conventions.github.io/ugrid-conventions/">http://ugrid-conventions.github.io/ugrid-conventions/</a></li>
-<li>SGRID Conventions: <a class="reference external" href="http://sgrid.github.io/sgrid/">http://sgrid.github.io/sgrid/</a></li>
+<li><p>The CF Conventions: <a class="reference external" href="http://cfconventions.org/">http://cfconventions.org/</a></p></li>
+<li><p>UGRID Conventions: <a class="reference external" href="http://ugrid-conventions.github.io/ugrid-conventions/">http://ugrid-conventions.github.io/ugrid-conventions/</a></p></li>
+<li><p>SGRID Conventions: <a class="reference external" href="http://sgrid.github.io/sgrid/">http://sgrid.github.io/sgrid/</a></p></li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">gridded</span></code> also provided APIs for reading results that do not conform to the conventions, allowing one to work with non-confirming datasets with the same API, as well as providing tools to convert non-confirming files to conforming files (incomplete).</p>
 </div>
@@ -238,7 +243,7 @@
         <a href="installing.html" class="btn btn-neutral float-right" title="Installing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Welcome to gridded’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to gridded’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -247,7 +252,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright .
+        &copy; Copyright 
 
     </p>
   </div>
@@ -264,32 +269,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.8',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

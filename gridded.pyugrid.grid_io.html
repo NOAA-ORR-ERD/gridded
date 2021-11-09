@@ -17,34 +17,35 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="gridded.tests package" href="gridded.tests.html" />
     <link rel="prev" title="gridded.pyugrid package" href="gridded.pyugrid.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -101,7 +102,10 @@
 <li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#the-grid">The Grid</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
@@ -214,26 +218,22 @@
 <p>NOTE: this isn’t used yet, but should be useful for loading non
 UGRID-compliant files.</p>
 <p>Ideally, we’ll add loading from shape files or what have you in the future</p>
-<dl class="function">
+<dl class="py function">
 <dt id="gridded.pyugrid.grid_io.utils.load_from_varnames">
-<code class="descclassname">gridded.pyugrid.grid_io.utils.</code><code class="descname">load_from_varnames</code><span class="sig-paren">(</span><em>filename</em>, <em>names_mapping</em>, <em>attribute_check=None</em>, <em>post_process=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/grid_io/utils.html#load_from_varnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.grid_io.utils.load_from_varnames" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridded.pyugrid.grid_io.utils.</code><code class="sig-name descname">load_from_varnames</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">names_mapping</span></em>, <em class="sig-param"><span class="n">attribute_check</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_process</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/grid_io/utils.html#load_from_varnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.grid_io.utils.load_from_varnames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a UGrid from a netcdf file where the roles are defined by the
 names of the variables.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> – names of the file to load (or OPeNDAP URL).</li>
-<li><strong>names_mapping</strong> – dict that maps the variable names to UGrid components</li>
-<li><strong>attribute_check=None</strong> – list of global attributes that are expected</li>
-<li><strong>post_process</strong> – function to call to do some custom post processing.
-it should be a callable that takes (Dataset, UGrid)</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – names of the file to load (or OPeNDAP URL).</p></li>
+<li><p><strong>names_mapping</strong> – dict that maps the variable names to UGrid components</p></li>
+<li><p><strong>attribute_check=None</strong> – list of global attributes that are expected</p></li>
+<li><p><strong>post_process</strong> – function to call to do some custom post processing.
+it should be a callable that takes (Dataset, UGrid)</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>The names_mapping dict has to contain at least: ‘nodes_lon’, ‘nodes_lat’</p>
 <p>Optionally (and mostly required), it can contain: face_face_connectivity’,
 ‘face_coordinates_lon’, ‘face_coordinates_lat’, and ‘faces’</p>
@@ -242,26 +242,22 @@ it should be a callable that takes (Dataset, UGrid)</li>
 </div>
 <div class="section" id="module-gridded.pyugrid.grid_io">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gridded.pyugrid.grid_io" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<dl class="py function">
 <dt id="gridded.pyugrid.grid_io.load_from_varnames">
-<code class="descclassname">gridded.pyugrid.grid_io.</code><code class="descname">load_from_varnames</code><span class="sig-paren">(</span><em>filename</em>, <em>names_mapping</em>, <em>attribute_check=None</em>, <em>post_process=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/grid_io/utils.html#load_from_varnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.grid_io.load_from_varnames" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridded.pyugrid.grid_io.</code><code class="sig-name descname">load_from_varnames</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">names_mapping</span></em>, <em class="sig-param"><span class="n">attribute_check</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_process</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/grid_io/utils.html#load_from_varnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.grid_io.load_from_varnames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a UGrid from a netcdf file where the roles are defined by the
 names of the variables.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> – names of the file to load (or OPeNDAP URL).</li>
-<li><strong>names_mapping</strong> – dict that maps the variable names to UGrid components</li>
-<li><strong>attribute_check=None</strong> – list of global attributes that are expected</li>
-<li><strong>post_process</strong> – function to call to do some custom post processing.
-it should be a callable that takes (Dataset, UGrid)</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – names of the file to load (or OPeNDAP URL).</p></li>
+<li><p><strong>names_mapping</strong> – dict that maps the variable names to UGrid components</p></li>
+<li><p><strong>attribute_check=None</strong> – list of global attributes that are expected</p></li>
+<li><p><strong>post_process</strong> – function to call to do some custom post processing.
+it should be a callable that takes (Dataset, UGrid)</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>The names_mapping dict has to contain at least: ‘nodes_lon’, ‘nodes_lat’</p>
 <p>Optionally (and mostly required), it can contain: face_face_connectivity’,
 ‘face_coordinates_lon’, ‘face_coordinates_lat’, and ‘faces’</p>
@@ -278,10 +274,8 @@ it should be a callable that takes (Dataset, UGrid)</li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="gridded.tests.html" class="btn btn-neutral float-right" title="gridded.tests package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="gridded.pyugrid.html" class="btn btn-neutral" title="gridded.pyugrid package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="gridded.pyugrid.html" class="btn btn-neutral float-left" title="gridded.pyugrid package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -290,7 +284,7 @@ it should be a callable that takes (Dataset, UGrid)</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright .
+        &copy; Copyright 
 
     </p>
   </div>
@@ -307,32 +301,16 @@ it should be a callable that takes (Dataset, UGrid)</li>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.8',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

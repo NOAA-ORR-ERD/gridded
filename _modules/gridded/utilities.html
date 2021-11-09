@@ -17,32 +17,34 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -99,7 +101,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../non_conforming_data.html#the-grid">The Grid</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
@@ -199,18 +204,54 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">assorted utility functions needed by gridded</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
-<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Iterable</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">netCDF4</span> <span class="k">as</span> <span class="nn">nc4</span>
 
 <span class="n">must_have</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dtype&#39;</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="s1">&#39;ndim&#39;</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getitem__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattribute__&#39;</span><span class="p">]</span>
 
 
+<div class="viewcode-block" id="gen_celltree_mask_from_center_mask"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.gen_celltree_mask_from_center_mask">[docs]</a><span class="k">def</span> <span class="nf">gen_celltree_mask_from_center_mask</span><span class="p">(</span><span class="n">center_mask</span><span class="p">,</span> <span class="n">sl</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates celltree face mask from the center mask</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">input_mask</span> <span class="o">=</span> <span class="n">center_mask</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span>
+    <span class="n">ret_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">input_mask</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">type1</span> <span class="o">=</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">center_mask</span><span class="p">,</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Variable</span><span class="p">)</span>
+             <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">center_mask</span><span class="p">,</span> <span class="s1">&#39;flag_values&#39;</span><span class="p">)</span>
+             <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">center_mask</span><span class="p">,</span> <span class="s1">&#39;flag_meanings&#39;</span><span class="p">))</span>
+    <span class="n">type2</span> <span class="o">=</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">center_mask</span><span class="p">,</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Variable</span><span class="p">)</span>
+             <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">center_mask</span><span class="p">,</span> <span class="s1">&#39;option_0&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">type1</span><span class="p">:</span>
+        <span class="n">fm</span> <span class="o">=</span> <span class="n">center_mask</span><span class="o">.</span><span class="n">flag_meanings</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fm</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># must not be a string -- we assume it&#39;s a sequence already</span>
+        <span class="n">meaning_mask</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span> <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;water&#39;</span> <span class="ow">in</span> <span class="n">s</span> <span class="ow">or</span> <span class="s1">&#39;lake&#39;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span> <span class="k">else</span> <span class="kc">True</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">fm</span><span class="p">]</span>
+        <span class="n">tfmap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">center_mask</span><span class="o">.</span><span class="n">flag_values</span><span class="p">,</span> <span class="n">meaning_mask</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">tfmap</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ret_mask</span><span class="p">[</span><span class="n">input_mask</span> <span class="o">==</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="k">elif</span> <span class="n">type2</span><span class="p">:</span>  <span class="c1"># special case where option_0 == land,</span>
+                 <span class="c1"># option_1 == water, etc</span>
+                 <span class="c1"># TODO: generalize this properly</span>
+        <span class="n">meaning_mask</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+        <span class="n">tfmap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">meaning_mask</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">tfmap</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ret_mask</span><span class="p">[</span><span class="n">input_mask</span> <span class="o">==</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ret_mask</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">input_mask</span>
+
+    <span class="k">return</span> <span class="n">ret_mask</span></div>
+
+
 <div class="viewcode-block" id="regrid_variable"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.regrid_variable">[docs]</a><span class="k">def</span> <span class="nf">regrid_variable</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_var</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s1">&#39;node&#39;</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">gridded.variable</span> <span class="k">import</span> <span class="n">Variable</span>
-    <span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="k">import</span> <span class="n">Grid_S</span><span class="p">,</span> <span class="n">Grid_U</span>
-    <span class="kn">from</span> <span class="nn">gridded.depth</span> <span class="k">import</span> <span class="n">S_Depth</span><span class="p">,</span> <span class="n">Depth</span>
+    <span class="kn">from</span> <span class="nn">gridded.variable</span> <span class="kn">import</span> <span class="n">Variable</span>
+    <span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="kn">import</span> <span class="n">Grid_S</span><span class="p">,</span> <span class="n">Grid_U</span>
+    <span class="kn">from</span> <span class="nn">gridded.depth</span> <span class="kn">import</span> <span class="n">S_Depth</span><span class="p">,</span> <span class="n">Depth</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Takes a Variable or VectorVariable and interpolates the data onto grid.</span>
 <span class="sd">    You may pass a location (&#39;nodes&#39;, &#39;faces&#39;, &#39;edge1&#39;, &#39;edge2) and the</span>
@@ -238,10 +279,10 @@
             <span class="n">dest_points</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">face_coordinates</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">dest_points</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">centers</span>
-    <span class="n">dest_points</span> <span class="o">=</span> <span class="n">dest_points</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">dest_points</span> <span class="o">=</span> <span class="n">dest_points</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="k">if</span> <span class="s1">&#39;edge&#39;</span> <span class="ow">in</span> <span class="n">location</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Cannot regrid variable to edges at this time&quot;</span><span class="p">)</span>
-    <span class="n">dest_indices</span> <span class="o">=</span> <span class="n">o_var</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">locate_faces</span><span class="p">(</span><span class="n">dest_points</span><span class="p">,</span><span class="s1">&#39;node&#39;</span><span class="p">)</span>
+    <span class="n">dest_indices</span> <span class="o">=</span> <span class="n">o_var</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">locate_faces</span><span class="p">(</span><span class="n">dest_points</span><span class="p">,</span> <span class="s1">&#39;node&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dest_indices</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Grid </span><span class="si">{0}</span><span class="s2"> has no destination points overlapping</span><span class="se">\</span>
 <span class="s2">        the grid of the source variable </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_var</span><span class="p">))</span>
@@ -267,7 +308,7 @@
     <span class="n">location_shp</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">node_lon</span><span class="o">.</span><span class="n">shape</span>
 
     <span class="n">pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dest_points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">))</span>
-    <span class="n">pts</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dest_points</span>
+    <span class="n">pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dest_points</span>
     <span class="k">if</span> <span class="n">o_var</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">t_idx</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">n_depth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_depth</span><span class="p">,</span> <span class="n">S_Depth</span><span class="p">):</span>
@@ -276,12 +317,12 @@
                                    <span class="n">data</span><span class="o">=</span><span class="n">lev_data</span><span class="p">,</span>
                                    <span class="n">grid</span><span class="o">=</span><span class="n">o_var</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
                     <span class="n">zs</span> <span class="o">=</span> <span class="n">lev</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
-                    <span class="n">pts</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">zs</span>
+                    <span class="n">pts</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">zs</span>
                     <span class="n">n_data</span><span class="p">[</span><span class="n">t_idx</span><span class="p">,</span> <span class="n">lev_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">o_var</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">location_shp</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">n_data</span><span class="p">[</span><span class="n">t_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">o_var</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">location_shp</span><span class="p">)</span>
+                <span class="n">n_data</span><span class="p">[</span><span class="n">t_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">o_var</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">location_shp</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">n_data</span> <span class="o">=</span> <span class="n">o_var</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">location_shp</span><span class="p">)</span>
+        <span class="n">n_data</span> <span class="o">=</span> <span class="n">o_var</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">location_shp</span><span class="p">)</span>
 
     <span class="n">n_var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;regridded </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
                      <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
@@ -289,14 +330,15 @@
                      <span class="n">depth</span><span class="o">=</span><span class="n">n_depth</span><span class="p">,</span>
                      <span class="n">data</span><span class="o">=</span><span class="n">n_data</span><span class="p">,</span>
                      <span class="n">units</span><span class="o">=</span><span class="n">o_var</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">n_var</span>
-</div>
+    <span class="k">return</span> <span class="n">n_var</span></div>
+
+
 <span class="k">def</span> <span class="nf">_regrid_s_depth</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_depth</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a new S_Depth object from an existing one that works on a new grid.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="k">import</span> <span class="n">Grid_S</span><span class="p">,</span> <span class="n">Grid_U</span>
-    <span class="kn">from</span> <span class="nn">gridded.depth</span> <span class="k">import</span> <span class="n">S_Depth</span>
+    <span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="kn">import</span> <span class="n">Grid_S</span><span class="p">,</span> <span class="n">Grid_U</span>
+    <span class="kn">from</span> <span class="nn">gridded.depth</span> <span class="kn">import</span> <span class="n">S_Depth</span>
     <span class="n">o_bathy</span> <span class="o">=</span> <span class="n">o_depth</span><span class="o">.</span><span class="n">bathymetry</span>
     <span class="n">o_zeta</span> <span class="o">=</span> <span class="n">o_depth</span><span class="o">.</span><span class="n">zeta</span>
     <span class="n">n_bathy</span> <span class="o">=</span> <span class="n">regrid_variable</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_bathy</span><span class="p">)</span>
@@ -457,8 +499,8 @@
     <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">must_have</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">return</span> <span class="kc">True</span>
-</div>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
 
 <div class="viewcode-block" id="asarraylike"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.asarraylike">[docs]</a><span class="k">def</span> <span class="nf">asarraylike</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -469,18 +511,18 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="n">obj</span> <span class="k">if</span> <span class="n">isarraylike</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-</div>
+    <span class="k">return</span> <span class="n">obj</span> <span class="k">if</span> <span class="n">isarraylike</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="isstring"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.isstring">[docs]</a><span class="k">def</span> <span class="nf">isstring</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    py2/3 compaitlbie wayto test for a string</span>
+<span class="sd">    py2/3 compaitlbie way to test for a string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">basestring</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-</div>
+    <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="get_dataset"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.get_dataset">[docs]</a><span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -488,19 +530,52 @@
 <span class="sd">    or just pass it through if it&#39;s already a netCDF4.Dataset</span>
 
 <span class="sd">    if dataset is not None, it should be a valid netCDF4 Dataset object,</span>
-<span class="sd">    and it will simiply be returned</span>
+<span class="sd">    and it will simply be returned</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">dataset</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ncfile</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">elif</span> <span class="n">isstring</span><span class="p">(</span><span class="n">ncfile</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">nc4</span><span class="o">.</span><span class="n">MFDataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span>
-</pre></div></div>
+        <span class="k">return</span> <span class="n">nc4</span><span class="o">.</span><span class="n">MFDataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_writable_dataset"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.get_writable_dataset">[docs]</a><span class="k">def</span> <span class="nf">get_writable_dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;netcdf4&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Utility to create a writable netCDF4 Dataset from a filename, list of filenames,</span>
+<span class="sd">    or just pass it through if it&#39;s already a netCDF4.Dataset</span>
+
+<span class="sd">    if dataset is not None, it should be a valid netCDF4 Dataset object,</span>
+<span class="sd">    and it will simply be returned</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+        <span class="c1"># fixme: check for writable</span>
+        <span class="k">return</span> <span class="n">ncfile</span>
+    <span class="k">elif</span> <span class="n">isstring</span><span class="p">(</span><span class="n">ncfile</span><span class="p">):</span>  <span class="c1"># Fixme: should be pathlike...</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;filename is:&quot;</span><span class="p">,</span> <span class="n">ncfile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span>
+                           <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span>
+                           <span class="n">clobber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;NETCDF4&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must be a string path or a netcdf4 Dataset&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_dataset_attrs"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.get_dataset_attrs">[docs]</a><span class="k">def</span> <span class="nf">get_dataset_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get all the attributes of the dataset as a single dict</span>
+
+<span class="sd">    :param ds: an open netCDF4.Dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">ds</span><span class="o">.</span><span class="n">getncattr</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">()}</span></div>
+
+
+
+</pre></div>
 
            </div>
            
@@ -512,7 +587,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright .
+        &copy; Copyright 
 
     </p>
   </div>
@@ -529,32 +604,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.0.8',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

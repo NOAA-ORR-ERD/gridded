@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="gridded package" href="gridded.html" />
     <link rel="prev" title="Loading Non Conforming Data" href="non_conforming_data.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -101,7 +103,10 @@
 <li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#the-grid">The Grid</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
@@ -206,10 +211,10 @@
 <p>A <a class="reference internal" href="gridded.html#gridded.gridded.Dataset" title="gridded.gridded.Dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridded.gridded.Dataset</span></code></a> contains a few core pieces of information:</p>
 <blockquote>
 <div><ul class="simple">
-<li>Attributes of the whole dataset</li>
-<li>A Grid object – this is a duck-typed grid object that could be any of the supported grid types.</li>
-<li>A dict of <a class="reference internal" href="gridded.html#gridded.variable.Variable" title="gridded.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridded.variable.Variable</span></code></a> objects – names as the key</li>
-<li>Assorted utilities for accessing, saving, and loading the data.</li>
+<li><p>Attributes of the whole dataset</p></li>
+<li><p>A Grid object – this is a duck-typed grid object that could be any of the supported grid types.</p></li>
+<li><p>A dict of <a class="reference internal" href="gridded.html#gridded.variable.Variable" title="gridded.variable.Variable"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridded.variable.Variable</span></code></a> objects – names as the key</p></li>
+<li><p>Assorted utilities for accessing, saving, and loading the data.</p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -236,8 +241,8 @@
 <h1>Design Principles<a class="headerlink" href="#design-principles" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="grid-independence">
 <h2>Grid Independence<a class="headerlink" href="#grid-independence" title="Permalink to this headline">¶</a></h2>
-<p>The primary goal of <code class="docutils literal notranslate"><span class="pre">gridded</span></code> is for an end-user to be able to do data analysis and visualization without needing to understand the intricacies of the grid structure, and ideally to no have to even know what grid a particular dataset or variable is using.</p>
-<p>For example one should be able to plot a time series of a parameter, like sea surface temperature, with exactly the same code regardless of the underlying grid:</p>
+<p>The primary goal of <code class="docutils literal notranslate"><span class="pre">gridded</span></code> is for an end-user to be able to do data analysis and visualization without needing to understand the intricacies of the grid structure, and ideally to not have to even know what grid a particular dataset or variable is using.</p>
+<p>For example, one should be able to plot a time series of a parameter, like sea surface temperature, with exactly the same code regardless of the underlying grid:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ds</span> <span class="o">=</span> <span class="n">gridded</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">path_to_file</span><span class="p">)</span>
 <span class="n">sst</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">get_variables_by_attributes</span><span class="p">(</span><span class="n">standard_name</span><span class="o">=</span><span class="s1">&#39;sea_surface_temperature&#39;</span><span class="p">)</span>
 <span class="n">time_series</span> <span class="o">=</span> <span class="n">sst</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">times</span><span class="p">)</span>
@@ -247,17 +252,18 @@
 </div>
 <div class="section" id="duck-typing">
 <h2>Duck Typing<a class="headerlink" href="#duck-typing" title="Permalink to this headline">¶</a></h2>
-<p>These are for the most part “duck typed”, rather than strict subclassing. Though there are base classes that provide shared functionality.</p>
+<p>The Grid objects (Grid, Time, Depth) are for the most part “duck typed”, rather than strict subclassing. Though there are base classes that provide shared functionality.</p>
 <p>We are trying to be clear about the “public” vs “private” API by using leading underscores for methods and attributes not intended for external use.</p>
 </div>
 <div class="section" id="lazy-loading-data-arrays">
 <h2>Lazy loading / data arrays<a class="headerlink" href="#lazy-loading-data-arrays" title="Permalink to this headline">¶</a></h2>
 <p>Many of the datasets users need to work with can be quite large. As a result it is impractical to load entire datasets into memory at once. <code class="docutils literal notranslate"><span class="pre">gridded</span></code> for the most part shifts the burden of handling lazy loading to external libraries, and does this by keeping data stored in a “numpy array-like” objects. Users can use pure numpy arrays, or any object that “acts” like a numpy array. This should allow <code class="docutils literal notranslate"><span class="pre">gridded</span></code> to work with netcdf variables, hdf5 arrays, dask arrays, etc.</p>
-<p>In practice, there is no clear definition of “array-like”, so <code class="docutils literal notranslate"><span class="pre">gridded</span></code> has defined its own definition, based on features we know we need. But it is assumed that nd indexing behaves that same as numpy arrays – as there is no way to easily confirm that.</p>
+<p>In practice, there is no clear definition of “array-like”, so <code class="docutils literal notranslate"><span class="pre">gridded</span></code> has defined its own definition, based on features we know we need. But it is assumed that nd indexing behaves that same as numpy arrays – as there is no way to easily confirm that. This is a goal, but in fact, only numpy arrays and <code class="docutils literal notranslate"><span class="pre">netCDF4</span> <span class="pre">Variables</span></code> have been implimented and tested. In the future, we may use <code class="docutils literal notranslate"><span class="pre">xarray</span></code> as a single abstration layer, rather than rolling our own.</p>
 <p>To support that, we support converting and testing for array-like with:</p>
 <p><code class="docutils literal notranslate"><span class="pre">gridded.utils.asarraylike()</span></code></p>
 <p>and</p>
 <p><code class="docutils literal notranslate"><span class="pre">gridded.utils.isarraylike()</span></code></p>
+<p>Those utilities will be updated as new needs arrise.</p>
 </div>
 </div>
 <div class="section" id="reference">
@@ -287,18 +293,6 @@
 <li class="toctree-l4"><a class="reference internal" href="gridded.pyugrid.html#module-gridded.pyugrid">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="gridded.tests.html">gridded.tests package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests.gen_analytical_datasets">gridded.tests.gen_analytical_datasets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests.test_dataset">gridded.tests.test_dataset module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests.test_grid">gridded.tests.test_grid module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests.test_property">gridded.tests.test_property module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests.test_time">gridded.tests.test_time module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests.test_utilities">gridded.tests.test_utilities module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests.utilities">gridded.tests.utilities module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="gridded.tests.html#module-gridded.tests">Module contents</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="gridded.html#submodules">Submodules</a></li>
@@ -326,7 +320,7 @@
         <a href="gridded.html" class="btn btn-neutral float-right" title="gridded package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="non_conforming_data.html" class="btn btn-neutral" title="Loading Non Conforming Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="non_conforming_data.html" class="btn btn-neutral float-left" title="Loading Non Conforming Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -335,7 +329,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright .
+        &copy; Copyright 
 
     </p>
   </div>
@@ -352,32 +346,16 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.8',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

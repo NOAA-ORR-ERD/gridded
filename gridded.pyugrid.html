@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="gridded.pyugrid.grid_io package" href="gridded.pyugrid.grid_io.html" />
     <link rel="prev" title="gridded.pysgrid package" href="gridded.pysgrid.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -101,7 +103,10 @@
 <li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#the-grid">The Grid</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
@@ -224,59 +229,48 @@
 <p>code to read the netcdf unstructured grid standard:</p>
 <p><a class="reference external" href="https://github.com/ugrid-conventions/ugrid-conventions/">https://github.com/ugrid-conventions/ugrid-conventions/</a></p>
 <p>This code is called by the UGrid class to load into a UGRID object.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="gridded.pyugrid.read_netcdf.find_mesh_names">
-<code class="descclassname">gridded.pyugrid.read_netcdf.</code><code class="descname">find_mesh_names</code><span class="sig-paren">(</span><em>nc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/read_netcdf.html#find_mesh_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.read_netcdf.find_mesh_names" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridded.pyugrid.read_netcdf.</code><code class="sig-name descname">find_mesh_names</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nc</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/read_netcdf.html#find_mesh_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.read_netcdf.find_mesh_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>find all the meshes in an open netcCDF4.DataSet</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nc</strong> – the netCDF4 Dataset object to look for mesh names in</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>nc</strong> – the netCDF4 Dataset object to look for mesh names in</p>
+</dd>
+</dl>
 <p>NOTE: checks for 2-d topology_dimension</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="gridded.pyugrid.read_netcdf.is_valid_mesh">
-<code class="descclassname">gridded.pyugrid.read_netcdf.</code><code class="descname">is_valid_mesh</code><span class="sig-paren">(</span><em>nc</em>, <em>varname</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/read_netcdf.html#is_valid_mesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.read_netcdf.is_valid_mesh" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridded.pyugrid.read_netcdf.</code><code class="sig-name descname">is_valid_mesh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nc</span></em>, <em class="sig-param"><span class="n">varname</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/read_netcdf.html#is_valid_mesh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.read_netcdf.is_valid_mesh" title="Permalink to this definition">¶</a></dt>
 <dd><p>determine if the given variable name is a valid mesh definition</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>nc</strong> – a netCDF4 Dataset to check</li>
-<li><strong>varname</strong> – name of the candidate mesh variable</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nc</strong> – a netCDF4 Dataset to check</p></li>
+<li><p><strong>varname</strong> – name of the candidate mesh variable</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="gridded.pyugrid.read_netcdf.load_grid_from_nc_dataset">
-<code class="descclassname">gridded.pyugrid.read_netcdf.</code><code class="descname">load_grid_from_nc_dataset</code><span class="sig-paren">(</span><em>nc</em>, <em>grid</em>, <em>mesh_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/read_netcdf.html#load_grid_from_nc_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.read_netcdf.load_grid_from_nc_dataset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridded.pyugrid.read_netcdf.</code><code class="sig-name descname">load_grid_from_nc_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nc</span></em>, <em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">mesh_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/read_netcdf.html#load_grid_from_nc_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.read_netcdf.load_grid_from_nc_dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>loads UGrid object from a netCDF4.DataSet object, adding the data
 to the passed-in grid object.</p>
 <p>It will load the mesh specified, or look
 for the first one it finds if none is specified</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>nc</strong> (<em>netCDF4 Dataset object</em>) – netcdf Dataset to be loaded up</li>
-<li><strong>grid</strong> (<em>UGrid object.</em>) – the grid object to put the mesh and data into.</li>
-<li><strong>mesh_name=None</strong> – name of the mesh to load</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nc</strong> (<em>netCDF4 Dataset object</em>) – netcdf Dataset to be loaded up</p></li>
+<li><p><strong>grid</strong> (<em>UGrid object.</em>) – the grid object to put the mesh and data into.</p></li>
+<li><p><strong>mesh_name=None</strong> – name of the mesh to load</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p># :param load_data=False: flag to indicate whether you want to load the
 #                         associated data or not.  The mesh will be loaded
 #                         in any case.  If False, only the mesh will be
@@ -287,26 +281,22 @@ for the first one it finds if none is specified</p>
 while keeping the netcdf reading code in its own file.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="gridded.pyugrid.read_netcdf.load_grid_from_ncfilename">
-<code class="descclassname">gridded.pyugrid.read_netcdf.</code><code class="descname">load_grid_from_ncfilename</code><span class="sig-paren">(</span><em>filename</em>, <em>grid</em>, <em>mesh_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/read_netcdf.html#load_grid_from_ncfilename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.read_netcdf.load_grid_from_ncfilename" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridded.pyugrid.read_netcdf.</code><code class="sig-name descname">load_grid_from_ncfilename</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">grid</span></em>, <em class="sig-param"><span class="n">mesh_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/read_netcdf.html#load_grid_from_ncfilename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.read_netcdf.load_grid_from_ncfilename" title="Permalink to this definition">¶</a></dt>
 <dd><p>loads UGrid object from a netcdf file, adding the data
 to the passed-in grid object.</p>
 <p>It will load the mesh specified, or look
 for the first one it finds if none is specified</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> – filename or OpenDAP url of dataset.</li>
-<li><strong>grid</strong> (<em>UGrid object.</em>) – the grid object to put the mesh and data into.</li>
-<li><strong>mesh_name=None</strong> – name of the mesh to load</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – filename or OpenDAP url of dataset.</p></li>
+<li><p><strong>grid</strong> (<em>UGrid object.</em>) – the grid object to put the mesh and data into.</p></li>
+<li><p><strong>mesh_name=None</strong> – name of the mesh to load</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p># :param load_data=False: flag to indicate whether you want to load the
 #                         associated data or not.  The mesh will be loaded
 #                         in any case.  If False, only the mesh will be
@@ -325,29 +315,29 @@ for the first one it finds if none is specified</p>
 <p>It may be able to reference a netcdf file at some point, rather than storing
 directly in memory.</p>
 <p>NOTE: only tested for triangular and quad mesh grids at the moment.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="gridded.pyugrid.ugrid.UGrid">
-<em class="property">class </em><code class="descclassname">gridded.pyugrid.ugrid.</code><code class="descname">UGrid</code><span class="sig-paren">(</span><em>nodes=None</em>, <em>node_lon=None</em>, <em>node_lat=None</em>, <em>faces=None</em>, <em>edges=None</em>, <em>boundaries=None</em>, <em>face_face_connectivity=None</em>, <em>face_edge_connectivity=None</em>, <em>edge_coordinates=None</em>, <em>face_coordinates=None</em>, <em>boundary_coordinates=None</em>, <em>data=None</em>, <em>mesh_name='mesh'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">gridded.pyugrid.ugrid.</code><code class="sig-name descname">UGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">node_lon</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">node_lat</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">faces</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">edges</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">boundaries</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">face_face_connectivity</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">face_edge_connectivity</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">edge_coordinates</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">face_coordinates</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">boundary_coordinates</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mesh_name</span><span class="o">=</span><span class="default_value">'mesh'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A basic class to hold an unstructured grid as defined in the UGrid convention.</p>
 <p>The internal structure mirrors the netcdf data standard.</p>
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.boundaries">
-<code class="descname">boundaries</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.boundaries" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">boundaries</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.boundaries" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.build_boundaries">
-<code class="descname">build_boundaries</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_boundaries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_boundaries" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_boundaries</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_boundaries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_boundaries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds the boundary segments from the cell array.</p>
 <p>It is assumed that -1 means no neighbor, which indicates a boundary</p>
 <p>This will over-write the existing boundaries array if there is one.</p>
 <p>This is a not-very-smart just loop through all the faces method.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.build_boundary_coordinates">
-<code class="descname">build_boundary_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_boundary_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_boundary_coordinates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_boundary_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_boundary_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_boundary_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds the boundary_coordinates array, using the average of the
 nodes defining each boundary segment.</p>
 <p>Note that you may want a different definition of the boundary
@@ -357,16 +347,16 @@ an easy default.</p>
 <p>Useful if you want this in the output file</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.build_celltree">
-<code class="descname">build_celltree</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_celltree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_celltree" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_celltree</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_celltree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_celltree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tries to build the celltree for the current UGrid. Will fail if nodes
 or faces is not defined.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.build_edge_coordinates">
-<code class="descname">build_edge_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_edge_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_edge_coordinates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_edge_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_edge_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_edge_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds the face_coordinates array, using the average of the
 nodes defining each edge.</p>
 <p>Note that you may want a different definition of the edge
@@ -376,17 +366,17 @@ an easy default.</p>
 <p>Useful if you want this in the output file</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.build_edges">
-<code class="descname">build_edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_edges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_edges" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_edges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds the edges array: all the edges defined by the faces</p>
 <p>This will replace the existing edge array, if there is one.</p>
 <p>NOTE: arbitrary order – should the order be preserved?</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.build_face_coordinates">
-<code class="descname">build_face_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_face_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_face_coordinates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_face_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_face_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_face_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds the face_coordinates array, using the average of the
 nodes defining each face.</p>
 <p>Note that you may want a different definition of the face
@@ -396,66 +386,62 @@ an easy default.</p>
 <p>Useful if you want this in the output file.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.build_face_edge_connectivity">
-<code class="descname">build_face_edge_connectivity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_face_edge_connectivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_face_edge_connectivity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_face_edge_connectivity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_face_edge_connectivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_face_edge_connectivity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds the face-edge connectivity array</p>
 <p>Not implemented yet.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.build_face_face_connectivity">
-<code class="descname">build_face_face_connectivity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_face_face_connectivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_face_face_connectivity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">build_face_face_connectivity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.build_face_face_connectivity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.build_face_face_connectivity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds the face_face_connectivity array: giving the neighbors of each cell.</p>
 <p>Note: arbitrary order and CW vs CCW may not be consistent.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.check_consistent">
-<code class="descname">check_consistent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.check_consistent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.check_consistent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_consistent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.check_consistent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.check_consistent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the various data is consistent: the edges and faces reference
 existing nodes, etc.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.edges">
-<code class="descname">edges</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.edges" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">edges</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.edges" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.face_edge_connectivity">
-<code class="descname">face_edge_connectivity</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.face_edge_connectivity" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">face_edge_connectivity</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.face_edge_connectivity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.face_face_connectivity">
-<code class="descname">face_face_connectivity</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.face_face_connectivity" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">face_face_connectivity</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.face_face_connectivity" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.faces">
-<code class="descname">faces</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.faces" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">faces</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.faces" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="classmethod">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.from_nc_dataset">
-<em class="property">classmethod </em><code class="descname">from_nc_dataset</code><span class="sig-paren">(</span><em>nc</em>, <em>mesh_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.from_nc_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.from_nc_dataset" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">from_nc_dataset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nc</span></em>, <em class="sig-param"><span class="n">mesh_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.from_nc_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.from_nc_dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>create a UGrid object from a netcdf file (or opendap url)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>nc</strong> (<em>netCDF4.DataSet</em>) – An already open Dataset object</li>
-<li><strong>mesh_name=None</strong> – the name of the mesh you want. If None, then
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nc</strong> (<em>netCDF4.DataSet</em>) – An already open Dataset object</p></li>
+<li><p><strong>mesh_name=None</strong> – the name of the mesh you want. If None, then
 you’ll get the only mesh in the file. If there
 is more than one mesh in the file, a ValueError
-Will be raised</li>
+Will be raised</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p># :param load_data=False: flag to indicate whether you want to load the
 #                         associated data or not.  The mesh will be
 #                         loaded in any case.  If False, only the mesh
@@ -465,172 +451,237 @@ Will be raised</li>
 <p># :type load_data: boolean</p>
 </dd></dl>
 
-<dl class="classmethod">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.from_ncfile">
-<em class="property">classmethod </em><code class="descname">from_ncfile</code><span class="sig-paren">(</span><em>nc_url</em>, <em>mesh_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.from_ncfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.from_ncfile" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">from_ncfile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nc_url</span></em>, <em class="sig-param"><span class="n">mesh_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.from_ncfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.from_ncfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>create a UGrid object from a netcdf file name (or opendap url)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>nc_url</strong> – the filename or OpenDap url you want to load</li>
-<li><strong>mesh_name=None</strong> – the name of the mesh you want. If None, then
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nc_url</strong> – the filename or OpenDap url you want to load</p></li>
+<li><p><strong>mesh_name=None</strong> – the name of the mesh you want. If None, then
 you’ll get the only mesh in the file. If there
 is more than one mesh in the file, a ValueError
-Will be raised</li>
+Will be raised</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p># :param load_data=False: flag to indicate whether you want to load the
-#                         associated data or not.  The mesh will be
-#                         loaded in any case.  If False, only the mesh
-#                         will be loaded.  If True, then all the data
-#                         associated with the mesh will be loaded.
-#                         This could be huge!
-# :type load_data: boolean</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.get_lines">
-<code class="descname">get_lines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.get_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.get_lines" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_lines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.get_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.get_lines" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.infer_location">
-<code class="descname">infer_location</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.infer_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.infer_location" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> – </td>
-</tr>
-</tbody>
-</table>
-<p>Returns:</p>
-<p>‘nodes’ if data will fit to the nodes,</p>
-<p>‘faces’ if the data will fit to the faces,</p>
-<p>‘boundaries’ if the data will fit the boundaries.</p>
+<code class="sig-name descname">infer_location</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.infer_location"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.infer_location" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>‘nodes’ if data will fit to the nodes,
+‘faces’ if the data will fit to the faces,
+‘boundaries’ if the data will fit the boundaries.
+None otherwise.</p>
+</dd>
+</dl>
 <p>If data is a netcdf variable, the “location” attribute is checked.</p>
-<p>None otherwise.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.info">
-<code class="descname">info</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.info" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">info</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.info" title="Permalink to this definition">¶</a></dt>
 <dd><p>summary of information about the grid</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="gridded.pyugrid.ugrid.UGrid.interpolate_var_to_points">
-<code class="descname">interpolate_var_to_points</code><span class="sig-paren">(</span><em>points</em>, <em>variable</em>, <em>indices=None</em>, <em>grid=None</em>, <em>alphas=None</em>, <em>mask=None</em>, <em>slices=None</em>, <em>slice_grid=True</em>, <em>_copy=False</em>, <em>_memo=True</em>, <em>_hash=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.interpolate_var_to_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.interpolate_var_to_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>interpolates teh passed-in variable to the points in points</p>
-<p>used linear interpolation from the nodes.</p>
+<dl class="py method">
+<dt id="gridded.pyugrid.ugrid.UGrid.interpolate">
+<code class="sig-name descname">interpolate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">variable</span></em>, <em class="sig-param"><span class="n">location</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fill_value</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">indices</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">alphas</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">slices</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_copy</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">_memo</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">_hash</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.interpolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolates a variable on one of the grids to an array of points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> – Nx2 Array of lon/lat coordinates to be interpolated to.</p></li>
+<li><p><strong>variable</strong> – Array-like of values to associate at location on grid
+(node, center, edge1, edge2). This may be more than a
+2-dimensional array, but you must pass ‘slices’ kwarg
+with appropriate slice collection to reduce it to
+2 dimensions.</p></li>
+<li><p><strong>location</strong> – One of (‘node’, ‘center’, ‘edge1’, ‘edge2’) ‘edge1’ is
+conventionally associated with the ‘vertical’ edges and
+likewise ‘edge2’ with the ‘horizontal’</p></li>
+<li><p><strong>fill_value</strong> – If masked values are encountered in interpolation, this
+value takes the place of the masked value</p></li>
+<li><p><strong>indices</strong> – If computed already, array of Nx2 cell indices can be passed
+in to increase speed.</p></li>
+<li><p><strong>alphas</strong> – If computed already, array of alphas can be passed in to increase
+speed.</p></li>
+</ul>
+</dd>
+</dl>
+<p>With a numpy array:</p>
+<p>sgrid.interpolate_var_to_points(points, sgrid.u[time_idx, depth_idx])</p>
+<p>With a raw netCDF Variable:</p>
+<p>sgrid.interpolate_var_to_points(points, nc.variables[‘u’], slices=[time_idx, depth_idx])</p>
+<p>If you have pre-computed information, you can pass it in to avoid unnecessary
+computation and increase performance.</p>
+<ul class="simple">
+<li><p>ind = # precomputed indices of points</p></li>
+<li><p>alphas = # precomputed alphas (useful if interpolating to the same points frequently)</p></li>
+</ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="gridded.pyugrid.ugrid.UGrid.interpolate_var_to_points">
+<code class="sig-name descname">interpolate_var_to_points</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">variable</span></em>, <em class="sig-param"><span class="n">location</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fill_value</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">indices</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">alphas</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">slices</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_copy</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">_memo</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">_hash</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.interpolate_var_to_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.interpolate_var_to_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolates a variable on one of the grids to an array of points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> – Nx2 Array of lon/lat coordinates to be interpolated to.</p></li>
+<li><p><strong>variable</strong> – Array-like of values to associate at location on grid
+(node, center, edge1, edge2). This may be more than a
+2-dimensional array, but you must pass ‘slices’ kwarg
+with appropriate slice collection to reduce it to
+2 dimensions.</p></li>
+<li><p><strong>location</strong> – One of (‘node’, ‘center’, ‘edge1’, ‘edge2’) ‘edge1’ is
+conventionally associated with the ‘vertical’ edges and
+likewise ‘edge2’ with the ‘horizontal’</p></li>
+<li><p><strong>fill_value</strong> – If masked values are encountered in interpolation, this
+value takes the place of the masked value</p></li>
+<li><p><strong>indices</strong> – If computed already, array of Nx2 cell indices can be passed
+in to increase speed.</p></li>
+<li><p><strong>alphas</strong> – If computed already, array of alphas can be passed in to increase
+speed.</p></li>
+</ul>
+</dd>
+</dl>
+<p>With a numpy array:</p>
+<p>sgrid.interpolate_var_to_points(points, sgrid.u[time_idx, depth_idx])</p>
+<p>With a raw netCDF Variable:</p>
+<p>sgrid.interpolate_var_to_points(points, nc.variables[‘u’], slices=[time_idx, depth_idx])</p>
+<p>If you have pre-computed information, you can pass it in to avoid unnecessary
+computation and increase performance.</p>
+<ul class="simple">
+<li><p>ind = # precomputed indices of points</p></li>
+<li><p>alphas = # precomputed alphas (useful if interpolating to the same points frequently)</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.interpolation_alphas">
-<code class="descname">interpolation_alphas</code><span class="sig-paren">(</span><em>points</em>, <em>indices=None</em>, <em>_copy=False</em>, <em>_memo=True</em>, <em>_hash=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.interpolation_alphas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.interpolation_alphas" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">interpolation_alphas</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">indices</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_copy</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">_memo</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">_hash</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.interpolation_alphas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.interpolation_alphas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given an array of points, this function will return the bilinear interpolation alphas
 for each of the three nodes of the face that the point is located in. If the point is
 not located on the grid, the alphas are set to 0
 :param points: Nx2 numpy array of lat/lon coordinates</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>indices</strong> – If the face indices of the points is already known, it can be passed
-in to save repeating the effort.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Nx3 numpy array of interpolation factors</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>indices</strong> – If the face indices of the points is already known, it can be passed
+in to save repeating the effort.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Nx3 numpy array of interpolation factors</p>
+</dd>
+</dl>
 <p>TODO: mask the indices that aren’t on the grid properly.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.locate_faces">
-<code class="descname">locate_faces</code><span class="sig-paren">(</span><em>points</em>, <em>method='celltree'</em>, <em>_copy=False</em>, <em>_memo=True</em>, <em>_hash=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.locate_faces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.locate_faces" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">locate_faces</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'celltree'</span></em>, <em class="sig-param"><span class="n">_copy</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">_memo</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">_hash</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.locate_faces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.locate_faces" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the face indices, one per point.</p>
 <p>Points that are not in the mesh will have an index of -1</p>
 <p>If a single point is passed in, a single index will be returned
 If a sequence of points is passed in an array of indexes will be returned.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>points</strong> – The points that you want to locate – (lon, lat). If the shape of point
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> – The points that you want to locate – (lon, lat). If the shape of point
 is 1D, function will return a scalar index. If it is 2D, it will return
-a 1D array of indices</li>
-<li><strong>method='celltree'</strong> – method to use. Options are ‘celltree’, ‘simple’.
+a 1D array of indices</p></li>
+<li><p><strong>method='celltree'</strong> – method to use. Options are ‘celltree’, ‘simple’.
 for ‘celltree’ the celltree2d pacakge must be installed:
 <a class="reference external" href="https://github.com/NOAA-ORR-ERD/cell_tree2d/">https://github.com/NOAA-ORR-ERD/cell_tree2d/</a>
-‘simple’ is very, very slow for large grids.</li>
+‘simple’ is very, very slow for large grids.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>This version utilizes the CellTree data structure.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.locate_nodes">
-<code class="descname">locate_nodes</code><span class="sig-paren">(</span><em>points</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.locate_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.locate_nodes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">locate_nodes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">points</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.locate_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.locate_nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the index of the closest nodes to the input locations.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>points</strong> – the lons/lats of locations you want the nodes
-closest to.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the index of the closest node.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>points</strong> – the lons/lats of locations you want the nodes
+closest to.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the index of the closest node.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.node_lat">
-<code class="descname">node_lat</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.node_lat" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">node_lat</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.node_lat" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.node_lon">
-<code class="descname">node_lon</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.node_lon" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">node_lon</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.node_lon" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.nodes">
-<code class="descname">nodes</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.nodes" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">nodes</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.nodes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.ugrid.UGrid.num_vertices">
-<code class="descname">num_vertices</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.num_vertices" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">num_vertices</code><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.num_vertices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maximum number of vertices in a face.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="gridded.pyugrid.ugrid.UGrid.save_as_netcdf">
-<code class="descname">save_as_netcdf</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.save_as_netcdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.save_as_netcdf" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="gridded.pyugrid.ugrid.UGrid.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filepath</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'netcdf4'</span></em>, <em class="sig-param"><span class="n">variables</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the ugrid object as a netcdf file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filepath</strong> – path to file you want o save to.  An existing one
-will be clobbered if it already exists.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> – path to file you want o save to.  An existing one
+will be clobbered if it already exists.</p></li>
+<li><p><strong>variables</strong> – dict of gridded.Variable objects to save to file</p></li>
+</ul>
+</dd>
+</dl>
 <p>Follows the convention established by the netcdf UGRID working group:</p>
 <p><a class="reference external" href="http://ugrid-conventions.github.io/ugrid-conventions">http://ugrid-conventions.github.io/ugrid-conventions</a></p>
+<dl class="simple">
+<dt>NOTE: Variables are saved here, because different conventions do it</dt><dd><p>differently.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="gridded.pyugrid.ugrid.UGrid.save_as_netcdf">
+<code class="sig-name descname">save_as_netcdf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'netcdf4'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/ugrid.html#UGrid.save_as_netcdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.ugrid.UGrid.save_as_netcdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>save the dataset to a file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – full path to file to save to.</p></li>
+<li><p><strong>format</strong> – format to save – ‘netcdf3’ or ‘netcdf4’
+are the only options at this point.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -639,38 +690,35 @@ will be clobbered if it already exists.</td>
 <div class="section" id="module-gridded.pyugrid.util">
 <span id="gridded-pyugrid-util-module"></span><h2>gridded.pyugrid.util module<a class="headerlink" href="#module-gridded.pyugrid.util" title="Permalink to this headline">¶</a></h2>
 <p>Miscellaneous util functions.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="gridded.pyugrid.util.asarraylike">
-<code class="descclassname">gridded.pyugrid.util.</code><code class="descname">asarraylike</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/util.html#asarraylike"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.util.asarraylike" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridded.pyugrid.util.</code><code class="sig-name descname">asarraylike</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/util.html#asarraylike"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.util.asarraylike" title="Permalink to this definition">¶</a></dt>
 <dd><p>If it satisfies the requirements of pyugrid the object is returned as is. If not, then numpy’s
 array() will be called on it.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> – The object to check if it’s like an array</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> – The object to check if it’s like an array</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="gridded.pyugrid.util.isarraylike">
-<code class="descclassname">gridded.pyugrid.util.</code><code class="descname">isarraylike</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/util.html#isarraylike"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.util.isarraylike" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridded.pyugrid.util.</code><code class="sig-name descname">isarraylike</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/util.html#isarraylike"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.util.isarraylike" title="Permalink to this definition">¶</a></dt>
 <dd><p>tests if obj acts enough like an array to be used in pyugrid.</p>
 <p>This should catch netCDF4 variables, etc.</p>
 <p>Note: these won’t check if the attributes required actually work right.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="gridded.pyugrid.util.point_in_tri">
-<code class="descclassname">gridded.pyugrid.util.</code><code class="descname">point_in_tri</code><span class="sig-paren">(</span><em>face_points</em>, <em>point</em>, <em>return_weights=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/util.html#point_in_tri"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.util.point_in_tri" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridded.pyugrid.util.</code><code class="sig-name descname">point_in_tri</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">face_points</span></em>, <em class="sig-param"><span class="n">point</span></em>, <em class="sig-param"><span class="n">return_weights</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/util.html#point_in_tri"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.util.point_in_tri" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates whether point is internal/external
 to element by comparing summed area of sub triangles with area of triangle
 element.</p>
-<dl class="docutils">
-<dt>NOTE: this seems like a pretty expensive way to do it</dt>
-<dd>– compared to three side of line tests..</dd>
+<dl class="simple">
+<dt>NOTE: this seems like a pretty expensive way to do it</dt><dd><p>– compared to three side of line tests..</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -678,67 +726,67 @@ element.</p>
 <div class="section" id="module-gridded.pyugrid.uvar">
 <span id="gridded-pyugrid-uvar-module"></span><h2>gridded.pyugrid.uvar module<a class="headerlink" href="#module-gridded.pyugrid.uvar" title="Permalink to this headline">¶</a></h2>
 <p>UVar object, used to hold variables that are associated with a ugrid</p>
-<dl class="docutils">
-<dt>FixMe: should we enable direct attribute acces via python’s attribute access?</dt>
-<dd>i.e. like netcdf variables – would use overloading __setattr__ and __getattr__</dd>
+<dl class="simple">
+<dt>FixMe: should we enable direct attribute acces via python’s attribute access?</dt><dd><p>i.e. like netcdf variables – would use overloading __setattr__ and __getattr__</p>
+</dd>
 </dl>
-<dl class="class">
+<dl class="py class">
 <dt id="gridded.pyugrid.uvar.UMVar">
-<em class="property">class </em><code class="descclassname">gridded.pyugrid.uvar.</code><code class="descname">UMVar</code><span class="sig-paren">(</span><em>name</em>, <em>location='none'</em>, <em>data=None</em>, <em>attributes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/uvar.html#UMVar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.uvar.UMVar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">gridded.pyugrid.uvar.</code><code class="sig-name descname">UMVar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">location</span><span class="o">=</span><span class="default_value">'none'</span></em>, <em class="sig-param"><span class="n">data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">attributes</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/uvar.html#UMVar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.uvar.UMVar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A class to group multiple UVars (or other data sources) and retrieve common information.
 All the variables grouped in this class must have the same shape, location, and unique
 names.</p>
 <p>TODO: Add attribues that all grouped variables have in common to the UMVar?</p>
-<dl class="method">
+<dl class="py method">
 <dt id="gridded.pyugrid.uvar.UMVar.add_var">
-<code class="descname">add_var</code><span class="sig-paren">(</span><em>var</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/uvar.html#UMVar.add_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.uvar.UMVar.add_var" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/uvar.html#UMVar.add_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.uvar.UMVar.add_var" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="gridded.pyugrid.uvar.UVar">
-<em class="property">class </em><code class="descclassname">gridded.pyugrid.uvar.</code><code class="descname">UVar</code><span class="sig-paren">(</span><em>name</em>, <em>location</em>, <em>data=None</em>, <em>attributes=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/uvar.html#UVar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.uvar.UVar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">gridded.pyugrid.uvar.</code><code class="sig-name descname">UVar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">location</span></em>, <em class="sig-param"><span class="n">data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">attributes</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/uvar.html#UVar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridded.pyugrid.uvar.UVar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A class to hold a variable associated with the UGrid. Data can be on the
 nodes, edges, etc. – “UGrid Variable”</p>
 <p>It holds an array of the data, as well as the attributes associated
 with that data  – this is mapped to a netcdf variable with
 attributes(attributes get stored in the netcdf file)</p>
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.uvar.UVar.data">
-<code class="descname">data</code><a class="headerlink" href="#gridded.pyugrid.uvar.UVar.data" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">data</code><a class="headerlink" href="#gridded.pyugrid.uvar.UVar.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>The data associated with the UVar – a numpy array-like object with the actual data</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.uvar.UVar.dtype">
-<code class="descname">dtype</code><a class="headerlink" href="#gridded.pyugrid.uvar.UVar.dtype" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">dtype</code><a class="headerlink" href="#gridded.pyugrid.uvar.UVar.dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>data type of the variable</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.uvar.UVar.max">
-<code class="descname">max</code><a class="headerlink" href="#gridded.pyugrid.uvar.UVar.max" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">max</code><a class="headerlink" href="#gridded.pyugrid.uvar.UVar.max" title="Permalink to this definition">¶</a></dt>
 <dd><p>maximum value of the variable</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.uvar.UVar.min">
-<code class="descname">min</code><a class="headerlink" href="#gridded.pyugrid.uvar.UVar.min" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">min</code><a class="headerlink" href="#gridded.pyugrid.uvar.UVar.min" title="Permalink to this definition">¶</a></dt>
 <dd><p>minimum value of the variable</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.uvar.UVar.ndim">
-<code class="descname">ndim</code><a class="headerlink" href="#gridded.pyugrid.uvar.UVar.ndim" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">ndim</code><a class="headerlink" href="#gridded.pyugrid.uvar.UVar.ndim" title="Permalink to this definition">¶</a></dt>
 <dd><p>number of dimensions of the variable</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="gridded.pyugrid.uvar.UVar.shape">
-<code class="descname">shape</code><a class="headerlink" href="#gridded.pyugrid.uvar.UVar.shape" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">shape</code><a class="headerlink" href="#gridded.pyugrid.uvar.UVar.shape" title="Permalink to this definition">¶</a></dt>
 <dd><p>The shape of the data array associated with the UVar.</p>
 </dd></dl>
 
@@ -761,7 +809,7 @@ attributes(attributes get stored in the netcdf file)</p>
         <a href="gridded.pyugrid.grid_io.html" class="btn btn-neutral float-right" title="gridded.pyugrid.grid_io package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="gridded.pysgrid.html" class="btn btn-neutral" title="gridded.pysgrid package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="gridded.pysgrid.html" class="btn btn-neutral float-left" title="gridded.pysgrid package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -770,7 +818,7 @@ attributes(attributes get stored in the netcdf file)</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright .
+        &copy; Copyright 
 
     </p>
   </div>
@@ -787,32 +835,16 @@ attributes(attributes get stored in the netcdf file)</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.0.8',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
