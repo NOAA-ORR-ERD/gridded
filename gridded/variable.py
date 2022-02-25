@@ -30,7 +30,6 @@ class Variable(object):
     Abstractly, it is usually a scalar physical property such a temperature,
     salinity that varies over a the domain of the model.
 
-
     This more or less maps to a variable in a netcdf file, but does not have
     to come form a netcdf file, and this provides and abstraction where the
     user can access the value in world coordinates, interpolated from the grid.
@@ -338,16 +337,16 @@ class Variable(object):
 
     @time.setter
     def time(self, t):
-        Time = self.__class__._default_component_types['time']
+        Time_class = self.__class__._default_component_types['time']
         if t is None:
             self._time = None
             return
         if self.data is not None and len(t) != self.data.shape[0] and len(t) > 1:
             raise ValueError("Data/time interval mismatch")
-        if isinstance(t, Time):
+        if isinstance(t, Time_class):
             self._time = t
         elif isinstance(t, collections.Iterable) or isinstance(t, nc4.Variable):
-            self._time = Time(t)
+            self._time = Time_class(t)
         else:
             raise ValueError("Time must be set with an iterable container or netCDF variable")
 
@@ -681,13 +680,15 @@ class Variable(object):
                      names_list=None,
                      std_names_list=None):
         """
-        Function to find the default variable names if they are not provided.
+        Function to find the default variable names if they are not provided. This
+        function does nothing without defined default_names or cf_names class
+        attributes
 
         :param filename: Name of file that will be searched for variables
         :param dataset: Existing instance of a netCDF4.Dataset
         :type filename: string
         :type dataset: netCDF.Dataset
-        :return: List of default variable names, or None if none are found
+        :return: name of first netCDF4.Variable that matches
         """
         df = None
         if dataset is not None:
@@ -984,7 +985,7 @@ class VectorVariable(object):
 
     @time.setter
     def time(self, t):
-        Time = self.__class__._default_component_types['time']
+        Time_class = self.__class__._default_component_types['time']
         if self.variables is not None:
             for v in self.variables:
                 try:
@@ -993,10 +994,10 @@ class VectorVariable(object):
                     raise ValueError('''Time was not compatible with variables.
                     Set variables attribute to None to allow changing other attributes
                     Original error: {0}'''.format(str(e)))
-        if isinstance(t, Time):
+        if isinstance(t, Time_class):
             self._time = t
         elif isinstance(t, collections.Iterable) or isinstance(t, nc4.Variable):
-            self._time = Time(t)
+            self._time = Time_class(t)
         else:
             raise ValueError("Time must be set with an iterable container or netCDF variable")
 
