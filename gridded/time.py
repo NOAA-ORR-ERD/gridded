@@ -117,6 +117,16 @@ class Time(object):
         return cls._const_time
 
     @property
+    def data(self):
+        return self._data
+    
+    @data.setter
+    def data(self, d):
+        if isinstance(d, self.__class__) or d.__class__ in self.__class__.__mro__:
+            d = d.data
+        self._data = d
+
+    @property
     def info(self):
         """
         Provides info about this Time object

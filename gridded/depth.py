@@ -53,7 +53,10 @@ class DepthBase(object):
     @classmethod
     def _gen_varname(cls,
                      filename=None,
+                     data_file=None,
+                     grid_file=None,
                      dataset=None,
+                     grid_dataset=None,
                      names_list=None,
                      std_names_list=None):
         """
@@ -188,13 +191,23 @@ class S_Depth(DepthBase):
     Represents the ocean s-coordinate, with particular focus on ROMS implementation
     '''
     _def_count=0
-    default_terms = [('Cs_r', 'S-coordinate stretching curves at RHO-points'),
-                     ('Cs_w', 'S-coordinate stretching curves at W-points'),
-                     ('s_rho', 'S-coordinate at RHO-points'),
-                     ('s_w', 'S-coordinate at W-points'),
-                     ('h', 'bathymetry at RHO-points'),
-                     ('hc', 'S-coordinate parameter, critical depth'),
-                     ('zeta', 'free-surface')]
+    default_names = {'Cs_r': ['Cs_r'],
+                     'Cs_w': ['Cs_w'],
+                     's_rho': ['s_rho'],
+                     's_w':['s_w'],
+                     'hc': ['hc'],
+                     'bathymetry': ['h'],
+                     'zeta': ['zeta']
+                     }
+
+    cf_names = {'Cs_r': ['S-coordinate stretching curves at RHO-points'],
+                'Cs_w': ['S-coordinate stretching curves at W-points'],
+                's_rho': ['S-coordinate at RHO-points'],
+                's_w':['S-coordinate at W-points'],
+                'hc': ['S-coordinate parameter, critical depth'],
+                'bathymetry': ['bathymetry at RHO-points'],
+                'zeta': ['free-surface']
+                }
 
     def __init__(self,
                  name=None,
@@ -243,6 +256,19 @@ class S_Depth(DepthBase):
                     fill_value=0,
                     **kwargs
                     ):
+        '''
+        :param filename: A string or ordered list of string of netCDF filename(s)
+        :param varnames: Mapping of component name to netCDF variable name. Use
+            this if auto detection fails. Partial definition is allowable.
+            {'Cs_r': 'Cs_r',
+             'Cs_w': Cs_w',
+             's_rho': 's_rho'),
+             's_w': 's_w',
+             'bathymetyry': 'h',
+             'hc': 'hc'),
+             'zeta': 'zeta')
+             }
+        '''
         Grid = cls._default_component_types['grid']
         Time = cls._default_component_types['time']
         Variable = cls._default_component_types['variable']
@@ -267,26 +293,45 @@ class S_Depth(DepthBase):
 
         if grid is None:
             grid = Grid.from_netCDF(grid_file,
-                                      dataset=dg,
-                                      grid_topology=grid_topology)
+                                    dataset=dg,
+                                    grid_topology=grid_topology)
         if name is None:
             name = cls.__name__ + str(cls._def_count)
             cls._def_count += 1
         if bathymetry is None:
-            bathy_name = cls._gen_varname(filename=filename,
-                                           dataset=ds,
-                                           names_list=['h'],
-                                           std_names_list=['bathymetry at RHO-points'])
-            bathymetry = Variable.from_netCDF(dataset=ds,
-                                  grid=grid,
-                                  varname=bathy_name,
-                                  name='Bathymetry'
-                                  )
+            bathy_name = varnames.get('bathymetry', None)
+            if dg is not None:
+                try:
+                    if not bathy_name:
+                        bathy_name = cls._gen_varname(dataset=dg, 
+                                        names_list=cls.default_names['bathymetry'],
+                                        std_names_list=cls.cf_names['bathymetry'])
+                        
+                    bathymetry = Variable.from_netCDF(dataset=dg,
+                                        grid=grid,
+                                        varname=bathy_name,
+                                        name='Bathymetry'
+                                        )    
+                except KeyError:
+                    warnings.warn('bathymetry not found in grid file, attempting from data file')
+                    if not bathy_name:
+                        bathy_name = cls._gen_varname(dataset=ds, 
+                                     names_list=cls.default_names['bathymetry'],
+                                     std_names_list=cls.cf_names['bathymetry'])
+                    
+                    bathymetry = Variable.from_netCDF(dataset=ds,
+                                        grid=grid,
+                                        varname=bathy_name,
+                                        name='Bathymetry'
+                                        )    
+                
         if zeta is None:
-            zeta_name = cls._gen_varname(filename=filename,
-                                           dataset=ds,
-                                           names_list=['zeta'],
-                                           std_names_list=['free-surface'])
+            zeta_name = varnames.get('zeta', None)
+            if zeta_name is None:
+                zeta_name = cls._gen_varname(filename=filename,
+                                 dataset=ds,
+                                 names_list=cls.default_names['zeta'],
+                                 std_names_list=cls.cf_names['zeta'])
             zeta = Variable.from_netCDF(dataset=ds,
                                   grid=grid,
                                   varname=zeta_name,
