@@ -53,8 +53,6 @@ class DepthBase(object):
     @classmethod
     def _gen_varname(cls,
                      filename=None,
-                     data_file=None,
-                     grid_file=None,
                      dataset=None,
                      grid_dataset=None,
                      names_list=None,
@@ -76,7 +74,7 @@ class DepthBase(object):
         if names_list is None:
             names_list = cls.default_names
         if std_names_list is None:
-            std_names_list = cls.cf_names
+            std_names_list = cls.cf_names 
         for n in names_list:
             if n in df.variables.keys():
                 return n
@@ -90,7 +88,9 @@ class DepthBase(object):
 
 class L_Depth(DepthBase):
     _def_count=0
-    default_terms = [('depth_levels','depth')]
+    default_terms = [('depth_levels', 'depth')]
+    default_names = {'depth': ['depth','depth_levels']}
+    cf_names = {'depth': 'depth'}
 
     def __init__(self,
                  name=None,

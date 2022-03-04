@@ -16,6 +16,8 @@ import netCDF4 as nc4
 
 must_have = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute__']
 
+def convert_numpy_datetime64_to_datetime(dt):
+    pass
 
 def gen_celltree_mask_from_center_mask(center_mask, sl):
     """

@@ -12,7 +12,6 @@ import hashlib
 import warnings
 from collections import OrderedDict
 
-from gridded.pysgrid.utils import GridPadding #TODO Remove this from the loading system
 from gridded.pysgrid.read_netcdf import NetCDFDataset, parse_padding, find_grid_topology_var
 from gridded.pysgrid.utils import calculate_angle_from_true_east, pair_arrays
 from gridded.pysgrid.variables import SGridVariable
