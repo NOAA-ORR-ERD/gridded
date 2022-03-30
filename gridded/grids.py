@@ -155,9 +155,12 @@ class Grid_U(GridBase, UGrid):
                 if n in face_attrs:
                     init_args[n] = gf_vars[v][:]
                     break
+        # fixme: This is assuming that the array will be in Fortran order and index from 1, or in C order and index from 0
+        #        Those are actually independent concepts!
         if init_args['faces'].shape[0] == 3:
             init_args['faces'] = np.ascontiguousarray(np.array(init_args['faces']).T - 1)
 
+        print("found grid vars:", init_args, gt)
         return init_args, gt
 
     @classmethod
@@ -235,7 +238,11 @@ class Grid_S(GridBase, SGrid):
         
 
 class Grid_R(GridBase):
+    """
+    Rectangular Grid
 
+    lon and lat of the nodes are vectors
+    """
     def __init__(self,
                  node_lon=None,
                  node_lat=None,
@@ -245,12 +252,21 @@ class Grid_R(GridBase):
                  node_coordinates=None,
                  *args,
                  **kwargs):
+        """
+        :param node_lon=None: vector of the node longitudes
+        :param node_lat=None: vector of the node latitudes
+        :param grid_topology=None: ????
+        :param dimensions=None: (should only be required for netcdf)
+        :param node_dimensions=None: (should only be required for netcdf)
+        :param node_coordinates=None:  ?????
+        """
         self.node_lon = node_lon
         self.node_lat = node_lat
         self.grid_topology = grid_topology
         self.dimensions = dimensions
         self.node_dimensions = node_dimensions
         self.node_coordinates = node_coordinates
+
         super(Grid_R, self).__init__(*args,**kwargs)
 
     @classmethod
