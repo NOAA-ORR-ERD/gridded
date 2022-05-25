@@ -185,9 +185,9 @@ class Dataset():
         fixme: make this a bit more flexible, more like the netCDF4 version
         """
         variables = []
-        for var in self.variables.values:
+        for var in self.variables.values():
             try:
-                if variables.attributes[attr] == value:
+                if var.attributes[attr] == value:
                     variables.append(var)
             except KeyError:
                 pass
