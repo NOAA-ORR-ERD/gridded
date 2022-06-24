@@ -579,12 +579,15 @@ class Variable(object):
         '''
         Uses the py(s/u)grid interpolation to determine the values at the points, and returns it
         :param points: Coordinates to be queried (3D)
-        :param time: Time of the query
-        :param extrapolate: Turns extrapolation on or off
-        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type points: Nx3 array of double
+
+        :param time: Time of the query
         :type time: datetime.datetime object
+
+        :param extrapolate: Turns extrapolation on or off
         :type extrapolate: boolean
+
+        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type slices: tuple of integers or slice objects
         '''
         _hash = kwargs['_hash'] if '_hash' in kwargs else None
@@ -603,12 +606,15 @@ class Variable(object):
         Uses the Time object to interpolate the result of the next level of interpolation, as specified
         by the dimension_ordering attribute.
         :param points: Coordinates to be queried (3D)
-        :param time: Time of the query
-        :param extrapolate: Turns extrapolation on or off
-        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type points: Nx3 array of double
+
+        :param time: Time of the query
         :type time: datetime.datetime object
+
+        :param extrapolate: Turns extrapolation on or off
         :type extrapolate: boolean
+
+        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type slices: tuple of integers or slice objects
         '''
         order = self.dimension_ordering
@@ -638,12 +644,15 @@ class Variable(object):
         Uses the Depth object to interpolate the result of the next level of interpolation, as specified
         by the dimension_ordering attribute.
         :param points: Coordinates to be queried (3D)
-        :param time: Time of the query
-        :param extrapolate: Turns extrapolation on or off
-        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type points: Nx3 array of double
+
+        :param time: Time of the query
         :type time: datetime.datetime object
+
+        :param extrapolate: Turns extrapolation on or off
         :type extrapolate: boolean
+
+        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type slices: tuple of integers or slice objects
         '''
         order = self.dimension_ordering
@@ -730,9 +739,11 @@ class Variable(object):
         attributes
 
         :param filename: Name of file that will be searched for variables
-        :param dataset: Existing instance of a netCDF4.Dataset
         :type filename: string
+
+        :param dataset: Existing instance of a netCDF4.Dataset
         :type dataset: netCDF.Dataset
+
         :return: name of first netCDF4.Variable that matches
         """
         df = None
@@ -838,26 +849,36 @@ class VectorVariable(object):
         Allows one-function creation of a VectorVariable from a file.
 
         :param filename: Default data source. Parameters below take precedence
-        :param varnames: Names of the variables in the data source file
-        :param grid_topology: Description of the relationship between grid attributes and variable names.
-        :param name: Name of property
-        :param units: Units
-        :param time: Time axis of the data
-        :param data: Underlying data source
-        :param grid: Grid that the data corresponds with
-        :param dataset: Instance of open Dataset
-        :param data_file: Name of data source file
-        :param grid_file: Name of grid source file
         :type filename: string
+
+        :param varnames: Names of the variables in the data source file
         :type varnames: [] of string
+
+        :param grid_topology: Description of the relationship between grid attributes and variable names.
         :type grid_topology: {string : string, ...}
+
+        :param name: Name of property
         :type name: string
+
+        :param units: Units
         :type units: string
+
+        :param time: Time axis of the data
         :type time: [] of datetime.datetime, netCDF4 Variable, or Time object
+
+        :param data: Underlying data source
         :type data: netCDF4.Variable or numpy.array
+
+        :param grid: Grid that the data corresponds with
         :type grid: pysgrid or pyugrid
+
+        :param dataset: Instance of open Dataset
         :type dataset: netCDF4.Dataset
+
+        :param data_file: Name of data source file
         :type data_file: string
+
+        :param grid_file: Name of grid source file
         :type grid_file: string
         '''
         Grid = cls._default_component_types['grid']
@@ -968,9 +989,11 @@ class VectorVariable(object):
         Function to find the default variable names if they are not provided.
 
         :param filename: Name of file that will be searched for variables
-        :param dataset: Existing instance of a netCDF4.Dataset
         :type filename: string
+
+        :param dataset: Existing instance of a netCDF4.Dataset
         :type dataset: netCDF.Dataset
+
         :return: dict of component to name mapping (eg {'u': 'water_u', 'v': 'water_v', etc})
         """
         df = None
@@ -1191,6 +1214,7 @@ class VectorVariable(object):
         :param filepath: path to file you want o save to. or a writable
                          netCDF4 Dataset An existing one
                          If a path, an existing file will be clobbered.
+        :type filepath: string
 
         Follows the convention established by the netcdf UGRID working group:
 
