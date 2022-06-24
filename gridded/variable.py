@@ -535,6 +535,10 @@ class Variable(object):
         :param unmask: if True and return array is a masked array, returns filled array
         :type unmask: boolean (default False)
 
+        :param zero_ref: Specifies whether the zero datum moves with zeta or not. Only
+        applicable if depth dimension is present with full sigma layers
+        :type zero_ref: string 'absolute' or 'relative'
+
         :return: returns a Nx1 array of interpolated values
         :rtype: double
         """
