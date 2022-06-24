@@ -89,7 +89,7 @@ class DepthBase(object):
                 if hasattr(var, 'standard_name') or hasattr(var, 'long_name'):
                     if var.name == n:
                         return n
-        raise ValueError("Default names not found.")
+        raise KeyError("Default names not found.")
 
 
 class L_Depth(DepthBase):
@@ -222,7 +222,29 @@ class S_Depth(DepthBase):
                  bathymetry=None,
                  zeta=None,
                  terms=None,
+                 vtransform=2,
                  **kwargs):
+        '''
+        :param name: Human readable name
+        :type name: string
+
+        :param time: time axis of the object
+        :type time: gridded.time.Time or derivative 
+
+        :param grid: x/y grid representation
+        :type grid: gridded.grids.GridBase or derivative
+
+        :param bathymetry: variable object representing seafloor
+        :type bathymetry: gridded.variable.Variable or derivative
+
+        :param zeta: variable object representing free-surface
+        :type zeta: gridded.variable.Variable or derivative
+
+        :param terms: remaining terms in dictionary layout
+        :type terms: dictionary of string key to numeric value
+        See S_Depth.default_names, sans bathymetry and zeta
+        '''
+
         super(S_Depth, self).__init__(**kwargs)
         if self.surface_index is None:
             self.surface_index = -1
@@ -234,6 +256,7 @@ class S_Depth(DepthBase):
         self.bathymetry = bathymetry
         self.zeta = zeta
         self.terms={}
+        self.vtransform = vtransform
         if terms is None:
             raise ValueError('Must provide terms for sigma coordinate')
         else:
@@ -248,18 +271,19 @@ class S_Depth(DepthBase):
                     varnames=None,
                     grid_topology=None,
                     name=None,
-                    units=None,
+                    #units=None,
                     time=None,
-                    time_origin=None,
+                    #time_origin=None,
                     grid=None,
                     dataset=None,
                     data_file=None,
                     grid_file=None,
-                    load_all=False,
+                    #load_all=False,
                     bathymetry=None,
                     zeta=None,
                     terms=None,
-                    fill_value=0,
+                    #fill_value=0,
+                    vtransform=2,
                     **kwargs
                     ):
         '''
@@ -306,59 +330,117 @@ class S_Depth(DepthBase):
             cls._def_count += 1
         if bathymetry is None:
             bathy_name = varnames.get('bathymetry', None)
-            if dg is not None:
-                try:
-                    if not bathy_name:
-                        bathy_name = cls._gen_varname(dataset=dg, 
-                                        names_list=cls.default_names['bathymetry'],
-                                        std_names_list=cls.cf_names['bathymetry'])
-                        
-                    bathymetry = Variable.from_netCDF(dataset=dg,
-                                        grid=grid,
-                                        varname=bathy_name,
-                                        name='Bathymetry'
-                                        )    
+            choice_ds = ds
+            if not bathy_name:
+                try: 
+                    bathy_name = cls._gen_varname(dataset=choice_ds, 
+                                    names_list=cls.default_names['bathymetry'],
+                                    std_names_list=cls.cf_names['bathymetry'])
                 except KeyError:
-                    warnings.warn('bathymetry not found in grid file, attempting from data file')
-                    if not bathy_name:
-                        bathy_name = cls._gen_varname(dataset=ds, 
-                                     names_list=cls.default_names['bathymetry'],
-                                     std_names_list=cls.cf_names['bathymetry'])
-                    
+                    if dg is not None:
+                        warnings.warn('bathymetry not found in data file, attempting from grid file')
+                        choice_ds = dg
+                        bathy_name = cls._gen_varname(dataset=choice_ds, 
+                                    names_list=cls.default_names['bathymetry'],
+                                    std_names_list=cls.cf_names['bathymetry'])
+                    else:
+                        raise
+                bathymetry = Variable.from_netCDF(dataset=choice_ds,
+                                grid=grid,
+                                varname=bathy_name,
+                                name='Bathymetry'
+                                )
+            else:
+                try:
                     bathymetry = Variable.from_netCDF(dataset=ds,
-                                        grid=grid,
-                                        varname=bathy_name,
-                                        name='Bathymetry'
-                                        )    
-                
+                                    grid=grid,
+                                    varname=bathy_name,
+                                    name='Bathymetry'
+                                    )
+                except:
+                    warnings.warn('failed to find bathymetry name in data file, trying grid file if available')
+                    if dg is not None:
+                        bathymetry = Variable.from_netCDF(dataset=dg,
+                                    grid=grid,
+                                    varname=bathy_name,
+                                    name='Bathymetry'
+                                    )
+                    else:
+                        raise
+
         if zeta is None:
             zeta_name = varnames.get('zeta', None)
-            if zeta_name is None:
-                zeta_name = cls._gen_varname(filename=filename,
-                                 dataset=ds,
-                                 names_list=cls.default_names['zeta'],
-                                 std_names_list=cls.cf_names['zeta'])
-            zeta = Variable.from_netCDF(dataset=ds,
-                                  grid=grid,
-                                  varname=zeta_name,
-                                  name='zeta'
-                                  )
+            choice_ds = ds
+            if not zeta_name:
+                try:
+                    zeta_name = cls._gen_varname(dataset=choice_ds,
+                                    names_list=cls.default_names['zeta'],
+                                    std_names_list=cls.cf_names['zeta'])
+                except KeyError:
+                    if dg is not None:
+                        warnings.warn('zeta not found in data file, attempting from grid file')
+                        choice_ds = dg
+                        zeta_name = cls._gen_varname(dataset=choice_ds,
+                                    names_list=cls.default_names['zeta'],
+                                    std_names_list=cls.cf_names['zeta'])
+                    else:
+                        raise
+                zeta = Variable.from_netCDF(dataset=choice_ds,
+                                    grid=grid,
+                                    varname=zeta_name,
+                                    name='zeta'
+                                    )
+            else:
+                try:
+                    zeta = Variable.from_netCDF(dataset=ds,
+                                    grid=grid,
+                                    varname=zeta_name,
+                                    name='zeta'
+                                    )
+                except:
+                    warnings.warn('failed to find zeta name in data file, trying grid file if available')
+                    if dg is not None:
+                        zeta = Variable.from_netCDF(dataset=dg,
+                                    grid=grid,
+                                    varname=zeta_name,
+                                    name='zeta'
+                                    )
+                    else:
+                        raise
+
+
         if time is None:
             time = zeta.time
         if terms is None:
             terms={}
-            for tn, tln in cls.default_terms:
-                vname=tn
-                if tn not in ds.variables.keys():
-                    vname = cls._gen_varname(filename, ds, [tn], [tln])
-                if tn not in ['h','zeta']: #don't want to reinclude bathymetry
-                    terms[vname] = ds[vname][:]
+            for term, tvar in cls.default_names.items():
+                if term in ['h','zeta']:
+                    #skip these because they're done separately...
+                    continue
+                vname = tvar
+                choice_ds = ds
+                if tvar not in ds.variables.keys():
+                    tln = cls.cf_names[term]
+                    try:
+                        vname = cls._gen_varname(filename, choice_ds, [tvar], [tln])
+                    except KeyError:
+                        warnings.warn('could not find term {} in data file, trying grid file'.format(tvar))
+                        choice_ds = dg
+                        vname = cls._gen_varname(filename, dg, [tvar], [tln])
+
+                    #don't want to reinclude bathymetry, zeta
+                    terms[term] = choice_ds[vname][:]
+        if vtransform is None:
+            vtransform = 2 #default for ROMS
+            #no messing about trying to detect this. 
+
         return cls(name=name,
                    time=time,
                    grid=grid,
                    bathymetry=bathymetry,
                    zeta=zeta,
                    terms=terms,
+                   vtransform=vtransform,
                    **kwargs)
 
     @property
@@ -372,25 +454,41 @@ class S_Depth(DepthBase):
     def __len__(self):
         return self.num_w_levels
 
-    def _omega_L_Depth_given_bathymetry(self, bathy, zeta, lvl):
+    def _L_Depth_given_bathymetry_t1(self, bathy, zeta, lvl, rho_or_w):
         #computes the depth (positive up) of a level given the bathymetry
         #and zeta. Produces an output array same shape as bathy and zeta
         #Output is always 'positive down'
-        s_w = self.s_w[lvl]
-        Cs_w = self.Cs_w[lvl]
+        #This implements transform 1 (https://www.myroms.org/wiki/Vertical_S-coordinate)
+        if rho_or_w == 'rho':
+            s = self.s_rho[lvl]
+            Cs = self.Cs_r[lvl]
+        elif rho_or_w == 'w':
+            s = self.s_w[lvl]
+            Cs = self.Cs_w[lvl]
+        else:
+            raise ValueError('invalid rho_or_w argument (must be "rho" or "w")')
+
         hc = self.hc
-        S = hc * s_w + (bathy - hc) * Cs_w
+        S = hc * s + (bathy - hc) * Cs
         return S + zeta * (1 + S / bathy)
 
-    def _rho_L_Depth_given_bathymetry(self, bathy, zeta, lvl):
+    def _L_Depth_given_bathymetry_t2(self, bathy, zeta, lvl, rho_or_w):
         #computes the depth (positive up) of a level given the bathymetry
         #and zeta. Produces an output array same shape as bathy and zeta
         #Output is always 'positive down'
-        s_rho = self.s_rho[lvl]
-        Cs_r = self.Cs_r[lvl]
+        #This implements transform 2 (https://www.myroms.org/wiki/Vertical_S-coordinate)
+        if rho_or_w == 'rho':
+            s = self.s_rho[lvl]
+            Cs = self.Cs_r[lvl]
+        elif rho_or_w == 'w':
+            s = self.s_w[lvl]
+            Cs = self.Cs_w[lvl]
+        else:
+            raise ValueError('invalid rho_or_w argument (must be "rho" or "w")')
+
         hc = self.hc
-        S = hc * s_rho + (bathy - hc) * Cs_r
-        return S + zeta * (1 + S / bathy)
+        S = (hc * s + bathy * Cs) / (hc + bathy)
+        return zeta + (zeta + bathy) * S
 
     def interpolation_alphas(self, points, time, data_shape, _hash=None, extrapolate=False, zero_ref='absolute'):
         '''
@@ -438,14 +536,22 @@ class S_Depth(DepthBase):
         und_ind = -np.ones((len(bs_zeta)))
         und_alph = und_ind.copy()
 
+        rho_or_w = None #parameter necessary for ldgb
         if data_shape[0] == self.num_w_levels:
-            num_levels = self.num_w_levels
-            ldgb = self._omega_L_Depth_given_bathymetry
+            #data assumed to be on w points
+            rho_or_w = 'w'
         elif data_shape[0] == self.num_r_levels:
-            num_levels = self.num_r_levels
-            ldgb = self._rho_L_Depth_given_bathymetry
+            #data assumed to be on rho points
+            rho_or_w = 'rho'
         else:
             raise ValueError('Cannot get depth interpolation alphas for data shape specified; does not fit r or w depth axis')
+
+        if self.vtransform == 2:
+            ldgb = self._L_Depth_given_bathymetry_t2
+        elif self.vtransform == 1:
+            ldgb = self._L_Depth_given_bathymetry_t1
+        else:
+            raise ValueError('invalid vtransform attribute on depth object')
         #blev_depths = level depth below the position, ulev_depths = level depth above the position   
         blev_depths = ulev_depths = None
         b_index = self.bottom_index
@@ -458,7 +564,7 @@ class S_Depth(DepthBase):
         for level in range(b_index, t_index, direction):
             #for the current level, get the level depths given bathymetry and zeta
             #start at level 0 (deepest)
-            ulev_depths = ldgb(bs_bathy, bs_zeta, level)
+            ulev_depths = ldgb(bs_bathy, bs_zeta, level, rho_or_w)
             #print(ulev_depths)
             #
             within_layer = np.logical_and(ulev_depths < bs_depths, und_ind == -1)
