@@ -17,7 +17,13 @@ class DepthBase(object):
     def __init__(self,
                  surface_index=None,
                  bottom_index=None,
+                 positive_down=True,
                  **kwargs):
+        '''
+        :param surface_index: array index of 'highest' level (closest to sea level)
+        :param bottom_index: array index of 'lowest' level (closest to seafloor)
+        :param positive_down: orientation of points coordinates (for interpolation functions)
+        '''
         self.surface_index = surface_index
         self.bottom_index = bottom_index
 
@@ -366,62 +372,111 @@ class S_Depth(DepthBase):
     def __len__(self):
         return self.num_w_levels
 
-    def _w_L_Depth_given_bathymetry(self, depths, zeta, lvl):
+    def _omega_L_Depth_given_bathymetry(self, bathy, zeta, lvl):
+        #computes the depth (positive up) of a level given the bathymetry
+        #and zeta. Produces an output array same shape as bathy and zeta
+        #Output is always 'positive down'
         s_w = self.s_w[lvl]
         Cs_w = self.Cs_w[lvl]
         hc = self.hc
-        S = hc * s_w + (depths - hc) * Cs_w
-        return -(S + zeta * (1 + S / depths))
+        S = hc * s_w + (bathy - hc) * Cs_w
+        return S + zeta * (1 + S / bathy)
 
-    def _r_L_Depth_given_bathymetry(self, depths, zeta, lvl):
+    def _rho_L_Depth_given_bathymetry(self, bathy, zeta, lvl):
+        #computes the depth (positive up) of a level given the bathymetry
+        #and zeta. Produces an output array same shape as bathy and zeta
+        #Output is always 'positive down'
         s_rho = self.s_rho[lvl]
         Cs_r = self.Cs_r[lvl]
         hc = self.hc
-        S = hc * s_rho + (depths - hc) * Cs_r
-        return -(S + zeta * (1 + S / depths))
+        S = hc * s_rho + (bathy - hc) * Cs_r
+        return S + zeta * (1 + S / bathy)
 
-    def interpolation_alphas(self, points, time, data_shape, _hash=None, extrapolate=False):
+    def interpolation_alphas(self, points, time, data_shape, _hash=None, extrapolate=False, zero_ref='absolute'):
         '''
-        Returns a pair of values. The 1st value is an array of the depth indices of all the particles.
-        The 2nd value is an array of the interpolation alphas for the particles between their depth
-        index and depth_index+1. If both values are None, then all particles are on the surface layer.
+        Returns a pair of values. The 1st value is an array of the depth indices of all the points.
+        The 2nd value is an array of the interpolation alphas for the points between their depth
+        index and depth_index+1. If both values are None, then all points are on the surface layer.
+
+        zero_ref can be 'surface' or 'absolute'.
+            'surface' means a point's depth is referenced from zeta
+            'absolute' means a point's depth is referenced from average sea level zero
         '''
-        underwater = np.logical_and(points[:, 2] != 0, points[:, 2] > -self.zeta.at(points, time, extrapolate=extrapolate))
-        if len(np.where(underwater)[0]) == 0:
+        zetas = self.zeta.at(points, time, _hash=_hash, extrapolate=extrapolate)
+        #abs_depths = absolute depth from avg sea level, positive = down
+        #below_surface = bool array flagging a particle as below sea surface and above sea floor
+        #below_ground = bool array flagging a particle as below sea floor (abs_depth > bathymetry)
+        abs_depths = below_surface = below_ground = None
+        if self.positive_down: #points depths are positive down
+            abs_depths = points[:,2]
+        else: #points depths are positive up
+            abs_depths = -points[:,2]
+        if zero_ref == 'absolute':
+            below_surface = abs_depths > -zetas.reshape(-1)
+        else:
+            abs_depths = abs_depths - zetas
+            below_surface = points[:,2] > 0
+
+        if not np.any(below_surface):
+            #nothing is underwater, so return special (None, None)
             return None, None
+        bathy = self.bathymetry.at(points, time, _hash=_hash, extrapolate=extrapolate)
+        below_ground = abs_depths > bathy
+
+        #below_surface points should not also be below_ground
+        np.logical_and(np.logical_not(below_ground), below_surface, below_surface)
+        
+        #setup (index, alphas) return arrays. -1 indicates at or above surface
         indices = -np.ones((len(points)), dtype=np.int64)
         alphas = -np.ones((len(points)), dtype=np.float64)
-        depths = self.bathymetry.at(points, time, _hash=_hash, extrapolate=extrapolate)[underwater]
-        zeta = self.zeta.at(points, time, _hash=_hash, extrapolate=extrapolate)[underwater]
-        pts = points[underwater]
-        und_ind = -np.ones((len(np.where(underwater)[0])))
+
+        bs_zeta = zetas[below_surface] #len(bs_zeta) = # of True in below_surface\
+        bs_bathy = bathy[below_surface] #only a few particles may be below surface
+        bs_depths = abs_depths[below_surface]
+
+        #working arrays for below_surface points
+        und_ind = -np.ones((len(bs_zeta)))
         und_alph = und_ind.copy()
 
         if data_shape[0] == self.num_w_levels:
             num_levels = self.num_w_levels
-            ldgb = self._w_L_Depth_given_bathymetry
+            ldgb = self._omega_L_Depth_given_bathymetry
         elif data_shape[0] == self.num_r_levels:
             num_levels = self.num_r_levels
-            ldgb = self._r_L_Depth_given_bathymetry
+            ldgb = self._rho_L_Depth_given_bathymetry
         else:
             raise ValueError('Cannot get depth interpolation alphas for data shape specified; does not fit r or w depth axis')
+        #blev_depths = level depth below the position, ulev_depths = level depth above the position   
         blev_depths = ulev_depths = None
-        for ulev in range(0, num_levels):
-            ulev_depths = ldgb(depths, zeta, ulev)
-#             print ulev_depths[0]
-            within_layer = np.where(np.logical_and(ulev_depths < pts[:, 2], und_ind == -1))[0]
-#             print within_layer
-            und_ind[within_layer] = ulev
-            if ulev == 0:
+        b_index = self.bottom_index
+        t_index = self.top_index
+        direction = 1
+        if self.bottom_index > self.top_index:
+            b_index -= 1
+            t_index -= 1
+        #this loop finds the indices one level at a time.
+        for level in range(b_index, t_index, direction):
+            #for the current level, get the level depths given bathymetry and zeta
+            #start at level 0 (deepest)
+            ulev_depths = ldgb(bs_bathy, bs_zeta, level)
+            #print(ulev_depths)
+            #
+            within_layer = np.logical_and(ulev_depths < bs_depths, und_ind == -1)
+            #print(within_layer)
+            und_ind[within_layer] = level
+            if level == b_index:
+                #everything within this layer is actually underground
+                #so set index to -1 (on surface) and alpha to special value -2
+                und_ind[within_layer] = -1
                 und_alph[within_layer] = -2
             else:
-                a = ((pts[:, 2].take(within_layer) - blev_depths.take(within_layer)) /
+                a = ((abs_depths.take(within_layer) - blev_depths.take(within_layer)) /
                      (ulev_depths.take(within_layer) - blev_depths.take(within_layer)))
                 und_alph[within_layer] = a
             blev_depths = ulev_depths
 
-        indices[underwater] = und_ind
-        alphas[underwater] = und_alph
+        indices[below_surface] = und_ind
+        alphas[below_surface] = und_alph
         return indices, alphas
 
     def get_section(self, time, coord='w', x_coord=None, y_coord=None, ):
