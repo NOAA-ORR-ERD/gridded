@@ -223,6 +223,8 @@ class S_Depth(DepthBase):
                  zeta=None,
                  terms=None,
                  vtransform=2,
+                 positive_down=True,
+                 zero_ref = 'surface',
                  **kwargs):
         '''
         :param name: Human readable name
@@ -243,13 +245,20 @@ class S_Depth(DepthBase):
         :param terms: remaining terms in dictionary layout
         :type terms: dictionary of string key to numeric value
         See S_Depth.default_names, sans bathymetry and zeta
+
+        :param vtransform: S-coordinate transform type. 1 = Old, 2 = New
+        :type vtransform: int (default 2)
+
+        :param positive_down: Flag for interpreting depth values as positive or negative
+        This applies to any coordinates passed into the various functions, NOT the values
+        of the S-Coordinates that this object represents
+        :type positive_down: boolean
+
+        :param zero_ref: Determines whether the 0 datum moves with the surface or is fixed
+        :type zero_ref: string ('absolute' or 'surface')
         '''
 
         super(S_Depth, self).__init__(**kwargs)
-        if self.surface_index is None:
-            self.surface_index = -1
-        if self.bottom_index is None:
-            self.bottom_index = 0
         self.name=name
         self.time=time
         self.grid=grid
@@ -257,12 +266,18 @@ class S_Depth(DepthBase):
         self.zeta = zeta
         self.terms={}
         self.vtransform = vtransform
+        self.positive_down = positive_down
+        self.zero_ref = zero_ref
         if terms is None:
             raise ValueError('Must provide terms for sigma coordinate')
         else:
             self.terms=terms
             for k, v in terms.items():
                 setattr(self, k, v)
+        if self.surface_index is None:
+            self.surface_index = self.num_w_levels - 1
+        if self.bottom_index is None:
+            self.bottom_index = 0
 
 
     @classmethod
@@ -284,6 +299,7 @@ class S_Depth(DepthBase):
                     terms=None,
                     #fill_value=0,
                     vtransform=2,
+                    positive_down=True,
                     **kwargs
                     ):
         '''
@@ -441,6 +457,7 @@ class S_Depth(DepthBase):
                    zeta=zeta,
                    terms=terms,
                    vtransform=vtransform,
+                   positive_down=positive_down,
                    **kwargs)
 
     @property
@@ -470,7 +487,7 @@ class S_Depth(DepthBase):
 
         hc = self.hc
         S = hc * s + (bathy - hc) * Cs
-        return S + zeta * (1 + S / bathy)
+        return -(S + zeta * (1 + S / bathy))
 
     def _L_Depth_given_bathymetry_t2(self, bathy, zeta, lvl, rho_or_w):
         #computes the depth (positive up) of a level given the bathymetry
@@ -488,9 +505,9 @@ class S_Depth(DepthBase):
 
         hc = self.hc
         S = (hc * s + bathy * Cs) / (hc + bathy)
-        return zeta + (zeta + bathy) * S
+        return -(zeta + (zeta + bathy) * S)
 
-    def interpolation_alphas(self, points, time, data_shape, _hash=None, extrapolate=False, zero_ref='absolute'):
+    def interpolation_alphas(self, points, time, data_shape, _hash=None, extrapolate=False):
         '''
         Returns a pair of values. The 1st value is an array of the depth indices of all the points.
         The 2nd value is an array of the interpolation alphas for the points between their depth
@@ -509,8 +526,8 @@ class S_Depth(DepthBase):
             abs_depths = points[:,2]
         else: #points depths are positive up
             abs_depths = -points[:,2]
-        if zero_ref == 'absolute':
-            below_surface = abs_depths > -zetas.reshape(-1)
+        if self.zero_ref == 'absolute':
+            below_surface = -abs_depths < zetas.reshape(-1)
         else:
             abs_depths = abs_depths - zetas
             below_surface = points[:,2] > 0
@@ -522,7 +539,7 @@ class S_Depth(DepthBase):
         below_ground = abs_depths > bathy
 
         #below_surface points should not also be below_ground
-        np.logical_and(np.logical_not(below_ground), below_surface, below_surface)
+        #np.logical_and(np.logical_not(below_ground), below_surface, below_surface)
         
         #setup (index, alphas) return arrays. -1 indicates at or above surface
         indices = -np.ones((len(points)), dtype=np.int64)
@@ -555,37 +572,36 @@ class S_Depth(DepthBase):
         #blev_depths = level depth below the position, ulev_depths = level depth above the position   
         blev_depths = ulev_depths = None
         b_index = self.bottom_index
-        t_index = self.top_index
-        direction = 1
-        if self.bottom_index > self.top_index:
-            b_index -= 1
-            t_index -= 1
+        t_index = self.surface_index if rho_or_w == 'rho' else self.surface_index + 1
         #this loop finds the indices one level at a time.
-        for level in range(b_index, t_index, direction):
+        for level in range(b_index, t_index, 1):
             #for the current level, get the level depths given bathymetry and zeta
             #start at level 0 (deepest)
             ulev_depths = ldgb(bs_bathy, bs_zeta, level, rho_or_w)
+
             #print(ulev_depths)
-            #
-            within_layer = np.logical_and(ulev_depths < bs_depths, und_ind == -1)
+            below_upper_layer = np.logical_and(ulev_depths < bs_depths, und_ind >= -1)
+            if level == b_index: #special case for lowest possible layer
+                und_ind[below_upper_layer] = -2
+                und_alph[below_upper_layer] = -2
+                continue
+            blev_depths = ldgb(bs_bathy, bs_zeta, level-1, rho_or_w)
+            within_layer = np.where(np.logical_and(blev_depths >= bs_depths, below_upper_layer))[0]
+            if len(within_layer) == 0:
+                continue
             #print(within_layer)
             und_ind[within_layer] = level
-            if level == b_index:
-                #everything within this layer is actually underground
-                #so set index to -1 (on surface) and alpha to special value -2
-                und_ind[within_layer] = -1
-                und_alph[within_layer] = -2
-            else:
-                a = ((abs_depths.take(within_layer) - blev_depths.take(within_layer)) /
-                     (ulev_depths.take(within_layer) - blev_depths.take(within_layer)))
-                und_alph[within_layer] = a
+            a = ((abs_depths.take(within_layer) - blev_depths.take(within_layer)) /
+                    (ulev_depths.take(within_layer) - blev_depths.take(within_layer)))
+            und_alph[within_layer] = a
             blev_depths = ulev_depths
 
         indices[below_surface] = und_ind
         alphas[below_surface] = und_alph
+        indices[indices == -2] = -1
         return indices, alphas
 
-    def get_section(self, time, coord='w', x_coord=None, y_coord=None, ):
+    def get_section(self, time, coord='w', x_coord=None, y_coord=None, vtransform=2):
         '''
         Returns a section  of the z-level space in time. All s-levels are
         returned in the data. By providing a x_coord or y_coord you can
@@ -596,11 +612,14 @@ class S_Depth(DepthBase):
             raise ValueError('Can only specify "w" or "rho" for coord kwarg')
         ldgb = None
         z_shp = None
+        if vtransform == 2:
+            ldgb = self._L_Depth_given_bathymetry_t2
+        else:
+            ldgb = self._L_Depth_given_bathymetry_t1
+
         if coord == 'w':
-            ldgb = self._w_L_Depth_given_bathymetry
             z_shp = (self.num_w_levels, self.zeta.data.shape[-2], self.zeta.data.shape[-1])
         if coord == 'rho':
-            ldgb = self._r_L_Depth_given_bathymetry
             z_shp = (self.num_r_levels, self.zeta.data.shape[-2], self.zeta.data.shape[-1])
         time_idx = self.time.index_of(time)
         time_alpha = self.time.interp_alpha(time)
@@ -613,7 +632,7 @@ class S_Depth(DepthBase):
         bathy = self.bathymetry.data[:]
         z_data=np.empty(z_shp)
         for lvl in range(0,len(z_data)):
-            z_data[lvl] = ldgb(bathy,zeta,lvl)
+            z_data[lvl] = ldgb(bathy, zeta, lvl, coord)
         return z_data
 
 

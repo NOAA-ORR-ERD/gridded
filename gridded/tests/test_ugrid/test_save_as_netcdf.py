@@ -34,6 +34,7 @@ file_counter = [0]
 def ncds():
     """
     provides a new netCDF4 Dataset
+    JAH: This needs to be explained!
     """
     if not os.path.isdir(temp_files):
         os.mkdir(temp_files)

@@ -256,8 +256,9 @@ class Variable(object):
         if depth is None:
             if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
                     isinstance(grid, Grid_U) and len(data.shape) == 3):
-                depth = Depth.from_netCDF(grid_file,
-                                          dataset=dg,
+                depth = Depth.from_netCDF(grid_file=dg,
+                                          data_file=ds,
+                                          **kwargs
                                           )
         if location is None:
             if hasattr(data, 'location'):
@@ -666,15 +667,18 @@ class Variable(object):
         # the index refers to the layer index ABOVE the point. EG index 5 means v0 should
         # be from layer 4 and v1 should be from layer 5
         # HOWEVER if the depth layer data is "backwards" for some reason ('high-index-bottom'),
-        # (self.bottom_index > self.top_index) then index 5 means v0 should be from
+        # (self.bottom_index > self.surface_index) then index 5 means v0 should be from
         # layer 6 and v1 should be from layer 5
         if d_indices is None and d_alphas is None:
             # all particles are on surface
             return val_func(points, time, extrapolate, slices=slices + (self.depth.surface_index,), **kwargs)
+        elif np.all(d_indices == -1) and np.all(d_alphas == -2):
+            # all particles underground
+            return val_func(points, time, extrapolate, slices=slices + (self.depth.bottom_index,), **kwargs)
         else:
             direction = 1 #bottom idx < top
             underwater = d_indices != -1
-            if self.bottom_index > self.top_index:
+            if self.depth.bottom_index > self.depth.surface_index:
                 low_layer = d_indices[underwater].max()
                 high_layer = d_indices.min() - 1
                 direction = -1
@@ -684,7 +688,7 @@ class Variable(object):
             values = np.zeros(len(points), dtype=np.float64)
             v0_idx = low_layer - direction
             lay_idxs = np.where(d_indices == low_layer)[0]
-            v0 = val_func(points, time, extrapolate, slices=slices + (v0_idx,), **kwargs)
+            v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (v0_idx,), **kwargs)
             # if we get an array-out-of bounds on the line above it would be because the index
             # array had the max index (n_layers) in a high-index-bottom situation.
             # regardless, this means depth.interpolation_alphas did something wrong because
@@ -700,7 +704,7 @@ class Variable(object):
                     v0_idx = idx - 1
                     v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (v0_idx,), **kwargs)
                 v1 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs)
-                sub_vals = v0 + (v1 - v0) * d_alphas
+                sub_vals = v0 + (v1 - v0) * d_alphas[lay_idxs]
                 #partially fill the values array for this layer
                 values.put(lay_idxs, sub_vals)
                 #shift up to the next layer
@@ -905,8 +909,8 @@ class VectorVariable(object):
             ds = dataset
 
         if grid is None:
-            grid = Grid.from_netCDF(grid_file,
-                                    dataset=dg,
+            grid = Grid.from_netCDF(grid_file=dg,
+                                    data_file=ds,
                                     grid_topology=grid_topology)
         if varnames is None:
             varnames = cls._gen_varnames(data_file,
@@ -926,8 +930,9 @@ class VectorVariable(object):
         if depth is None:
             if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
                     isinstance(grid, Grid_U) and len(data.shape) == 3):
-                depth = Depth.from_netCDF(grid_file,
-                                          dataset=dg,
+                depth = Depth.from_netCDF(grid_file=dg,
+                                          data_file=ds,
+                                          **kwargs
                                           )
 
 #         if depth is None:
