@@ -591,7 +591,7 @@ class S_Depth(DepthBase):
                 continue
             #print(within_layer)
             und_ind[within_layer] = level
-            a = ((abs_depths.take(within_layer) - blev_depths.take(within_layer)) /
+            a = ((bs_depths.take(within_layer) - blev_depths.take(within_layer)) /
                     (ulev_depths.take(within_layer) - blev_depths.take(within_layer)))
             und_alph[within_layer] = a
             blev_depths = ulev_depths

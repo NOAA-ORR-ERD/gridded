@@ -132,8 +132,82 @@ class Test_S_Depth(object):
             levels[:, int(sz / 2), int(sz / 2)], center
         )
 
-    def test_interpolation_alphas(self, get_s_depth):
+    def test_interpolation_alphas_bottom(self, get_s_depth):
+        '''
+        We will focus on the center mound to see if the correct alphas and
+        indices are returned for various points nearby.
+        interpolation_alphas(self, points, time, data_shape, _hash=None, extrapolate=False):
+        '''
         sd = get_s_depth
+        # query center mound (20,20) at 3 depths. 1st point is 0.1m off the seafloor and 10% of
+        # the distance to the next s-layer (meaning, expected alpha returned is 10%)
+        # 2nd point is directly on the seafloor (should register as 'in bounds' and 0 alpha)
+        # 3rd point is 0.1m underground, and should indicate with -2 alpha
+        points = np.array([[20,20, 9.9],[20,20,10.0], [20,20,10.1]])
+        ts = sd.time.data[1]
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
+        assert sd.zero_ref == 'surface'
+        assert np.all(idx == [1,1,-1])
+        assert np.all(np.isclose(alphas, [0.1, 0, -2]))
+        
+        # since zeta is 0 in this case, the behavior should be the same as in absolute mode
+        sd.zero_ref = 'absolute'
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
+        assert np.all(idx == [1,1,-1])
+        assert np.all(np.isclose(alphas, [0.1, 0, -2]))
+
+        # time.data[2] changes the zeta to 0.5 (.5m up), increasing the total water column at the query point
+        # to 10.5m. Since zero_ref is still 'surface', the depth of each particle is effectively
+        # decreased by zeta. This test may very well change since this behavior can be problematic. 
+        ts = sd.time.data[2]
+        sd.zero_ref = 'surface'
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
+        assert np.all(idx == [1,1,1])
+        levels = sd.get_section(ts, 'w')[:,20,20]
+        zetas = sd.zeta.at(points, ts)
+        for alph, dep, zetas in zip(alphas, points[:,2], zetas):
+            expected = 1 - ((dep - zetas) - levels[1]) / (levels[0] - levels[1])
+            assert np.isclose(alph, expected)
+        # assert np.all(np.isclose(alphas, [0.1, 0, -2]))
+        
+        # since zeta is non-zero, behavior will be different. It should be similar to the first case
+        # but not identical since the layers have been stretched slightly differently due to zeta
+        sd.zero_ref = 'absolute'
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
+        assert np.all(idx == [1,1,-1])
+        levels = sd.get_section(ts, 'w')[:,20,20]
+        zetas = sd.zeta.at(points, ts)
+        expected = 1 - (points[0,2] - levels[1]) / (levels[0] - levels[1])
+        assert np.isclose(alphas[0], expected)
+        assert np.all(np.isclose(alphas[1:], [0,-2]))
+    
+    def test_interpolation_alphas_surface(self, get_s_depth):
+        sd = get_s_depth
+        sd.zero_ref = 'surface'
+        points = np.array([[20,20, 0],[20,20,0.1], [20,20,-0.1]])
+        ts = sd.time.data[1]
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
+        # only the element 0.1m deep should register with an index and alpha since
+        # it is the only element below surface
+        assert sd.zero_ref == 'surface'
+        assert np.all(idx == [-1,10,-1]) 
+        assert np.all(alphas == [-1,0.9,-1])
+
+        # switch to timestep with -0.5m zeta
+        ts = sd.time.data[0]
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
+        assert np.all(idx == [-1,10,-1])
+        # on surface and above should be the same. slightly below surface point should have
+        # a slightly lower alpha due to slightly compressed coordinate compared to original
+        # test.
+        assert np.all(alphas[[0,2]] == [-1,-1])
+        assert alphas[1] < 0.9 and alphas[1] > 0.8
+
+        sd.zero_ref = 'absolute'
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
+        # this combo of depths and zeta and zero ref should evaluate all depths
+        # as 'above the surface' and so idx, alphas should be None, None
+        assert idx == None and alphas == None
 
 
 class Test_L_Depth(object):
