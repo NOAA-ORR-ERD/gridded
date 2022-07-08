@@ -224,7 +224,7 @@ class S_Depth(DepthBase):
                  terms=None,
                  vtransform=2,
                  positive_down=True,
-                 zero_ref = 'surface',
+                 zero_ref = 'absolute',
                  **kwargs):
         '''
         :param name: Human readable name

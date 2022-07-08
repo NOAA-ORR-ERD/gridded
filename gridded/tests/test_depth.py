@@ -145,8 +145,8 @@ class Test_S_Depth(object):
         # 3rd point is 0.1m underground, and should indicate with -2 alpha
         points = np.array([[20,20, 9.9],[20,20,10.0], [20,20,10.1]])
         ts = sd.time.data[1]
+        sd.zero_ref = 'surface'
         idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
-        assert sd.zero_ref == 'surface'
         assert np.all(idx == [1,1,-1])
         assert np.all(np.isclose(alphas, [0.1, 0, -2]))
         
