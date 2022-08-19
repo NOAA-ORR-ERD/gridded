@@ -517,7 +517,7 @@ class S_Depth(DepthBase):
             'surface' means a point's depth is referenced from zeta
             'absolute' means a point's depth is referenced from average sea level zero
         '''
-        zetas = self.zeta.at(points, time, _hash=_hash, extrapolate=extrapolate)
+        zetas = self.zeta.at(points, time, _hash=_hash, extrapolate=extrapolate).reshape(-1)
         #abs_depths = absolute depth from avg sea level, positive = down
         #below_surface = bool array flagging a particle as below sea surface and above sea floor
         #below_ground = bool array flagging a particle as below sea floor (abs_depth > bathymetry)
@@ -535,7 +535,7 @@ class S_Depth(DepthBase):
         if not np.any(below_surface):
             #nothing is underwater, so return special (None, None)
             return None, None
-        bathy = self.bathymetry.at(points, time, _hash=_hash, extrapolate=extrapolate)
+        bathy = self.bathymetry.at(points, time, _hash=_hash, extrapolate=extrapolate).reshape(-1)
         below_ground = abs_depths > bathy
 
         #below_surface points should not also be below_ground

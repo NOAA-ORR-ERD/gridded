@@ -123,7 +123,7 @@ def regrid_variable(grid, o_var, location='node'):
                                    data=lev_data,
                                    grid=o_var.grid)
                     zs = lev.at(pts, t)
-                    pts[:, 2] = zs
+                    pts[:, 2] = zs[:,0]
                     n_data[t_idx, lev_idx] = o_var.at(pts, t).reshape(location_shp)
             else:
                 n_data[t_idx] = o_var.at(pts, t).reshape(location_shp)
