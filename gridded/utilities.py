@@ -291,7 +291,10 @@ def _align_results_to_spatial_data(result, points):
         elif shp[0] < shp[1] and result.shape[0] == shp[1]:
             return result.T
         else:
-            return result
+            if shp[0] == result.shape[0] and len(result.shape) == 1:
+                return result[:, None] #enforce (N,1) shape
+            else:
+                return result
 
 
 def isarraylike(obj):
