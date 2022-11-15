@@ -645,13 +645,16 @@ class SGrid(object):
         return idxs
 
     def get_padding_by_location(self, location):
+        assert location in ['center', 'edge1', 'edge2', 'node']
         d = {'center': 'center_padding',
             'edge1': 'edge1_padding',
             'edge2': 'edge2_padding',
             'node': 'node_padding'}
         for k, v in d.items():
             if location == k:
-                return getattr(self, v)
+                rv = getattr(self, v)
+        assert rv is not None
+        return rv
 
     def get_padding_slices(self,
                            padding=('none','none')):
@@ -662,7 +665,7 @@ class SGrid(object):
         lo_offsets = [0,0]
         hi_offsets = [0,0]
         for dim, typ in enumerate(padding):
-            if typ == 'none':
+            if typ == 'none' or typ is None:
                 continue
             elif typ == 'high':
                 hi_offsets[dim] -= 1
