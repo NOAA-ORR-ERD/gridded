@@ -645,16 +645,15 @@ class SGrid(object):
         return idxs
 
     def get_padding_by_location(self, location):
-        assert location in ['center', 'edge1', 'edge2', 'node']
-        d = {'center': 'center_padding',
-            'edge1': 'edge1_padding',
-            'edge2': 'edge2_padding',
-            'node': 'node_padding'}
-        for k, v in d.items():
-            if location == k:
-                rv = getattr(self, v)
-        assert rv is not None
-        return rv
+        d = [(node_alternate_names, 'node_padding'),
+         (center_alternate_names, 'center_padding'),
+         (edge1_alternate_names, 'edge1_padding'),
+         (edge2_alternate_names, 'edge2_padding')]
+        for namelist, propname in d:
+            if location in namelist:
+                rv = getattr(self, propname)
+                assert rv is not None
+                return rv
 
     def get_padding_slices(self,
                            padding=('none','none')):
@@ -883,7 +882,7 @@ class SGrid(object):
                          2 dimensional array, but you must pass 'slices' kwarg
                          with appropriate slice collection to reduce it to 2 dimensions.
 
-        :param location: One of ('node', 'center', 'edge1', 'edge2').
+        :param location: One of ('node', 'center', 'edge1', 'edge2', 'face').
                          'edge1' is conventionally associated with the 'vertical' edges
                          and likewise 'edge2' with the 'horizontal'. Determines type of
                          interpolation, see below for details
