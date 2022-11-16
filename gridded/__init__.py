@@ -5,7 +5,7 @@ from __future__ import (absolute_import,
                         print_function,
                         unicode_literals)
 
-__version__ = "0.3.9"
+__version__ = "0.3.8"
 
 
 VALID_SGRID_LOCATIONS = (None, 'center','edge1','edge2','node')
