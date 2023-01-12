@@ -677,6 +677,8 @@ class SGrid(object):
                 hi_offsets[dim] = None
                 lo_offsets[dim] = 0
 
+        lo_offsets = [l if l != 0 else None for l in lo_offsets]
+        hi_offsets = [h if h != 0 else None for h in hi_offsets]
         return (np.s_[lo_offsets[0]:hi_offsets[0], lo_offsets[1]:hi_offsets[1]])
 
     def get_variable_by_index(self, var, index):
