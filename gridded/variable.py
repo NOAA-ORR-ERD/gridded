@@ -229,6 +229,7 @@ class Variable(object):
             grid = Grid.from_netCDF(grid_file,
                                     dataset=dg,
                                     grid_topology=grid_topology)
+
         if varname is None:
             varname = cls._gen_varname(data_file,
                                        dataset=ds)
@@ -258,6 +259,7 @@ class Variable(object):
                     isinstance(grid, Grid_U) and len(data.shape) == 3):
                 depth = Depth.from_netCDF(grid_file=dg,
                                           data_file=ds,
+                                          filename=data_file, #02-14-2013
                                           **kwargs
                                           )
         if location is None:
