@@ -13,7 +13,7 @@ import warnings
 from collections import OrderedDict
 
 from gridded.pysgrid.read_netcdf import NetCDFDataset, parse_padding, find_grid_topology_var
-from gridded.pysgrid.utils import calculate_angle_from_true_east, pair_arrays
+from gridded.pysgrid.utils import calculate_angle_from_true_east, pair_arrays, GridPadding
 from gridded.pysgrid.variables import SGridVariable
 from gridded.utilities import gen_celltree_mask_from_center_mask
 

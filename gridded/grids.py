@@ -473,6 +473,7 @@ class Grid(object):
 
         :returns: Instance of Grid_U, Grid_S, or Grid_R
         '''
+        filename = get_dataset(filename, dataset)
         gf = dataset if filename is None else get_dataset(filename, dataset)
         if gf is None:
             raise ValueError('No filename or dataset provided')

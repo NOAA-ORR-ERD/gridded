@@ -506,20 +506,28 @@ class Variable(object):
 
 #     @profile
     def at(self,
-           points,
-           time,
+           points=None,
+           time=None,
            units=None,
            extrapolate=False,
+           lons=None,
+           lats=None,
+           unmask=False,
            _hash=None,
            _mem=True,
-           _auto_align=True,
-           unmask=False,
            **kwargs):
         """
         Find the value of the property at positions P at time T
 
-        :param points: Cartesian coordinates to be queried (P).
-        [[Lon1, Lat1, Z1], [Lon2, Lat2, Z2], ...]
+        :param points: Cartesian coordinates to be queried (P). Lon, Lat required, Depth (Z) is optional
+        Coordinates must be organized as a 2D array or list, one coordinate per row or list element.
+        [[Lon1, Lat1, Z1],
+         [Lon2, Lat2, Z2],
+         [Lon3, Lat3, Z3],
+         ...]
+        Failure to provide point data in this format may cause unexpected behavior
+        If you wish to provide point data using separate longitude and latitude arrays,
+        use the `lons=` and `lats=` kwargs. 
         Note that if your Z is positive-up, self.depth.positive_down should be
         set to False
         :type points: Nx3 array of double
@@ -540,9 +548,19 @@ class Variable(object):
         applicable if depth dimension is present with full sigma layers
         :type zero_ref: string 'absolute' or 'relative'
 
+        :param lons: 1D iterable of longitude values. This is ignored if points is provided
+        :type lons: iterable
+
+        :param lats 1D iterable of latitude values. This is ignored if points is provided
+        :type lons: iterable
+
         :return: returns a Nx1 array of interpolated values
         :rtype: double
         """
+        if points is None and (lons is None or lats is None):
+            raise ValueError("Must provide either points or separate lons and lats")
+        if points is None:
+            points = np.column_stack((np.array(lons), np.array(lats)))
         pts = _reorganize_spatial_data(points)
 
         if _hash is None:
@@ -560,10 +578,8 @@ class Variable(object):
             value = self._depth_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
         else:
             value = self._xy_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
-
-
-        if _auto_align == True:
-            value = _align_results_to_spatial_data(value.copy(), points)
+        
+        value = value.reshape(-1,1)
 
         if isinstance(value, np.ma.MaskedArray):
             np.ma.set_fill_value(value, self.fill_value)
@@ -909,8 +925,8 @@ class VectorVariable(object):
             ds = dataset
 
         if grid is None:
-            grid = Grid.from_netCDF(grid_file=dg,
-                                    data_file=ds,
+            grid = Grid.from_netCDF(grid_file,
+                                    dataset=dg,
                                     grid_topology=grid_topology)
         if varnames is None:
             varnames = cls._gen_varnames(data_file,
@@ -1137,13 +1153,67 @@ class VectorVariable(object):
         else:
             return None
 
-    def at(self, points, time, units=None, extrapolate=False, memoize=True, _hash=None, _auto_align=True, **kwargs):
+    def at(self,
+           points=None,
+           time=None,
+           units=None,
+           extrapolate=False,
+           lons=None,
+           lats=None,
+           unmask=False,
+           _hash=None,
+           _mem=True,
+           **kwargs):
+        """
+        Find the value of the property at positions P at time T
+
+        :param points: Cartesian coordinates to be queried (P). Lon, Lat required, Depth (Z) is optional
+        Coordinates must be organized as a 2D array or list, one coordinate per row or list element.
+        [[Lon1, Lat1, Z1],
+         [Lon2, Lat2, Z2],
+         [Lon3, Lat3, Z3],
+         ...]
+        Failure to provide point data in this format may cause unexpected behavior
+        If you wish to provide point data using separate longitude and latitude arrays,
+        use the `lons=` and `lats=` kwargs. 
+        Note that if your Z is positive-up, self.depth.positive_down should be
+        set to False
+        :type points: Nx3 array of double
+
+        :param time: The time at which to query these points (T)
+        :type time: datetime.datetime object
+
+        :param units: units the values will be returned in (or converted to)
+        :type units: string such as ('m/s', 'knots', etc)
+
+        :param extrapolate: if True, extrapolation will be supported
+        :type extrapolate: boolean (default False)
+
+        :param unmask: if True and return array is a masked array, returns filled array
+        :type unmask: boolean (default False)
+
+        :param zero_ref: Specifies whether the zero datum moves with zeta or not. Only
+        applicable if depth dimension is present with full sigma layers
+        :type zero_ref: string 'absolute' or 'relative'
+
+        :param lons: 1D iterable of longitude values. This is ignored if points is provided
+        :type lons: iterable
+
+        :param lats 1D iterable of latitude values. This is ignored if points is provided
+        :type lons: iterable
+
+        :return: returns a NxM array of interpolated values N = len(points) M = len(self.variables)
+        :rtype: np.array or np.ma.MaskedArray
+        """
+        if points is None and (lons is None or lats is None):
+            raise ValueError("Must provide either points or separate lons and lats")
+        if points is None:
+            points = np.column_stack((np.array(lons), np.array(lats)))
         pts = _reorganize_spatial_data(points)
-        mem = memoize
         if hash is None:
             _hash = self._get_hash(points, time)
 
-        if mem:
+        if _mem:
             res = self._get_memoed(points, time, self._result_memo, _hash=_hash)
             if res is not None:
                 return res
@@ -1152,14 +1222,12 @@ class VectorVariable(object):
                                         time=time,
                                         units=units,
                                         extrapolate=extrapolate,
-                                        memoize=memoize,
+                                        unmask=unmask,
+                                        _mem=_mem,
                                         _hash=_hash,
                                         **kwargs) for var in self.variables])
 
-        if _auto_align == True:
-            value = _align_results_to_spatial_data(value.copy(), points)
-
-        if mem:
+        if _mem:
             self._memoize_result(points, time, value, self._result_memo, _hash=_hash)
 
         return value
