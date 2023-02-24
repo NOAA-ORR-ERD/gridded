@@ -9,7 +9,6 @@ rather than as fixtures.
 NOTE: making these session fixtures might make sense.
 """
 
-from __future__ import (absolute_import, division, print_function)
 
 
 import numpy as np

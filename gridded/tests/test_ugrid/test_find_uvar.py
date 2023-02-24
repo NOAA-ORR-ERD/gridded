@@ -8,7 +8,6 @@ No need for all this reading and writing; that is tested elsewhere.
 
 """
 
-from __future__ import (absolute_import, division, print_function)
 
 import os
 

@@ -9,7 +9,6 @@ UGRID-compliant files.
 Ideally, we'll add loading from shape files or what have you in the future
 """
 
-from __future__ import (absolute_import, division, print_function)
 
 import netCDF4
 import numpy as np

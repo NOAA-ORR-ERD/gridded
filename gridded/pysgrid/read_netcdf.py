@@ -4,7 +4,6 @@ Created on Mar 19, 2015
 @author: ayan
 '''
 
-from __future__ import (absolute_import, division, print_function)
 
 import re
 
