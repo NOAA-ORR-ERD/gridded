@@ -18,6 +18,7 @@ jobs:
           auto-activate-base: false
       - shell: bash -l {0}
         run: |
+          conda config --add channels conda-forge
           conda info
           conda list
       # - name: Lint
