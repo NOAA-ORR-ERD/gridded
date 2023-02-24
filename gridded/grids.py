@@ -235,7 +235,7 @@ class Grid_S(GridBase, SGrid):
                 if n in center_attrs + edge1_attrs + edge2_attrs and v in gf_vars:
                     init_args[n] = gf_vars[v][:]
         return init_args, gt
-        
+
 
 class Grid_R(GridBase):
     """
