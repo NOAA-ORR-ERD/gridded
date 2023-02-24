@@ -229,7 +229,6 @@ class Variable(object):
             grid = Grid.from_netCDF(grid_file,
                                     dataset=dg,
                                     grid_topology=grid_topology)
-
         if varname is None:
             varname = cls._gen_varname(data_file,
                                        dataset=ds)
@@ -680,43 +679,53 @@ class Variable(object):
         else:
             direction = 1 #bottom idx < top
             underwater = d_indices != -1
-            if self.depth.bottom_index > self.depth.surface_index:
-                low_layer = d_indices[underwater].max()
-                high_layer = d_indices.min() - 1
-                direction = -1
-            else:
-                low_layer = d_indices[underwater].min()
-                high_layer = d_indices.max() + 1
             values = np.zeros(len(points), dtype=np.float64)
-            v0_idx = low_layer - direction
-            lay_idxs = np.where(d_indices == low_layer)[0]
-            v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (v0_idx,), **kwargs)
-            # if we get an array-out-of bounds on the line above it would be because the index
-            # array had the max index (n_layers) in a high-index-bottom situation.
-            # regardless, this means depth.interpolation_alphas did something wrong because
-            # such values should not be introduced.
-            for idx in range(low_layer, high_layer, direction):
-                #select the matching LEs for this layer
-                lay_idxs = np.where(d_indices == low_layer)[0]
-                if len(lay_idxs) == 0:
-                    #no point indices are within the layer, so skip
-                    continue
-                if v0_idx != idx - 1:
-                    #skipped one or more layers, so new v0 needs to be found
-                    v0_idx = idx - 1
-                    v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (v0_idx,), **kwargs)
-                v1 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs)
-                sub_vals = v0 + (v1 - v0) * d_alphas[lay_idxs]
-                #partially fill the values array for this layer
-                values.put(lay_idxs, sub_vals)
+
+            if len(d_indices[underwater]) > 0:
+                if self.depth.bottom_index > self.depth.surface_index:
+                    low_layer = d_indices[underwater].max()
+                    high_layer = d_indices[underwater].min() - 1
+                    direction = -1
+                else:
+                    low_layer = d_indices[underwater].min()
+                    high_layer = d_indices[underwater].max() + 1
+
+                #v0_idx = low_layer - direction
+                #lay_idxs = np.where(d_indices == low_layer)[0]
+                #v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (v0_idx,), **kwargs)
+                # if we get an array-out-of bounds on the line above it would be because the index
+                # array had the max index (n_layers) in a high-index-bottom situation.
+                # regardless, this means depth.interpolation_alphas did something wrong because
+                # such values should not be introduced.
+                for idx in range(low_layer, high_layer, direction):
+                    #select the matching LEs for this layer
+                    #lay_idxs = np.where(d_indices == low_layer)[0] # 2023 correction ##############
+                    lay_idxs = np.where(d_indices == idx)[0]
+                    if len(lay_idxs) == 0:
+                        #no point indices are within the layer, so skip
+                        continue
+                    #if v0_idx != idx - 1: # 2023 correction ##############
+                        #skipped one or more layers, so new v0 needs to be found
+                        #v0_idx = idx - 1 # 2023 correction
+                    v0_idx = idx
+                    v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (v0_idx,), **kwargs) # 2023 correction
+                    v1 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (v0_idx+1,), **kwargs)
+                    sub_vals = v0 + (v1 - v0) * d_alphas[lay_idxs]
+                    #partially fill the values array for this layer
+                    values.put(lay_idxs, sub_vals)
+
                 #shift up to the next layer
-                v0 = v1
-                v0_idx = idx
+                #v0 = v1 # 2023
+                #v0_idx = idx # 2023
             underground = (d_alphas == -2)
             # These would have been flagged with index -1 (surface)
             # but the additional d_alpha of -2 indicates their subterranean
             # nature. Therefore, use fill_value
-            values[underground] = self.fill_value
+            values[underground] = val_func(points[underground], time, extrapolate, slices=slices + (self.depth.bottom_index,), **kwargs) #self.fill_value
+
+            onsurface = (d_alphas == -3)
+            values[onsurface] = val_func(points[onsurface], time, extrapolate, slices=slices + (self.depth.surface_index,), **kwargs)
+
             return values
 
     def _transect(self, times, depths, points):

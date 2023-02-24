@@ -117,7 +117,6 @@ class Dataset():
                 except AttributeError:
                     # that didn't work, need to try to infer it
                     location = self.grid.infer_location(ncvar)
-
                 if location is not None:
                     try:
                         ln = ds[k].long_name
