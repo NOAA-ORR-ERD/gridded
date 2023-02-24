@@ -5,7 +5,6 @@ Created on Mar 23, 2015
 
 """
 
-from __future__ import (absolute_import, division, print_function)
 
 import pytest
 

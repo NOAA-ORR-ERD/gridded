@@ -1,4 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
 
 from gridded.pysgrid.sgrid import SGrid
 from gridded.pyugrid.ugrid import UGrid

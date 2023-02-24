@@ -5,7 +5,6 @@ Created on Apr 7, 2015
 
 """
 
-from __future__ import absolute_import, division, print_function
 
 from gridded.pysgrid.read_netcdf import NetCDFDataset, find_grid_topology_var
 from .write_nc_test_files import roms_sgrid, wrf_sgrid
