@@ -80,7 +80,7 @@ class DepthBase(object):
         if names_list is None:
             names_list = cls.default_names
         if std_names_list is None:
-            std_names_list = cls.cf_names 
+            std_names_list = cls.cf_names
         for n in names_list:
             if n in df.variables.keys():
                 return n
@@ -231,7 +231,7 @@ class S_Depth(DepthBase):
         :type name: string
 
         :param time: time axis of the object
-        :type time: gridded.time.Time or derivative 
+        :type time: gridded.time.Time or derivative
 
         :param grid: x/y grid representation
         :type grid: gridded.grids.GridBase or derivative
@@ -348,15 +348,15 @@ class S_Depth(DepthBase):
             bathy_name = varnames.get('bathymetry', None)
             choice_ds = ds
             if not bathy_name:
-                try: 
-                    bathy_name = cls._gen_varname(dataset=choice_ds, 
+                try:
+                    bathy_name = cls._gen_varname(dataset=choice_ds,
                                     names_list=cls.default_names['bathymetry'],
                                     std_names_list=cls.cf_names['bathymetry'])
                 except KeyError:
                     if dg is not None:
                         warnings.warn('bathymetry not found in data file, attempting from grid file')
                         choice_ds = dg
-                        bathy_name = cls._gen_varname(dataset=choice_ds, 
+                        bathy_name = cls._gen_varname(dataset=choice_ds,
                                     names_list=cls.default_names['bathymetry'],
                                     std_names_list=cls.cf_names['bathymetry'])
                     else:
@@ -448,7 +448,7 @@ class S_Depth(DepthBase):
                     terms[term] = choice_ds[vname][:]
         if vtransform is None:
             vtransform = 2 #default for ROMS
-            #no messing about trying to detect this. 
+            #no messing about trying to detect this.
 
         return cls(name=name,
                    time=time,
@@ -540,7 +540,7 @@ class S_Depth(DepthBase):
 
         #below_surface points should not also be below_ground
         #np.logical_and(np.logical_not(below_ground), below_surface, below_surface)
-        
+
         #setup (index, alphas) return arrays. -1 indicates at or above surface
         indices = -np.ones((len(points)), dtype=np.int64)
         alphas = -np.ones((len(points)), dtype=np.float64)
@@ -569,7 +569,7 @@ class S_Depth(DepthBase):
             ldgb = self._L_Depth_given_bathymetry_t1
         else:
             raise ValueError('invalid vtransform attribute on depth object')
-        #blev_depths = level depth below the position, ulev_depths = level depth above the position   
+        #blev_depths = level depth below the position, ulev_depths = level depth above the position
         blev_depths = ulev_depths = None
         b_index = self.bottom_index
         t_index = self.surface_index if rho_or_w == 'rho' else self.surface_index + 1
@@ -672,7 +672,7 @@ class Depth(object):
             raise ValueError('No filename or dataset provided')
 
         cls = depth_type
-        if (depth_type is None or isinstance(depth_type, string_types) or
+        if (depth_type is None or isinstance(depth_type, str) or
                                  not issubclass(depth_type, DepthBase)):
             cls = Depth._get_depth_type(df, depth_type, topology, _default_types)
 
