@@ -206,12 +206,13 @@ class Test_L_Depth(object):
     def test_construction(self, get_l_depth):
         assert get_l_depth is not None
 
-    def test_interpolation_alphas(self, get_l_depth):
+    def test_interpolation_alphas_all_surface(self, get_l_depth):
         ld = get_l_depth
         points = np.array(([0, 0, 0], [1, 1, 0]))
         idxs, alphas = ld.interpolation_alphas(points)
-        assert idxs is None
-        assert alphas is None
+        assert idxs is None and alphas is None
+
+    def test_interpolation_alphas_1_surface(self, get_l_depth):
         points = np.array(([0, 0, 0],
                            [1, 1, 0.5],
                            [0, 0, 1],
@@ -221,6 +222,8 @@ class Test_L_Depth(object):
         assert np.all(
             np.isclose(alphas, np.array([-1, 0.5, 0]))
         )
+
+    def test_interpolation_alphas_above_surface(self, get_l_depth):
         points = np.array(([0, 0, -1], [0, 0, 10]))
         idxs, alphas = ld.interpolation_alphas(points)
         assert np.all(idxs == np.array([-1, -1]))
