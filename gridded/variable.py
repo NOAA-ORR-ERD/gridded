@@ -228,6 +228,7 @@ class Variable(object):
             grid = Grid.from_netCDF(grid_file,
                                     dataset=dg,
                                     grid_topology=grid_topology)
+
         if varname is None:
             varname = cls._gen_varname(data_file,
                                        dataset=ds)
