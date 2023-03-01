@@ -2,7 +2,6 @@
 
 __version__ = "0.5.0"
 
-
 VALID_SGRID_LOCATIONS = (None, 'center','edge1','edge2','node')
 VALID_UGRID_LOCATIONS = (None, 'node', 'face', 'edge', 'boundary')
 VALID_LOCATIONS = set(VALID_SGRID_LOCATIONS + VALID_UGRID_LOCATIONS)

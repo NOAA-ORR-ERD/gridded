@@ -466,6 +466,7 @@ class S_Depth(DepthBase):
 
                     # don't want to re-include bathymetry, zeta
                     terms[term] = choice_ds[vname][:]
+
         if vtransform is None:
 
             vtransform = 2 #default for ROMS
