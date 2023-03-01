@@ -145,9 +145,6 @@ class L_Depth(DepthBase):
             surface_index = np.argmin(terms['depth_levels'])
         if bottom_index is None:
             bottom_index = np.argmax(terms['depth_levels'])
-        # 2023-02-21 set the depth of the top layer to zero
-        terms['depth_levels'][surface_index] = 0.0
-        # 2023-02-21 set the depth of the top layer to zero
         return cls(name=name,
                    terms=terms,
                    surface_index=surface_index,
@@ -163,10 +160,8 @@ class L_Depth(DepthBase):
         points = np.asarray(points, dtype=np.float64)
         points = points.reshape(-1, 3)
         underwater = points[:, 2] > 0
-
         if len(np.where(underwater)[0]) == 0:
             return None, None
-
         indices = -np.ones((len(points)), dtype=np.int64)
         alphas = -np.ones((len(points)), dtype=np.float64)
         pts = points[underwater]
@@ -177,26 +172,12 @@ class L_Depth(DepthBase):
 
         for i,n in enumerate(und_ind):
             if n == len(self.depth_levels) -1:
-
                 und_ind[i] = -1
             if und_ind[i] != -1:
                 und_alph[i] = (pts[i, 2] - self.depth_levels[und_ind[i]]) / (
                     self.depth_levels[und_ind[i] + 1] - self.depth_levels[und_ind[i]])
         indices[underwater] = und_ind
         alphas[underwater] = und_alph
-
-        # add control on the particles on sea surface
-        onsurface = points[:, 2] == 0.0
-        indices[onsurface] = -1
-        alphas[onsurface] = -3
-        # add control on the particles on sea surface
-
-        # add control on the depth below the data coverage
-        belowbottom = points[:, 2] >= np.max(self.depth_levels)
-        indices[belowbottom] = -1
-        alphas[belowbottom] = -2
-        # add control on the depth below the data coverage
-
         return indices, alphas
 
     @classmethod
