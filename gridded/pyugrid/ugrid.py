@@ -16,7 +16,6 @@ NOTE: only tested for triangular and quad mesh grids at the moment.
 
 """
 
-from __future__ import (absolute_import, division, print_function)
 
 import hashlib
 from collections import OrderedDict

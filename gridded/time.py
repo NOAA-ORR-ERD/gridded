@@ -1,8 +1,5 @@
 #!/usr/binenv python
 
-# py2/3 compatibility
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 from textwrap import dedent
 import netCDF4 as nc4
 import numpy as np

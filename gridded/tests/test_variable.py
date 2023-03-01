@@ -4,7 +4,6 @@ tests of Variable object
 Variable objects are mostly tested implicitly in other tests,
 but good to have a few explicitly for the Variable object
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os
 import netCDF4

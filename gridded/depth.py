@@ -1,19 +1,17 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import warnings
-from six import string_types
 
-import gridded
 import numpy as np
-from datetime import datetime
 from gridded.time import Time
 from gridded.grids import Grid
 from gridded.utilities import get_dataset
+
 
 class DepthBase(object):
     _default_component_types = {'time': Time,
                                 'grid': Grid,
                                 'variable': None}
+
     def __init__(self,
                  surface_index=None,
                  bottom_index=None,
@@ -22,7 +20,8 @@ class DepthBase(object):
         '''
         :param surface_index: array index of 'highest' level (closest to sea level)
         :param bottom_index: array index of 'lowest' level (closest to seafloor)
-        :param positive_down: orientation of points coordinates (for interpolation functions)
+        :param positive_down: orientation of points coordinates
+                              (for interpolation functions)
         '''
         self.surface_index = surface_index
         self.bottom_index = bottom_index
@@ -173,13 +172,16 @@ class L_Depth(DepthBase):
         pts = points[underwater]
         und_ind = -np.ones((len(np.where(underwater)[0])))
         und_alph = und_ind.copy()
+
         und_ind = np.digitize(pts[:,2], self.depth_levels) - 1
 
         for i,n in enumerate(und_ind):
             if n == len(self.depth_levels) -1:
+
                 und_ind[i] = -1
             if und_ind[i] != -1:
-                und_alph[i] = (pts[i,2] - self.depth_levels[und_ind[i]]) / (self.depth_levels[und_ind[i]+1] - self.depth_levels[und_ind[i]])
+                und_alph[i] = (pts[i, 2] - self.depth_levels[und_ind[i]]) / (
+                    self.depth_levels[und_ind[i] + 1] - self.depth_levels[und_ind[i]])
         indices[underwater] = und_ind
         alphas[underwater] = und_alph
 
@@ -197,32 +199,30 @@ class L_Depth(DepthBase):
 
         return indices, alphas
 
-
     @classmethod
     def _find_required_depth_attrs(cls, filename, dataset=None, topology=None):
 
-        # THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional attributes are dealt with
+        # THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional
+        #   attributes are dealt with
         # Get superset attributes
         gf_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
         gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()] )
         init_args, gt = super(L_Depth, cls)._find_required_depth_attrs(filename,
-                                                                           dataset=dataset,
-                                                                           topology=topology)
-
+                                                                       dataset=dataset,
+                                                                       topology=topology)
 
         return init_args, gt
-
 
 
 class S_Depth(DepthBase):
     '''
     Represents the ocean s-coordinate, with particular focus on ROMS implementation
     '''
-    _def_count=0
+    _def_count = 0
     default_names = {'Cs_r': ['Cs_r'],
                      'Cs_w': ['Cs_w'],
                      's_rho': ['s_rho'],
-                     's_w':['s_w'],
+                     's_w': ['s_w'],
                      'hc': ['hc'],
                      'bathymetry': ['h'],
                      'zeta': ['zeta']
@@ -412,48 +412,45 @@ class S_Depth(DepthBase):
             if not zeta_name:
                 try:
                     zeta_name = cls._gen_varname(dataset=choice_ds,
-                                    names_list=cls.default_names['zeta'],
-                                    std_names_list=cls.cf_names['zeta'])
+                                                 names_list=cls.default_names['zeta'],
+                                                 std_names_list=cls.cf_names['zeta'])
                 except KeyError:
                     if dg is not None:
                         warnings.warn('zeta not found in data file, attempting from grid file')
                         choice_ds = dg
                         zeta_name = cls._gen_varname(dataset=choice_ds,
-                                    names_list=cls.default_names['zeta'],
-                                    std_names_list=cls.cf_names['zeta'])
+                                                     names_list=cls.default_names['zeta'],
+                                                     std_names_list=cls.cf_names['zeta'])
                     else:
                         raise
                 zeta = Variable.from_netCDF(dataset=choice_ds,
-                                    grid=grid,
-                                    varname=zeta_name,
-                                    name='zeta'
-                                    )
+                                            grid=grid,
+                                            varname=zeta_name,
+                                            name='zeta')
             else:
                 try:
                     zeta = Variable.from_netCDF(dataset=ds,
-                                    grid=grid,
-                                    varname=zeta_name,
-                                    name='zeta'
-                                    )
+                                                grid=grid,
+                                                varname=zeta_name,
+                                                name='zeta')
                 except:
-                    warnings.warn('failed to find zeta name in data file, trying grid file if available')
+                    warnings.warn('failed to find zeta name in data file, '
+                                  'trying grid file if available')
                     if dg is not None:
                         zeta = Variable.from_netCDF(dataset=dg,
-                                    grid=grid,
-                                    varname=zeta_name,
-                                    name='zeta'
-                                    )
+                                                    grid=grid,
+                                                    varname=zeta_name,
+                                                    name='zeta')
                     else:
                         raise
-
 
         if time is None:
             time = zeta.time
         if terms is None:
-            terms={}
+            terms = {}
             for term, tvar in cls.default_names.items():
-                if term in ['h','zeta']:
-                    #skip these because they're done separately...
+                if term in ['h', 'zeta']:
+                    # skip these because they're done separately...
                     continue
                 vname = tvar
                 choice_ds = ds
@@ -462,13 +459,15 @@ class S_Depth(DepthBase):
                     try:
                         vname = cls._gen_varname(filename, choice_ds, [tvar], [tln])
                     except KeyError:
-                        warnings.warn('could not find term {} in data file, trying grid file'.format(tvar))
+                        warnings.warn('could not find term {} in data file, '
+                                      'trying grid file'.format(tvar))
                         choice_ds = dg
                         vname = cls._gen_varname(filename, dg, [tvar], [tln])
 
-                    #don't want to reinclude bathymetry, zeta
+                    # don't want to re-include bathymetry, zeta
                     terms[term] = choice_ds[vname][:]
         if vtransform is None:
+
             vtransform = 2 #default for ROMS
             #no messing about trying to detect this.
 
@@ -494,10 +493,12 @@ class S_Depth(DepthBase):
         return self.num_w_levels
 
     def _L_Depth_given_bathymetry_t1(self, bathy, zeta, lvl, rho_or_w):
-        #computes the depth (positive up) of a level given the bathymetry
-        #and zeta. Produces an output array same shape as bathy and zeta
-        #Output is always 'positive down'
-        #This implements transform 1 (https://www.myroms.org/wiki/Vertical_S-coordinate)
+        """
+        computes the depth (positive up) of a level given the bathymetry
+        and zeta. Produces an output array same shape as bathy and zeta
+        Output is always 'positive down'
+        This implements transform 1 (https://www.myroms.org/wiki/Vertical_S-coordinate)
+        """
         if rho_or_w == 'rho':
             s = self.s_rho[lvl]
             Cs = self.Cs_r[lvl]
@@ -512,10 +513,12 @@ class S_Depth(DepthBase):
         return -(S + zeta * (1 + S / bathy))
 
     def _L_Depth_given_bathymetry_t2(self, bathy, zeta, lvl, rho_or_w):
-        #computes the depth (positive up) of a level given the bathymetry
-        #and zeta. Produces an output array same shape as bathy and zeta
-        #Output is always 'positive down'
-        #This implements transform 2 (https://www.myroms.org/wiki/Vertical_S-coordinate)
+        """
+        computes the depth (positive up) of a level given the bathymetry
+        and zeta. Produces an output array same shape as bathy and zeta
+        Output is always 'positive down'
+        This implements transform 2 (https://www.myroms.org/wiki/Vertical_S-coordinate)
+        """
         if rho_or_w == 'rho':
             s = self.s_rho[lvl]
             Cs = self.Cs_r[lvl]
@@ -531,9 +534,10 @@ class S_Depth(DepthBase):
 
     def interpolation_alphas(self, points, time, data_shape, _hash=None, extrapolate=False):
         '''
-        Returns a pair of values. The 1st value is an array of the depth indices of all the points.
-        The 2nd value is an array of the interpolation alphas for the points between their depth
-        index and depth_index+1. If both values are None, then all points are on the surface layer.
+        Returns a pair of values. The 1st value is an array of the depth indices
+        of all the points. The 2nd value is an array of the interpolation
+        alphas for the points between their depth index and depth_index+1. If
+        both values are None, then all points are on the surface layer.
 
         zero_ref can be 'surface' or 'absolute'.
             'surface' means a point's depth is referenced from zeta
@@ -555,23 +559,25 @@ class S_Depth(DepthBase):
             below_surface = points[:,2] > 0
 
         if not np.any(below_surface):
-            #nothing is underwater, so return special (None, None)
+            # nothing is underwater, so return special (None, None)
             return None, None
-        bathy = self.bathymetry.at(points, time, _hash=_hash, extrapolate=extrapolate).reshape(-1)
+        bathy = self.bathymetry.at(points, time, _hash=_hash,
+                                   extrapolate=extrapolate).reshape(-1)
         below_ground = abs_depths > bathy
 
         #below_surface points should not also be below_ground
         #np.logical_and(np.logical_not(below_ground), below_surface, below_surface)
 
         #setup (index, alphas) return arrays. -1 indicates at or above surface
+
         indices = -np.ones((len(points)), dtype=np.int64)
         alphas = -np.ones((len(points)), dtype=np.float64)
 
-        bs_zeta = zetas[below_surface] #len(bs_zeta) = # of True in below_surface\
-        bs_bathy = bathy[below_surface] #only a few particles may be below surface
+        bs_zeta = zetas[below_surface] # len(bs_zeta) = # of True in below_surface\
+        bs_bathy = bathy[below_surface] # only a few particles may be below surface
         bs_depths = abs_depths[below_surface]
 
-        #working arrays for below_surface points
+        # working arrays for below_surface points
         und_ind = -np.ones((len(bs_zeta)))
         und_alph = und_ind.copy()
 
@@ -597,11 +603,11 @@ class S_Depth(DepthBase):
         t_index = self.surface_index if rho_or_w == 'rho' else self.surface_index + 1
         #this loop finds the indices one level at a time.
         for level in range(b_index, t_index, 1):
-            #for the current level, get the level depths given bathymetry and zeta
-            #start at level 0 (deepest)
+            # for the current level, get the level depths given bathymetry and zeta
+            # start at level 0 (deepest)
             ulev_depths = ldgb(bs_bathy, bs_zeta, level, rho_or_w)
 
-            #print(ulev_depths)
+            # print(ulev_depths)
             below_upper_layer = np.logical_and(ulev_depths < bs_depths, und_ind >= -1)
             if level == b_index: #special case for lowest possible layer
                 und_ind[below_upper_layer] = -2
@@ -611,7 +617,7 @@ class S_Depth(DepthBase):
             within_layer = np.where(np.logical_and(blev_depths >= bs_depths, below_upper_layer))[0]
             if len(within_layer) == 0:
                 continue
-            #print(within_layer)
+            # print(within_layer)
             und_ind[within_layer] = level
             a = ((bs_depths.take(within_layer) - blev_depths.take(within_layer)) /
                     (ulev_depths.take(within_layer) - blev_depths.take(within_layer)))
@@ -694,7 +700,7 @@ class Depth(object):
             raise ValueError('No filename or dataset provided')
 
         cls = depth_type
-        if (depth_type is None or isinstance(depth_type, string_types) or
+        if (depth_type is None or isinstance(depth_type, str) or
                                  not issubclass(depth_type, DepthBase)):
             cls = Depth._get_depth_type(df, depth_type, topology, _default_types)
 
@@ -703,14 +709,14 @@ class Depth(object):
                                topology=topology,
                                **kwargs)
 
-    @staticmethod
-    def depth_type_of_var(dataset, varname):
-        '''
-        Given a varname or netCDF variable and dataset, try to determine the depth type from dimensions,
-        attributes, or other metadata information, and return a grid_type and topology
-        '''
-        var = dataset[varname]
-
+    # @staticmethod
+    # def depth_type_of_var(dataset, varname):
+    #     '''
+    #     Given a varname or netCDF variable and dataset, try to determine the
+    #     depth type from dimensions, attributes, or other metadata information,
+    #     and return a grid_type and topology
+    #     '''
+    #     var = dataset[varname]
 
     @staticmethod
     def _get_depth_type(dataset, depth_type=None, topology=None, _default_types=None):
@@ -735,8 +741,8 @@ class Depth(object):
             else:
                 raise ValueError('Specified depth_type not recognized/supported')
         if topology is not None:
-            if ('faces' in topology.keys() or
-                topology.get('depth_type', 'notype').lower() in ld_names):
+            if ('faces' in topology.keys()
+                    or topology.get('depth_type', 'notype').lower() in ld_names):
                 return L_Depth
             elif topology.get('depth_type', 'notype').lower() in sd_names:
                 return S_Depth
@@ -751,5 +757,8 @@ class Depth(object):
                     S_Depth.from_netCDF(dataset=dataset)
                     return S_Depth
                 except ValueError:
-                    warnings.warn('''Unable to automatically determine depth system so reverting to surface-only mode. Please verify the index of the surface is correct.''', RuntimeWarning)
+                    warnings.warn('Unable to automatically determine depth system '
+                                  'so reverting to surface-only mode.\n'
+                                  'Please verify the index of the surface is correct.',
+                                  RuntimeWarning)
                     return Surface_Depth

@@ -4,7 +4,6 @@ Created on Apr 20, 2015
 @author: ayan
 '''
 
-from __future__ import (absolute_import, division, print_function)
 
 from netCDF4 import Dataset
 import numpy as np

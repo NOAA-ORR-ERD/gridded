@@ -11,7 +11,6 @@ The core class that encapsulates the gridded data model
 
 
 # py2/3 compatibility
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 from gridded.grids import Grid
 from gridded.variable import Variable

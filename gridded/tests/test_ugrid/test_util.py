@@ -3,7 +3,6 @@ Tests for the utilities module.
 
 """
 
-from __future__ import (absolute_import, division, print_function)
 
 import numpy as np
 from gridded.pyugrid import util
