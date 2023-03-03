@@ -145,6 +145,10 @@ class L_Depth(DepthBase):
             surface_index = np.argmin(terms['depth_levels'])
         if bottom_index is None:
             bottom_index = np.argmax(terms['depth_levels'])
+        # 2023-02-21 set the depth of the top layer to zero
+        terms['depth_levels'][surface_index] = 0.0
+        # 2023-02-21 set the depth of the top layer to zero
+
         return cls(name=name,
                    terms=terms,
                    surface_index=surface_index,
@@ -159,25 +163,41 @@ class L_Depth(DepthBase):
         '''
         points = np.asarray(points, dtype=np.float64)
         points = points.reshape(-1, 3)
-        underwater = points[:, 2] > 0
-        if len(np.where(underwater)[0]) == 0:
+        withingrid = np.logical_and(points[:, 2] >= 0, points[:, 2] <= np.max(self.depth_levels))
+        abovewater = points[:, 2] <0
+        belowgrid = points[:, 2] > np.max(self.depth_levels)
+        onsurface = points[:, 2]  == 0
+
+        if len(np.where(onsurface)[0]) == len(points):
             return None, None
+
         indices = -np.ones((len(points)), dtype=np.int64)
         alphas = -np.ones((len(points)), dtype=np.float64)
-        pts = points[underwater]
-        und_ind = -np.ones((len(np.where(underwater)[0])))
+        pts = points[withingrid]
+        und_ind = -np.ones((len(np.where(withingrid)[0])))
         und_alph = und_ind.copy()
 
-        und_ind = np.digitize(pts[:,2], self.depth_levels) - 1
+        und_ind = np.digitize(pts[:,2], self.depth_levels, right=True)
 
         for i,n in enumerate(und_ind):
-            if n == len(self.depth_levels) -1:
-                und_ind[i] = -1
-            if und_ind[i] != -1:
-                und_alph[i] = (pts[i, 2] - self.depth_levels[und_ind[i]]) / (
-                    self.depth_levels[und_ind[i] + 1] - self.depth_levels[und_ind[i]])
-        indices[underwater] = und_ind
-        alphas[underwater] = und_alph
+            if n == len(self.depth_levels):
+                und_ind[i] = n-1
+                und_alph[i] = 1.0
+            elif n == 0:
+                und_ind[i] = 1
+                und_alph[i] = 0.0
+            else:
+                und_alph[i] = (pts[i, 2] - self.depth_levels[und_ind[i]-1]) / (
+                    self.depth_levels[und_ind[i]] - self.depth_levels[und_ind[i]-1])
+        indices[withingrid] = und_ind
+        alphas[withingrid] = und_alph
+
+        indices[belowgrid] = -1
+        alphas[belowgrid] = -2
+
+        indices[abovewater] = -1
+        alphas[abovewater] = -3
+
         return indices, alphas
 
     @classmethod
