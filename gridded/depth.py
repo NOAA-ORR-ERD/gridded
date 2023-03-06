@@ -136,10 +136,10 @@ class L_Depth(DepthBase):
             terms={}
             for tn, tln in cls.default_terms:
                 vname=tn
-                #if tn not in dataset.variables.keys(): 2-14-2013
+                #if tn not in dataset.variables.keys(): # 2023
                 if tn not in df.variables.keys():
                     vname = cls._gen_varname(filename, dataset, [tn], [tln])
-                #terms[tn] = dataset[vname][:] 2-14-2013
+                #terms[tn] = dataset[vname][:] # 2023
                 terms[tn] = df[vname][:]
         if surface_index is None:
             surface_index = np.argmin(terms['depth_levels'])

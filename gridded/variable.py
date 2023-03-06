@@ -256,8 +256,7 @@ class Variable(object):
             if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
                     isinstance(grid, Grid_U) and len(data.shape) == 3):
                 depth = Depth.from_netCDF(grid_file=dg,
-                                          data_file=ds,
-                                          filename=data_file, #02-14-2013
+                                          dataset=ds,
                                           **kwargs
                                           )
         if location is None:

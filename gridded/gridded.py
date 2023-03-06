@@ -108,7 +108,7 @@ class Dataset():
             if is_not_grid_attr:
                 ncvar = ds[k]
                 # find the location of the variable
-                print("working with:", ncvar)
+                # print("working with:", ncvar) # comment out 2023
                 try:
                     location = ncvar.location
                     if location not in VALID_LOCATIONS:

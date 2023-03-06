@@ -206,10 +206,12 @@ def get_database_nc():
     """
     This sets up netcdf dataset for interpolation test
     """
-    ncfile = nc.Dataset('test.nc')
-    ds = gridded.Dataset('test.nc')
-    depth = gridded.depth.Depth.from_netCDF(filename="test.nc")
-    time = gridded.time.Time.from_netCDF(filename="test.nc", datavar=ncfile['u'])
+    L_depth_file = os.path.join(test_dir, 'test_L_Depth.nc')
+
+    ncfile = nc.Dataset(L_depth_file)
+    ds = gridded.Dataset(L_depth_file)
+    depth = gridded.depth.Depth.from_netCDF(filename=L_depth_file)
+    time = gridded.time.Time.from_netCDF(filename=L_depth_file, datavar=ncfile['u'])
 
     return time, depth, ds
 
