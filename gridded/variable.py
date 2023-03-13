@@ -653,15 +653,7 @@ class Variable(object):
             v1 = val_func(points, time, extrapolate, slices=s1, **kwargs)
             alphas = self.time.interp_alpha(time, extrapolate)
 
-
-            values = np.array([None] * len(points))
-            for i, value in enumerate(v0):
-                if value != None:
-                   values[i] = v0[i] + (v1[i] - v0[i]) * alphas
-                else:
-                   values[i] = None
-            return values
-            #return v0 + (v1 - v0) * alphas
+            return v0 + (v1 - v0) * alphas
 
 
     def _depth_interp(self, points, time, extrapolate, slices=(), **kwargs):
@@ -699,12 +691,12 @@ class Variable(object):
             return val_func(points, time, extrapolate, slices=slices + (self.depth.surface_index,), **kwargs)
         elif np.all(d_indices == -1) and np.all(d_alphas == -2):
             # all particles below grid
-            return np.array([None] * len(points)) #val_func(points, time, extrapolate, slices=slices + (self.depth.bottom_index,), **kwargs)
+            return np.empty((points.shape[0],),dtype=np.float64,)*np.nan  #np.array([None] * len(points)) #val_func(points, time, extrapolate, slices=slices + (self.depth.bottom_index,), **kwargs)
             # within the grid
         else:
             direction = 1 #bottom idx < top
             withingrid = d_indices != -1
-            values = np.array([None] * len(points)) #np.zeros(len(points), dtype=np.float64)
+            values = np.empty((points.shape[0],),dtype=np.float64,)*np.nan
 
             if len(d_indices[withingrid]) > 0:
                 if self.depth.bottom_index > self.depth.surface_index:
@@ -753,7 +745,6 @@ class Variable(object):
 
             #abovesurface = (d_alphas == -3)
             #values[abovesurface] = 10. #val_func(points[abovesurface], time, extrapolate, slices=slices + (self.depth.surface_index,), **kwargs)
-            #print('llllllllllllllllllllllllllllllllllllllll', values[abovesurface],[None]*len(values[abovesurface]))
             return values
 
     def _transect(self, times, depths, points):

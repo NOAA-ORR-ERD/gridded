@@ -282,18 +282,18 @@ class Test_L_Depth(object):
         time, depth, ds = get_database_nc
         points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], depth.depth_levels[-1]+100.), )
 
-        assert ds.variables['u'].at(points=points,time=time.data[0])[0] == None
+        assert np.isnan(ds.variables['u'].at(points=points,time=time.data[0])[0])
 
     def test_vertical_interpolation_abovesurface(self, get_database_nc):
         time, depth, ds = get_database_nc
         points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], -10.), )
 
-        assert ds.variables['u'].at(points=points,time=time.data[0])[0] == None
+        assert np.isnan(ds.variables['u'].at(points=points,time=time.data[0])[0])
 
     def test_vertical_interpolation_full(self, get_database_nc):
         time, depth, ds = get_database_nc
         points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], -10.), (ds.grid.node_lon[1], ds.grid.node_lat[1], 0.), (ds.grid.node_lon[1], ds.grid.node_lat[1], depth.depth_levels[3]))
 
-        assert ds.variables['u'].at(points=points,time=time.data[0])[0] == None
+        assert np.isnan(ds.variables['u'].at(points=points,time=time.data[0])[0])
         assert ds.variables['u'].at(points=points,time=time.data[0])[1] == ds.variables['u'].data[0,0,1,1]
         assert ds.variables['u'].at(points=points,time=time.data[0])[2] == ds.variables['u'].data[0,3,1,1]
