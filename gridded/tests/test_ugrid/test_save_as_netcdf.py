@@ -130,6 +130,7 @@ def test_simple_write(two_triangles, ncds):
     fname, ncds = ncds
 
     grid.save_as_netcdf(ncds)
+    ncds.close()
     ds = netCDF4.Dataset(fname)
 
     # TODO: Could be lots of tests here.
@@ -148,6 +149,7 @@ def test_set_mesh_name(two_triangles, ncds):
     fname, ncds = ncds
 
     grid.save_as_netcdf(ncds)
+    ncds.close()
     ds = netCDF4.Dataset(fname)
 
     assert nc_has_variable(ds, 'mesh_2')
