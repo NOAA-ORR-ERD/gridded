@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   test:
-    name: Miniconda ${{ matrix.os }}
+    name: Miniconda ${{ matrix.os }} Py${{ matrix.pyver }}
     runs-on: ${{ matrix.os }}
     strategy:
         matrix:
@@ -20,14 +20,8 @@ jobs:
       - shell: bash -l {0}
         run: |
           conda config --add channels conda-forge
-          conda info
-          conda list
-      # - name: Lint
-      #   shell: bash -l {0}
-      #   run: |
-      #       conda install flake8
-      #       python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-      #       python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+#          conda info
+#          conda list
       - name: Run pytest
         shell: bash -l {0}
         run: |
@@ -52,5 +46,6 @@ jobs:
         shell: bash -l {0}
         run: |
             conda install flake8
-            python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+            python -m flake8 --count --max-line-length=95 --show-source --statistics gridded/
+      # python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
       #       python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
