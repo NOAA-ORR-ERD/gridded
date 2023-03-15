@@ -1,10 +1,8 @@
-
 from textwrap import dedent
 import collections
 import hashlib
 from functools import wraps
 import os
-
 import numpy as np
 import netCDF4 as nc4
 
@@ -526,7 +524,7 @@ class Variable(object):
          ...]
         Failure to provide point data in this format may cause unexpected behavior
         If you wish to provide point data using separate longitude and latitude arrays,
-        use the `lons=` and `lats=` kwargs. 
+        use the `lons=` and `lats=` kwargs.
         Note that if your Z is positive-up, self.depth.positive_down should be
         set to False
         :type points: Nx3 array of double
@@ -577,7 +575,7 @@ class Variable(object):
             value = self._depth_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
         else:
             value = self._xy_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
-        
+
         value = value.reshape(-1,1)
 
         if isinstance(value, np.ma.MaskedArray):
@@ -1174,7 +1172,7 @@ class VectorVariable(object):
          ...]
         Failure to provide point data in this format may cause unexpected behavior
         If you wish to provide point data using separate longitude and latitude arrays,
-        use the `lons=` and `lats=` kwargs. 
+        use the `lons=` and `lats=` kwargs.
         Note that if your Z is positive-up, self.depth.positive_down should be
         set to False
         :type points: Nx3 array of double
