@@ -8,13 +8,14 @@ jobs:
     strategy:
         matrix:
             os: ["ubuntu-latest", "windows-latest"]
+            pyver: [3.8, 3.9, 3.10, 3.11]
     steps:
       - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: test
 #          environment-file: environment.yml
-          python-version: 3.9
+          python-version: ${{ matrix.pyver }}
           auto-activate-base: false
       - shell: bash -l {0}
         run: |
