@@ -717,11 +717,15 @@ class SGrid(object):
         return rv
 
     def get_variable_at_index(self, var, index):
+        '''
+        Given a list of 2D indices, return the value of var at each index
+        '''
         var = var[:]
-
         rv = np.ma.zeros((index.shape[0], 1), dtype=np.float64)
         mask = np.ma.zeros((index.shape[0], 1), dtype=bool)
         raw = np.ravel_multi_index(index.T, var.shape, mode='clip')
+        if (np.ma.is_masked(index)):
+            raw.mask = index.mask[:,0] #need to remask raw because ravel_multi_index wipes out index's mask
         rv[:, 0] = np.take(var, raw)
         if var.mask is False:
             mask[:, 0] = np.take(var.mask, raw)
@@ -926,7 +930,6 @@ class SGrid(object):
 
         """
         # eventually should remove next line once celltree can support it
-
         points = points.reshape(-1, 2)
 
         ind = indices
@@ -941,7 +944,7 @@ class SGrid(object):
             # ind has to be writable
             ind = self.locate_faces(points, _memo, _copy, _hash)
             if (ind.mask).all():
-                return np.ma.masked_all((points.shape[0]))
+                return np.ma.masked_all((points.shape[0],1))
 
         if self._l_coeffs is None:
             self._compute_transform_coeffs()

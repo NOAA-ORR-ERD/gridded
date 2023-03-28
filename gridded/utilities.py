@@ -19,40 +19,49 @@ must_have = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute
 def convert_numpy_datetime64_to_datetime(dt):
     pass
 
-def gen_celltree_mask_from_center_mask(center_mask, sl):
-    """
-    Generates celltree face mask from the center mask
-    """
-
-    input_mask = center_mask[sl]
-    ret_mask = np.ones(input_mask.shape, dtype=bool)
-    type1 = (isinstance(center_mask, nc4.Variable)
-             and hasattr(center_mask, 'flag_values')
-             and hasattr(center_mask, 'flag_meanings'))
-    type2 = (isinstance(center_mask, nc4.Variable)
-             and hasattr(center_mask, 'option_0'))
+def convert_mask_to_numpy_mask(mask_var):
+    '''
+    Converts a netCDF4.Variable representing a mask into a numpy array mask
+    'Water' Values are converted to False (including 'lake', 'river' etc)
+    'land' values are converted to True
+    '''
+    ret_mask = np.ones(mask_var.shape, dtype=bool)
+    mask_data = mask_var[:]
+    type1 = (isinstance(mask_var, nc4.Variable)
+             and hasattr(mask_var, 'flag_values')
+             and hasattr(mask_var, 'flag_meanings'))
+    type2 = (isinstance(mask_var, nc4.Variable)
+             and hasattr(mask_var, 'option_0'))
     if type1:
-        fm = center_mask.flag_meanings
+        fm = mask_var.flag_meanings
         try:
             fm = fm.split()
         except AttributeError:
             pass  # must not be a string -- we assume it's a sequence already
         meaning_mask = [False if ('water' in s or 'lake' in s) else True for s in fm]
-        tfmap = dict(zip(center_mask.flag_values, meaning_mask))
+        tfmap = dict(zip(mask_var.flag_values, meaning_mask))
         for k, v in tfmap.items():
-            ret_mask[input_mask == k] = v
+            ret_mask[mask_data == k] = v
     elif type2:  # special case where option_0 == land,
                  # option_1 == water, etc
                  # TODO: generalize this properly
         meaning_mask = [True, False]
         tfmap = dict(zip([0, 1], meaning_mask))
         for k, v in tfmap.items():
-            ret_mask[input_mask == k] = v
+            ret_mask[mask_data == k] = v
     else:
-        ret_mask[:] = input_mask
+        ret_mask[:] = mask_data
 
     return ret_mask
 
+
+def gen_celltree_mask_from_center_mask(center_mask, sl):
+    """
+    Generates celltree face mask from the center mask
+    """
+
+    input_mask = convert_mask_to_numpy_mask(center_mask)
+    return input_mask[sl]
 
 def regrid_variable(grid, o_var, location='node'):
     from gridded.variable import Variable
@@ -343,12 +352,12 @@ def get_dataset(ncfile, dataset=None):
     """
     if dataset is not None:
         return dataset
-    if isinstance(ncfile, nc4.Dataset):
+    if isinstance(ncfile, (nc4.Dataset, nc4.MFDataset)):
         return ncfile
-    elif isinstance(ncfile, Iterable) and len(ncfile) == 1:
-        return nc4.Dataset(ncfile[0])
     elif isstring(ncfile):
         return nc4.Dataset(ncfile)
+    elif isinstance(ncfile, Iterable) and len(ncfile) == 1:
+        return nc4.Dataset(ncfile[0])
     else:
         return nc4.MFDataset(ncfile)
 
@@ -382,5 +391,69 @@ def get_dataset_attrs(ds):
     """
     return {name: ds.getncattr(name) for name in ds.ncattrs()}
 
+def varnames_merge(cls, inc_varnames=None):
+    """
+    Helper function to support the `varnames` argument pattern.
 
+    `varnames` is a keyword used to specify an association between a desired subcomponent
+    of an object and a desired data source name. It is meant to be a mechanism by which 
+    custom digestion of a file can be specified.
+    """
 
+def search_dataset_for_any_long_name(ds, names):
+    """
+    Searches a netCDF4.Dataset for any netCDF4.Variable that satisfies one of the search terms.
+
+    :returns: list of netCDF4.Variable
+    """
+    for n in names:
+        t1 = ds.get_variables_by_attributes(long_name=n)
+        t2 = ds.get_variables_by_attributes(standard_name=n)
+        if t1 or t2:
+            return t1+t2
+
+def search_dataset_for_variables_by_longname(ds, possible_names):
+    """
+    For each longname list in possible_names, search the Dataset
+
+    :param ds: Dataset
+    :type ds: netCDF4.Dataset
+    :param possible_names: str -> list dictionary
+    :type possible_names: dict
+
+    :returns: str -> netCDF4.Variable dictionary
+    """
+    rtv = {}
+    for k, v in possible_names.items():
+        for query in v:
+            t1 = ds.get_variables_by_attributes(long_name=query)
+            t2 = ds.get_variables_by_attributes(standard_name=query)
+            if t1 or t2:
+                rtv[k] = (t1+t2)[0]
+                break
+        if k not in rtv:
+            rtv[k] = None
+    return rtv
+
+def search_dataset_for_variables_by_varname(ds, possible_names):
+    """
+    For each varname list in possible_names, search the Dataset
+
+    :param ds: Dataset
+    :type ds: netCDF4.Dataset
+    :param possible_names: str -> list dictionary
+    :type possible_names: dict
+
+    :returns: str -> netCDF4.Variable dictionary
+    """
+    rtv = {}
+    for k, v in possible_names.items():
+        for query in v:
+            if query in ds.variables:
+                rtv[k] = ds.variables[query]
+                break
+        if k not in rtv:
+            rtv[k] = None
+    return rtv
+
+        

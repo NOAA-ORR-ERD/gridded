@@ -140,7 +140,7 @@ class Grid_U(GridBase, UGrid):
                                                                      grid_topology=grid_topology)
 
         face_attrs = ['faces']
-        face_var_names = ['faces', 'tris', 'nv', 'ele']
+        face_var_names = ['faces', 'tris', 'nv', 'ele', 'nele']
         if grid_topology is None:
             for n in face_var_names:
                 if n in gf_vars:
