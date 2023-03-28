@@ -17,13 +17,33 @@ import numpy as np
 import netCDF4 as nc
 
 from gridded.variable import Variable, VectorVariable
-from gridded.tests.utilities import get_test_file_dir
+from gridded.tests.utilities import get_test_file_dir, get_test_cdl_filelist
 from gridded.grids import Grid_S
 from gridded.time import Time
+from gridded.utilities import search_dataset_for_variables_by_varname
 
 from gridded.depth import S_Depth, L_Depth
 
 test_dir = get_test_file_dir()
+cdl_files = get_test_cdl_filelist()
+
+def valid_depth_test_dataset(ds):
+    '''
+    A filter to be applied to the loaded .cdl that excludes the file if it's almost definitely
+    not going to work. A file must contain at least 4D variable for it to pass this test
+    '''
+    for k, v in ds.variables.items():
+        if len(v.dimensions) == 4:
+            return True
+    return False
+
+def test_from_netCDF():
+    for fn in cdl_files:
+        ds = nc.Dataset.fromcdl(fn, ncfilename=fn+'.nc')
+        if not valid_depth_test_dataset(ds):
+            continue
+        d = S_Depth.from_netCDF(dataset=ds)
+    
 
 
 @pytest.fixture(scope="module")

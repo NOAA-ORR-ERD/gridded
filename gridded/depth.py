@@ -8,7 +8,7 @@ import numpy as np
 from datetime import datetime
 from gridded.time import Time
 from gridded.grids import Grid
-from gridded.utilities import get_dataset
+from gridded.utilities import get_dataset, search_dataset_for_any_long_name, search_dataset_for_variables_by_longname, search_dataset_for_variables_by_varname
 
 class DepthBase(object):
     _default_component_types = {'time': Time,
@@ -304,8 +304,10 @@ class S_Depth(DepthBase):
                     ):
         '''
         :param filename: A string or ordered list of string of netCDF filename(s)
-        :param varnames: Mapping of component name to netCDF variable name. Use
-            this if auto detection fails. Partial definition is allowable.
+        :type filename: string or list
+        :param varnames: Direct mapping of component name to netCDF variable name. Use
+            this if auto detection fails. Partial definition is allowable. Unspecified
+            terms will use the value in `.default_names`
             {'Cs_r': 'Cs_r',
              'Cs_w': Cs_w',
              's_rho': 's_rho'),
@@ -314,6 +316,13 @@ class S_Depth(DepthBase):
              'hc': 'hc'),
              'zeta': 'zeta')
              }
+        :type varnames: dict
+        :param name: Human-readable name for this object
+        :type name: string
+        :param time: Time dimension (for zeta)
+        :type time: gridded.time.Time or subclass
+        :param grid: X-Y dmension (for bathymetry & zeta)
+        :type grid: subclass of gridded.grids.GridBase
         '''
         Grid = cls._default_component_types['grid']
         Time = cls._default_component_types['time']
@@ -344,6 +353,16 @@ class S_Depth(DepthBase):
         if name is None:
             name = cls.__name__ + str(cls._def_count)
             cls._def_count += 1
+        varnames = cls.default_names.copy()
+        
+
+        vn_search = search_dataset_for_variables_by_varname(ds, varnames)
+        ds_search = search_dataset_for_variables_by_longname(ds, cls.cf_names)
+        if ds != dg:
+            dg_search = search_dataset_for_variables_by_longname(dg, cls.cf_names)
+        
+        breakpoint()
+        
         if bathymetry is None:
             bathy_name = varnames.get('bathymetry', None)
             choice_ds = ds
@@ -363,14 +382,14 @@ class S_Depth(DepthBase):
                         raise
                 bathymetry = Variable.from_netCDF(dataset=choice_ds,
                                 grid=grid,
-                                varname=bathy_name,
+                                varname=bathy_name[0],
                                 name='Bathymetry'
                                 )
             else:
                 try:
                     bathymetry = Variable.from_netCDF(dataset=ds,
                                     grid=grid,
-                                    varname=bathy_name,
+                                    varname=bathy_name[0],
                                     name='Bathymetry'
                                     )
                 except:
@@ -378,7 +397,7 @@ class S_Depth(DepthBase):
                     if dg is not None:
                         bathymetry = Variable.from_netCDF(dataset=dg,
                                     grid=grid,
-                                    varname=bathy_name,
+                                    varname=bathy_name[0],
                                     name='Bathymetry'
                                     )
                     else:
@@ -393,19 +412,22 @@ class S_Depth(DepthBase):
                                     names_list=cls.default_names['zeta'],
                                     std_names_list=cls.cf_names['zeta'])
                 except KeyError:
-                    if dg is not None:
+                    try:
                         warnings.warn('zeta not found in data file, attempting from grid file')
                         choice_ds = dg
                         zeta_name = cls._gen_varname(dataset=choice_ds,
                                     names_list=cls.default_names['zeta'],
                                     std_names_list=cls.cf_names['zeta'])
-                    else:
-                        raise
-                zeta = Variable.from_netCDF(dataset=choice_ds,
-                                    grid=grid,
-                                    varname=zeta_name,
-                                    name='zeta'
-                                    )
+                    except KeyError:
+                        zeta_name=None
+                if zeta_name is None:
+                    zeta = Variable.constant(0)
+                else:
+                    zeta = Variable.from_netCDF(dataset=choice_ds,
+                                        grid=grid,
+                                        varname=zeta_name,
+                                        name='zeta'
+                                        )
             else:
                 try:
                     zeta = Variable.from_netCDF(dataset=ds,
@@ -641,6 +663,9 @@ class Depth(object):
     Factory class that generates depth objects. Also handles common loading and
     parsing operations
     '''
+    ld_names = ['level', 'levels', 'L_Depth', 'depth_levels' 'depth_level']
+    sd_names = ['sigma']
+    surf_names = ['surface', 'surface only', 'surf', 'none']
     def __init__(self):
         raise NotImplementedError("Depth is not meant to be instantiated. "
                                   "Please use the 'from_netCDF' or 'surface_only' function")
@@ -655,18 +680,43 @@ class Depth(object):
     @staticmethod
     def from_netCDF(filename=None,
                     dataset=None,
+                    data_file=None,
+                    grid_file=None,
                     depth_type=None,
                     varname=None,
                     topology=None,
                     _default_types=(('level', L_Depth), ('sigma', S_Depth), ('surface', DepthBase)),
-                    *args,
                     **kwargs):
         '''
         :param filename: File containing a depth
+        :type filename: string or list of string
         :param dataset: Takes precedence over filename, if provided.
+        :type dataset: netCDF4.Dataset
         :param depth_type: Must be provided if autodetection is not possible.
+            See Depth.ld_names, Depth.sd_names, and Depth.surf_names for the
+            expected values for this argument
+        :type depth_type: string
         :returns: Instance of L_Depth or S_Depth
         '''
+        if filename is not None:
+            data_file = filename
+            grid_file = filename
+
+        ds = None
+        dg = None
+        if dataset is None:
+            if grid_file == data_file:
+                ds = dg = get_dataset(grid_file)
+            else:
+                ds = get_dataset(data_file)
+                dg = get_dataset(grid_file)
+        else:
+            if grid_file is not None:
+                dg = get_dataset(grid_file)
+            else:
+                dg = dataset
+            ds = dataset
+
         df = dataset if filename is None else get_dataset(filename, dataset)
         if df is None:
             raise ValueError('No filename or dataset provided')
@@ -678,6 +728,8 @@ class Depth(object):
 
         return cls.from_netCDF(filename=filename,
                                dataset=dataset,
+                               grid_file=grid_file,
+                               data_file=data_file,
                                topology=topology,
                                **kwargs)
 
@@ -700,34 +752,33 @@ class Depth(object):
         S_Depth = _default_types.get('sigma', None)
         L_Depth = _default_types.get('level', None)
         Surface_Depth = _default_types.get('surface', None)
-        ld_names = ['level', 'levels', 'L_Depth', 'depth_levels' 'depth_level']
-        sd_names = ['sigma']
-        surf_names = ['surface', 'surface only', 'surf', 'none']
         if depth_type is not None:
-            if depth_type.lower() in ld_names:
+            if depth_type.lower() in Depth.ld_names:
                 return L_Depth
-            elif depth_type.lower() in sd_names:
+            elif depth_type.lower() in Depth.sd_names:
                 return S_Depth
-            elif depth_type.lower() in surf_names:
+            elif depth_type.lower() in Depth.surf_names:
                 return Surface_Depth
             else:
                 raise ValueError('Specified depth_type not recognized/supported')
         if topology is not None:
             if ('faces' in topology.keys() or
-                topology.get('depth_type', 'notype').lower() in ld_names):
+                topology.get('depth_type', 'notype').lower() in Depth.ld_names):
                 return L_Depth
-            elif topology.get('depth_type', 'notype').lower() in sd_names:
+            elif topology.get('depth_type', 'notype').lower() in Depth.sd_names:
                 return S_Depth
             else:
                 return Surface_Depth
+
+        
         else:
-            try:
-                L_Depth.from_netCDF(dataset=dataset)
-                return L_Depth
-            except ValueError:
+            t1 = search_dataset_for_any_long_name(dataset, S_Depth.cf_names)
+            if t1:
+                return S_Depth
+            else:
                 try:
-                    S_Depth.from_netCDF(dataset=dataset)
-                    return S_Depth
-                except ValueError:
+                    L_Depth.from_netCDF(dataset=dataset)
+                    return L_Depth
+                except:
                     warnings.warn('''Unable to automatically determine depth system so reverting to surface-only mode. Please verify the index of the surface is correct.''', RuntimeWarning)
                     return Surface_Depth
