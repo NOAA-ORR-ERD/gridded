@@ -12,7 +12,6 @@ This code is called by the UGrid class to load into a UGRID object.
 # while keeping the netcdf reading code in its own file.
 
 
-from __future__ import (absolute_import, division, print_function)
 
 import logging
 

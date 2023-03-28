@@ -9,26 +9,14 @@ http://gnome.orr.noaa.gov/py_gnome_testdata/
 
 '''
 
-from __future__ import (absolute_import,
-                        division,
-                        print_function,
-                        unicode_literals)
-
 import os
-try:
-    import urllib.request as urllib_request  # for python 3
-except ImportError:
-    import urllib2 as urllib_request  # for python 2
+import urllib.request as urllib_request  # for python 3
 
-try:
-    from urllib.parse import urljoin
-except ImportError:
-    from urlparse import urljoin
+from urllib.parse import urljoin
 
 # maybe want to add this back in
 # import progressbar as pb
 
-# DATA_SERVER = 'http://gnome.orr.noaa.gov/py_gnome_testdata/'
 DATA_SERVER = 'https://gnome.orr.noaa.gov/py_gnome_testdata/'
 
 

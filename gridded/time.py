@@ -1,8 +1,5 @@
 #!/usr/binenv python
 
-# py2/3 compatibility
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 from textwrap import dedent
 import netCDF4 as nc4
 import numpy as np
@@ -119,7 +116,7 @@ class Time(object):
     @property
     def data(self):
         return self._data
-    
+
     @data.setter
     def data(self, d):
         if isinstance(d, self.__class__) or d.__class__ in self.__class__.__mro__:

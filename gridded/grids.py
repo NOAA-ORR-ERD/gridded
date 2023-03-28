@@ -1,11 +1,9 @@
-from __future__ import (absolute_import, division, print_function)
 
 from gridded.pysgrid.sgrid import SGrid
 from gridded.pyugrid.ugrid import UGrid
 import numpy as np
 
 from gridded.utilities import get_dataset, gen_celltree_mask_from_center_mask
-from six import string_types
 
 
 class GridBase(object):
@@ -235,7 +233,7 @@ class Grid_S(GridBase, SGrid):
                 if n in center_attrs + edge1_attrs + edge2_attrs and v in gf_vars:
                     init_args[n] = gf_vars[v][:]
         return init_args, gt
-        
+
 
 class Grid_R(GridBase):
     """
@@ -479,7 +477,7 @@ class Grid(object):
 
         cls = grid_type
         if (grid_type is None or
-                isinstance(grid_type, string_types) or
+                isinstance(grid_type, str) or
                 not issubclass(grid_type, GridBase)):
             cls = Grid._get_grid_type(gf, grid_type, grid_topology, _default_types)
 
