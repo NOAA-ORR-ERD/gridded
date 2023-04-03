@@ -443,7 +443,7 @@ def search_dataset_for_variables_by_varname(ds, possible_names):
     :param possible_names: str -> list dictionary
     :type possible_names: dict
 
-    :returns: str -> netCDF4.Variable dictionary
+    :returns: str -> netCDF4.Variable (or None if not found) dictionary
     """
     rtv = {}
     for k, v in possible_names.items():
@@ -455,4 +455,21 @@ def search_dataset_for_variables_by_varname(ds, possible_names):
             rtv[k] = None
     return rtv
 
-        
+def merge_var_search_dicts(d1, d2):
+    """
+    Values in D1 take precedence over D2 if they are not None
+    :param d1: str -> netCDF4.Variable dict
+    :type d1: dict
+    :param d1: str -> netCDF4.Variable dict
+    :type d2: dict
+
+    :returns: str -> netCDF4.Variable dict
+    """
+    result = d1.copy()
+    for k, v in d2.items():
+        if k not in d1:
+            result[k] = v
+        else:
+            if result[k] is None:
+                result[k] = v
+    return result

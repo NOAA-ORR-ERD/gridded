@@ -1222,14 +1222,14 @@ class VectorVariable(object):
             points = np.column_stack((np.array(lons), np.array(lats)))
         pts = _reorganize_spatial_data(points)
         if _hash is None:
-            _hash = self._get_hash(points, time)
+            _hash = self._get_hash(pts, time)
 
         if _mem:
-            res = self._get_memoed(points, time, self._result_memo, _hash=_hash)
+            res = self._get_memoed(pts, time, self._result_memo, _hash=_hash)
             if res is not None:
                 return res
 
-        value = np.ma.column_stack([var.at(points=points,
+        value = np.ma.column_stack([var.at(points=pts,
                                         time=time,
                                         units=units,
                                         extrapolate=extrapolate,
@@ -1239,7 +1239,7 @@ class VectorVariable(object):
                                         **kwargs) for var in self.variables])
 
         if _mem:
-            self._memoize_result(points, time, value, self._result_memo, _hash=_hash)
+            self._memoize_result(pts, time, value, self._result_memo, _hash=_hash)
 
         return value
 

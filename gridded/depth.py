@@ -4,7 +4,12 @@ import warnings
 import numpy as np
 from gridded.time import Time
 from gridded.grids import Grid
-from gridded.utilities import get_dataset, search_dataset_for_any_long_name, search_dataset_for_variables_by_longname, search_dataset_for_variables_by_varname
+from gridded.utilities import (get_dataset,
+                               search_dataset_for_any_long_name,
+                               search_dataset_for_variables_by_longname,
+                               search_dataset_for_variables_by_varname,
+                               merge_var_search_dicts
+)
 
 
 class DepthBase(object):
@@ -209,7 +214,7 @@ class S_Depth(DepthBase):
                 's_rho': ['S-coordinate at RHO-points'],
                 's_w':['S-coordinate at W-points'],
                 'hc': ['S-coordinate parameter, critical depth'],
-                'bathymetry': ['bathymetry at RHO-points'],
+                'bathymetry': ['bathymetry at RHO-points', 'Final bathymetry at RHO-points'],
                 'zeta': ['free-surface']
                 }
 
@@ -310,7 +315,7 @@ class S_Depth(DepthBase):
              'Cs_w': Cs_w',
              's_rho': 's_rho'),
              's_w': 's_w',
-             'bathymetyry': 'h',
+             'bathymetry': 'h',
              'hc': 'hc'),
              'zeta': 'zeta')
              }
@@ -353,118 +358,51 @@ class S_Depth(DepthBase):
             cls._def_count += 1
         varnames = cls.default_names.copy()
         
-
+        #Do a comprehensive search for netCDF4 Variables all at once
         vn_search = search_dataset_for_variables_by_varname(ds, varnames)
         ds_search = search_dataset_for_variables_by_longname(ds, cls.cf_names)
+        varnames = merge_var_search_dicts(ds_search, vn_search)
         if ds != dg:
             dg_search = search_dataset_for_variables_by_longname(dg, cls.cf_names)
-        
-        breakpoint()
+            varnames = merge_var_search_dicts(varnames, dg_search)
         
         if bathymetry is None:
-            bathy_name = varnames.get('bathymetry', None)
-            choice_ds = ds
-            if not bathy_name:
-                try:
-                    bathy_name = cls._gen_varname(dataset=choice_ds,
-                                    names_list=cls.default_names['bathymetry'],
-                                    std_names_list=cls.cf_names['bathymetry'])
-                except KeyError:
-                    if dg is not None:
-                        warnings.warn('bathymetry not found in data file, attempting from grid file')
-                        choice_ds = dg
-                        bathy_name = cls._gen_varname(dataset=choice_ds,
-                                    names_list=cls.default_names['bathymetry'],
-                                    std_names_list=cls.cf_names['bathymetry'])
-                    else:
-                        raise
-                bathymetry = Variable.from_netCDF(dataset=choice_ds,
-                                grid=grid,
-                                varname=bathy_name[0],
-                                name='Bathymetry'
-                                )
-            else:
-                try:
-                    bathymetry = Variable.from_netCDF(dataset=ds,
-                                    grid=grid,
-                                    varname=bathy_name[0],
-                                    name='Bathymetry'
-                                    )
-                except:
-                    warnings.warn('failed to find bathymetry name in data file, trying grid file if available')
-                    if dg is not None:
-                        bathymetry = Variable.from_netCDF(dataset=dg,
-                                    grid=grid,
-                                    varname=bathy_name[0],
-                                    name='Bathymetry'
-                                    )
-                    else:
-                        raise
+            bathy_var = varnames.get('bathymetry', None)
+            if bathy_var is None:
+                err = 'Unable to locate bathymetry in data file'
+                if dg:
+                    raise ValueError(err + ' or grid file')
+                raise ValueError(err)
+            bathymetry = Variable.from_netCDF(dataset=bathy_var._grp,
+                                              varname=bathy_var.name,
+                                              grid=grid,
+                                              name='bathymetry',
+                                              )
 
         if zeta is None:
-            zeta_name = varnames.get('zeta', None)
-            choice_ds = ds
-            if not zeta_name:
-                try:
-                    zeta_name = cls._gen_varname(dataset=choice_ds,
-                                                 names_list=cls.default_names['zeta'],
-                                                 std_names_list=cls.cf_names['zeta'])
-                except KeyError:
-                    try:
-                        warnings.warn('zeta not found in data file, attempting from grid file')
-                        choice_ds = dg
-                        zeta_name = cls._gen_varname(dataset=choice_ds,
-                                    names_list=cls.default_names['zeta'],
-                                    std_names_list=cls.cf_names['zeta'])
-                    except KeyError:
-                        zeta_name=None
-                if zeta_name is None:
-                    zeta = Variable.constant(0)
-                else:
-                    zeta = Variable.from_netCDF(dataset=choice_ds,
-                                        grid=grid,
-                                        varname=zeta_name,
-                                        name='zeta'
-                                        )
+            zeta_var = varnames.get('zeta', None)
+            if zeta_var is None:
+                warn = 'Unable to locate zeta in data file'
+                if dg:
+                    warnings.warn(warn + ' or grid file.')
+                warn += ' Generating constant (0) zeta.'
+                warnings.warn(err)
+                zeta = Variable.constant(0)
             else:
-                try:
-                    zeta = Variable.from_netCDF(dataset=ds,
-                                                grid=grid,
-                                                varname=zeta_name,
-                                                name='zeta')
-                except:
-                    warnings.warn('failed to find zeta name in data file, '
-                                  'trying grid file if available')
-                    if dg is not None:
-                        zeta = Variable.from_netCDF(dataset=dg,
-                                                    grid=grid,
-                                                    varname=zeta_name,
-                                                    name='zeta')
-                    else:
-                        raise
-
+                zeta = Variable.from_netCDF(dataset=zeta_var._grp,
+                                            varname=zeta_var.name,
+                                            grid=grid,
+                                            name='zeta')
+                
         if time is None:
             time = zeta.time
         if terms is None:
             terms = {}
-            for term, tvar in cls.default_names.items():
-                if term in ['h', 'zeta']:
+            for term, tvar in varnames.items():
+                if term in ['bathymetry', 'zeta']:
                     # skip these because they're done separately...
                     continue
-                vname = tvar
-                choice_ds = ds
-                if tvar not in ds.variables.keys():
-                    tln = cls.cf_names[term]
-                    try:
-                        vname = cls._gen_varname(filename, choice_ds, [tvar], [tln])
-                    except KeyError:
-                        warnings.warn('could not find term {} in data file, '
-                                      'trying grid file'.format(tvar))
-                        choice_ds = dg
-                        vname = cls._gen_varname(filename, dg, [tvar], [tln])
-
-                    # don't want to re-include bathymetry, zeta
-                    terms[term] = choice_ds[vname][:]
+                terms[term] = tvar[:]
         if vtransform is None:
             vtransform = 2  #default for ROMS
             #  messing about trying to detect this.
