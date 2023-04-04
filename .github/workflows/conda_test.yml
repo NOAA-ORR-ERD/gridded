@@ -20,13 +20,12 @@ jobs:
       - shell: bash -l {0}
         run: |
           conda config --add channels conda-forge
-#          conda info
-#          conda list
       - name: Run pytest
         shell: bash -l {0}
         run: |
             conda install --file conda_requirements.txt --file conda_requirements_test.txt
             pip install -e .
+            cd ..
             pytest --pyargs gridded
 
   lint:
@@ -47,6 +46,3 @@ jobs:
         run: |
             conda install flake8
             python -m flake8 --statistics gridded/
-      # python -m flake8 --count --max-line-length=95 --show-source --statistics gridded/
-      # python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-      #       python -m flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
