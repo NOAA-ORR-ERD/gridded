@@ -3,10 +3,10 @@
 import os
 import sys
 import datetime
-
 import pytest
 import numpy as np
 import netCDF4 as nc
+import gridded
 
 from gridded.variable import Variable, VectorVariable
 from gridded.tests.utilities import get_test_file_dir, get_test_cdl_filelist
@@ -221,27 +221,99 @@ class Test_S_Depth(object):
         # as 'above the surface' and so idx, alphas should be None, None
         assert idx == None and alphas == None
 
+@pytest.fixture(scope="module")
+def get_database_nc():
+    """
+    This sets up netcdf dataset for interpolation test
+    """
+    L_depth_file = os.path.join(test_dir, 'test_L_Depth.nc')
+
+    ncfile = nc.Dataset(L_depth_file)
+    ds = gridded.Dataset(L_depth_file)
+    depth = gridded.depth.Depth.from_netCDF(filename=L_depth_file)
+    time = gridded.time.Time.from_netCDF(filename=L_depth_file, datavar=ncfile['u'])
+
+    return time, depth, ds
 
 class Test_L_Depth(object):
     def test_construction(self, get_l_depth):
+
         assert get_l_depth is not None
 
-    def test_interpolation_alphas(self, get_l_depth):
+    def test_interpolation_alphas_all_surface(self, get_l_depth):
         ld = get_l_depth
-        points = np.array(([0, 0, 0], [1, 1, 0]))
+        points = np.array(([0, 0, 0], [1, 1, 0], [4, 9, 0]))
         idxs, alphas = ld.interpolation_alphas(points)
+
         assert idxs is None
         assert alphas is None
+
+    def test_interpolation_alphas_1_surface(self, get_l_depth):
+        ld = get_l_depth
         points = np.array(([0, 0, 0],
                            [1, 1, 0.5],
                            [0, 0, 1],
-                           ))
+                          ))
         idxs, alphas = ld.interpolation_alphas(points)
-        assert np.all(idxs == np.array([-1, 0, 1]))
-        assert np.all(
-            np.isclose(alphas, np.array([-1, 0.5, 0]))
-        )
+
+        assert np.all(idxs == np.array([1, 1, 1]))
+        assert np.all(np.isclose(alphas, np.array([0, 0.5, 1])))
+
+    def test_interpolation_alphas_above_surface(self, get_l_depth):
+        ld = get_l_depth
         points = np.array(([0, 0, -1], [0, 0, 10]))
         idxs, alphas = ld.interpolation_alphas(points)
-        assert np.all(idxs == np.array([-1, -1]))
-        assert np.all(alphas == np.array([-1, -1]))
+
+        assert np.all(idxs == np.array([-1, 5]))
+        assert np.all(alphas == np.array([-3, 1]))
+
+    def test_interpolation_alphas_below_grid(self, get_l_depth):
+        ld = get_l_depth
+        points = np.array(([0, 0, 20], [0, 0, 4.25]))
+        idxs, alphas = ld.interpolation_alphas(points)
+
+        assert np.all(idxs == np.array([-1, 4]))
+        assert np.all(alphas == np.array([-2, 0.125]))
+
+    def test_interpolation_alphas_full(self, get_l_depth):
+        ld = get_l_depth
+        points = np.array(([1, 2, 0], [3, 4, 5.5], [3, 4, 15.5], [3, 4, -10], [3, 4, 10]))
+        idxs, alphas = ld.interpolation_alphas(points)
+
+        assert np.all(idxs == np.array([1, 4, -1, -1, 5]))
+        assert np.all(alphas == np.array([0, 0.75, -2, -3, 1]))
+
+    @pytest.mark.parametrize("index", (0, 5, 10, 20))
+    def test_vertical_interpolation_within_grid(self, index, get_database_nc):
+        time, depth, ds = get_database_nc
+        points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], depth.depth_levels[index]), )
+
+        assert ds.variables['u'].at(points=points,time=time.data[0])[0] \
+               == ds.variables['u'].data[0,index,1,1]
+
+    def test_vertical_interpolation_onsurface(self, get_database_nc):
+        time, depth, ds = get_database_nc
+        points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], 0.0), )
+
+        assert ds.variables['u'].at(points=points,time=time.data[0])[0] \
+               == ds.variables['u'].data[0,0,1,1]
+
+    def test_vertical_interpolation_belowgrid(self, get_database_nc):
+        time, depth, ds = get_database_nc
+        points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], depth.depth_levels[-1]+100.), )
+
+        assert np.isnan(ds.variables['u'].at(points=points,time=time.data[0])[0])
+
+    def test_vertical_interpolation_abovesurface(self, get_database_nc):
+        time, depth, ds = get_database_nc
+        points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], -10.), )
+
+        assert np.isnan(ds.variables['u'].at(points=points,time=time.data[0])[0])
+
+    def test_vertical_interpolation_full(self, get_database_nc):
+        time, depth, ds = get_database_nc
+        points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], -10.), (ds.grid.node_lon[1], ds.grid.node_lat[1], 0.), (ds.grid.node_lon[1], ds.grid.node_lat[1], depth.depth_levels[3]))
+
+        assert np.isnan(ds.variables['u'].at(points=points,time=time.data[0])[0])
+        assert ds.variables['u'].at(points=points,time=time.data[0])[1] == ds.variables['u'].data[0,0,1,1]
+        assert ds.variables['u'].at(points=points,time=time.data[0])[2] == ds.variables['u'].data[0,3,1,1]

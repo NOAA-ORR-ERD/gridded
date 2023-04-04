@@ -108,7 +108,7 @@ class Dataset():
             if is_not_grid_attr:
                 ncvar = ds[k]
                 # find the location of the variable
-                print("working with:", ncvar)
+                # print("working with:", ncvar)
                 try:
                     location = ncvar.location
                     if location not in VALID_LOCATIONS:
@@ -116,7 +116,6 @@ class Dataset():
                 except AttributeError:
                     # that didn't work, need to try to infer it
                     location = self.grid.infer_location(ncvar)
-
                 if location is not None:
                     try:
                         ln = ds[k].long_name
