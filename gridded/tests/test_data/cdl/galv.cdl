@@ -1,0 +1,62 @@
+netcdf galv {
+dimensions:
+        time = UNLIMITED ; // (433 currently)
+        node = 2113 ;
+        nbnd = 862 ;
+        nbi = 4 ;
+        nele = 3397 ;
+variables:
+        double lat(node) ;
+                lat:_FillValue = NaN ;
+                lat:standard_name = "latitude" ;
+                lat:long_name = "latitude in degrees north" ;
+                lat:units = "degrees_north" ;
+                lat:coverage_content_type = "coordinate" ;
+        double lon(node) ;
+                lon:_FillValue = NaN ;
+                lon:standard_name = "longitude" ;
+                lon:long_name = "longitude in degrees east" ;
+                lon:units = "degrees_east" ;
+                lon:coverage_content_type = "coordinate" ;
+        double u(time, node) ;
+                u:_FillValue = NaN ;
+                u:standard_name = "sea_water_x_velocity" ;
+                u:long_name = "eastward water velocity" ;
+                u:units = "m/s" ;
+                u:coverage_content_type = "modelResult" ;
+        double v(time, node) ;
+                v:_FillValue = NaN ;
+                v:standard_name = "sea_water_y_velocity" ;
+                v:long_name = "northward water velocity" ;
+                v:units = "m/s" ;
+                v:coverage_content_type = "modelResult" ;
+        double depth(time, node) ;
+                depth:_FillValue = NaN ;
+                depth:standard_name = "sea_floor_depth_below_sea_surface" ;
+                depth:long_name = "water depth" ;
+                depth:units = "m" ;
+                depth:coverage_content_type = "modelResult" ;
+        double water_surface_elevation(time, node) ;
+                water_surface_elevation:_FillValue = NaN ;
+                water_surface_elevation:standard_name = "sea_surface_height_above_mean_sea_level" ;
+                water_surface_elevation:long_name = "water surface elevation" ;
+                water_surface_elevation:units = "m" ;
+                water_surface_elevation:coverage_content_type = "modelResult" ;
+        int bnd(nbnd, nbi) ;
+                bnd:long_name = "boundary segment node list" ;
+                bnd:units = "index_start_0" ;
+        int node(node) ;
+        int nele(nele) ;
+        int time(time) ;
+                time:standard_name = "time" ;
+                time:long_name = "time" ;
+                time:units = "hours since 2022-07-01T00:00:00Z" ;
+                time:coverage_content_type = "coordinate" ;
+        int nbnd(nbnd) ;
+        int nbi(nbi) ;
+
+// global attributes:
+                :file_type = "FEM" ;
+                :Conventions = "COARDS" ;
+                :grid_type = "Triangular" ;
+}

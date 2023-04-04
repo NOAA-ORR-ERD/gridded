@@ -1,0 +1,45 @@
+netcdf test.nc{
+dimensions:
+	x = 331 ;
+	y = 290 ;
+	xc = 330 ;
+	yc = 289 ;
+	time = UNLIMITED ; // (18 currently)
+variables:
+	float time(time) ;
+		time:long_name = "Forecast time for ForecastModelRunCollection" ;
+		time:standard_name = "time" ;
+		time:units = "seconds since 1980-1-1 00:00:00" ;
+		time:_CoordinateAxisType = "Time" ;
+		time:calendar = "proleptic_gregorian" ;
+		time:missing_value = NaNf ;
+	float lonc(yc, xc) ;
+	float latc(yc, xc) ;
+	float lon(y, x) ;
+	float lat(y, x) ;
+	float water_u(time, yc, xc) ;
+		water_u:_FillValue = 1.e+37f ;
+		water_u:field = "u-velocity, scalar, series" ;
+		water_u:coordinates = "time_run time s_rho lat_u lon_u " ;
+		water_u:long_name = "u-momentum component" ;
+		water_u:standard_name = "grid_eastward_sea_water_velocity" ;
+		water_u:grid = "grid" ;
+		water_u:location = "edge1" ;
+		water_u:time = "ocean_time" ;
+		water_u:units = "meter second-1" ;
+	float water_v(time, yc, xc) ;
+		water_v:_FillValue = 1.e+37f ;
+		water_v:field = "v-velocity, scalar, series" ;
+		water_v:coordinates = "time_run time s_rho lat_v lon_v " ;
+		water_v:long_name = "v-momentum component" ;
+		water_v:standard_name = "grid_northward_sea_water_velocity" ;
+		water_v:grid = "grid" ;
+		water_v:location = "edge2" ;
+		water_v:time = "ocean_time" ;
+		water_v:units = "meter second-1" ;
+	float coops_mask(yc, xc) ;
+
+// global attributes:
+		:grid_type = "curvilinear" ;
+		:_Format = "classic" ;
+}

@@ -1,17 +1,16 @@
-
 from textwrap import dedent
 import collections
 import hashlib
 from functools import wraps
 import os
-
 import numpy as np
 import netCDF4 as nc4
 
 from gridded.utilities import (get_dataset,
                                _reorganize_spatial_data,
                                _align_results_to_spatial_data,
-                               asarraylike)
+                               asarraylike,
+                               search_dataset_for_variables_by_varname)
 from gridded import VALID_LOCATIONS
 from gridded.grids import Grid, Grid_U, Grid_S, Grid_R
 from gridded.depth import Depth
@@ -234,7 +233,7 @@ class Variable(object):
             if varname is None:
                 raise NameError('Default current names are not in the data file, '
                                 'must supply variable name')
-        data = ds[varname]
+        data = ds.variables[varname]
         if name is None:
             name = cls.__name__ + str(cls._def_count)
             cls._def_count += 1
@@ -294,6 +293,19 @@ class Variable(object):
                 'units="{0.units}", '
                 'data="{0.data}", '
                 ')').format(self)
+
+    @classmethod
+    def constant(cls, value):
+        #Sets a Variable up to represent a constant scalar field. The result
+        #will return a constant value for all times and places.
+        Grid = Grid_S
+        Time = cls._default_component_types['time']
+        _data = np.full((3,3), value)
+        _node_lon = np.array(([-360, 0, 360], [-360, 0, 360], [-360, 0, 360]))
+        _node_lat = np.array(([-89.95, -89.95, -89.95], [0, 0, 0], [89.95, 89.95, 89.95]))
+        _grid = Grid(node_lon=_node_lon, node_lat=_node_lat)
+        _time = Time.constant_time()
+        return cls(grid=_grid, time=_time, data=_data, fill_value=value)
 
     @property
     def location(self):
@@ -519,16 +531,16 @@ class Variable(object):
         Find the value of the property at positions P at time T
 
         :param points: Cartesian coordinates to be queried (P). Lon, Lat required, Depth (Z) is optional
-        Coordinates must be organized as a 2D array or list, one coordinate per row or list element.
-        [[Lon1, Lat1, Z1],
-         [Lon2, Lat2, Z2],
-         [Lon3, Lat3, Z3],
-         ...]
-        Failure to provide point data in this format may cause unexpected behavior
-        If you wish to provide point data using separate longitude and latitude arrays,
-        use the `lons=` and `lats=` kwargs.
-        Note that if your Z is positive-up, self.depth.positive_down should be
-        set to False
+            Coordinates must be organized as a 2D array or list, one coordinate per row or list element.
+            ``[[Lon1, Lat1, Z1],``
+            ``[Lon2, Lat2, Z2],``
+            ``[Lon3, Lat3, Z3],``
+            ``...]``
+            Failure to provide point data in this format may cause unexpected behavior
+            If you wish to provide point data using separate longitude and latitude arrays,
+            use the `lons=` and `lats=` kwargs. 
+            Note that if your Z is positive-up, self.depth.positive_down should be
+            set to False
         :type points: Nx3 array of double
 
         :param time: The time at which to query these points (T)
@@ -1224,15 +1236,15 @@ class VectorVariable(object):
         if points is None:
             points = np.column_stack((np.array(lons), np.array(lats)))
         pts = _reorganize_spatial_data(points)
-        if hash is None:
-            _hash = self._get_hash(points, time)
+        if _hash is None:
+            _hash = self._get_hash(pts, time)
 
         if _mem:
-            res = self._get_memoed(points, time, self._result_memo, _hash=_hash)
+            res = self._get_memoed(pts, time, self._result_memo, _hash=_hash)
             if res is not None:
                 return res
 
-        value = np.column_stack([var.at(points=points,
+        value = np.ma.column_stack([var.at(points=pts,
                                         time=time,
                                         units=units,
                                         extrapolate=extrapolate,
@@ -1242,7 +1254,7 @@ class VectorVariable(object):
                                         **kwargs) for var in self.variables])
 
         if _mem:
-            self._memoize_result(points, time, value, self._result_memo, _hash=_hash)
+            self._memoize_result(pts, time, value, self._result_memo, _hash=_hash)
 
         return value
 
