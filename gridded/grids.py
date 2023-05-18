@@ -245,7 +245,6 @@ class Grid_R(GridBase):
                  node_lon=None,
                  node_lat=None,
                  grid_topology=None,
-                 dimensions=None,
                  node_dimensions=None,
                  node_coordinates=None,
                  *args,
@@ -261,7 +260,10 @@ class Grid_R(GridBase):
         self.node_lon = node_lon
         self.node_lat = node_lat
         self.grid_topology = grid_topology
-        self.dimensions = dimensions
+        if self.grid_topology is not None:
+            self.dimensions = [grid_topology['node_lat'], grid_topology['node_lon']]
+        else:
+            self.dimensions = ['lat', 'lon']
         self.node_dimensions = node_dimensions
         self.node_coordinates = node_coordinates
 
@@ -279,6 +281,7 @@ class Grid_R(GridBase):
                                                                      dataset=dataset,
                                                                      grid_topology=grid_topology)
 
+        
         # Grid_R only needs node_lon and node_lat. However, they must be a specific shape (1D)
         node_lon = init_args['node_lon']
         node_lat = init_args['node_lat']
@@ -346,6 +349,31 @@ class Grid_R(GridBase):
         else:
             return idxs
 
+    def lonlat_to_yx(self, variable):
+        '''
+        The RegualarGridInterpolator needs to have it's two dimensions x and y be associated
+        correctly with lon and lat (or vice versa). The order depends on the orientation in
+        the variable
+
+        if the variable provided does not have a dimensions attribute, it will use the dimensions arg
+        '''
+        retval = (self.node_lat, self.node_lon)
+        if (hasattr(variable, 'dimensions')):
+            if not all([k in self.dimensions for k in variable.dimensions[-2:]]):
+                raise ValueError('Dimension provided by variable is not compatible \
+                                 with this Grid_R object. Provided: {0} \
+                                 self.dimensions: {1}'.format(variable.dimensions, self.dimensions))
+            dims = variable.dimensions[-2:] #assume the last two are the lon/lat x/y
+        else:
+            dims = self.dimensions
+        #self.dimensions is always [y(lat), x(lon)], so if var.dimensions is [lon, lat] we need
+        #to reverse x/y association
+        if dims[0] == self.dimensions[1]: 
+            retval = (self.node_lon, self.node_lat)
+
+        return retval
+        
+
     def interpolate_var_to_points(self,
                                   points,
                                   variable,
@@ -363,18 +391,17 @@ class Grid_R(GridBase):
         points = np.asarray(points, dtype=np.float64)
         just_one = (points.ndim == 1)
         points = points.reshape(-1, 2)
+        y, x = self.lonlat_to_yx(variable)
         if slices is not None:
             variable = variable[slices]
             if np.ma.isMA(variable):
                 variable = variable.filled(0) #eventually should use Variable fill value
-        x = self.node_lon if variable.shape[0] == len(self.node_lon) else self.node_lat
-        y = self.node_lat if x is self.node_lon else self.node_lon
-        interp_func = RegularGridInterpolator((x, y),
+        interp_func = RegularGridInterpolator((y, x),
                                               variable,
                                               method=method,
                                               bounds_error=False,
                                               fill_value=0)
-        if x is self.node_lon:
+        if y is self.node_lon:
             vals = interp_func(points, method=method)
         else:
             vals = interp_func(points[:, ::-1], method=method)
@@ -494,8 +521,7 @@ class Grid(object):
             init_args, gt = cls._find_required_grid_attrs(filename,
                                                           dataset=dataset,
                                                           grid_topology=grid_topology)
-            c = cls(**init_args)
-            c.grid_topology = gt
+            c = cls(grid_topology=gt, **init_args)
         return c
 
     @staticmethod

@@ -124,24 +124,31 @@ class TestPyGrid_U:
 def rg_data():
     lons = np.array((0,10,20,30,40,55))
     lats = np.array((0,2,3,4,5,7,9))
-    return lons, lats
+    gt = {'node_lon': 'lon',
+          'node_lat': 'lat'}
+    return lons, lats, gt
 
 
 @pytest.fixture()
 def example_rg():
     lons = np.array((0,10,20,30,40,55))
     lats = np.array((0,2,3,4,5,7,9))
+    gt = {'node_lon': 'lon',
+          'node_lat': 'lat'}
     rg = Grid_R(node_lon=lons,
-                node_lat=lats)
+                node_lat=lats,
+                grid_topology=gt)
     return rg
 
 
 class TestGrid_R:
     def test_construction(self, rg_data):
-        node_lon = rg_data[0]
-        node_lat = rg_data[1]
+        node_lon, node_lat, gt = rg_data
         rg = Grid_R(node_lon=node_lon,
-                    node_lat=node_lat)
+                    node_lat=node_lat,
+                    grid_topology=gt)
+        assert rg.dimensions[0] == gt['node_lat']
+        assert rg.dimensions[1] == gt['node_lon']
 
     def test_locate_faces(self, example_rg):
         points = np.array(([5,1],[6,1],[7,1],[-1,0],[42,0]))
@@ -155,13 +162,28 @@ class TestGrid_R:
         assert np.all(idxs == answer)
 
     def test_interpolation(self, example_rg):
-        example_rg.node_lon = np.array([0,1,2,5])
+        example_rg.node_lon = np.array([0,1,2,5,12])
         example_rg.node_lat = np.array([0,1,2,12])
         points = np.array(([0.5,0.5],[3.5,2],[-1,0],[0,-1]))
-        v1 = np.mgrid[0:4,0:4][1]
+        v1 = np.mgrid[0:4,0:5][1]
         val = example_rg.interpolate_var_to_points(points, v1, method='linear')
-        assert np.all(np.isclose(val,np.array([0.5,2,0,0])))
+        assert np.all(np.isclose(val,np.array([0.5,2.5,0,0])))
 
         points = np.array([3.5,2])
         val = example_rg.interpolate_var_to_points(points, v1, method='linear')
-        assert np.all(np.isclose(val,np.array([2])))
+        assert np.all(np.isclose(val,np.array([2.5])))
+
+    def test_xy_dimensions(self, example_rg):
+        #If a variable for interpolation is organized as (lon, lat) then we need to ensure
+        #this is associated properly with the y/x dimension before interpolation
+        example_rg.node_lon = np.array([0,1,2,5,12])
+        example_rg.node_lat = np.array([0,1,2,12])
+        points = np.array(([0.5,0.5],[3.5,2],[-1,0],[0,-1])) #format in lon, lat
+        v1 = np.mgrid[0:5,0:4][1]
+        test_ds = nc.Dataset('test', mode='w', diskless=True)
+        test_ds.createDimension('lon', 5)
+        test_ds.createDimension('lat', 4)
+        var = nc.Variable(test_ds, 'u', np.float, dimensions=(test_ds.dimensions['lon'], test_ds.dimensions['lat']))
+        var[0:5, 0:4] = v1
+        val = example_rg.interpolate_var_to_points(points, var, method='linear', slices=(slice(None,None,None),))
+        assert np.all(np.isclose(val, np.array([0.5, 2, 0, 0])))

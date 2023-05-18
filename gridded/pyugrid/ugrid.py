@@ -58,6 +58,7 @@ class UGrid(object):
                  face_coordinates=None,
                  boundary_coordinates=None,
                  data=None,
+                 grid_topology=None,
                  mesh_name="mesh",
                  ):
         """
@@ -136,6 +137,7 @@ class UGrid(object):
         self.boundary_coordinates = boundary_coordinates
 
         self.mesh_name = mesh_name
+        self.grid_topology = grid_topology
 
         # # the data associated with the grid
         # # should be a dict of UVar objects

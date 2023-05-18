@@ -67,6 +67,7 @@ class SGrid(object):
                  vertical_dimensions=None,
                  tree=None,    #Fixme: should this be initilizable here?
                  use_masked_boundary=False,
+                 grid_topology=None,
                  *args,
                  **kwargs):
 
@@ -115,6 +116,7 @@ class SGrid(object):
         self._log_ind_memo_dict = OrderedDict()
         self._cell_ind_memo_dict = OrderedDict()
         self._cell_tree_mask = None
+        self.grid_topology = grid_topology
 
     @classmethod
     def load_grid(cls, nc):
