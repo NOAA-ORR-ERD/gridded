@@ -183,7 +183,7 @@ class TestGrid_R:
         test_ds = nc.Dataset('test', mode='w', diskless=True)
         test_ds.createDimension('lon', 5)
         test_ds.createDimension('lat', 4)
-        var = nc.Variable(test_ds, 'u', np.float, dimensions=(test_ds.dimensions['lon'], test_ds.dimensions['lat']))
+        var = nc.Variable(test_ds, 'u', np.float64, dimensions=(test_ds.dimensions['lon'], test_ds.dimensions['lat']))
         var[0:5, 0:4] = v1
         val = example_rg.interpolate_var_to_points(points, var, method='linear', slices=(slice(None,None,None),))
         assert np.all(np.isclose(val, np.array([0.5, 2, 0, 0])))
