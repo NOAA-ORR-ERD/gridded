@@ -357,18 +357,30 @@ class Grid_R(GridBase):
         if the variable provided does not have a dimensions attribute, it will use the dimensions arg
         '''
         retval = (self.node_lat, self.node_lon)
+        var_shape = variable.shape[-2::]
+        grid_shape = (len(self.node_lat), len(self.node_lon))
         if (hasattr(variable, 'dimensions')):
             if not all([k in self.dimensions for k in variable.dimensions[-2:]]):
                 raise ValueError('Dimension provided by variable is not compatible \
                                  with this Grid_R object. Provided: {0} \
                                  self.dimensions: {1}'.format(variable.dimensions, self.dimensions))
-            dims = variable.dimensions[-2:] #assume the last two are the lon/lat x/y
+            var_dims = variable.dimensions[-2:] #assume the last two are the lon/lat x/y
         else:
-            dims = self.dimensions
+            var_dims = self.dimensions
         #self.dimensions is always [y(lat), x(lon)], so if var.dimensions is [lon, lat] we need
         #to reverse x/y association
-        if dims[0] == self.dimensions[1]: 
-            retval = (self.node_lon, self.node_lat)
+        if not all([dlen in grid_shape for dlen in var_shape]):
+            raise ValueError('Incompatible dimensions. Variable: {0}, Grid_R: {1}'.format(variable.shape, grid_shape))
+        
+        if hasattr(variable, 'dimensions'):
+            if var_dims[0] == self.dimensions[1]: #case 2, dims provided, dims swapped
+                retval = retval[::-1]
+            #else: case 1, no change
+        else:
+            if var_shape[0] == var_shape[1]: #case 4, dims not provided, dim length same
+                raise ValueError('Provided square variable with no dimensions attribute')
+            if var_shape[0] == len(self.node_lon): #case 3, dims not provided, dim length differnt
+                retval = retval[::-1]
 
         return retval
         
