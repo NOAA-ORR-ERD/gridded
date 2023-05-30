@@ -180,10 +180,30 @@ class TestGrid_R:
         example_rg.node_lat = np.array([0,1,2,12])
         points = np.array(([0.5,0.5],[3.5,2],[-1,0],[0,-1])) #format in lon, lat
         v1 = np.mgrid[0:5,0:4][1]
+
+        #case where variable is provided without dimension, but correct order can be inferred via shape
+        val = example_rg.interpolate_var_to_points(points, v1, method='linear')
+        assert np.all(np.isclose(val, np.array([0.5, 2, 0, 0])))
+
         test_ds = nc.Dataset('test', mode='w', diskless=True)
         test_ds.createDimension('lon', 5)
         test_ds.createDimension('lat', 4)
         var = nc.Variable(test_ds, 'u', np.float64, dimensions=(test_ds.dimensions['lon'], test_ds.dimensions['lat']))
         var[0:5, 0:4] = v1
+        val = example_rg.interpolate_var_to_points(points, var, method='linear', slices=(slice(None,None,None),))
+        assert np.all(np.isclose(val, np.array([0.5, 2, 0, 0])))
+
+        #square grid with no dimension specified should raise error
+        example_rg.node_lon = np.array([0,1,2,5])
+        example_rg.node_lat = np.array([0,1,2,12])
+        v2 = np.mgrid[0:4, 0:4][1]
+        with pytest.raises(ValueError):
+            val = example_rg.interpolate_var_to_points(points, v2, method='linear')
+
+        test_ds = nc.Dataset('test2', mode='w', diskless=True)
+        test_ds.createDimension('lon', 4)
+        test_ds.createDimension('lat', 4)
+        var = nc.Variable(test_ds, 'u', np.float64, dimensions=(test_ds.dimensions['lon'], test_ds.dimensions['lat']))
+        var[0:4, 0:4] = v2
         val = example_rg.interpolate_var_to_points(points, var, method='linear', slices=(slice(None,None,None),))
         assert np.all(np.isclose(val, np.array([0.5, 2, 0, 0])))
