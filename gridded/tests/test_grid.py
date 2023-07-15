@@ -102,6 +102,7 @@ class TestPyGrid_U:
         filename = ug_data[0]
         dataset = ug_data[1]
         grid_topology = ug_topology
+        print(f"{filename=}")
         ug = Grid_U.from_netCDF(filename, dataset, grid_topology=grid_topology)
 #         assert ug.filename == filename
 #         assert isinstance(ug.node_lon, nc.Variable)

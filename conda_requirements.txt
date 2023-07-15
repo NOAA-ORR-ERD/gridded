@@ -5,6 +5,7 @@
 # the conda environment, rather than upgrading or downgrading
 python>=3.9
 numpy>=1.24
+xarray>=2023.6 # I don't know if need this pin, but it's what it's tested with.
 scipy
 netcdf4>=1.4
 cell_tree2d>=0.3

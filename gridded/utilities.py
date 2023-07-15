@@ -4,13 +4,12 @@
 assorted utility functions needed by gridded
 """
 
-try:
-    from collections.abc import Iterable
-except ImportError:  # py2
-    from collections import Iterable
+import os
+from collections.abc import Sequence
 
 import numpy as np
 import netCDF4 as nc4
+import xarray as xr
 
 
 must_have = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute__']
@@ -341,24 +340,34 @@ def isstring(obj):
         return isinstance(obj, str)
 
 
-def get_dataset(ncfile, dataset=None):
+def get_dataset(filename, dataset=None):
     """
-    Utility to create a netCDF4 Dataset from a filename, list of filenames,
-    or just pass it through if it's already a netCDF4.Dataset
+    Utility to create an xarray Dataset from a filename, list of filenames,
+    or just pass it through if it's already a xarray.Dataset
 
-    if dataset is not None, it should be a valid netCDF4 Dataset object,
+    If dataset is not None, it should be a valid xarray Dataset object,
     and it will simply be returned
     """
+    open_ds_kwargs = {"decode_times": False}
     if dataset is not None:
         return dataset
-    if isinstance(ncfile, (nc4.Dataset, nc4.MFDataset)):
-        return ncfile
-    elif isstring(ncfile):
-        return nc4.Dataset(ncfile)
-    elif isinstance(ncfile, Iterable) and len(ncfile) == 1:
-        return nc4.Dataset(ncfile[0])
+
+    # is it already a Dataset?
+    if isinstance(filename, xr.Dataset):
+        return filename
+
+    # is it PathLike? - open the dataset
+    try:
+        path = os.fspath(filename)
+        return xr.open_dataset(path, **open_ds_kwargs)
+    except TypeError:
+        pass
+
+    # Should be a Sequence of pathlike (string already checked for)
+    if isinstance(filename, Sequence) and len(filename) == 1:
+        return xr.open_dataset(filename[0], **open_ds_kwargs)
     else:
-        return nc4.MFDataset(ncfile)
+        return xr.open_mfdataset(filename, **open_ds_kwargs)
 
 
 def get_writable_dataset(ncfile, format="netcdf4"):

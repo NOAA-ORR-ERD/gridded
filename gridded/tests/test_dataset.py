@@ -58,6 +58,12 @@ def test_get_variable_by_attribute_multiple():
     assert vars[1].attributes['units'] == 'meter second-1'
 
 
+def test_load_arakawa_c():
+    gds = Dataset(arakawa_c_file)
+
+    assert False
+
+
 def test_get_variable_by_attribute_not_there():
     """
     This should return an empty list

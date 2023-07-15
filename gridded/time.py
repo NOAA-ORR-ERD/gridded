@@ -90,13 +90,14 @@ class Time(object):
         :param tz_offset=None: offset to adjust for timezone, in hours.
 
         """
+        breakpoint()
         if dataset is None:
             dataset = get_dataset(filename)
         if datavar is not None:
-            if hasattr(datavar, 'time') and datavar.time in dataset.dimensions.keys():
-                varname = datavar.time
+            if 'time' in datavar.attrs and datavar.attrs['time'] in dataset.dims.keys():
+                varname = datavar.attrs['time']
             else:
-                varname = datavar.dimensions[0] if 'time' in datavar.dimensions[0] else None
+                varname = datavar.dims[0] if 'time' in datavar.dims[0] else None
                 if varname is None:
                     return cls.constant_time()
         time = cls(data=dataset[varname],

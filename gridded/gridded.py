@@ -8,10 +8,7 @@ The core class that encapsulates the gridded data model
 
 """
 
-
-
-# py2/3 compatibility
-
+import os
 from gridded.grids import Grid
 from gridded.variable import Variable
 
@@ -20,10 +17,6 @@ from gridded.utilities import (get_dataset,
                                get_dataset_attrs,
                                )
 from . import VALID_LOCATIONS
-
-"""
-The main gridded.Dataset code
-"""
 
 
 class Dataset():
@@ -42,27 +35,25 @@ class Dataset():
         Construct a gridded.Dataset object. Can be constructed from a data file,
         or also raw grid and variable objects.
 
-        :param ncfile: A file or files to load the Dataset from.
+        :param ncfile: A file or files to load the Dataset from. Supports any
+                       filetype supported by xarray
         :type ncfile: Can be one of:
-                      - file path of netcdf file as a string
+                      - file path of file as a string or PathLike
                       - opendap url
-                      - list of file paths (uses a netCDF4 MFDataset)
-                      - open netCDF4 Dataset object
+                      - list of file paths (uses xarray open_mfdataset)
+                      - open xarray Dataset object
                      (could be other file types in the future)
 
-        :param grid: a dataset.Grid object or anything that presents the same API.
+        :param grid: a dataset.Grid object
 
-        :param variables: a dict
-        of dataset.Variable objects -- or anything that
-                          presents the same API.
+        :param variables: a dict of gridded.Variable objects.
 
-        :param grid_topology: mapping of grid topology components to netcdf variable names.
+        :param grid_topology: mapping of grid topology components to file variable names.
                               used to load non-confirming files.
         :type grid_topology: mapping with keys of topology components and values are
-                             variable names.
+                             variable names. topology components depend on grid type.
 
-        :param attributes: The global attributes of the dataset -- usually the global
-                           attributes of a netcdf file.
+        :param attributes: The global attributes of the Dataset
         :type attributes: Mapping of attribute name to attributes themselves
                           (usually strings)
 
@@ -71,19 +62,22 @@ class Dataset():
         If a filename is passed in, the attributes will be pulled from the file, and
         the input ones ignored.
         """
-        if ncfile is not None:
+        if ncfile is not None:  # load from file
             if (grid is not None or
                   variables is not None or
                   attributes is not None):
                 raise ValueError("You can create a Dataset from a file, or from raw data"
                                  "but not both.")
-            self.nc_dataset = get_dataset(ncfile)
-            self.filename = self.nc_dataset.filepath()
+            self.xr_dataset = get_dataset(ncfile)
+            try:
+                self.filename = os.fspath(ncfile)
+            except TypeError:
+                self.filename = None
             self.grid = Grid.from_netCDF(filename=self.filename,
-                                         dataset=self.nc_dataset,
+                                         dataset=self.xr_dataset,
                                          grid_topology=grid_topology)
-            self.variables = self._load_variables(self.nc_dataset)
-            self.attributes = get_dataset_attrs(self.nc_dataset)
+            self.variables = self._load_variables(self.xr_dataset)
+            self.attributes = self.xr_dataset.attrs
         else:  # no file passed in -- create from grid and variables
             self.filename = None
             self.grid = grid
@@ -98,7 +92,7 @@ class Dataset():
 
     def _load_variables(self, ds):
         """
-        load up the variables in the nc file
+        load up the variables in the dataset file
         """
         variables = {}
         for k in ds.variables.keys():

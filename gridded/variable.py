@@ -221,7 +221,7 @@ class Variable(object):
                 dg = dataset
             ds = dataset
         if data_file is None:
-            data_file = os.path.split(ds.filepath())[-1]
+            data_file = None
 
         if grid is None:
             grid = Grid.from_netCDF(grid_file,
@@ -549,7 +549,7 @@ class Variable(object):
         :param units: units the values will be returned in (or converted to)
         :type units: string such as ('m/s', 'knots', etc)
 
-        :param extrapolate: if True, extrapolation will be supported
+        :param extrapolate: if True, extrapolation in time will be supported
         :type extrapolate: boolean (default False)
 
         :param unmask: if True and return array is a masked array, returns filled array
