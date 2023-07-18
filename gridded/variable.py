@@ -703,12 +703,16 @@ class Variable(object):
             return val_func(points, time, extrapolate, slices=slices + (self.depth.surface_index,), **kwargs)
         elif np.all(d_indices == -1) and np.all(d_alphas == -2):
             # all particles below grid
-            return np.empty((points.shape[0],),dtype=np.float64,)*np.nan  #np.array([None] * len(points)) #val_func(points, time, extrapolate, slices=slices + (self.depth.bottom_index,), **kwargs)
+            rv = np.empty((points.shape[0],), dtype=np.float64) * np.nan
+            rv =  np.ma.MaskedArray(data=rv, mask=np.isnan(rv))  #np.array([None] * len(points)) #val_func(points, time, extrapolate, slices=slices + (self.depth.bottom_index,), **kwargs)
+            return rv
             # within the grid
         else:
             direction = 1 #bottom idx < top
             withingrid = d_indices != -1
-            values = np.empty((points.shape[0],),dtype=np.float64,)*np.nan
+            values = np.zeros((points.shape[0], ), dtype=np.float64)
+            values[d_indices == -1] = np.nan
+            values = np.ma.MaskedArray(data=values, mask=np.isnan(values))
 
             if len(d_indices[withingrid]) > 0:
                 if self.depth.bottom_index > self.depth.surface_index:
@@ -741,7 +745,8 @@ class Variable(object):
                     v1_idx = idx
                     v1 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (v1_idx,), **kwargs) # 2023 correction
                     v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (v1_idx-1,), **kwargs)
-
+                    if np.any(np.isnan(v0)) or np.any(np.isnan(v1)):
+                        breakpoint()
                     sub_vals = v0 + (v1 - v0) * d_alphas[lay_idxs]
                     #partially fill the values array for this layer
                     values.put(lay_idxs, sub_vals)
