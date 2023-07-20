@@ -5,7 +5,7 @@ assorted utility functions needed by gridded
 """
 
 try:
-    from collections.abc import Iterable
+    from collections.abc import Iterable, Collection, Mapping
 except ImportError:  # py2
     from collections import Iterable
 
@@ -402,9 +402,13 @@ def varnames_merge(cls, inc_varnames=None):
 def search_dataset_for_any_long_name(ds, names):
     """
     Searches a netCDF4.Dataset for any netCDF4.Variable that satisfies one of the search terms.
+    :param name: list of strings or str -> list dictionary
 
-    :returns: list of netCDF4.Variable
+    :returns: boolean
     """
+    if isinstance(names, Mapping):
+        names = sum(list(names.values()), [])
+            
     for n in names:
         t1 = ds.get_variables_by_attributes(long_name=n)
         t2 = ds.get_variables_by_attributes(standard_name=n)
