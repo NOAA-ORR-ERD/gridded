@@ -716,9 +716,9 @@ class Variable(object):
             msk = np.isnan(d_indices) if not np.ma.is_masked(d_indices) else d_indices.mask
             values = np.ma.MaskedArray(data=np.zeros((points.shape[0], )), mask=msk)
             # Points are mixed within the grid. Some may be above the surface or under the ground
-            for idx in np.unique(d_indices):
+            for idx in np.unique(d_indices)[0:-1]: #the [0:-1] is required to skip the masked value
                 lay_idxs = np.where(d_indices == idx)[0]
-                if idx == self.data.shape[dim_idx]:
+                if idx == surface_index:
                     #special case, index == depth dim length, so only v0 is valid
                     v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs)
                     values.put(lay_idxs, v0)

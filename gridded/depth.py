@@ -609,8 +609,8 @@ class S_Depth(DepthBase):
             ldgb = self._L_Depth_given_bathymetry_t1
         else:
             raise ValueError('invalid vtransform attribute on depth object')
-        zetas = self.zeta.at(points, time, _hash=_hash, extrapolate=extrapolate).reshape(-1)
-        bathy = self.bathymetry.at(points, time, _hash=_hash,
+        zetas = self.zeta.at(points, time, _hash=_hash, unmask=False, extrapolate=extrapolate).reshape(-1)
+        bathy = self.bathymetry.at(points, time, _hash=_hash, unmask=False,
                                    extrapolate=extrapolate).reshape(-1)
         
         surface_depth = ldgb(bathy, zetas, surface_index, rho_or_w)
