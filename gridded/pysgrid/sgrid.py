@@ -877,6 +877,7 @@ class SGrid(object):
                                   alphas=None,
                                   padding=None,
                                   slices=None,
+                                  unmask=False,
                                   _memo=False,
                                   _hash=None,
                                   _copy=False):
@@ -902,6 +903,8 @@ class SGrid(object):
 
         :param alphas: If computed already, array of alphas can be passed in to increase
                        speed.
+                       
+        :param unmask: If true, unmask results, using fill value for masked values.
 
         Depending on the location specified, different interpolation will be used.
 
@@ -922,7 +925,7 @@ class SGrid(object):
         If you have pre-computed information, you can pass it in to avoid unnecessary
         computation and increase performance.
 
-        - ind = # precomputed indices of points
+        - ind = # precomputed indices of points. This may be a masked array
 
         - alphas = # precomputed alphas (useful if interpolating to the same points frequently)
 
@@ -980,7 +983,10 @@ class SGrid(object):
 
         if location in center_alternate_names:
             #No interpolation across the cell
-            result = self.get_variable_at_index(var, zero_aligned_idxs).filled(fill_value)
+            result = self.get_variable_at_index(var, zero_aligned_idxs)
+            if unmask:
+                result = result.filled(fill_value)
+            return result
 
         elif location in edge1_alternate_names:
             #interpolate as a uniform gradient from 'left side' to 'right side'
@@ -999,11 +1005,9 @@ class SGrid(object):
             u1 = self.get_variable_at_index(var, zero_aligned_idxs)
             m1 = np.logical_xor(self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs - u2_offset))
             u1.mask = np.logical_or(u1.mask, m1)
-            u1 = u1.filled(fill_value)
             u2 = self.get_variable_at_index(var, zero_aligned_idxs + u2_offset)
             m2 = np.logical_xor(self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs + u2_offset))
             u2.mask = np.logical_or(u2.mask, m2)
-            u2 = u2.filled(fill_value)
 
             result = u1 + (alpha[:,np.newaxis] * (u2-u1))
 
@@ -1024,11 +1028,9 @@ class SGrid(object):
             v1 = self.get_variable_at_index(var, zero_aligned_idxs)
             m1 = np.logical_xor(self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs - v2_offset))
             v1.mask = np.logical_or(v1.mask, m1)
-            v1 = v1.filled(fill_value)
             v2 = self.get_variable_at_index(var, zero_aligned_idxs + v2_offset)
             m2 = np.logical_xor(self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs + v2_offset))
             v2.mask = np.logical_or(v2.mask, m2)
-            v2 = v2.filled(fill_value)
 
             result = v1 + (alpha[:,np.newaxis] * (v2-v1))
 
@@ -1050,6 +1052,8 @@ class SGrid(object):
         else:
             raise ValueError('invalid location name')
 
+        if unmask:
+            result = result.filled(fill_value)
         return result
 
     interpolate = interpolate_var_to_points

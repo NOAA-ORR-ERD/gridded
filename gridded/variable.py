@@ -626,7 +626,8 @@ class Variable(object):
                                                     location=self.location,
                                                     _hash=self._get_hash(points[:, 0:2],
                                                                          time),
-                                                    slices=slices, _memo=True)
+                                                    slices=slices,
+                                                    _memo=True)
         return value
 
     def _time_interp(self, points, time, extrapolate, slices=(), **kwargs):
@@ -685,12 +686,17 @@ class Variable(object):
         :type slices: tuple of integers or slice objects
         '''
         order = self.dimension_ordering
-        idx = order.index('depth')
-        if order[idx + 1] != 'time':
+        dim_idx = order.index('depth')
+        if order[dim_idx + 1] != 'time':
             val_func = self._xy_interp
         else:
             val_func = self._time_interp
         d_indices, d_alphas = self.depth.interpolation_alphas(points, time, self.data.shape[1:], _hash=kwargs.get('_hash', None), extrapolate=extrapolate)
+
+        # Check the surface index against the data shape to determine if we are using rho or w coordinates
+        surface_index = self.depth.surface_index
+        if self.depth.surface_index == self.data.shape[dim_idx]: # rho coordinates
+            surface_index -= 1
 
         # the index of a point is -1 if it is on the surface
         # the index refers to the layer index ABOVE the point. EG index 5 means v0 should
@@ -698,71 +704,33 @@ class Variable(object):
         # HOWEVER if the depth layer data is "backwards" for some reason ('high-index-bottom'),
         # (self.bottom_index > self.surface_index) then index 5 means v0 should be from
         # layer 6 and v1 should be from layer 5
-        if d_indices is None and d_alphas is None:
-            # all particles are on the surface
-            return val_func(points, time, extrapolate, slices=slices + (self.depth.surface_index,), **kwargs)
-        elif np.all(d_indices == -1) and np.all(d_alphas == -2):
+        if isinstance(d_indices, np.ma.MaskedArray) and np.all(d_indices.mask):
             # all particles below grid
             rv = np.empty((points.shape[0],), dtype=np.float64) * np.nan
             rv =  np.ma.MaskedArray(data=rv, mask=np.isnan(rv))  #np.array([None] * len(points)) #val_func(points, time, extrapolate, slices=slices + (self.depth.bottom_index,), **kwargs)
             return rv
-            # within the grid
+        elif np.all(d_indices == surface_index) and np.all(d_alphas == 0):
+            # all particles are on the surface
+            return val_func(points, time, extrapolate, slices=slices + (surface_index,), **kwargs)
         else:
-            direction = 1 #bottom idx < top
-            withingrid = d_indices != -1
-            values = np.zeros((points.shape[0], ), dtype=np.float64)
-            values[d_indices == -1] = np.nan
-            values = np.ma.MaskedArray(data=values, mask=np.isnan(values))
-
-            if len(d_indices[withingrid]) > 0:
-                if self.depth.bottom_index > self.depth.surface_index:
-                    low_layer = d_indices[withingrid].max()
-                    high_layer = d_indices[withingrid].min() - 1
-                    direction = -1
-                else:
-                    low_layer = d_indices[withingrid].min()
-                    high_layer = d_indices[withingrid].max() + 1
-
-                #v0_idx = low_layer - direction
-                #lay_idxs = np.where(d_indices == low_layer)[0]
-                #v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (v0_idx,), **kwargs)
-                # if we get an array-out-of bounds on the line above it would be because the index
-                # array had the max index (n_layers) in a high-index-bottom situation.
-                # regardless, this means depth.interpolation_alphas did something wrong because
-                # such values should not be introduced.
-
-                for idx in range(low_layer, high_layer, direction):
-                    #select the matching LEs for this layer
-                    #lay_idxs = np.where(d_indices == low_layer)[0] # 2023 correction ##############
-                    lay_idxs = np.where(d_indices == idx)[0]
-
-                    if len(lay_idxs) == 0:
-                        #no point indices are within the layer, so skip
-                        continue
-                    #if v0_idx != idx - 1: # 2023 correction ##############
-                        #skipped one or more layers, so new v0 needs to be found
-                        #v0_idx = idx - 1 # 2023 correction
-                    v1_idx = idx
-                    v1 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (v1_idx,), **kwargs) # 2023 correction
-                    v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (v1_idx-1,), **kwargs)
-                    if np.any(np.isnan(v0)) or np.any(np.isnan(v1)):
-                        breakpoint()
-                    sub_vals = v0 + (v1 - v0) * d_alphas[lay_idxs]
-                    #partially fill the values array for this layer
-                    values.put(lay_idxs, sub_vals)
-
-                #shift up to the next layer
-                #v0 = v1 # 2023
-                #v0_idx = idx # 2023
-            #underground = (d_alphas == -2)
-            # These would have been flagged with index -1 (surface)
-            # but the additional d_alpha of -2 indicates their subterranean
-            # nature. Therefore, use fill_value
-            #values[underground] = [None] #val_func(points[underground], time, extrapolate, slices=slices + (self.depth.bottom_index,), **kwargs) #self.fill_value
-
-            #abovesurface = (d_alphas == -3)
-            #values[abovesurface] = 10. #val_func(points[abovesurface], time, extrapolate, slices=slices + (self.depth.surface_index,), **kwargs)
-            return values
+            msk = np.isnan(d_indices) if not np.ma.is_masked(d_indices) else d_indices.mask
+            values = np.ma.MaskedArray(data=np.zeros((points.shape[0], )), mask=msk)
+            # Points are mixed within the grid. Some may be above the surface or under the ground
+            for idx in np.unique(d_indices):
+                lay_idxs = np.where(d_indices == idx)[0]
+                if idx == self.data.shape[dim_idx]:
+                    #special case, index == depth dim length, so only v0 is valid
+                    v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs)
+                    values.put(lay_idxs, v0)
+                    continue
+                    
+                v1 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx+1,), **kwargs)
+                v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs)
+                sub_vals = v0 + (v1 - v0) * d_alphas[lay_idxs]
+                #partially fill the values array for this layer
+                values.put(lay_idxs, sub_vals)
+        
+        return values
 
     def _transect(self, times, depths, points):
         '''
