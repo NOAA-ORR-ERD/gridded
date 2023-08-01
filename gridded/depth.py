@@ -21,7 +21,6 @@ class DepthBase(object):
     def __init__(self,
                  surface_index=None,
                  bottom_index=None,
-                 positive_down=True,
                  **kwargs):
         '''
         :param surface_index: array index of 'highest' level (closest to sea level)
@@ -40,7 +39,15 @@ class DepthBase(object):
                    **kwargs)
 
     def interpolation_alphas(self, points, time, data_shape, _hash=None):
-        return (None, None)
+        '''
+        Will only ever return the surface index and 0.0 for the alpha
+        This is the expected outcome for the case where all particles
+        are on the surface.
+        '''
+        indices = np.ma.MaskedArray(data=np.ones((len(points)) * self.surface_index, dtype=np.int64), mask=np.zeros((len(points)), dtype=bool))
+        alphas = np.ma.MaskedArray(data=np.zeros((len(points)), dtype=np.float64), mask=np.zeros((len(points)), dtype=bool))
+        
+        return indices, alphas
 
     @classmethod
     def _find_required_depth_attrs(cls, filename, dataset=None, depth_topology=None):
@@ -108,6 +115,8 @@ class L_Depth(DepthBase):
                  terms=None,
                  surface_index=None,
                  bottom_index=None,
+                 surface_boundary_condition='extrapolate',
+                 bottom_boundary_conditon='mask',
                  **kwargs):
         super(L_Depth, self).__init__(**kwargs)
         self.name=name
@@ -120,6 +129,8 @@ class L_Depth(DepthBase):
                 setattr(self, k, v)
         self.surface_index = surface_index
         self.bottom_index = bottom_index
+        self.surface_boundary_condition = surface_boundary_condition
+        self.bottom_boundary_condition = bottom_boundary_conditon
 
     @classmethod
     def from_netCDF(cls,
@@ -160,6 +171,7 @@ class L_Depth(DepthBase):
                    surface_index=surface_index,
                    bottom_index=bottom_index,
                    **kwargs)
+        
 
     def interpolation_alphas(self, points, *args, **kwargs):
         '''
@@ -169,41 +181,55 @@ class L_Depth(DepthBase):
         '''
         points = np.asarray(points, dtype=np.float64)
         points = points.reshape(-1, 3)
-        withingrid = np.logical_and(points[:, 2] >= 0, points[:, 2] <= np.max(self.depth_levels))
-        abovewater = points[:, 2] <0
-        belowgrid = points[:, 2] > np.max(self.depth_levels)
-        onsurface = points[:, 2]  == 0
-
-        if len(np.where(onsurface)[0]) == len(points):
-            return None, None
-
-        indices = -np.ones((len(points)), dtype=np.int64)
-        alphas = -np.ones((len(points)), dtype=np.float64)
-        pts = points[withingrid]
-        und_ind = -np.ones((len(np.where(withingrid)[0])))
-        und_alph = und_ind.copy()
-
-        und_ind = np.digitize(pts[:,2], self.depth_levels, right=True)
-
-        for i,n in enumerate(und_ind):
-            if n == len(self.depth_levels):
-                und_ind[i] = n-1
-                und_alph[i] = 1.0
-            elif n == 0:
-                und_ind[i] = 1
-                und_alph[i] = 0.0
+        depths = points[:, 2]
+        breakpoint()
+        
+        indices = np.ma.MaskedArray(data=-np.ones((len(points)), dtype=np.int64), mask=np.zeros((len(points)), dtype=bool))
+        alphas = np.ma.MaskedArray(data=-np.ones((len(points)), dtype=np.float64), mask=np.zeros((len(points)), dtype=bool))
+        
+        # process remaining points that are 'above the surface' or 'below the ground'
+        # L0 and L1 bound the entire vertical layer
+        L0 = self.depth_levels[0]
+        L1 = self.depth_levels[-1]
+        if np.all(abs(L0) > abs(L1)): #L0 is deeper than L1
+            underground = depths > L0
+            above_surface = depths <= L1
+            within_grid = np.logical_and(depths <= L0, depths > L1)
+            right=False
+            if self.surface_boundary_condition == 'extrapolate':
+                indices[above_surface] = len(self.depth_levels)-1
+                alphas[above_surface] = 0
             else:
-                und_alph[i] = (pts[i, 2] - self.depth_levels[und_ind[i]-1]) / (
-                    self.depth_levels[und_ind[i]] - self.depth_levels[und_ind[i]-1])
-        indices[withingrid] = und_ind
-        alphas[withingrid] = und_alph
-
-        indices[belowgrid] = -1
-        alphas[belowgrid] = -2
-
-        indices[abovewater] = -1
-        alphas[abovewater] = -3
-
+                indices.mask[above_surface] = True
+                alphas.mask[above_surface] = True
+            if self.bottom_boundary_condition == 'extrapolate':
+                indices[underground] = -1
+                alphas[underground] = 1
+            else:
+                indices.mask[underground] = True
+                alphas.mask[underground] = True
+        else:
+            underground = np.where(depths > L1)[0]
+            above_surface = np.where(depths <= L0)[0]
+            within_grid = np.logical_and(depths > L0, depths <= L1)
+            right=True
+            if self.surface_boundary_condition == 'extrapolate':
+                indices[above_surface] = -1
+                alphas[above_surface] = 1
+            else:
+                indices.mask[above_surface] = True
+                alphas.mask[above_surface] = True
+            if self.bottom_boundary_condition == 'extrapolate':
+                indices[underground] = len(self.depth_levels)-1
+                alphas[underground] = 0
+            else:
+                indices.mask[underground] = True
+                alphas.mask[underground] = True
+        
+        indices[within_grid] = np.digitize(depths[within_grid], self.depth_levels, right=right)
+        alphas[within_grid] = (depths[within_grid] - self.depth_levels[indices[within_grid]-1]) / (
+            self.depth_levels[indices[within_grid]] - self.depth_levels[indices[within_grid]-1])
+                                
         return indices, alphas
 
     @classmethod
@@ -311,8 +337,8 @@ class S_Depth(DepthBase):
         if self.bottom_index is None:
             self.bottom_index = 0
         
-        self.rho_coordinates = self.compute_coordinates('rho') 
-        self.w_coordinates = self.compute_coordinates('w')
+        #self.rho_coordinates = self.compute_coordinates('rho') 
+        #self.w_coordinates = self.compute_coordinates('w')
         self.surface_boundary_condition = surface_boundary_condition
         self.bottom_boundary_condition = bottom_boundary_condition
 
@@ -507,12 +533,6 @@ class S_Depth(DepthBase):
         :return: numpy array of shape (n, num_w_levels) of interpolated values
         '''
         
-        if rho_or_w == 'rho':
-            s_coord = self.rho_coordinates
-        elif rho_or_w == 'w':
-            s_coord = self.w_coordinates
-        else:
-            raise ValueError('invalid rho_or_w argument (must be "rho" or "w")')
         s_c = self.s_rho if rho_or_w == 'rho' else self.s_w
         C_s = self.Cs_r if rho_or_w == 'rho' else self.Cs_w
         h = self.bathymetry.at(points, time, unmask=False, _hash=_hash, **kwargs)
