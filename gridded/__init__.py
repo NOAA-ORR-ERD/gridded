@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-__version__ = "0.5.6"
+__version__ = "0.5.7dev"
 
 
 VALID_SGRID_LOCATIONS = (None, 'center','edge1','edge2','node')
