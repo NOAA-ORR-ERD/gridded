@@ -51,11 +51,12 @@ class Variable(object):
                  depth=None,
                  data_file=None,
                  grid_file=None,
-                 dataset=None,
                  varname=None,
                  fill_value=0,
                  location=None,
                  attributes=None,
+                 surface_boundary_condition='extrapolate',
+                 bottom_boundary_condition='mask',
                  **kwargs):
         '''
         This class represents a phenomenon using gridded data
@@ -125,6 +126,8 @@ class Variable(object):
                 self.attributes[attr] = data.getncattr(attr)
         except AttributeError:  # must not be a netcdf variable
             pass                # so just use what was passed in.
+        self.surface_boundary_condition = surface_boundary_condition
+        self.bottom_boundary_condition = bottom_boundary_condition
 
 #         for k in kwargs:
 #             setattr(self, k, kwargs[k])
@@ -554,10 +557,12 @@ class Variable(object):
 
         :param unmask: if True and return array is a masked array, returns filled array
         :type unmask: boolean (default False)
-
-        :param zero_ref: Specifies whether the zero datum moves with zeta or not. Only
-        applicable if depth dimension is present with full sigma layers
-        :type zero_ref: string 'absolute' or 'relative'
+        
+        :param surface_boundary_condition: specifies how to evaluate points above the depth interval
+        :type surface_boundary_condition: string ('extrapolate' or 'mask', default 'extrapolate')
+        
+        :param bottom_boundary_condition: specifies how to evaluate points below the depth interval
+        :type bottom_boundary_condition: string ('extrapolate' or 'mask', default 'extrapolate')
 
         :param lons: 1D iterable of longitude values. This is ignored if points is provided
         :type lons: iterable
@@ -685,13 +690,22 @@ class Variable(object):
         :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type slices: tuple of integers or slice objects
         '''
+        surface_boundary_condition = self.surface_boundary_condition if 'surface_boundary_condition' not in kwargs else kwargs['surface_boundary_condition']
+        bottom_boundary_condition = self.bottom_boundary_condition if 'bottom_boundary_condition' not in kwargs else kwargs['bottom_boundary_condition']
         order = self.dimension_ordering
         dim_idx = order.index('depth')
         if order[dim_idx + 1] != 'time':
             val_func = self._xy_interp
         else:
             val_func = self._time_interp
-        d_indices, d_alphas = self.depth.interpolation_alphas(points, time, self.data.shape[1:], _hash=kwargs.get('_hash', None), extrapolate=extrapolate)
+        d_indices, d_alphas = self.depth.interpolation_alphas(points,
+                                                              time,
+                                                              self.data.shape[1:],
+                                                              _hash=kwargs.get('_hash', None),
+                                                              extrapolate=extrapolate,
+                                                              surface_boundary_condition=surface_boundary_condition,
+                                                              bottom_boundary_condition=bottom_boundary_condition,
+                                                              **kwargs)
 
         # Check the surface index against the data shape to determine if we are using rho or w coordinates
         surface_index = self.depth.surface_index
@@ -705,18 +719,18 @@ class Variable(object):
         # (self.bottom_index > self.surface_index) then index 5 means v0 should be from
         # layer 6 and v1 should be from layer 5
         if isinstance(d_indices, np.ma.MaskedArray) and np.all(d_indices.mask):
-            # all particles below grid
-            rv = np.empty((points.shape[0],), dtype=np.float64) * np.nan
-            rv =  np.ma.MaskedArray(data=rv, mask=np.isnan(rv))  #np.array([None] * len(points)) #val_func(points, time, extrapolate, slices=slices + (self.depth.bottom_index,), **kwargs)
-            return rv
+            # all particles ended up masked
+            rtv = np.empty((points.shape[0],), dtype=np.float64) * np.nan
+            rtv =  np.ma.MaskedArray(data=rtv, mask=np.isnan(rtv))
+            return rtv
         elif np.all(d_indices == surface_index) and np.all(d_alphas == 0):
             # all particles are on the surface
             return val_func(points, time, extrapolate, slices=slices + (surface_index,), **kwargs)
         else:
             msk = np.isnan(d_indices) if not np.ma.is_masked(d_indices) else d_indices.mask
-            values = np.ma.MaskedArray(data=np.zeros((points.shape[0], )), mask=msk)
+            values = np.ma.MaskedArray(data=np.empty((points.shape[0], )) * np.nan, mask=msk)
             # Points are mixed within the grid. Some may be above the surface or under the ground
-            for idx in np.unique(d_indices)[0:-1]: #the [0:-1] is required to skip the masked value
+            for idx in np.unique(d_indices)[0:-1]: #the [0:-1] is required to skip all masked indices
                 lay_idxs = np.where(d_indices == idx)[0]
                 if idx == surface_index:
                     #special case, index == depth dim length, so only v0 is valid

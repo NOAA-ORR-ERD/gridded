@@ -155,12 +155,12 @@ class Test_S_Depth(object):
         # the distance to the next s-layer (meaning, expected alpha returned is 10%)
         # 2nd point is directly on the seafloor (should register as 'in bounds' and 0 alpha)
         # 3rd point is 0.1m underground, and should indicate with -2 alpha
-        points = np.array([[20,20, 9.9],[20,20,10.0], [20,20,10.1]])
+        points = np.array([[20,20, 9.9],[20,20,10.0], [20,20,10.1], [-1, -1, 5], [20, 20, -0.1]])
         ts = sd.time.data[1]
         assert sd.bottom_boundary_condition == 'mask'
         idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
-        expected_idx = np.ma.array(np.array([0,0,-1]), mask = [False, False, True])
-        expected_alpha = np.ma.array(np.array([0.1, 0, -1]), mask = [False, False, True])
+        expected_idx = np.ma.array(np.array([0,0,-1,-1,10]), mask = [False, False, True, True, False])
+        expected_alpha = np.ma.array(np.array([0.1, 0, -1, -1, 0]), mask = [False, False, True, True, False])
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
         
@@ -232,9 +232,18 @@ class Test_L_Depth(object):
         ld = get_l_depth
         points = np.array(([0, 0, 0], [1, 1, 0], [4, 9, 0]))
         idxs, alphas = ld.interpolation_alphas(points)
+        expected_idxs = np.array([-1,-1,-1])
+        expected_alphas = np.array([1,1,1])
 
-        assert idxs is None
-        assert alphas is None
+        assert np.all(idxs == expected_idxs)
+        assert np.all(alphas == expected_alphas)
+        
+        ld.depth_levels = ld.depth_levels[::-1]
+        ld.surface_index = 5
+        ld.bottom_index = 0
+        idxs, alphas = ld.interpolation_alphas(points)
+        expected_idxs = np.array([5,5,5])
+        expected_alphas = np.array([0,0,0])
 
     def test_interpolation_alphas_1_surface(self, get_l_depth):
         ld = get_l_depth
