@@ -116,12 +116,17 @@ def get_l_depth():
     """
 
     depth_levels = np.array(([0, 1, 2, 4, 6, 10]))
-    ld = L_Depth(
+    ld1 = L_Depth(
         surface_index=0,
         bottom_index=len(depth_levels) - 1,
         terms={"depth_levels": depth_levels},
     )
-    return ld
+    ld2 = L_Depth(
+        surface_index=len(depth_levels) - 1,
+        bottom_index=0,
+        terms={"depth_levels": depth_levels[::-1]},
+    )
+    return ld1, ld2
 
 
 class Test_S_Depth(object):
@@ -229,90 +234,103 @@ class Test_L_Depth(object):
         assert get_l_depth is not None
 
     def test_interpolation_alphas_all_surface(self, get_l_depth):
-        ld = get_l_depth
+        ld1, ld2 = get_l_depth
         points = np.array(([0, 0, 0], [1, 1, 0], [4, 9, 0]))
-        idxs, alphas = ld.interpolation_alphas(points)
-        expected_idxs = np.array([-1,-1,-1])
-        expected_alphas = np.array([1,1,1])
+        idxs, alphas = ld1.interpolation_alphas(points)
+        expected_idxs = np.array([0,0,0])
+        expected_alphas = np.array([0,0,0])
 
         assert np.all(idxs == expected_idxs)
         assert np.all(alphas == expected_alphas)
         
-        ld.depth_levels = ld.depth_levels[::-1]
-        ld.surface_index = 5
-        ld.bottom_index = 0
-        idxs, alphas = ld.interpolation_alphas(points)
+        idxs, alphas = ld2.interpolation_alphas(points)
         expected_idxs = np.array([5,5,5])
         expected_alphas = np.array([0,0,0])
-        ld.surface_index = 0
-        ld.bottom_index = 5
 
     def test_interpolation_alphas_1_surface(self, get_l_depth):
-        ld = get_l_depth
+        ld1, ld2 = get_l_depth
         points = np.array(([0, 0, 0],
-                           [1, 1, 0.5],
+                           [1, 1, 0.4],
                            [0, 0, 1],
                           ))
-        idxs, alphas = ld.interpolation_alphas(points)
+        idxs, alphas = ld1.interpolation_alphas(points)
 
-        assert np.all(idxs == np.array([0, 0, 0]))
-        assert np.all(np.isclose(alphas, np.array([0, 0.5, 1])))
+        assert np.all(idxs == np.array([0, 0, 1]))
+        assert np.all(np.isclose(alphas, np.array([0, 0.4, 0])))
+        
+        idxs, alphas = ld2.interpolation_alphas(points)
+        
+        assert np.all(idxs == np.array([5, 4, 4]))
+        assert np.all(np.isclose(alphas, np.array([0, 0.6, 0])))
 
     def test_interpolation_alphas_above_surface(self, get_l_depth):
-        ld = get_l_depth
-        points = np.array(([0, 0, -1], [0, 0, 10])) #one above, one below depth interval
-        idxs, alphas = ld.interpolation_alphas(points)
+        ld1, ld2 = get_l_depth
+        points = np.array(([0, 0, -1], [0, 0, 4.5])) #one above, one below depth interval
+        idxs, alphas = ld1.interpolation_alphas(points)
 
-        assert np.all(idxs == np.array([-1, 5]))
-        assert np.all(alphas == np.array([1, 0]))
+        assert np.all(idxs == np.array([-1, 3]))
+        assert np.all(alphas == np.array([1, 0.25]))
+        
+        idxs, alphas = ld2.interpolation_alphas(points)
+
+        assert np.all(idxs == np.array([5, 1]))
+        assert np.all(alphas == np.array([0, 0.75]))
+        
 
     def test_interpolation_alphas_below_grid(self, get_l_depth):
-        ld = get_l_depth
-        points = np.array(([0, 0, 20], [0, 0, 4.25]))
-        idxs, alphas = ld.interpolation_alphas(points)
+        ld1, ld2 = get_l_depth
+        points = np.array(([0, 0, 20], [0, 0, 4.5]))
+        idxs, alphas = ld1.interpolation_alphas(points)
 
-        assert np.all(idxs == np.array([-1, 2]))
-        assert np.all(alphas == np.array([-2, 0.125]))
+        assert np.all(idxs == np.array([5, 3]))
+        assert np.all(alphas == np.array([0, 0.25]))
+        
+        idxs, alphas = ld2.interpolation_alphas(points)
+        assert np.all(idxs == np.array([-1, 1]))
+        assert np.all(alphas == np.array([1, 0.75]))
 
     def test_interpolation_alphas_full(self, get_l_depth):
-        ld = get_l_depth
+        ld1, ld2 = get_l_depth
         points = np.array(([1, 2, 0], [3, 4, 5.5], [3, 4, 15.5], [3, 4, -10], [3, 4, 10]))
-        idxs, alphas = ld.interpolation_alphas(points)
+        idxs, alphas = ld1.interpolation_alphas(points)
 
-        assert np.all(idxs == np.array([1, 4, -1, -1, 5]))
-        assert np.all(alphas == np.array([0, 0.75, -2, -3, 1]))
+        assert np.all(idxs == np.array([0, 3, 5, -1, 5]))
+        assert np.all(alphas == np.array([0, 0.75, 0, 1, 0]))
 
     @pytest.mark.parametrize("index", (0, 5, 10, 20))
     def test_vertical_interpolation_within_grid(self, index, get_database_nc):
         time, depth, ds = get_database_nc
         points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], depth.depth_levels[index]), )
+        rtv = ds.variables['u'].at(points=points,time=time.data[0])[0]
 
-        assert ds.variables['u'].at(points=points,time=time.data[0])[0] \
-               == ds.variables['u'].data[0,index,1,1]
+        assert rtv == ds.variables['u'].data[0,index,1,1]
 
     def test_vertical_interpolation_onsurface(self, get_database_nc):
         time, depth, ds = get_database_nc
         points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], 0.0), )
+        rtv = ds.variables['u'].at(points=points,time=time.data[0])[0]
 
-        assert ds.variables['u'].at(points=points,time=time.data[0])[0] \
-               == ds.variables['u'].data[0,0,1,1]
+        assert rtv == ds.variables['u'].data[0,0,1,1]
 
     def test_vertical_interpolation_belowgrid(self, get_database_nc):
         time, depth, ds = get_database_nc
         points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], depth.depth_levels[-1]+100.), )
+        rtv = ds.variables['u'].at(points=points,time=time.data[0])[0]
 
-        assert np.isnan(ds.variables['u'].at(points=points,time=time.data[0])[0])
+        assert np.isnan(rtv)
 
     def test_vertical_interpolation_abovesurface(self, get_database_nc):
         time, depth, ds = get_database_nc
         points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], -10.), )
+        rtv = ds.variables['u'].at(points=points,time=time.data[0])[0]
 
-        assert np.isnan(ds.variables['u'].at(points=points,time=time.data[0])[0])
+        assert rtv == ds.variables['u'].data[0,0,1,1]
 
     def test_vertical_interpolation_full(self, get_database_nc):
         time, depth, ds = get_database_nc
         points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], -10.), (ds.grid.node_lon[1], ds.grid.node_lat[1], 0.), (ds.grid.node_lon[1], ds.grid.node_lat[1], depth.depth_levels[3]))
+        rtv = ds.variables['u'].at(points=points,time=time.data[0])
 
-        assert np.isnan(ds.variables['u'].at(points=points,time=time.data[0])[0])
-        assert ds.variables['u'].at(points=points,time=time.data[0])[1] == ds.variables['u'].data[0,0,1,1]
-        assert ds.variables['u'].at(points=points,time=time.data[0])[2] == ds.variables['u'].data[0,3,1,1]
+        assert rtv[0] == ds.variables['u'].data[0,0,1,1]
+        assert rtv[1] == ds.variables['u'].data[0,0,1,1]
+        assert rtv[2] == ds.variables['u'].data[0,3,1,1]

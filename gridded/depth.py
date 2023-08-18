@@ -173,7 +173,10 @@ class L_Depth(DepthBase):
                    **kwargs)
         
 
-    def interpolation_alphas(self, points, 
+    def interpolation_alphas(self,
+                             points, 
+                             time = None,
+                             data_shape=None,
                              surface_boundary_condition=None,
                              bottom_boundary_condition=None,
                              *args,
@@ -189,52 +192,57 @@ class L_Depth(DepthBase):
         surface_boundary_condition = self.default_surface_boundary_condition if surface_boundary_condition is None else surface_boundary_condition
         bottom_boundary_condition = self.default_bottom_boundary_condition if bottom_boundary_condition is None else bottom_boundary_condition
         
-        indices = np.ma.MaskedArray(data=-np.ones((len(points)), dtype=np.int64), mask=np.zeros((len(points)), dtype=bool))
-        alphas = np.ma.MaskedArray(data=-np.ones((len(points)), dtype=np.float64), mask=np.zeros((len(points)), dtype=bool))
         
         # process remaining points that are 'above the surface' or 'below the ground'
         # L0 and L1 bound the entire vertical layer
+        # It is important to get the 'right' argument correct for np.digitize
+        # See https://numpy.org/doc/stable/reference/generated/numpy.digitize.html
+        
         L0 = self.depth_levels[0]
         L1 = self.depth_levels[-1]
-        if np.all(abs(L0) > abs(L1)): #L0 is deeper than L1
-            underground = depths > L0
-            above_surface = depths <= L1
-            within_grid = np.logical_and(depths <= L0, depths > L1)
-            right=False
-            if surface_boundary_condition == 'extrapolate':
-                indices[above_surface] = len(self.depth_levels)-1
-                alphas[above_surface] = 0
-            else:
-                indices.mask[above_surface] = True
-                alphas.mask[above_surface] = True
-            if bottom_boundary_condition == 'extrapolate':
-                indices[underground] = -1
-                alphas[underground] = 1
-            else:
-                indices.mask[underground] = True
-                alphas.mask[underground] = True
-        else:
-            underground = np.where(depths > L1)[0]
-            above_surface = np.where(depths <= L0)[0]
-            within_grid = np.logical_and(depths > L0, depths <= L1)
-            right=True
-            if surface_boundary_condition == 'extrapolate':
-                indices[above_surface] = -1
-                alphas[above_surface] = 1
-            else:
-                indices.mask[above_surface] = True
-                alphas.mask[above_surface] = True
-            if bottom_boundary_condition == 'extrapolate':
-                indices[underground] = len(self.depth_levels)-1
-                alphas[underground] = 0
-            else:
-                indices.mask[underground] = True
-                alphas.mask[underground] = True
+        idxs = np.digitize(depths, self.depth_levels, right=False if L0 < L1 else True) - 1
+        indices = np.ma.MaskedArray(data=idxs, mask=np.zeros((len(idxs)), dtype=bool))
         
-        indices[within_grid] = np.digitize(depths[within_grid], self.depth_levels, right=right)
-        alphas[within_grid] = (depths[within_grid] - self.depth_levels[indices[within_grid]-1]) / (
-            self.depth_levels[indices[within_grid]] - self.depth_levels[indices[within_grid]-1])
-                                
+        alphas = np.ma.MaskedArray(data=np.empty((len(points)), dtype=np.float64) * np.nan, mask=np.zeros((len(points)), dtype=bool))
+        
+        #set above surface and below seafloor alphas to allow future filtering
+        
+        if L0 < L1:
+            #0, 1, 2, 3, 4, 5, 6
+            above_surface = indices == -1
+            above_alpha = 1
+            below_bottom = indices == (len(self.depth_levels) - 1)
+            below_alpha = 0
+        else:
+            #6, 5, 4, 3, 2, 1, 0
+            above_surface = indices == (len(self.depth_levels) - 1)
+            above_alpha = 0
+            below_bottom = indices == -1
+            below_alpha = 1
+        
+        alphas[above_surface] = above_alpha
+        alphas[below_bottom] = below_alpha
+        
+        #set above surface and below seafloor mask
+        if surface_boundary_condition == 'mask':
+            alphas.mask = np.logical_or(alphas.mask, above_surface)
+            indices.mask[above_surface] = True
+        alphas[indices == -1] = 1
+        if bottom_boundary_condition == 'mask':
+            alphas.mask = np.logical_or(alphas.mask, below_bottom)
+            indices.mask[below_bottom] = True
+        
+        within_layer = np.isnan(alphas)
+        
+        L0 = np.take(self.depth_levels, indices[within_layer])
+        L1 = np.take(self.depth_levels, indices[within_layer] + 1)
+        
+        alphas[within_layer] = (depths[within_layer] - L0) / (
+            L1 - L0)
+        
+        if any(np.isnan(alphas)):
+            raise ValueError('Some alphas are still unmasked and NaN. Please file a bug report')
+        
         return indices, alphas
 
     @classmethod
@@ -660,9 +668,11 @@ class S_Depth(DepthBase):
                 alphas = np.ma.masked_invalid(alphas, 0)
             return indices, alphas
 
+        #use np.digitize to bin the depths into the layers
         transects = self.get_transect(points, time, rho_or_w=rho_or_w, _hash=_hash, extrapolate=extrapolate)
         vf = np.vectorize(np.digitize, signature='(),(n)->()', excluded=['right'])
         indices = vf(depths, transects, right=True) - 1
+        
         #transect mask is True where the point is outside the grid horizontally
         #so it must be reapplied
         indices = np.ma.array(indices, mask=transects.mask[:,0])

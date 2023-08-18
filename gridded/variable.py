@@ -708,30 +708,31 @@ class Variable(object):
 
         # Check the surface index against the data shape to determine if we are using rho or w coordinates
         surface_index = self.depth.surface_index
-        if self.depth.surface_index == self.data.shape[dim_idx]: # rho coordinates
+        if self.depth.surface_index == self.data.shape[dim_idx]:
             surface_index -= 1
 
-        # the index of a point is -1 if it is on the surface
-        # the index refers to the layer index ABOVE the point. EG index 5 means v0 should
-        # be from layer 4 and v1 should be from layer 5
-        # HOWEVER if the depth layer data is "backwards" for some reason ('high-index-bottom'),
-        # (self.bottom_index > self.surface_index) then index 5 means v0 should be from
-        # layer 6 and v1 should be from layer 5
         if isinstance(d_indices, np.ma.MaskedArray) and np.all(d_indices.mask):
             # all particles ended up masked
             rtv = np.empty((points.shape[0],), dtype=np.float64) * np.nan
             rtv =  np.ma.MaskedArray(data=rtv, mask=np.isnan(rtv))
             return rtv
-        elif np.all(d_indices == surface_index) and np.all(d_alphas == 0):
-            # all particles are on the surface
-            return val_func(points, time, extrapolate, slices=slices + (surface_index,), **kwargs)
+        
+        #the two cases may be optimizations that are not worth the trouble
+        #if problems continue to arise, get rid of them
+        elif np.all(d_indices == -1) and not np.any(d_indices.mask):
+            return val_func(points, time, extrapolate, slices=slices + (0,), **kwargs)
+        elif np.all(d_indices == self.data.shape[dim_idx] - 1) and not np.any(d_indices.mask):
+            return val_func(points, time, extrapolate, slices=slices + (self.data.shape[dim_idx] - 1,), **kwargs)
         else:
             msk = np.isnan(d_indices) if not np.ma.is_masked(d_indices) else d_indices.mask
             values = np.ma.MaskedArray(data=np.empty((points.shape[0], )) * np.nan, mask=msk)
             # Points are mixed within the grid. Some may be above the surface or under the ground
-            for idx in np.unique(d_indices)[0:-1]: #the [0:-1] is required to skip all masked indices
+            uniq_idx = np.unique(d_indices)
+            if np.nan in uniq_idx: #the [0:-1] is required to skip all masked indices
+                uniq_idx = uniq_idx[0:-1]
+            for idx in uniq_idx: 
                 lay_idxs = np.where(d_indices == idx)[0]
-                if idx == surface_index:
+                if idx == self.data.shape[dim_idx] - 1:
                     #special case, index == depth dim length, so only v0 is valid
                     v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs)
                     values.put(lay_idxs, v0)
