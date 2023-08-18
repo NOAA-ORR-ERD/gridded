@@ -690,8 +690,8 @@ class Variable(object):
         :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type slices: tuple of integers or slice objects
         '''
-        surface_boundary_condition = self.surface_boundary_condition if 'surface_boundary_condition' not in kwargs else kwargs['surface_boundary_condition']
-        bottom_boundary_condition = self.bottom_boundary_condition if 'bottom_boundary_condition' not in kwargs else kwargs['bottom_boundary_condition']
+        surface_boundary_condition = kwargs.pop('surface_boundary_condition', self.surface_boundary_condition)
+        bottom_boundary_condition = kwargs.pop('bottom_boundary_condition', self.bottom_boundary_condition)
         order = self.dimension_ordering
         dim_idx = order.index('depth')
         if order[dim_idx + 1] != 'time':
