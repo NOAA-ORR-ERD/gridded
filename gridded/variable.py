@@ -728,7 +728,7 @@ class Variable(object):
             values = np.ma.MaskedArray(data=np.empty((points.shape[0], )) * np.nan, mask=msk)
             # Points are mixed within the grid. Some may be above the surface or under the ground
             uniq_idx = np.unique(d_indices)
-            if np.nan in uniq_idx: #the [0:-1] is required to skip all masked indices
+            if np.ma.masked in uniq_idx: #the [0:-1] is required to skip all masked indices
                 uniq_idx = uniq_idx[0:-1]
             for idx in uniq_idx: 
                 lay_idxs = np.where(d_indices == idx)[0]
