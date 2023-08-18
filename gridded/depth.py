@@ -129,8 +129,8 @@ class L_Depth(DepthBase):
                 setattr(self, k, v)
         self.surface_index = surface_index
         self.bottom_index = bottom_index
-        self.default_surface_boundary_condition = surface_boundary_condition
-        self.default_bottom_boundary_condition = bottom_boundary_conditon
+        self.default_surface_boundary_condition = default_surface_boundary_condition
+        self.default_bottom_boundary_condition = default_bottom_boundary_conditon
 
     @classmethod
     def from_netCDF(cls,
@@ -652,7 +652,7 @@ class S_Depth(DepthBase):
         if not np.any(depths > surface_depth):
             # nothing is within or below the mesh, so apply surface boundary condition
             # to all points and return
-            if self.surface_boundary_condition == 'extrapolate':
+            if surface_boundary_condition == 'extrapolate':
                 indices[:] = surface_index
                 alphas[:] = 0
             else:

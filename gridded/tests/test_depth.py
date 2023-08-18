@@ -157,14 +157,14 @@ class Test_S_Depth(object):
         # 3rd point is 0.1m underground, and should indicate with -2 alpha
         points = np.array([[20,20, 9.9],[20,20,10.0], [20,20,10.1], [-1, -1, 5], [20, 20, -0.1]])
         ts = sd.time.data[1]
-        assert sd.bottom_boundary_condition == 'mask'
+        assert sd.default_bottom_boundary_condition == 'mask'
         idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
         expected_idx = np.ma.array(np.array([0,0,-1,-1,10]), mask = [False, False, True, True, False])
         expected_alpha = np.ma.array(np.array([0.1, 0, -1, -1, 0]), mask = [False, False, True, True, False])
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
         
-        sd.bottom_boundary_condition == 'extrapolate'
+        sd.default_bottom_boundary_condition == 'extrapolate'
         idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
         expected_idx = np.ma.array(np.array([0,0,-1]), mask = [False, False, False])
         expected_alpha = np.ma.array(np.array([0.1, 0, 1]), mask = [False, False, False])
@@ -173,7 +173,7 @@ class Test_S_Depth(object):
         sd = get_s_depth
         points = np.array([[20,20, 0],[20,20,0.1], [20,20,-0.1]])
         ts = sd.time.data[1]
-        assert sd.surface_boundary_condition == 'extrapolate'
+        assert sd.default_surface_boundary_condition == 'extrapolate'
         idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
         # only the element 0.1m deep should register with an index and alpha since
         # it is the only element below surface.
@@ -182,7 +182,7 @@ class Test_S_Depth(object):
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
         
-        sd.surface_boundary_condition == 'mask'
+        sd.default_surface_boundary_condition == 'mask'
         idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
         # only the element 0.1m deep should register with an index and alpha since
         # it is the only element below surface.
@@ -191,7 +191,7 @@ class Test_S_Depth(object):
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
 
-        sd.surface_boundary_condition == 'extrapolate'
+        sd.default_surface_boundary_condition == 'extrapolate'
         # switch to timestep with -0.5m zeta
         ts = sd.time.data[0]
         idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
@@ -200,7 +200,7 @@ class Test_S_Depth(object):
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
 
-        sd.surface_boundary_condition = 'mask'
+        sd.default_surface_boundary_condition = 'mask'
         idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
         # only the element 0.1m deep should register with an index and alpha since
         # it is the only element below surface.
@@ -244,6 +244,8 @@ class Test_L_Depth(object):
         idxs, alphas = ld.interpolation_alphas(points)
         expected_idxs = np.array([5,5,5])
         expected_alphas = np.array([0,0,0])
+        ld.surface_index = 0
+        ld.bottom_index = 5
 
     def test_interpolation_alphas_1_surface(self, get_l_depth):
         ld = get_l_depth
@@ -253,23 +255,23 @@ class Test_L_Depth(object):
                           ))
         idxs, alphas = ld.interpolation_alphas(points)
 
-        assert np.all(idxs == np.array([1, 1, 1]))
+        assert np.all(idxs == np.array([0, 0, 0]))
         assert np.all(np.isclose(alphas, np.array([0, 0.5, 1])))
 
     def test_interpolation_alphas_above_surface(self, get_l_depth):
         ld = get_l_depth
-        points = np.array(([0, 0, -1], [0, 0, 10]))
+        points = np.array(([0, 0, -1], [0, 0, 10])) #one above, one below depth interval
         idxs, alphas = ld.interpolation_alphas(points)
 
         assert np.all(idxs == np.array([-1, 5]))
-        assert np.all(alphas == np.array([-3, 1]))
+        assert np.all(alphas == np.array([1, 0]))
 
     def test_interpolation_alphas_below_grid(self, get_l_depth):
         ld = get_l_depth
         points = np.array(([0, 0, 20], [0, 0, 4.25]))
         idxs, alphas = ld.interpolation_alphas(points)
 
-        assert np.all(idxs == np.array([-1, 4]))
+        assert np.all(idxs == np.array([-1, 2]))
         assert np.all(alphas == np.array([-2, 0.125]))
 
     def test_interpolation_alphas_full(self, get_l_depth):
