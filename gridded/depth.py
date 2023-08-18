@@ -115,8 +115,8 @@ class L_Depth(DepthBase):
                  terms=None,
                  surface_index=None,
                  bottom_index=None,
-                 surface_boundary_condition='extrapolate',
-                 bottom_boundary_conditon='mask',
+                 default_surface_boundary_condition='extrapolate',
+                 default_bottom_boundary_conditon='mask',
                  **kwargs):
         super(L_Depth, self).__init__(**kwargs)
         self.name=name
@@ -129,8 +129,8 @@ class L_Depth(DepthBase):
                 setattr(self, k, v)
         self.surface_index = surface_index
         self.bottom_index = bottom_index
-        self.surface_boundary_condition = surface_boundary_condition
-        self.bottom_boundary_condition = bottom_boundary_conditon
+        self.default_surface_boundary_condition = surface_boundary_condition
+        self.default_bottom_boundary_condition = bottom_boundary_conditon
 
     @classmethod
     def from_netCDF(cls,
@@ -173,7 +173,11 @@ class L_Depth(DepthBase):
                    **kwargs)
         
 
-    def interpolation_alphas(self, points, *args, **kwargs):
+    def interpolation_alphas(self, points, 
+                             surface_boundary_condition=None,
+                             bottom_boundary_condition=None,
+                             *args,
+                             **kwargs):
         '''
         Returns a pair of values. The 1st value is an array of the depth indices of all the particles.
         The 2nd value is an array of the interpolation alphas for the particles between their depth
@@ -182,6 +186,8 @@ class L_Depth(DepthBase):
         points = np.asarray(points, dtype=np.float64)
         points = points.reshape(-1, 3)
         depths = points[:, 2]
+        surface_boundary_condition = self.default_surface_boundary_condition if surface_boundary_condition is None else surface_boundary_condition
+        bottom_boundary_condition = self.default_bottom_boundary_condition if bottom_boundary_condition is None else bottom_boundary_condition
         
         indices = np.ma.MaskedArray(data=-np.ones((len(points)), dtype=np.int64), mask=np.zeros((len(points)), dtype=bool))
         alphas = np.ma.MaskedArray(data=-np.ones((len(points)), dtype=np.float64), mask=np.zeros((len(points)), dtype=bool))
@@ -195,13 +201,13 @@ class L_Depth(DepthBase):
             above_surface = depths <= L1
             within_grid = np.logical_and(depths <= L0, depths > L1)
             right=False
-            if self.surface_boundary_condition == 'extrapolate':
+            if surface_boundary_condition == 'extrapolate':
                 indices[above_surface] = len(self.depth_levels)-1
                 alphas[above_surface] = 0
             else:
                 indices.mask[above_surface] = True
                 alphas.mask[above_surface] = True
-            if self.bottom_boundary_condition == 'extrapolate':
+            if bottom_boundary_condition == 'extrapolate':
                 indices[underground] = -1
                 alphas[underground] = 1
             else:
@@ -212,13 +218,13 @@ class L_Depth(DepthBase):
             above_surface = np.where(depths <= L0)[0]
             within_grid = np.logical_and(depths > L0, depths <= L1)
             right=True
-            if self.surface_boundary_condition == 'extrapolate':
+            if surface_boundary_condition == 'extrapolate':
                 indices[above_surface] = -1
                 alphas[above_surface] = 1
             else:
                 indices.mask[above_surface] = True
                 alphas.mask[above_surface] = True
-            if self.bottom_boundary_condition == 'extrapolate':
+            if bottom_boundary_condition == 'extrapolate':
                 indices[underground] = len(self.depth_levels)-1
                 alphas[underground] = 0
             else:
@@ -338,8 +344,8 @@ class S_Depth(DepthBase):
         
         #self.rho_coordinates = self.compute_coordinates('rho') 
         #self.w_coordinates = self.compute_coordinates('w')
-        self.surface_boundary_condition = surface_boundary_condition
-        self.bottom_boundary_condition = bottom_boundary_condition
+        self.default_surface_boundary_condition = 'extrapolate'
+        self.default_bottom_boundary_condition = 'mask'
 
 
     @classmethod
@@ -611,8 +617,8 @@ class S_Depth(DepthBase):
         0 or 1 depending on the orientation of the layers
         '''
         depths = points[:,2]
-        surface_boundary_condition = self.surface_boundary_condition if surface_boundary_condition == None else surface_boundary_condition
-        bottom_boundary_condition = self.bottom_boundary_condition if bottom_boundary_condition == None else bottom_boundary_condition
+        surface_boundary_condition = self.default_surface_boundary_condition if surface_boundary_condition is None else surface_boundary_condition
+        bottom_boundary_condition = self.default_bottom_boundary_condition if bottom_boundary_condition is None else bottom_boundary_condition
 
         rho_or_w = surface_index = None #parameter necessary for ldgb
         if data_shape[0] == self.num_w_levels:

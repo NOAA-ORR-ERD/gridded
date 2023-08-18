@@ -701,7 +701,6 @@ class Variable(object):
         d_indices, d_alphas = self.depth.interpolation_alphas(points,
                                                               time,
                                                               self.data.shape[1:],
-                                                              _hash=kwargs.get('_hash', None),
                                                               extrapolate=extrapolate,
                                                               surface_boundary_condition=surface_boundary_condition,
                                                               bottom_boundary_condition=bottom_boundary_condition,
