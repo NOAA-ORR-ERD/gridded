@@ -1,5 +1,3 @@
-.. image:: https://travis-ci.org/NOAA-ORR-ERD/gridded.svg?branch=master
-    :target: https://travis-ci.org/NOAA-ORR-ERD/gridded
 
 ###########
 ``gridded``
@@ -15,12 +13,11 @@ Goal
 The goal of this package is to present a single way to work with results from ANY model -- regardless of what type of grid it was computed on. In particular:
 
 
-* Regular Structured Grids (`CF Conventions <http://cfconventions.org/>`_), with API embedded in `Iris <http://scitools.org.uk/iris/>`_ and to some degree in `xarray <https://github.com/pydata/xarray>`_
+* Regular Structured Grids (`CF Conventions <http://cfconventions.org/>`_)
 
-* Unstructured Grids (CF + `UGRID Conventions <https://github.com/ugrid-conventions/ugrid-conventions/blob/master/README.md>`_), with nascent API in `pyugrid <https://github.com/pyugrid/pyugrid>`_
+* Unstructured Grids (CF + `UGRID Conventions <https://github.com/ugrid-conventions/ugrid-conventions/blob/master/README.md>`_)
 
-* Staggered Grids (CF + `SGRID Conventions <https://publicwiki.deltares.nl/display/NETCDF/Deltares+proposal+for+Staggered+Grid+data+model>`_) with nascent API in `pysgrid <https://github.com/sgrid/pysgrid>`_
-
+* Staggered Grids (CF + `SGRID Conventions <https://publicwiki.deltares.nl/display/NETCDF/Deltares+proposal+for+Staggered+Grid+data+model>`_)
 
 Why gridded?
 ============
@@ -30,6 +27,8 @@ Why gridded?
 Other solutions have (so far) built assumptions about the underlying grid type into the code and API, making it difficult to adapt to other grid types. Nevertheless, ``gridded`` hopes to learn from the the fabulous work done by other packages, such as:
 
 Iris: http://scitools.org.uk/iris/  and xarray: https://github.com/pydata/xarray
+
+NOTE: Future versions of gridded will likely be built on top of xarray -- contributions welcome!
 
 Data standards
 ==============
@@ -50,11 +49,17 @@ Installing
 
 ``gridded`` itself is pure python and easy to install from source or packages. However, it does rely on a number of complex compiled dependencies, notable netCDF4 and celltree2d.
 
-For easiest results, install the dependencies from conda-forge:
+
+
+For easiest results, install gridded from conda-forge:
 
 https://anaconda.org/conda-forge
 
-And then install ``gridded`` itself from source or from the conda package.
+``conda install -c conda-forge gridded``
+
+Will get you the latest version.
+
+Alternatively, you can install from source:
 
 Dependencies are listed in ``conda_requirements.txt``:
 
@@ -63,6 +68,7 @@ Dependencies are listed in ``conda_requirements.txt``:
 If you want to develop, test or work with the examples, you will need the development requirements as well:
 
 ``conda install --file conda_requirements_dev.txt``
+
 
 
 
