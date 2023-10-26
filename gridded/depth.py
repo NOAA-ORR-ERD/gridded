@@ -38,14 +38,21 @@ class DepthBase(object):
         return cls(surface_index,
                    **kwargs)
 
-    def interpolation_alphas(self, points, time, data_shape, _hash=None):
+    def interpolation_alphas(self,
+                             points,
+                             time,
+                             data_shape,
+                             extrapolate=False,
+                             _hash=None,
+                             **kwargs,):
         '''
         Will only ever return the surface index and 0.0 for the alpha
         This is the expected outcome for the case where all particles
         are on the surface.
         '''
-        indices = np.ma.MaskedArray(data=np.ones((len(points)) * self.surface_index, dtype=np.int64), mask=np.zeros((len(points)), dtype=bool))
-        alphas = np.ma.MaskedArray(data=np.zeros((len(points)), dtype=np.float64), mask=np.zeros((len(points)), dtype=bool))
+        sz = len(points)
+        indices = np.ma.MaskedArray(data=np.ones((sz,), dtype=np.int64) * self.surface_index, mask=np.zeros((sz,), dtype=bool))
+        alphas = np.ma.MaskedArray(data=np.zeros((sz,), dtype=np.float64), mask=np.zeros((sz,), dtype=bool))
         
         return indices, alphas
 
