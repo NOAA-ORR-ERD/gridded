@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-__version__ = "0.5.8"
+__version__ = "0.5.9"
 
-
-VALID_SGRID_LOCATIONS = (None, 'center','edge1','edge2','node')
+VALID_SGRID_LOCATIONS = (None, 'center', 'edge1', 'edge2', 'node')
 VALID_UGRID_LOCATIONS = (None, 'node', 'face', 'edge', 'boundary')
 VALID_LOCATIONS = set(VALID_SGRID_LOCATIONS + VALID_UGRID_LOCATIONS)
-
 
 from .gridded import Dataset
 from .grids import Grid, Grid_R, Grid_S, Grid_U
