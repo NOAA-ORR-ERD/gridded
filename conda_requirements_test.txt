@@ -8,7 +8,7 @@
 # conda install --file conda_requirements.txt --file conda_requirements_test.txt
 
 
-# this is the minimal that will support travis tests
+# this is the minimal that will support CI tests
 pytest
 pytest-cov
 progressbar
