@@ -59,7 +59,7 @@ class Variable(object):
                  bottom_boundary_condition='mask',
                  **kwargs):
         '''
-        This class represents a phenomenon using gridded data
+        This class represents a value defined on a grid
 
         :param name: Name
         :type name: string
@@ -68,7 +68,7 @@ class Variable(object):
         :type units: string
 
         :param time: Time axis of the data
-        :type time: list of datetime.datetime, netCDF4 Variable, or Time object
+        :type time: list of `datetime.datetime`, netCDF4 Variable, or Time object
 
         :param data: Underlying data source
         :type data: array-like object such as netCDF4.Variable or numpy.ndarray
@@ -93,7 +93,7 @@ class Variable(object):
 
         :param attributes: attributes associated with the Variable
                            (analogous to netcdf variable attributes)
-        :type attributes: dict of key:value pairs
+        :type attributes: dict
         '''
 
 #         if any([grid is None, data is None]):
@@ -110,7 +110,8 @@ class Variable(object):
         self.units = units
         self.location = location
         self.data = data
-        self.time = time if time is not None else self._default_component_types['time'].constant_time()
+        self.time = (time if time is not None else
+                     self._default_component_types['time'].constant_time())
         self.data_file = data_file
         # the "main" filename for a Varibale should be the grid data.
         self.filename = data_file
@@ -131,7 +132,6 @@ class Variable(object):
 
 #         for k in kwargs:
 #             setattr(self, k, kwargs[k])
-
 
     @classmethod
     def from_netCDF(cls,
@@ -803,7 +803,7 @@ class VectorVariable(object):
 
     default_names = {}
     cf_names = {}
-    comp_order=[]
+    comp_order = []
 
     _def_count = 0
 
@@ -1181,20 +1181,24 @@ class VectorVariable(object):
         Find the value of the property at positions P at time T
 
         :param points: Cartesian coordinates to be queried (P). Lon, Lat required, Depth (Z) is optional
-        Coordinates must be organized as a 2D array or list, one coordinate per row or list element.
-        [[Lon1, Lat1, Z1],
-         [Lon2, Lat2, Z2],
-         [Lon3, Lat3, Z3],
-         ...]
-        Failure to provide point data in this format may cause unexpected behavior
-        If you wish to provide point data using separate longitude and latitude arrays,
-        use the `lons=` and `lats=` kwargs.
-        Note that if your Z is positive-up, self.depth.positive_down should be
-        set to False
+                       Coordinates must be organized as a 2D array or list, one coordinate per row or list element.
+                       ::
+                          [[Lon1, Lat1, Z1],
+                           [Lon2, Lat2, Z2],
+                           [Lon3, Lat3, Z3],
+                           ...]
+
+                       Failure to provide point data in this format may cause unexpected behavior
+                       If you wish to provide point data using separate longitude and latitude arrays,
+                       use the `lons=` and `lats=` kwargs.
+
+                       Note that if your Z is positive-up, self.depth.positive_down should be
+                       set to False
+
         :type points: Nx3 array of double
 
         :param time: The time at which to query these points (T)
-        :type time: datetime.datetime object
+        :type time: `datetime.datetime` object
 
         :param units: units the values will be returned in (or converted to)
         :type units: string such as ('m/s', 'knots', etc)
@@ -1206,7 +1210,7 @@ class VectorVariable(object):
         :type unmask: boolean (default False)
 
         :param zero_ref: Specifies whether the zero datum moves with zeta or not. Only
-        applicable if depth dimension is present with full sigma layers
+                         applicable if depth dimension is present with full sigma layers
         :type zero_ref: string 'absolute' or 'relative'
 
         :param lons: 1D iterable of longitude values. This is ignored if points is provided
@@ -1215,7 +1219,7 @@ class VectorVariable(object):
         :param lats 1D iterable of latitude values. This is ignored if points is provided
         :type lons: iterable
 
-        :return: returns a NxM array of interpolated values N = len(points) M = len(self.variables)
+        :return: NxM array of interpolated values N = len(points) M = len(self.variables)
         :rtype: np.array or np.ma.MaskedArray
         """
         if points is None and (lons is None or lats is None):

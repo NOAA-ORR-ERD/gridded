@@ -9,8 +9,7 @@ from gridded.utilities import (get_dataset,
                                search_dataset_for_variables_by_longname,
                                search_dataset_for_variables_by_varname,
                                merge_var_search_dicts
-)
-
+                               )
 
 
 class DepthBase(object):
@@ -52,14 +51,19 @@ class DepthBase(object):
                              _hash=None,
                              **kwargs,):
         '''
-        Will only ever return the surface index and 0.0 for the alpha
-        This is the expected outcome for the case where all particles
+        Returns the weights (alphas) required for interpolation
+
+        The base class implementation only supports surface values:
+        it returns the surface index and 0.0 for the alpha
+
+        This is the expected outcome for the case where all points
         are on the surface.
         '''
         sz = len(points)
-        indices = np.ma.MaskedArray(data=np.ones((sz,), dtype=np.int64) * self.surface_index, mask=np.zeros((sz,), dtype=bool))
-        alphas = np.ma.MaskedArray(data=np.zeros((sz,), dtype=np.float64), mask=np.zeros((sz,), dtype=bool))
-        
+        indices = np.ma.MaskedArray(data=np.ones((sz, ), dtype=np.int64) * self.surface_index,
+                                    mask=np.zeros((sz, ), dtype=bool))
+        alphas = np.ma.MaskedArray(data=np.zeros((sz, ), dtype=np.float64),
+                                   mask=np.zeros((sz, ), dtype=bool))
         return indices, alphas
 
     @classmethod
@@ -264,7 +268,8 @@ class L_Depth(DepthBase):
 
 class S_Depth(DepthBase):
     '''
-    Represents the ocean s-coordinate, with particular focus on ROMS implementation
+    Represents the ocean s-coordinates as implemented by ROMS,
+    It may or may not be useful for other systems.
     '''
 
     def __init__(self,
@@ -306,21 +311,21 @@ class S_Depth(DepthBase):
         This applies to any coordinates passed into the various functions, NOT the values
         of the S-Coordinates that this object represents
         :type positive_down: boolean
-        
+
         :param surface_boundary_condition: Determines how to handle points above the surface
         :type surface_boundary_condition: string ('extrapolate' or 'mask')
-        
+
         :param bottom_boundary_condition: Determines how to handle points below the seafloor
         :type bottom_boundary_condition: string ('extrapolate' or 'mask')
         '''
 
         super(S_Depth, self).__init__(**kwargs)
-        self.name=name
-        self.time=time
-        self.grid=grid
+        self.name = name
+        self.time = time
+        self.grid = grid
         self.bathymetry = bathymetry
         self.zeta = zeta
-        self.terms={}
+        self.terms = {}
         self.vtransform = vtransform
         self.positive_down = positive_down
         if terms is None:
@@ -333,12 +338,11 @@ class S_Depth(DepthBase):
             self.surface_index = self.num_w_levels - 1
         if self.bottom_index is None:
             self.bottom_index = 0
-        
-        #self.rho_coordinates = self.compute_coordinates('rho') 
-        #self.w_coordinates = self.compute_coordinates('w')
+
+        # self.rho_coordinates = self.compute_coordinates('rho')
+        # self.w_coordinates = self.compute_coordinates('w')
         self.default_surface_boundary_condition = 'extrapolate'
         self.default_bottom_boundary_condition = 'mask'
-
 
     @classmethod
     def from_netCDF(cls,
@@ -346,41 +350,45 @@ class S_Depth(DepthBase):
                     varnames=None,
                     grid_topology=None,
                     name=None,
-                    #units=None,
+                    # units=None,
                     time=None,
-                    #time_origin=None,
+                    # time_origin=None,
                     grid=None,
                     dataset=None,
                     data_file=None,
                     grid_file=None,
-                    #load_all=False,
+                    # load_all=False,
                     bathymetry=None,
                     zeta=None,
                     terms=None,
-                    #fill_value=0,
+                    # fill_value=0,
                     vtransform=2,
                     positive_down=True,
                     **kwargs
                     ):
         '''
         :param filename: A string or ordered list of string of netCDF filename(s)
-        :type filename: string or list
+        :type filename: str or list[str]
+
         :param varnames: Direct mapping of component name to netCDF variable name. Use
-            this if auto detection fails. Partial definition is allowable. Unspecified
-            terms will use the value in `.default_names`
-            {'Cs_r': 'Cs_r',
-             'Cs_w': Cs_w',
-             's_rho': 's_rho'),
-             's_w': 's_w',
-             'bathymetry': 'h',
-             'hc': 'hc'),
-             'zeta': 'zeta')
-             }
+                         this if auto detection fails. Partial definition is allowable.
+                         Unspecified terms will use the value in `.default_names`::
+                           {'Cs_r': 'Cs_r',
+                            'Cs_w': Cs_w',
+                            's_rho': 's_rho'),
+                            's_w': 's_w',
+                            'bathymetry': 'h',
+                            'hc': 'hc'),
+                            'zeta': 'zeta')
+                            }
         :type varnames: dict
+
         :param name: Human-readable name for this object
-        :type name: string
+        :type name: str
+
         :param time: Time dimension (for zeta)
         :type time: gridded.time.Time or subclass
+
         :param grid: X-Y dmension (for bathymetry & zeta)
         :type grid: subclass of gridded.grids.GridBase
         '''
@@ -415,7 +423,7 @@ class S_Depth(DepthBase):
             cls._def_count += 1
         varnames = cls.default_names.copy()
         
-        #Do a comprehensive search for netCDF4 Variables all at once
+        # Do a comprehensive search for netCDF4 Variables all at once
         vn_search = search_dataset_for_variables_by_varname(ds, varnames)
         ds_search = search_dataset_for_variables_by_longname(ds, cls.cf_names)
         varnames = merge_var_search_dicts(ds_search, vn_search)
@@ -526,10 +534,10 @@ class S_Depth(DepthBase):
         Returns a pair of arrays. The 1st array is of the depth indices
         of all the points. The 2nd value is an array of the interpolation
         alphas for the points between their depth index and depth_index+1.
-        
+
         If a depth is between coordinate N and N+1, the index will be N.
         If a depth is exactly on a coordinate, the index will be N.
-        
+
         Any points that are 'off grid' will be subject to the boundary conditions
         'mask' or 'extrapolate'. 'mask' will mask the index and the alpha of the point.
         'extrapolate' will set the index to the surface or bottom index, and the alpha to
@@ -568,12 +576,12 @@ class S_Depth(DepthBase):
         vf = np.vectorize(np.digitize, signature='(),(n)->()', excluded=['right'])
         indices = vf(depths, transects, right=True) - 1
         
-        #transect mask is True where the point is outside the grid horizontally
-        #so it must be reapplied
+        # transect mask is True where the point is outside the grid horizontally
+        # so it must be reapplied
         indices = np.ma.array(indices, mask=transects.mask[:,0])
         alphas.mask = transects.mask[:,0]
         
-        #set above surface and below seafloor alphas to allow future filtering
+        # set above surface and below seafloor alphas to allow future filtering
         alphas[indices == surface_index] = 0
         if surface_boundary_condition == 'mask':
             alphas.mask = np.logical_or(alphas.mask, indices == surface_index)
@@ -583,7 +591,7 @@ class S_Depth(DepthBase):
             alphas.mask = np.logical_or(alphas.mask, indices == -1)
             indices.mask[indices == -1] = True
         
-        #compute the remaining alphas, which should be for points within the depth interval
+        # compute the remaining alphas, which should be for points within the depth interval
         L0 = np.take(transects, indices)
         L1 = np.take(transects, indices + 1)
         within_layer = np.isnan(alphas) #remaining alphas would still have nan at this point
@@ -869,7 +877,6 @@ class Depth(object):
             else:
                 return Surface_Depth
 
-        
         else:
             t1 = search_dataset_for_any_long_name(dataset, S_Depth.cf_names)
             if t1:
