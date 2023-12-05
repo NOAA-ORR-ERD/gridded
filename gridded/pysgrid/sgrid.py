@@ -118,6 +118,30 @@ class SGrid(object):
         self._cell_tree_mask = None
         self.grid_topology = grid_topology
 
+    def __eq__(self, other):
+        # Fixme: should this even exist
+        #        keeping it because it's used in a test.
+        if self is other:
+            return True
+        # maybe too strict?
+        if self.__class__ is not other.__class__:
+            return False
+        # there is way too much to really check here ...
+        # but it would a heck of a coincidence ...
+        for attr in ('node_lon',
+                     'node_lat',
+                     'node_mask',
+                     'center_lon',
+                     'center_lat',
+                     'center_mask',
+                     'faces',
+                     'face_padding',
+                     ):
+            if not np.array_equal(getattr(self, attr), getattr(other, attr)):
+                return False
+        return True
+
+
     @classmethod
     def load_grid(cls, nc):
         if isinstance(nc, Dataset):
