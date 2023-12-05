@@ -90,19 +90,19 @@ class GridBase(object):
     def shape(self):
         return self.node_lon.shape
 
-    def __eq__(self, o):
-        if self is o:
-            return True
-        for n in ('nodes', 'faces'):
-            if (hasattr(self, n) and
-                hasattr(o, n) and
-                getattr(self, n) is not None and
-                getattr(o, n) is not None):
-                s = getattr(self, n)
-                s2 = getattr(o, n)
-                if s.shape != s2.shape or np.any(s != s2):
-                    return False
-        return True
+    # def __eq__(self, o):
+    #     if self is o:
+    #         return True
+    #     for n in ('nodes', 'faces'):
+    #         if (hasattr(self, n) and
+    #             hasattr(o, n) and
+    #             getattr(self, n) is not None and
+    #             getattr(o, n) is not None):
+    #             s = getattr(self, n)
+    #             s2 = getattr(o, n)
+    #             if s.shape != s2.shape or np.any(s != s2):
+    #                 return False
+    #     return True
 
     def _write_grid_to_file(self, pth):
         self.save_as_netcdf(pth)

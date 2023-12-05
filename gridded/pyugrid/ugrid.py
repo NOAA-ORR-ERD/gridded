@@ -217,6 +217,34 @@ class UGrid(object):
         #     msg.append("Variables: " + ", ".join([str(v) for v in self._data.keys()]))
         return "\n".join(msg)
 
+    def __eq__(self, other):
+        # Fixme: should this even exist
+        #        keeping it because it's used in a test.
+        if self is other:
+            return True
+        # maybe too strict?
+        if self.__class__ is not other.__class__:
+            return False
+        if (np.array_equal(self.nodes, other.nodes)
+                and np.array_equal(self.faces, other.faces)
+                and np.array_equal(self.boundaries, other.boundaries)
+            ):
+            return True
+        return False
+
+        # They should all be there!
+        # for n in ('nodes', 'faces'):
+            # if (hasattr(self, n) and
+            #     hasattr(o, n) and
+            #     getattr(self, n) is not None and
+            #     getattr(o, n) is not None):
+            #     s = getattr(self, n)
+            #     s2 = getattr(o, n)
+            #     if s.shape != s2.shape or np.any(s != s2):
+            #         return False
+        return True
+
+
     def check_consistent(self):
         """
         Check if the various data is consistent: the edges and faces reference
