@@ -4,7 +4,6 @@
 The basic test of the UGrid object.
 
 More specific functionality is other test modules.
-
 """
 
 
@@ -101,3 +100,43 @@ def test_both_nodes_and_lat():
                      nodes=nodes
                      )
 
+def test_eq():
+    grid1 = UGrid(nodes=nodes,
+                  faces=faces,
+                  edges=edges,
+                  boundaries=boundaries,
+                  )
+
+    grid2 = UGrid(nodes=nodes,
+                  faces=faces,
+                  edges=edges,
+                  boundaries=boundaries,
+                  )
+
+    assert grid1 == grid2
+
+
+def test_eq_no_bounds():
+    grid1 = UGrid(nodes=nodes,
+                  faces=faces,
+                  edges=edges,
+                  boundaries=boundaries,
+                  )
+
+    grid2 = UGrid(nodes=nodes,
+                  faces=faces,
+                  edges=edges,
+                  )
+
+    assert grid1 != grid2
+
+
+def test_eq_diff_type():
+    # make sure it doesn't crash
+    grid1 = UGrid(nodes=nodes,
+                  faces=faces,
+                  edges=edges,
+                  boundaries=boundaries,
+                  )
+
+    assert grid1 != "A string"
