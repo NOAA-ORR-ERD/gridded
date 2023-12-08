@@ -1,82 +1,51 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Loading Non Conforming Data &mdash; gridded 0.0.8 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loading Non Conforming Data &mdash; gridded 0.5.9 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-  
-  
-  
-
-  
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="gridded API" href="api_reference.html" />
     <link rel="prev" title="Tutorial" href="tutorial.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="index.html" class="icon icon-home"> gridded
           
-
-          
+          <a href="index.html" class="icon icon-home">
+            gridded
           </a>
-
-          
-
-          
+              <div class="version">
+                0.5.9
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#goals">Goals</a></li>
@@ -140,70 +109,32 @@
 </li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">gridded</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
-      <li>Loading Non Conforming Data</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Loading Non Conforming Data</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/non_conforming_data.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="loading-non-conforming-data">
-<h1>Loading Non Conforming Data<a class="headerlink" href="#loading-non-conforming-data" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="loading-non-conforming-data">
+<h1>Loading Non Conforming Data<a class="headerlink" href="#loading-non-conforming-data" title="Permalink to this heading"></a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">gridded</span></code> is designed to conform to the data model desribed by the following standards:</p>
 <p>CF: <a class="reference external" href="http://cfconventions.org/">http://cfconventions.org/</a></p>
 <p>UGRID: <a class="reference external" href="http://ugrid-conventions.github.io/ugrid-conventions/">http://ugrid-conventions.github.io/ugrid-conventions/</a></p>
@@ -213,8 +144,8 @@
 </pre></div>
 </div>
 <p>However, if your files do not conform to those convensions, <code class="docutils literal notranslate"><span class="pre">gridded</span></code> may not be able to figure out what to do, or may do the wrong thing. You have to provide it with more information.</p>
-<div class="section" id="if-your-files-conform-to-the-underlying-data-model">
-<h2>If your files conform to the underlying data model<a class="headerlink" href="#if-your-files-conform-to-the-underlying-data-model" title="Permalink to this headline">¶</a></h2>
+<section id="if-your-files-conform-to-the-underlying-data-model">
+<h2>If your files conform to the underlying data model<a class="headerlink" href="#if-your-files-conform-to-the-underlying-data-model" title="Permalink to this heading"></a></h2>
 <p>Many times, the data in your files (in particular netcdf) conform to the underlying data model, but does not have the full metadata to describe the relationship between the variables. In this case, you can provide a mapping of netcdf variable names to the role in the grid:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">names_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;nodes_lon&#39;</span><span class="p">:</span> <span class="s1">&#39;lon&#39;</span><span class="p">,</span>
                  <span class="s1">&#39;nodes_lat&#39;</span><span class="p">:</span> <span class="s1">&#39;lat&#39;</span><span class="p">,</span>
@@ -226,8 +157,8 @@
       <span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="unstructured-grids">
-<h3>Unstructured Grids<a class="headerlink" href="#unstructured-grids" title="Permalink to this headline">¶</a></h3>
+<section id="unstructured-grids">
+<h3>Unstructured Grids<a class="headerlink" href="#unstructured-grids" title="Permalink to this heading"></a></h3>
 <p>(See the UGRID standard for more detailed explanation)</p>
 <p>The core “parts” of the grid are:</p>
 <p>Minimum Required (You can make a UGrid that has no actual mesh, but it’s not very useful)</p>
@@ -255,21 +186,21 @@
 <span class="n">boundary_coordinates</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="curvilinear-grids">
-<h3>Curvilinear Grids<a class="headerlink" href="#curvilinear-grids" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="curvilinear-grids">
+<h3>Curvilinear Grids<a class="headerlink" href="#curvilinear-grids" title="Permalink to this heading"></a></h3>
 <p>(See the SGRID standard for more detailed explanation)</p>
 <p>The core “parts” of the grid are:</p>
-<div class="section" id="minimum-required">
-<h4>Minimum Required<a class="headerlink" href="#minimum-required" title="Permalink to this headline">¶</a></h4>
+<section id="minimum-required">
+<h4>Minimum Required<a class="headerlink" href="#minimum-required" title="Permalink to this heading"></a></h4>
 <p>Nodes of the grid – MxNx2 arrays:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">node_lon</span>
 <span class="n">node_lat</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="optional">
-<h4>Optional<a class="headerlink" href="#optional" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="optional">
+<h4>Optional<a class="headerlink" href="#optional" title="Permalink to this heading"></a></h4>
 <p>If some elements in the node arrays are invalid, the mask:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">node_mask</span>
 </pre></div>
@@ -296,11 +227,11 @@ edge1_padding
 edge2_padding
 face_padding</p>
 </div></blockquote>
-</div>
-</div>
-</div>
-<div class="section" id="if-your-files-do-not-conform-to-the-underlying-data-model">
-<h2>If your files do not conform to the underlying data model<a class="headerlink" href="#if-your-files-do-not-conform-to-the-underlying-data-model" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+</section>
+<section id="if-your-files-do-not-conform-to-the-underlying-data-model">
+<h2>If your files do not conform to the underlying data model<a class="headerlink" href="#if-your-files-do-not-conform-to-the-underlying-data-model" title="Permalink to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">gridded</span></code> Datasets can be initialized entirely with direct data in anything that can be “turned in to” a numpy array: lists, numpy arrays, etc.</p>
 <p>So your files can be in a totally different file format (text, etc), or be in netcdf in a form that is incompatible with the standards, you can pre-process the input data, and construct the parts of the <code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code>:</p>
 <p>Here is an example of an unstructured grid:</p>
@@ -315,8 +246,8 @@ face_padding</p>
 <li><p>A Time object if the data are time dependent</p></li>
 <li><p>A Depth object, if the data are 3-d</p></li>
 </ul>
-<div class="section" id="the-grid">
-<h3>The Grid<a class="headerlink" href="#the-grid" title="Permalink to this headline">¶</a></h3>
+<section id="the-grid">
+<h3>The Grid<a class="headerlink" href="#the-grid" title="Permalink to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nc</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="s2">&quot;SanDiego.nc&quot;</span><span class="p">)</span>
 
 <span class="c1"># need to convert to zero-indexing</span>
@@ -374,57 +305,39 @@ face_padding</p>
                      <span class="n">attributes</span><span class="o">=</span><span class="n">attrs</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="api_reference.html" class="btn btn-neutral float-right" title="gridded API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="tutorial.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorial.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api_reference.html" class="btn btn-neutral float-right" title="gridded API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 
-
-    </p>
+    <p>&#169; Copyright .</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

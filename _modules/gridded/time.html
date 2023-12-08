@@ -1,80 +1,48 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gridded.time &mdash; gridded 0.5.9 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>gridded.time &mdash; gridded 0.0.8 documentation</title>
-  
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> gridded
           
-
-          
+          <a href="../../index.html" class="icon icon-home">
+            gridded
           </a>
-
-          
-
-          
+              <div class="version">
+                0.5.9
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#goals">Goals</a></li>
@@ -138,71 +106,32 @@
 </li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">gridded</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-        
-      <li>gridded.time</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">gridded.time</li>
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for gridded.time</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/binenv python</span>
-
-<span class="c1"># py2/3 compatibility</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
 
 <span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">dedent</span>
 <span class="kn">import</span> <span class="nn">netCDF4</span> <span class="k">as</span> <span class="nn">nc4</span>
@@ -214,6 +143,8 @@
 
 
 <div class="viewcode-block" id="Time"><a class="viewcode-back" href="../../gridded.html#gridded.time.Time">[docs]</a><span class="k">class</span> <span class="nc">Time</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="c1"># Used to make a singleton with the constant_time class method.</span>
     <span class="n">_const_time</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -225,21 +156,29 @@
                  <span class="n">displacement</span><span class="o">=</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Representation of a time axis. Provides interpolation alphas and indexing.</span>
 
 <span class="sd">        :param time: Ascending list of times to use</span>
+<span class="sd">        :type time: netCDF4.Variable or Sequence of `datetime.datetime`</span>
+
 <span class="sd">        :param tz_offset: offset to compensate for time zone shifts</span>
+<span class="sd">        :type tz_offset: `datetime.timedelta` or float or integer hours</span>
+
 <span class="sd">        :param origin: shifts the time interval to begin at the time specified</span>
-<span class="sd">        :param displacement: displacement to apply to the time data. Allows shifting entire time interval into future or past</span>
-<span class="sd">        :type time: netCDF4.Variable or [] of datetime.datetime</span>
-<span class="sd">        :type tz_offset: datetime.timedelta</span>
-<span class="sd">        :type origin: datetime.timedelta</span>
-<span class="sd">        :type displacement: datetime.timedelta</span>
+<span class="sd">        :type origin: `datetime.datetime`</span>
+
+<span class="sd">        :param displacement: displacement to apply to the time data.</span>
+<span class="sd">               Allows shifting entire time interval into future or past</span>
+<span class="sd">        :type displacement: `datetime.timedelta`</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
+        <span class="c1"># fixme -- this conversion should be done in the netcdf loading code.</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">nc4</span><span class="o">.</span><span class="n">Variable</span><span class="p">,</span> <span class="n">nc4</span><span class="o">.</span><span class="n">_netCDF4</span><span class="o">.</span><span class="n">_Variable</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">nc4</span><span class="o">.</span><span class="n">num2date</span><span class="p">(</span><span class="n">data</span><span class="p">[:],</span> <span class="n">units</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">nc4</span><span class="p">,</span> <span class="s1">&#39;num2pydate&#39;</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">nc4</span><span class="o">.</span><span class="n">num2pydate</span><span class="p">(</span><span class="n">data</span><span class="p">[:],</span> <span class="n">units</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">nc4</span><span class="o">.</span><span class="n">num2date</span><span class="p">(</span><span class="n">data</span><span class="p">[:],</span> <span class="n">units</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">units</span><span class="p">,</span> <span class="n">only_use_cftime_datetimes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">only_use_python_datetimes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()])</span>
         <span class="k">else</span><span class="p">:</span>
@@ -254,11 +193,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">varname</span> <span class="o">=</span> <span class="n">varname</span>
 
-<span class="c1">#         if self.filename is None:</span>
-<span class="c1">#             self.filename = self.id + &#39;_time.txt&#39;</span>
-
         <span class="k">if</span> <span class="n">tz_offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">+=</span> <span class="n">tz_offset</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">+=</span> <span class="n">tz_offset</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="n">tz_offset</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeseries_is_ascending</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Time sequence is not ascending&quot;</span><span class="p">)</span>
@@ -266,6 +205,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Time sequence has duplicate entries&quot;</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">Time</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Time.from_netCDF"><a class="viewcode-back" href="../../gridded.html#gridded.time.Time.from_netCDF">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_netCDF</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
                     <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -274,7 +214,7 @@
                     <span class="n">datavar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">tz_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        construct a Time object from a netcdf file</span>
 
 <span class="sd">        :param filename=None: name of netcddf file</span>
@@ -305,28 +245,47 @@
                    <span class="n">varname</span><span class="o">=</span><span class="n">varname</span><span class="p">,</span>
                    <span class="n">tz_offset</span><span class="o">=</span><span class="n">tz_offset</span><span class="p">,</span>
                    <span class="o">**</span><span class="n">kwargs</span>
-                       <span class="p">)</span>
+                   <span class="p">)</span>
         <span class="k">return</span> <span class="n">time</span></div>
 
 <div class="viewcode-block" id="Time.constant_time"><a class="viewcode-back" href="../../gridded.html#gridded.time.Time.constant_time">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">constant_time</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a Time object that represents no change in time</span>
+
+<span class="sd">        In practice, that&#39;s a Time object with a single datetime</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># this caches a single instance of a constant time object</span>
+        <span class="c1"># in the class, and always returns the same one (a singleton)</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_const_time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_const_time</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()]))</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_const_time</span></div>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+
+    <span class="nd">@data</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="c1"># If it&#39;s passed in a Time object, it gets its data object</span>
+        <span class="c1"># Fixme: Why? this seems like more magic than necessary</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span> <span class="ow">or</span> <span class="n">data</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Provides info about this Time object</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">              Time object:</span>
-<span class="s2">                filename: </span><span class="si">{}</span><span class="s2"></span>
-<span class="s2">                varname: </span><span class="si">{}</span><span class="s2"></span>
-<span class="s2">                first timestep: </span><span class="si">{}</span><span class="s2"></span>
-<span class="s2">                final timestep: </span><span class="si">{}</span><span class="s2"></span>
-<span class="s2">                number of timesteps: </span><span class="si">{}</span><span class="s2"></span>
+<span class="s2">                filename: </span><span class="si">{}</span>
+<span class="s2">                varname: </span><span class="si">{}</span>
+<span class="s2">                first timestep: </span><span class="si">{}</span>
+<span class="s2">                final timestep: </span><span class="si">{}</span>
+<span class="s2">                number of timesteps: </span><span class="si">{}</span>
 <span class="s2">              &quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
                          <span class="bp">self</span><span class="o">.</span><span class="n">varname</span><span class="p">,</span>
                          <span class="bp">self</span><span class="o">.</span><span class="n">min_time</span><span class="p">,</span>
@@ -340,11 +299,14 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">data</span>
-        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="n">r</span>
+        <span class="c1"># r = self.data == other.data</span>
+        <span class="c1"># return all(r) if hasattr(r, &#39;__len__&#39;) else r</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
@@ -357,7 +319,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">min_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        First time in series</span>
 
 <span class="sd">        :rtype: datetime.datetime</span>
@@ -366,7 +328,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">max_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Last time in series</span>
 
 <span class="sd">        :rtype: datetime.datetime</span>
@@ -374,31 +336,42 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Time.get_time_array"><a class="viewcode-back" href="../../gridded.html#gridded.time.Time.get_time_array">[docs]</a>    <span class="k">def</span> <span class="nf">get_time_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns a copy of the internal data array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Time.time_in_bounds"><a class="viewcode-back" href="../../gridded.html#gridded.time.Time.time_in_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">time_in_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Checks if time provided is within the bounds represented by this object.</span>
 
 <span class="sd">        :param time: time to be queried</span>
-<span class="sd">        :type time: datetime.datetime</span>
-<span class="sd">        :rtype: boolean</span>
+<span class="sd">        :type time: `datetime.datetime`</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="n">time</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_time</span> <span class="ow">or</span> <span class="n">time</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_time</span></div>
+        <span class="k">return</span> <span class="ow">not</span> <span class="p">((</span><span class="n">time</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_time</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">time</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_time</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Time.valid_time"><a class="viewcode-back" href="../../gridded.html#gridded.time.Time.valid_time">[docs]</a>    <span class="k">def</span> <span class="nf">valid_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">time</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_time</span> <span class="ow">or</span> <span class="n">time</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_time</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Raises a ValueError if time is not within the bounds of the timeseries</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_in_bounds</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
+        <span class="c1"># if time &lt; self.min_time or time &gt; self.max_time:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;time specified (</span><span class="si">{0}</span><span class="s1">) is not within the bounds of the time (</span><span class="si">{1}</span><span class="s1"> to </span><span class="si">{2}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%c</span><span class="s1">&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%c</span><span class="s1">&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%c</span><span class="s1">&#39;</span><span class="p">)))</span></div>
 
+
 <div class="viewcode-block" id="Time.index_of"><a class="viewcode-back" href="../../gridded.html#gridded.time.Time.index_of">[docs]</a>    <span class="k">def</span> <span class="nf">index_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">extrapolate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns the index of the provided time with respect to the time intervals in the file.</span>
 
 <span class="sd">        :param time: Time to be queried</span>
-<span class="sd">        :param extrapolate:</span>
-<span class="sd">        :type time: datetime.datetime</span>
-<span class="sd">        :type extrapolate: boolean</span>
+<span class="sd">        :type time: `datetime.datetime`</span>
+
+<span class="sd">        :param extrapolate: whether to allow extrapolation:</span>
+<span class="sd">                            i.e. will not raise if outside the bounds of the time data.</span>
+<span class="sd">        :type extrapolate: bool</span>
+
 <span class="sd">        :return: index of first time before specified time</span>
 <span class="sd">        :rtype: integer</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -409,18 +382,26 @@
             <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="n">index</span></div>
 
+
 <div class="viewcode-block" id="Time.interp_alpha"><a class="viewcode-back" href="../../gridded.html#gridded.time.Time.interp_alpha">[docs]</a>    <span class="k">def</span> <span class="nf">interp_alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">extrapolate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns interpolation alpha for the specified time</span>
 
+<span class="sd">        This is the weighting to give the index before</span>
+<span class="sd">        -- 1-alpha would be the weight to the index after.</span>
+
+
 <span class="sd">        :param time: Time to be queried</span>
-<span class="sd">        :param extrapolate:</span>
-<span class="sd">        :type time: datetime.datetime</span>
-<span class="sd">        :type extrapolate: boolean</span>
+<span class="sd">        :type time: `datetime.datetime`</span>
+
+<span class="sd">        :param extrapolate: if True, 0.0 (before) or 1.0 (after) is returned.</span>
+<span class="sd">                            if False, a ValueError is raised if outside the time series.</span>
+<span class="sd">        :type extrapolate: bool</span>
+
 <span class="sd">        :return: interpolation alpha</span>
-<span class="sd">        :rtype: double (0 &lt;= r &lt;= 1)</span>
+<span class="sd">        :rtype: float (0 &lt;= r &lt;= 1)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">extrapolate</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">extrapolate</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">valid_time</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
         <span class="n">i0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_of</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">extrapolate</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">i0</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
@@ -433,42 +414,30 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 
-
-    </p>
+    <p>&#169; Copyright .</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

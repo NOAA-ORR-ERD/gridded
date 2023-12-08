@@ -1,80 +1,45 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>gridded.pysgrid.read_netcdf &mdash; gridded 0.0.8 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../../../index.html" class="icon icon-home"> gridded
           
-
-          
+          <a href="../../../index.html" class="icon icon-home">
+            gridded
           </a>
-
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../overview.html#goals">Goals</a></li>
@@ -138,66 +103,30 @@
 </li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">gridded</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-      <li>gridded.pysgrid.read_netcdf</li>
-    
-    
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">gridded.pysgrid.read_netcdf</li>
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for gridded.pysgrid.read_netcdf</h1><div class="highlight"><pre>
 <span></span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">Created on Mar 19, 2015</span>
@@ -205,7 +134,6 @@
 <span class="sd">@author: ayan</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="p">(</span><span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">)</span>
 
 <span class="kn">import</span> <span class="nn">re</span>
 
@@ -214,7 +142,7 @@
 
 
 <div class="viewcode-block" id="find_grid_topology_var"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.read_netcdf.find_grid_topology_var">[docs]</a><span class="k">def</span> <span class="nf">find_grid_topology_var</span><span class="p">(</span><span class="n">nc</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the variable from a netCDF dataset</span>
 <span class="sd">    that have a `cf_role `attribute of &#39;grid_topology&#39; and</span>
 <span class="sd">    `topology_dimension` of 2.</span>
@@ -245,7 +173,7 @@
 
 
 <div class="viewcode-block" id="parse_padding"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.read_netcdf.parse_padding">[docs]</a><span class="k">def</span> <span class="nf">parse_padding</span><span class="p">(</span><span class="n">padding_str</span><span class="p">,</span> <span class="n">mesh_topology_var</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Use regex expressions to break apart an</span>
 <span class="sd">    attribute string containing padding types</span>
 <span class="sd">    for each variable with a cf_role of</span>
@@ -264,7 +192,7 @@
 <span class="sd">    :rtype: list.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;([a-zA-Z0-9_]+:) ([a-zA-Z0-9_]+) (\(padding: [a-zA-Z]+\))&#39;</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([a-zA-Z0-9_]+:) ([a-zA-Z0-9_]+) (\(padding: [a-zA-Z]+\))&#39;</span><span class="p">)</span>
     <span class="n">padding_matches</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">padding_str</span><span class="p">)</span>
     <span class="n">padding_type_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">padding_match</span> <span class="ow">in</span> <span class="n">padding_matches</span><span class="p">:</span>
@@ -273,7 +201,7 @@
         <span class="n">sub_dim</span> <span class="o">=</span> <span class="n">raw_sub_dim</span>
         <span class="c1"># Remove parentheses. (That is why regular expressions are bad!</span>
         <span class="c1"># You need a commend to explain what is going on!!)</span>
-        <span class="n">cleaned_padding_var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;[\(\)]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">raw_padding_var</span><span class="p">)</span>
+        <span class="n">cleaned_padding_var</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[\(\)]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">raw_padding_var</span><span class="p">)</span>
         <span class="c1"># Get the padding value and remove spaces.</span>
         <span class="n">padding_type</span> <span class="o">=</span> <span class="n">cleaned_padding_var</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="n">grid_padding</span> <span class="o">=</span> <span class="n">GridPadding</span><span class="p">(</span><span class="n">mesh_topology_var</span><span class="o">=</span><span class="n">mesh_topology_var</span><span class="p">,</span>
@@ -335,7 +263,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sgrid_compliant_file</span><span class="p">()</span>
 
 <div class="viewcode-block" id="NetCDFDataset.find_node_coordinates"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.read_netcdf.NetCDFDataset.find_node_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">find_node_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_dimensions</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find the variables for the grid</span>
 <span class="sd">        cell vertices.</span>
 
@@ -388,7 +316,7 @@
         <span class="k">return</span> <span class="n">matches</span></div>
 
 <div class="viewcode-block" id="NetCDFDataset.find_coordinates_by_location"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.read_netcdf.NetCDFDataset.find_coordinates_by_location">[docs]</a>    <span class="k">def</span> <span class="nf">find_coordinates_by_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">location_str</span><span class="p">,</span> <span class="n">topology_dim</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find a grid coordinates variables with a location attribute equal</span>
 <span class="sd">        to location_str. This method can be used to infer edge, face, or</span>
 <span class="sd">        volume coordinates from the location attribute of a variable.</span>
@@ -468,7 +396,7 @@
         <span class="k">return</span> <span class="n">coordinate_result</span></div>
 
 <div class="viewcode-block" id="NetCDFDataset.sgrid_compliant_file"><a class="viewcode-back" href="../../../gridded.pysgrid.html#gridded.pysgrid.read_netcdf.NetCDFDataset.sgrid_compliant_file">[docs]</a>    <span class="k">def</span> <span class="nf">sgrid_compliant_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine whether a dataset is</span>
 <span class="sd">        SGRID compliant.</span>
 
@@ -485,42 +413,30 @@
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 
-
-    </p>
+    <p>&#169; Copyright .</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

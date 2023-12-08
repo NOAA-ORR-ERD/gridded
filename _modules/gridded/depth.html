@@ -1,80 +1,48 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gridded.depth &mdash; gridded 0.5.9 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>gridded.depth &mdash; gridded 0.0.8 documentation</title>
-  
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> gridded
           
-
-          
+          <a href="../../index.html" class="icon icon-home">
+            gridded
           </a>
-
-          
-
-          
+              <div class="version">
+                0.5.9
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#goals">Goals</a></li>
@@ -138,87 +106,60 @@
 </li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">gridded</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-        
-      <li>gridded.depth</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">gridded.depth</li>
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for gridded.depth</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">unicode_literals</span>
-
+<span></span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">string_types</span>
 
-<span class="kn">import</span> <span class="nn">gridded</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">gridded.time</span> <span class="kn">import</span> <span class="n">Time</span>
 <span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="kn">import</span> <span class="n">Grid</span>
-<span class="kn">from</span> <span class="nn">gridded.utilities</span> <span class="kn">import</span> <span class="n">get_dataset</span>
+<span class="kn">from</span> <span class="nn">gridded.utilities</span> <span class="kn">import</span> <span class="p">(</span><span class="n">get_dataset</span><span class="p">,</span>
+                               <span class="n">search_dataset_for_any_long_name</span><span class="p">,</span>
+                               <span class="n">search_dataset_for_variables_by_longname</span><span class="p">,</span>
+                               <span class="n">search_dataset_for_variables_by_varname</span><span class="p">,</span>
+                               <span class="n">merge_var_search_dicts</span>
+                               <span class="p">)</span>
+
 
 <div class="viewcode-block" id="DepthBase"><a class="viewcode-back" href="../../gridded.html#gridded.depth.DepthBase">[docs]</a><span class="k">class</span> <span class="nc">DepthBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">_default_component_types</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">Time</span><span class="p">,</span>
                                 <span class="s1">&#39;grid&#39;</span><span class="p">:</span> <span class="n">Grid</span><span class="p">,</span>
                                 <span class="s1">&#39;variable&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">surface_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">bottom_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param surface_index: array index of &#39;highest&#39; level (closest to sea level)</span>
+<span class="sd">        :param bottom_index: array index of &#39;lowest&#39; level (closest to seafloor)</span>
+<span class="sd">        :param positive_down: orientation of points coordinates</span>
+<span class="sd">                              (for interpolation functions)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">surface_index</span> <span class="o">=</span> <span class="n">surface_index</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bottom_index</span> <span class="o">=</span> <span class="n">bottom_index</span>
 
@@ -229,12 +170,32 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">surface_index</span><span class="p">,</span>
                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="DepthBase.interpolation_alphas"><a class="viewcode-back" href="../../gridded.html#gridded.depth.DepthBase.interpolation_alphas">[docs]</a>    <span class="k">def</span> <span class="nf">interpolation_alphas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">data_shape</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+<div class="viewcode-block" id="DepthBase.interpolation_alphas"><a class="viewcode-back" href="../../gridded.html#gridded.depth.DepthBase.interpolation_alphas">[docs]</a>    <span class="k">def</span> <span class="nf">interpolation_alphas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                             <span class="n">points</span><span class="p">,</span>
+                             <span class="n">time</span><span class="p">,</span>
+                             <span class="n">data_shape</span><span class="p">,</span>
+                             <span class="n">extrapolate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                             <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="o">**</span><span class="n">kwargs</span><span class="p">,):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns the weights (alphas) required for interpolation</span>
+
+<span class="sd">        The base class implementation only supports surface values:</span>
+<span class="sd">        it returns the surface index and 0.0 for the alpha</span>
+
+<span class="sd">        This is the expected outcome for the case where all points</span>
+<span class="sd">        are on the surface.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">sz</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">sz</span><span class="p">,</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_index</span><span class="p">,</span>
+                                    <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">sz</span><span class="p">,</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">))</span>
+        <span class="n">alphas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">sz</span><span class="p">,</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+                                   <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">sz</span><span class="p">,</span> <span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">indices</span><span class="p">,</span> <span class="n">alphas</span></div>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_find_required_depth_attrs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">depth_topology</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        This function is the top level &#39;search for attributes&#39; function. If there are any</span>
 <span class="sd">        common attributes to all potential depth types, they will be sought here.</span>
 
@@ -255,9 +216,10 @@
     <span class="k">def</span> <span class="nf">_gen_varname</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
                      <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">grid_dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">names_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">std_names_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to find the default variable names if they are not provided.</span>
 
 <span class="sd">        :param filename: Name of file that will be searched for variables</span>
@@ -283,18 +245,22 @@
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s1">&#39;standard_name&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="s1">&#39;long_name&#39;</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">n</span><span class="p">:</span>
                         <span class="k">return</span> <span class="n">n</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Default names not found.&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Default names not found.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="L_Depth"><a class="viewcode-back" href="../../gridded.html#gridded.depth.L_Depth">[docs]</a><span class="k">class</span> <span class="nc">L_Depth</span><span class="p">(</span><span class="n">DepthBase</span><span class="p">):</span>
     <span class="n">_def_count</span><span class="o">=</span><span class="mi">0</span>
-    <span class="n">default_terms</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;depth_levels&#39;</span><span class="p">,</span><span class="s1">&#39;depth&#39;</span><span class="p">)]</span>
+    <span class="n">default_terms</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;depth_levels&#39;</span><span class="p">,</span> <span class="s1">&#39;depth&#39;</span><span class="p">)]</span>
+    <span class="n">default_names</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;depth&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;depth&#39;</span><span class="p">,</span><span class="s1">&#39;depth_levels&#39;</span><span class="p">]}</span>
+    <span class="n">cf_names</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;depth&#39;</span><span class="p">:</span> <span class="s1">&#39;depth&#39;</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">terms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">surface_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">bottom_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">default_surface_boundary_condition</span><span class="o">=</span><span class="s1">&#39;extrapolate&#39;</span><span class="p">,</span>
+                 <span class="n">default_bottom_boundary_conditon</span><span class="o">=</span><span class="s1">&#39;mask&#39;</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">L_Depth</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="n">name</span>
@@ -307,6 +273,8 @@
                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">surface_index</span> <span class="o">=</span> <span class="n">surface_index</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bottom_index</span> <span class="o">=</span> <span class="n">bottom_index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_surface_boundary_condition</span> <span class="o">=</span> <span class="n">default_surface_boundary_condition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_bottom_boundary_condition</span> <span class="o">=</span> <span class="n">default_bottom_boundary_conditon</span>
 
 <div class="viewcode-block" id="L_Depth.from_netCDF"><a class="viewcode-back" href="../../gridded.html#gridded.depth.L_Depth.from_netCDF">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_netCDF</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
@@ -320,6 +288,7 @@
                     <span class="o">**</span><span class="n">kwargs</span>
                     <span class="p">):</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">dataset</span> <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No filename or dataset provided&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -328,74 +297,137 @@
             <span class="n">terms</span><span class="o">=</span><span class="p">{}</span>
             <span class="k">for</span> <span class="n">tn</span><span class="p">,</span> <span class="n">tln</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">default_terms</span><span class="p">:</span>
                 <span class="n">vname</span><span class="o">=</span><span class="n">tn</span>
-                <span class="k">if</span> <span class="n">tn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="c1">#if tn not in dataset.variables.keys(): # 2023</span>
+                <span class="k">if</span> <span class="n">tn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                     <span class="n">vname</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_gen_varname</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="p">[</span><span class="n">tn</span><span class="p">],</span> <span class="p">[</span><span class="n">tln</span><span class="p">])</span>
-                <span class="n">terms</span><span class="p">[</span><span class="n">tn</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">vname</span><span class="p">][:]</span>
+                <span class="c1">#terms[tn] = dataset[vname][:] # 2023</span>
+                <span class="n">terms</span><span class="p">[</span><span class="n">tn</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">vname</span><span class="p">][:]</span>
         <span class="k">if</span> <span class="n">surface_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">surface_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">terms</span><span class="p">[</span><span class="s1">&#39;depth_levels&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">bottom_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">bottom_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">terms</span><span class="p">[</span><span class="s1">&#39;depth_levels&#39;</span><span class="p">])</span>
+        <span class="c1"># 2023-02-21 set the depth of the top layer to zero</span>
+        <span class="n">terms</span><span class="p">[</span><span class="s1">&#39;depth_levels&#39;</span><span class="p">][</span><span class="n">surface_index</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="c1"># 2023-02-21 set the depth of the top layer to zero</span>
+
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                    <span class="n">terms</span><span class="o">=</span><span class="n">terms</span><span class="p">,</span>
                    <span class="n">surface_index</span><span class="o">=</span><span class="n">surface_index</span><span class="p">,</span>
                    <span class="n">bottom_index</span><span class="o">=</span><span class="n">bottom_index</span><span class="p">,</span>
                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        
 
-<div class="viewcode-block" id="L_Depth.interpolation_alphas"><a class="viewcode-back" href="../../gridded.html#gridded.depth.L_Depth.interpolation_alphas">[docs]</a>    <span class="k">def</span> <span class="nf">interpolation_alphas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="L_Depth.interpolation_alphas"><a class="viewcode-back" href="../../gridded.html#gridded.depth.L_Depth.interpolation_alphas">[docs]</a>    <span class="k">def</span> <span class="nf">interpolation_alphas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                             <span class="n">points</span><span class="p">,</span> 
+                             <span class="n">time</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                             <span class="n">data_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">surface_boundary_condition</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">bottom_boundary_condition</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns a pair of values. The 1st value is an array of the depth indices of all the particles.</span>
 <span class="sd">        The 2nd value is an array of the interpolation alphas for the particles between their depth</span>
 <span class="sd">        index and depth_index+1. If both values are None, then all particles are on the surface layer.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="n">underwater</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">underwater</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-        <span class="n">indices</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
-        <span class="n">alphas</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="n">pts</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">underwater</span><span class="p">]</span>
-        <span class="n">und_ind</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">underwater</span><span class="p">)[</span><span class="mi">0</span><span class="p">])))</span>
-        <span class="n">und_alph</span> <span class="o">=</span> <span class="n">und_ind</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">und_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">pts</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth_levels</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">und_ind</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">depth_levels</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="n">und_ind</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-            <span class="k">if</span> <span class="n">und_ind</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                <span class="n">und_alph</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">pts</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth_levels</span><span class="p">[</span><span class="n">und_ind</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">depth_levels</span><span class="p">[</span><span class="n">und_ind</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth_levels</span><span class="p">[</span><span class="n">und_ind</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
-        <span class="n">indices</span><span class="p">[</span><span class="n">underwater</span><span class="p">]</span> <span class="o">=</span> <span class="n">und_ind</span>
-        <span class="n">alphas</span><span class="p">[</span><span class="n">underwater</span><span class="p">]</span> <span class="o">=</span> <span class="n">und_alph</span>
+        <span class="n">depths</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="n">surface_boundary_condition</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_surface_boundary_condition</span> <span class="k">if</span> <span class="n">surface_boundary_condition</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">surface_boundary_condition</span>
+        <span class="n">bottom_boundary_condition</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_bottom_boundary_condition</span> <span class="k">if</span> <span class="n">bottom_boundary_condition</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">bottom_boundary_condition</span>
+        
+        
+        <span class="c1"># process remaining points that are &#39;above the surface&#39; or &#39;below the ground&#39;</span>
+        <span class="c1"># L0 and L1 bound the entire vertical layer</span>
+        <span class="c1"># It is important to get the &#39;right&#39; argument correct for np.digitize</span>
+        <span class="c1"># See https://numpy.org/doc/stable/reference/generated/numpy.digitize.html</span>
+        
+        <span class="n">L0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth_levels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">L1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth_levels</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">depths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth_levels</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">False</span> <span class="k">if</span> <span class="n">L0</span> <span class="o">&lt;</span> <span class="n">L1</span> <span class="k">else</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">idxs</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">idxs</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">))</span>
+        
+        <span class="n">alphas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">))</span>
+        
+        <span class="c1">#set above surface and below seafloor alphas to allow future filtering</span>
+        
+        <span class="k">if</span> <span class="n">L0</span> <span class="o">&lt;</span> <span class="n">L1</span><span class="p">:</span>
+            <span class="c1">#0, 1, 2, 3, 4, 5, 6</span>
+            <span class="n">above_surface</span> <span class="o">=</span> <span class="n">indices</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">above_alpha</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">below_bottom</span> <span class="o">=</span> <span class="n">indices</span> <span class="o">==</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">depth_levels</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">below_alpha</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#6, 5, 4, 3, 2, 1, 0</span>
+            <span class="n">above_surface</span> <span class="o">=</span> <span class="n">indices</span> <span class="o">==</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">depth_levels</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">above_alpha</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">below_bottom</span> <span class="o">=</span> <span class="n">indices</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">below_alpha</span> <span class="o">=</span> <span class="mi">1</span>
+        
+        <span class="n">alphas</span><span class="p">[</span><span class="n">above_surface</span><span class="p">]</span> <span class="o">=</span> <span class="n">above_alpha</span>
+        <span class="n">alphas</span><span class="p">[</span><span class="n">below_bottom</span><span class="p">]</span> <span class="o">=</span> <span class="n">below_alpha</span>
+        
+        <span class="c1">#set above surface and below seafloor mask</span>
+        <span class="k">if</span> <span class="n">surface_boundary_condition</span> <span class="o">==</span> <span class="s1">&#39;mask&#39;</span><span class="p">:</span>
+            <span class="n">alphas</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">alphas</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">above_surface</span><span class="p">)</span>
+            <span class="n">indices</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">above_surface</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">alphas</span><span class="p">[</span><span class="n">indices</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">bottom_boundary_condition</span> <span class="o">==</span> <span class="s1">&#39;mask&#39;</span><span class="p">:</span>
+            <span class="n">alphas</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">alphas</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">below_bottom</span><span class="p">)</span>
+            <span class="n">indices</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">below_bottom</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        
+        <span class="n">within_layer</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">alphas</span><span class="p">)</span>
+        
+        <span class="n">L0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">depth_levels</span><span class="p">,</span> <span class="n">indices</span><span class="p">[</span><span class="n">within_layer</span><span class="p">])</span>
+        <span class="n">L1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">depth_levels</span><span class="p">,</span> <span class="n">indices</span><span class="p">[</span><span class="n">within_layer</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        
+        <span class="n">alphas</span><span class="p">[</span><span class="n">within_layer</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">depths</span><span class="p">[</span><span class="n">within_layer</span><span class="p">]</span> <span class="o">-</span> <span class="n">L0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+            <span class="n">L1</span> <span class="o">-</span> <span class="n">L0</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">alphas</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Some alphas are still unmasked and NaN. Please file a bug report&#39;</span><span class="p">)</span>
+        
         <span class="k">return</span> <span class="n">indices</span><span class="p">,</span> <span class="n">alphas</span></div>
-
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_find_required_depth_attrs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">topology</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-        <span class="c1"># THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional attributes are dealt with</span>
+        <span class="c1"># THESE ARE ACTUALLY ALL OPTIONAL. This should be migrated when optional</span>
+        <span class="c1">#   attributes are dealt with</span>
         <span class="c1"># Get superset attributes</span>
         <span class="n">gf_vars</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">variables</span> <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">variables</span>
         <span class="n">gf_vars</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">gf_vars</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span> <span class="p">)</span>
         <span class="n">init_args</span><span class="p">,</span> <span class="n">gt</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">L_Depth</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">_find_required_depth_attrs</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
-                                                                           <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
-                                                                           <span class="n">topology</span><span class="o">=</span><span class="n">topology</span><span class="p">)</span>
-
+                                                                       <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
+                                                                       <span class="n">topology</span><span class="o">=</span><span class="n">topology</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">init_args</span><span class="p">,</span> <span class="n">gt</span></div>
 
 
-
 <div class="viewcode-block" id="S_Depth"><a class="viewcode-back" href="../../gridded.html#gridded.depth.S_Depth">[docs]</a><span class="k">class</span> <span class="nc">S_Depth</span><span class="p">(</span><span class="n">DepthBase</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Represents the ocean s-coordinate, with particular focus on ROMS implementation</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Represents the ocean s-coordinates as implemented by ROMS,</span>
+<span class="sd">    It may or may not be useful for other systems.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="n">_def_count</span><span class="o">=</span><span class="mi">0</span>
-    <span class="n">default_terms</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;Cs_r&#39;</span><span class="p">,</span> <span class="s1">&#39;S-coordinate stretching curves at RHO-points&#39;</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s1">&#39;Cs_w&#39;</span><span class="p">,</span> <span class="s1">&#39;S-coordinate stretching curves at W-points&#39;</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s1">&#39;s_rho&#39;</span><span class="p">,</span> <span class="s1">&#39;S-coordinate at RHO-points&#39;</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s1">&#39;s_w&#39;</span><span class="p">,</span> <span class="s1">&#39;S-coordinate at W-points&#39;</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;bathymetry at RHO-points&#39;</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s1">&#39;hc&#39;</span><span class="p">,</span> <span class="s1">&#39;S-coordinate parameter, critical depth&#39;</span><span class="p">),</span>
-                     <span class="p">(</span><span class="s1">&#39;zeta&#39;</span><span class="p">,</span> <span class="s1">&#39;free-surface&#39;</span><span class="p">)]</span>
+    <span class="n">_def_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">default_names</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Cs_r&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Cs_r&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;Cs_w&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Cs_w&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;s_rho&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;s_rho&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;s_w&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;s_w&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;hc&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;hc&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;bathymetry&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;zeta&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;zeta&#39;</span><span class="p">]</span>
+                     <span class="p">}</span>
+
+    <span class="c1"># NOTE: I don&#39;t think these are CFnames :-(</span>
+    <span class="n">cf_names</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Cs_r&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;S-coordinate stretching curves at RHO-points&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;Cs_w&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;S-coordinate stretching curves at W-points&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;s_rho&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;S-coordinate at RHO-points&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;s_w&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;S-coordinate at W-points&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;hc&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;S-coordinate parameter, critical depth&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;bathymetry&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;bathymetry at RHO-points&#39;</span><span class="p">,</span> <span class="s1">&#39;Final bathymetry at RHO-points&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;zeta&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;free-surface&#39;</span><span class="p">]</span>
+                <span class="p">}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -404,25 +436,70 @@
                  <span class="n">bathymetry</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">zeta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">terms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">vtransform</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                 <span class="n">positive_down</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">surface_boundary_condition</span><span class="o">=</span><span class="s1">&#39;extrapolate&#39;</span><span class="p">,</span>
+                 <span class="n">bottom_boundary_condition</span><span class="o">=</span><span class="s1">&#39;mask&#39;</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param name: Human readable name</span>
+<span class="sd">        :type name: string</span>
+
+<span class="sd">        :param time: time axis of the object</span>
+<span class="sd">        :type time: gridded.time.Time or derivative</span>
+
+<span class="sd">        :param grid: x/y grid representation</span>
+<span class="sd">        :type grid: gridded.grids.GridBase or derivative</span>
+
+<span class="sd">        :param bathymetry: variable object representing seafloor</span>
+<span class="sd">        :type bathymetry: gridded.variable.Variable or derivative</span>
+
+<span class="sd">        :param zeta: variable object representing free-surface</span>
+<span class="sd">        :type zeta: gridded.variable.Variable or derivative</span>
+
+<span class="sd">        :param terms: remaining terms in dictionary layout</span>
+<span class="sd">        :type terms: dictionary of string key to numeric value</span>
+<span class="sd">        See S_Depth.default_names, sans bathymetry and zeta</span>
+
+<span class="sd">        :param vtransform: S-coordinate transform type. 1 = Old, 2 = New</span>
+<span class="sd">        :type vtransform: int (default 2)</span>
+
+<span class="sd">        :param positive_down: Flag for interpreting depth values as positive or negative</span>
+<span class="sd">        This applies to any coordinates passed into the various functions, NOT the values</span>
+<span class="sd">        of the S-Coordinates that this object represents</span>
+<span class="sd">        :type positive_down: boolean</span>
+
+<span class="sd">        :param surface_boundary_condition: Determines how to handle points above the surface</span>
+<span class="sd">        :type surface_boundary_condition: string (&#39;extrapolate&#39; or &#39;mask&#39;)</span>
+
+<span class="sd">        :param bottom_boundary_condition: Determines how to handle points below the seafloor</span>
+<span class="sd">        :type bottom_boundary_condition: string (&#39;extrapolate&#39; or &#39;mask&#39;)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
         <span class="nb">super</span><span class="p">(</span><span class="n">S_Depth</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">surface_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bottom_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bottom_index</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">=</span><span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="o">=</span><span class="n">time</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bathymetry</span> <span class="o">=</span> <span class="n">bathymetry</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zeta</span> <span class="o">=</span> <span class="n">zeta</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="o">=</span><span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terms</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vtransform</span> <span class="o">=</span> <span class="n">vtransform</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positive_down</span> <span class="o">=</span> <span class="n">positive_down</span>
         <span class="k">if</span> <span class="n">terms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Must provide terms for sigma coordinate&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">terms</span><span class="o">=</span><span class="n">terms</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">terms</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">surface_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_w_levels</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bottom_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bottom_index</span> <span class="o">=</span> <span class="mi">0</span>
 
+        <span class="c1"># self.rho_coordinates = self.compute_coordinates(&#39;rho&#39;)</span>
+        <span class="c1"># self.w_coordinates = self.compute_coordinates(&#39;w&#39;)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_surface_boundary_condition</span> <span class="o">=</span> <span class="s1">&#39;extrapolate&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_bottom_boundary_condition</span> <span class="o">=</span> <span class="s1">&#39;mask&#39;</span>
 
 <div class="viewcode-block" id="S_Depth.from_netCDF"><a class="viewcode-back" href="../../gridded.html#gridded.depth.S_Depth.from_netCDF">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_netCDF</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
@@ -430,20 +507,48 @@
                     <span class="n">varnames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">grid_topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="c1"># units=None,</span>
                     <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">time_origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="c1"># time_origin=None,</span>
                     <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">data_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">grid_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">load_all</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="c1"># load_all=False,</span>
                     <span class="n">bathymetry</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">zeta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">terms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="c1"># fill_value=0,</span>
+                    <span class="n">vtransform</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="n">positive_down</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">kwargs</span>
                     <span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param filename: A string or ordered list of string of netCDF filename(s)</span>
+<span class="sd">        :type filename: str or list[str]</span>
+
+<span class="sd">        :param varnames: Direct mapping of component name to netCDF variable name. Use</span>
+<span class="sd">                         this if auto detection fails. Partial definition is allowable.</span>
+<span class="sd">                         Unspecified terms will use the value in `.default_names`::</span>
+<span class="sd">                           {&#39;Cs_r&#39;: &#39;Cs_r&#39;,</span>
+<span class="sd">                            &#39;Cs_w&#39;: Cs_w&#39;,</span>
+<span class="sd">                            &#39;s_rho&#39;: &#39;s_rho&#39;),</span>
+<span class="sd">                            &#39;s_w&#39;: &#39;s_w&#39;,</span>
+<span class="sd">                            &#39;bathymetry&#39;: &#39;h&#39;,</span>
+<span class="sd">                            &#39;hc&#39;: &#39;hc&#39;),</span>
+<span class="sd">                            &#39;zeta&#39;: &#39;zeta&#39;)</span>
+<span class="sd">                            }</span>
+<span class="sd">        :type varnames: dict</span>
+
+<span class="sd">        :param name: Human-readable name for this object</span>
+<span class="sd">        :type name: str</span>
+
+<span class="sd">        :param time: Time dimension (for zeta)</span>
+<span class="sd">        :type time: gridded.time.Time or subclass</span>
+
+<span class="sd">        :param grid: X-Y dmension (for bathymetry &amp; zeta)</span>
+<span class="sd">        :type grid: subclass of gridded.grids.GridBase</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">Grid</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_default_component_types</span><span class="p">[</span><span class="s1">&#39;grid&#39;</span><span class="p">]</span>
         <span class="n">Time</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_default_component_types</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
         <span class="n">Variable</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_default_component_types</span><span class="p">[</span><span class="s1">&#39;variable&#39;</span><span class="p">]</span>
@@ -468,47 +573,70 @@
 
         <span class="k">if</span> <span class="n">grid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">grid_file</span><span class="p">,</span>
-                                      <span class="n">dataset</span><span class="o">=</span><span class="n">dg</span><span class="p">,</span>
-                                      <span class="n">grid_topology</span><span class="o">=</span><span class="n">grid_topology</span><span class="p">)</span>
+                                    <span class="n">dataset</span><span class="o">=</span><span class="n">dg</span><span class="p">,</span>
+                                    <span class="n">grid_topology</span><span class="o">=</span><span class="n">grid_topology</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_def_count</span><span class="p">)</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_def_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">varnames</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">default_names</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="c1"># Do a comprehensive search for netCDF4 Variables all at once</span>
+        <span class="n">vn_search</span> <span class="o">=</span> <span class="n">search_dataset_for_variables_by_varname</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">varnames</span><span class="p">)</span>
+        <span class="n">ds_search</span> <span class="o">=</span> <span class="n">search_dataset_for_variables_by_longname</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">cf_names</span><span class="p">)</span>
+        <span class="n">varnames</span> <span class="o">=</span> <span class="n">merge_var_search_dicts</span><span class="p">(</span><span class="n">ds_search</span><span class="p">,</span> <span class="n">vn_search</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ds</span> <span class="o">!=</span> <span class="n">dg</span><span class="p">:</span>
+            <span class="n">dg_search</span> <span class="o">=</span> <span class="n">search_dataset_for_variables_by_longname</span><span class="p">(</span><span class="n">dg</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">cf_names</span><span class="p">)</span>
+            <span class="n">varnames</span> <span class="o">=</span> <span class="n">merge_var_search_dicts</span><span class="p">(</span><span class="n">varnames</span><span class="p">,</span> <span class="n">dg_search</span><span class="p">)</span>
+        
         <span class="k">if</span> <span class="n">bathymetry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">bathy_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_gen_varname</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
-                                           <span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span>
-                                           <span class="n">names_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">],</span>
-                                           <span class="n">std_names_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bathymetry at RHO-points&#39;</span><span class="p">])</span>
-            <span class="n">bathymetry</span> <span class="o">=</span> <span class="n">Variable</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span>
-                                  <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
-                                  <span class="n">varname</span><span class="o">=</span><span class="n">bathy_name</span><span class="p">,</span>
-                                  <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Bathymetry&#39;</span>
-                                  <span class="p">)</span>
+            <span class="n">bathy_var</span> <span class="o">=</span> <span class="n">varnames</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bathymetry&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">bathy_var</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;Unable to locate bathymetry in data file&#39;</span>
+                <span class="k">if</span> <span class="n">dg</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span> <span class="o">+</span> <span class="s1">&#39; or grid file&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="n">bathymetry</span> <span class="o">=</span> <span class="n">Variable</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">bathy_var</span><span class="o">.</span><span class="n">_grp</span><span class="p">,</span>
+                                              <span class="n">varname</span><span class="o">=</span><span class="n">bathy_var</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                              <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
+                                              <span class="n">name</span><span class="o">=</span><span class="s1">&#39;bathymetry&#39;</span><span class="p">,</span>
+                                              <span class="p">)</span>
+
         <span class="k">if</span> <span class="n">zeta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">zeta_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_gen_varname</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
-                                           <span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span>
-                                           <span class="n">names_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;zeta&#39;</span><span class="p">],</span>
-                                           <span class="n">std_names_list</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;free-surface&#39;</span><span class="p">])</span>
-            <span class="n">zeta</span> <span class="o">=</span> <span class="n">Variable</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span>
-                                  <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
-                                  <span class="n">varname</span><span class="o">=</span><span class="n">zeta_name</span><span class="p">,</span>
-                                  <span class="n">name</span><span class="o">=</span><span class="s1">&#39;zeta&#39;</span>
-                                  <span class="p">)</span>
+            <span class="n">zeta_var</span> <span class="o">=</span> <span class="n">varnames</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;zeta&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">zeta_var</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">warn</span> <span class="o">=</span> <span class="s1">&#39;Unable to locate zeta in data file&#39;</span>
+                <span class="k">if</span> <span class="n">dg</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn</span> <span class="o">+</span> <span class="s1">&#39; or grid file.&#39;</span><span class="p">)</span>
+                <span class="n">warn</span> <span class="o">+=</span> <span class="s1">&#39; Generating constant (0) zeta.&#39;</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+                <span class="n">zeta</span> <span class="o">=</span> <span class="n">Variable</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">zeta</span> <span class="o">=</span> <span class="n">Variable</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">zeta_var</span><span class="o">.</span><span class="n">_grp</span><span class="p">,</span>
+                                            <span class="n">varname</span><span class="o">=</span><span class="n">zeta_var</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                            <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
+                                            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;zeta&#39;</span><span class="p">)</span>
+                
         <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">time</span> <span class="o">=</span> <span class="n">zeta</span><span class="o">.</span><span class="n">time</span>
         <span class="k">if</span> <span class="n">terms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">terms</span><span class="o">=</span><span class="p">{}</span>
-            <span class="k">for</span> <span class="n">tn</span><span class="p">,</span> <span class="n">tln</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">default_terms</span><span class="p">:</span>
-                <span class="n">vname</span><span class="o">=</span><span class="n">tn</span>
-                <span class="k">if</span> <span class="n">tn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                    <span class="n">vname</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_gen_varname</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="p">[</span><span class="n">tn</span><span class="p">],</span> <span class="p">[</span><span class="n">tln</span><span class="p">])</span>
-                <span class="k">if</span> <span class="n">tn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">,</span><span class="s1">&#39;zeta&#39;</span><span class="p">]:</span> <span class="c1">#don&#39;t want to reinclude bathymetry</span>
-                    <span class="n">terms</span><span class="p">[</span><span class="n">vname</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">vname</span><span class="p">][:]</span>
+            <span class="n">terms</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">term</span><span class="p">,</span> <span class="n">tvar</span> <span class="ow">in</span> <span class="n">varnames</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">term</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;bathymetry&#39;</span><span class="p">,</span> <span class="s1">&#39;zeta&#39;</span><span class="p">]:</span>
+                    <span class="c1"># skip these because they&#39;re done separately...</span>
+                    <span class="k">continue</span>
+                <span class="n">terms</span><span class="p">[</span><span class="n">term</span><span class="p">]</span> <span class="o">=</span> <span class="n">tvar</span><span class="p">[:]</span>
+        <span class="k">if</span> <span class="n">vtransform</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vtransform</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1">#default for ROMS</span>
+            <span class="c1">#  messing about trying to detect this.</span>
+
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                    <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
                    <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
                    <span class="n">bathymetry</span><span class="o">=</span><span class="n">bathymetry</span><span class="p">,</span>
                    <span class="n">zeta</span><span class="o">=</span><span class="n">zeta</span><span class="p">,</span>
                    <span class="n">terms</span><span class="o">=</span><span class="n">terms</span><span class="p">,</span>
+                   <span class="n">vtransform</span><span class="o">=</span><span class="n">vtransform</span><span class="p">,</span>
+                   <span class="n">positive_down</span><span class="o">=</span><span class="n">positive_down</span><span class="p">,</span>
                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -522,66 +650,207 @@
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_w_levels</span>
 
-    <span class="k">def</span> <span class="nf">_w_L_Depth_given_bathymetry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depths</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">lvl</span><span class="p">):</span>
-        <span class="n">s_w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_w</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span>
-        <span class="n">Cs_w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cs_w</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span>
+<div class="viewcode-block" id="S_Depth.compute_coordinates"><a class="viewcode-back" href="../../gridded.html#gridded.depth.S_Depth.compute_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">compute_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho_or_w</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Uses zeta, bathymetry, and the s-coordinate terms to produce the</span>
+<span class="sd">        time-dependent coordinate variable.</span>
+<span class="sd">        </span>
+<span class="sd">        :return: numpy array of s-coordinates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">rho_or_w</span> <span class="o">==</span> <span class="s1">&#39;rho&#39;</span><span class="p">:</span>
+            <span class="n">s_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_rho</span>
+            <span class="n">Cs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cs_r</span>
+        <span class="k">elif</span> <span class="n">rho_or_w</span> <span class="o">==</span> <span class="s1">&#39;w&#39;</span><span class="p">:</span>
+            <span class="n">s_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_w</span>
+            <span class="n">Cs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cs_w</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;invalid rho_or_w argument (must be &quot;rho&quot; or &quot;w&quot;)&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zeta</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="c1">#need this check to workaround a &#39;constant&#39; zeta object</span>
+            <span class="n">zeta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bathymetry</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">zeta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeta</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bathymetry</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span>
         <span class="n">hc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hc</span>
-        <span class="n">S</span> <span class="o">=</span> <span class="n">hc</span> <span class="o">*</span> <span class="n">s_w</span> <span class="o">+</span> <span class="p">(</span><span class="n">depths</span> <span class="o">-</span> <span class="n">hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">Cs_w</span>
-        <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">S</span> <span class="o">+</span> <span class="n">zeta</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">S</span> <span class="o">/</span> <span class="n">depths</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_r_L_Depth_given_bathymetry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depths</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">lvl</span><span class="p">):</span>
-        <span class="n">s_rho</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_rho</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span>
-        <span class="n">Cs_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cs_r</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span>
-        <span class="n">hc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hc</span>
-        <span class="n">S</span> <span class="o">=</span> <span class="n">hc</span> <span class="o">*</span> <span class="n">s_rho</span> <span class="o">+</span> <span class="p">(</span><span class="n">depths</span> <span class="o">-</span> <span class="n">hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">Cs_r</span>
-        <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">S</span> <span class="o">+</span> <span class="n">zeta</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">S</span> <span class="o">/</span> <span class="n">depths</span><span class="p">))</span>
-
-<div class="viewcode-block" id="S_Depth.interpolation_alphas"><a class="viewcode-back" href="../../gridded.html#gridded.depth.S_Depth.interpolation_alphas">[docs]</a>    <span class="k">def</span> <span class="nf">interpolation_alphas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">data_shape</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extrapolate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Returns a pair of values. The 1st value is an array of the depth indices of all the particles.</span>
-<span class="sd">        The 2nd value is an array of the interpolation alphas for the particles between their depth</span>
-<span class="sd">        index and depth_index+1. If both values are None, then all particles are on the surface layer.</span>
+        <span class="n">hCs</span> <span class="o">=</span> <span class="n">h</span> <span class="o">*</span> <span class="n">Cs</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+        <span class="n">s_coord</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vtransform</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">S</span> <span class="o">=</span> <span class="p">(</span><span class="n">hc</span> <span class="o">*</span> <span class="n">s_c</span><span class="p">)[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">+</span> <span class="n">hCs</span> <span class="o">-</span> <span class="p">(</span><span class="n">hc</span> <span class="o">*</span> <span class="n">Cs</span><span class="p">)[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+            <span class="n">s_coord</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">S</span> <span class="o">+</span> <span class="n">zeta</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">S</span> <span class="o">/</span> <span class="n">h</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">vtransform</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">S</span> <span class="o">=</span> <span class="p">((</span><span class="n">hc</span> <span class="o">*</span> <span class="n">s_c</span><span class="p">)[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">+</span> <span class="n">hCs</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">hc</span> <span class="o">+</span> <span class="n">h</span><span class="p">)</span>
+            <span class="n">s_coord</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">zeta</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">+</span> <span class="p">(</span><span class="n">zeta</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">+</span> <span class="n">h</span><span class="p">)</span> <span class="o">*</span> <span class="n">S</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s_coord</span></div>
+            
+<div class="viewcode-block" id="S_Depth.get_transect"><a class="viewcode-back" href="../../gridded.html#gridded.depth.S_Depth.get_transect">[docs]</a>    <span class="k">def</span> <span class="nf">get_transect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">rho_or_w</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        :param points: array of points to interpolate to</span>
+<span class="sd">        :type points: numpy array of shape (n, 3)</span>
+<span class="sd">        </span>
+<span class="sd">        :param time: time to interpolate to</span>
+<span class="sd">        :type time: datetime.datetime</span>
+<span class="sd">        </span>
+<span class="sd">        :param rho_or_w: &#39;rho&#39; or &#39;w&#39; to interpolate to rho or w points</span>
+<span class="sd">        :type rho_or_w: string</span>
+<span class="sd">        </span>
+<span class="sd">        :return: numpy array of shape (n, num_w_levels) of interpolated values</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">underwater</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">zeta</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">extrapolate</span><span class="o">=</span><span class="n">extrapolate</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">underwater</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-        <span class="n">indices</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
-        <span class="n">alphas</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="n">depths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bathymetry</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="n">_hash</span><span class="p">,</span> <span class="n">extrapolate</span><span class="o">=</span><span class="n">extrapolate</span><span class="p">)[</span><span class="n">underwater</span><span class="p">]</span>
-        <span class="n">zeta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeta</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="n">_hash</span><span class="p">,</span> <span class="n">extrapolate</span><span class="o">=</span><span class="n">extrapolate</span><span class="p">)[</span><span class="n">underwater</span><span class="p">]</span>
-        <span class="n">pts</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">underwater</span><span class="p">]</span>
-        <span class="n">und_ind</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">underwater</span><span class="p">)[</span><span class="mi">0</span><span class="p">])))</span>
-        <span class="n">und_alph</span> <span class="o">=</span> <span class="n">und_ind</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        
+        <span class="n">s_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_rho</span> <span class="k">if</span> <span class="n">rho_or_w</span> <span class="o">==</span> <span class="s1">&#39;rho&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_w</span>
+        <span class="n">C_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cs_r</span> <span class="k">if</span> <span class="n">rho_or_w</span> <span class="o">==</span> <span class="s1">&#39;rho&#39;</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cs_w</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bathymetry</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">unmask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="n">_hash</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">zeta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeta</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">unmask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="n">_hash</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">hc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hc</span>
+        <span class="n">hCs</span> <span class="o">=</span> <span class="n">h</span> <span class="o">*</span> <span class="n">C_s</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vtransform</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">S</span> <span class="o">=</span> <span class="p">(</span><span class="n">hc</span><span class="o">*</span> <span class="n">s_c</span><span class="p">)</span> <span class="o">+</span> <span class="n">hCs</span> <span class="o">-</span> <span class="p">(</span><span class="n">hc</span> <span class="o">*</span> <span class="n">C_s</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">s_coord</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">S</span> <span class="o">+</span> <span class="n">zeta</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">S</span> <span class="o">/</span> <span class="n">h</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">vtransform</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">S</span> <span class="o">=</span> <span class="p">((</span><span class="n">hc</span> <span class="o">*</span> <span class="n">s_c</span><span class="p">)</span> <span class="o">+</span> <span class="n">hCs</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">hc</span> <span class="o">+</span> <span class="n">h</span><span class="p">)</span>
+            <span class="n">s_coord</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">zeta</span> <span class="o">+</span> <span class="p">(</span><span class="n">zeta</span> <span class="o">+</span> <span class="n">h</span><span class="p">)</span> <span class="o">*</span> <span class="n">S</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s_coord</span></div>
 
+    <span class="k">def</span> <span class="nf">_L_Depth_given_bathymetry_t1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bathy</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">lvl</span><span class="p">,</span> <span class="n">rho_or_w</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the depth (positive up) of a level given the bathymetry</span>
+<span class="sd">        and zeta. Produces an output array same shape as bathy and zeta</span>
+<span class="sd">        Output is always &#39;positive down&#39;</span>
+<span class="sd">        This implements transform 1 (https://www.myroms.org/wiki/Vertical_S-coordinate)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">rho_or_w</span> <span class="o">==</span> <span class="s1">&#39;rho&#39;</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_rho</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span>
+            <span class="n">Cs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cs_r</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">rho_or_w</span> <span class="o">==</span> <span class="s1">&#39;w&#39;</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_w</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span>
+            <span class="n">Cs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cs_w</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;invalid rho_or_w argument (must be &quot;rho&quot; or &quot;w&quot;)&#39;</span><span class="p">)</span>
+
+        <span class="n">hc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hc</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="n">hc</span> <span class="o">*</span> <span class="n">s</span> <span class="o">+</span> <span class="p">(</span><span class="n">bathy</span> <span class="o">-</span> <span class="n">hc</span><span class="p">)</span> <span class="o">*</span> <span class="n">Cs</span>
+        <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">S</span> <span class="o">+</span> <span class="n">zeta</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">S</span> <span class="o">/</span> <span class="n">bathy</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_L_Depth_given_bathymetry_t2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bathy</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">lvl</span><span class="p">,</span> <span class="n">rho_or_w</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the depth (positive up) of a level given the bathymetry</span>
+<span class="sd">        and zeta. Produces an output array same shape as bathy and zeta</span>
+<span class="sd">        Output is always &#39;positive down&#39;</span>
+<span class="sd">        This implements transform 2 (https://www.myroms.org/wiki/Vertical_S-coordinate)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">rho_or_w</span> <span class="o">==</span> <span class="s1">&#39;rho&#39;</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_rho</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span>
+            <span class="n">Cs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cs_r</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">rho_or_w</span> <span class="o">==</span> <span class="s1">&#39;w&#39;</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_w</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span>
+            <span class="n">Cs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cs_w</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;invalid rho_or_w argument (must be &quot;rho&quot; or &quot;w&quot;)&#39;</span><span class="p">)</span>
+
+        <span class="n">hc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hc</span>
+        <span class="n">S</span> <span class="o">=</span> <span class="p">(</span><span class="n">hc</span> <span class="o">*</span> <span class="n">s</span> <span class="o">+</span> <span class="n">bathy</span> <span class="o">*</span> <span class="n">Cs</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">hc</span> <span class="o">+</span> <span class="n">bathy</span><span class="p">)</span>
+        <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">zeta</span> <span class="o">+</span> <span class="p">(</span><span class="n">zeta</span> <span class="o">+</span> <span class="n">bathy</span><span class="p">)</span> <span class="o">*</span> <span class="n">S</span><span class="p">)</span>
+
+<div class="viewcode-block" id="S_Depth.interpolation_alphas"><a class="viewcode-back" href="../../gridded.html#gridded.depth.S_Depth.interpolation_alphas">[docs]</a>    <span class="k">def</span> <span class="nf">interpolation_alphas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                             <span class="n">points</span><span class="p">,</span>
+                             <span class="n">time</span><span class="p">,</span>
+                             <span class="n">data_shape</span><span class="p">,</span>
+                             <span class="n">surface_boundary_condition</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">bottom_boundary_condition</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">extrapolate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                             <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Returns a pair of arrays. The 1st array is of the depth indices</span>
+<span class="sd">        of all the points. The 2nd value is an array of the interpolation</span>
+<span class="sd">        alphas for the points between their depth index and depth_index+1.</span>
+
+<span class="sd">        If a depth is between coordinate N and N+1, the index will be N.</span>
+<span class="sd">        If a depth is exactly on a coordinate, the index will be N.</span>
+
+<span class="sd">        Any points that are &#39;off grid&#39; will be subject to the boundary conditions</span>
+<span class="sd">        &#39;mask&#39; or &#39;extrapolate&#39;. &#39;mask&#39; will mask the index and the alpha of the point.</span>
+<span class="sd">        &#39;extrapolate&#39; will set the index to the surface or bottom index, and the alpha to</span>
+<span class="sd">        0 or 1 depending on the orientation of the layers</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">depths</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="n">surface_boundary_condition</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_surface_boundary_condition</span>
+                                      <span class="k">if</span> <span class="n">surface_boundary_condition</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span>
+                                      <span class="n">surface_boundary_condition</span><span class="p">)</span>
+        <span class="n">bottom_boundary_condition</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_bottom_boundary_condition</span>
+                                     <span class="k">if</span> <span class="n">bottom_boundary_condition</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span>
+                                     <span class="n">bottom_boundary_condition</span><span class="p">)</span>
+
+        <span class="n">rho_or_w</span> <span class="o">=</span> <span class="n">surface_index</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># parameter necessary for ldgb</span>
         <span class="k">if</span> <span class="n">data_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_w_levels</span><span class="p">:</span>
-            <span class="n">num_levels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_w_levels</span>
-            <span class="n">ldgb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_L_Depth_given_bathymetry</span>
+            <span class="c1"># data assumed to be on w points</span>
+            <span class="n">rho_or_w</span> <span class="o">=</span> <span class="s1">&#39;w&#39;</span>
+            <span class="n">surface_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_index</span>
         <span class="k">elif</span> <span class="n">data_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_r_levels</span><span class="p">:</span>
-            <span class="n">num_levels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_r_levels</span>
-            <span class="n">ldgb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_L_Depth_given_bathymetry</span>
+            <span class="c1"># data assumed to be on rho points</span>
+            <span class="n">rho_or_w</span> <span class="o">=</span> <span class="s1">&#39;rho&#39;</span>
+            <span class="n">surface_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surface_index</span><span class="o">-</span><span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot get depth interpolation alphas for data shape specified; does not fit r or w depth axis&#39;</span><span class="p">)</span>
-        <span class="n">blev_depths</span> <span class="o">=</span> <span class="n">ulev_depths</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">ulev</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_levels</span><span class="p">):</span>
-            <span class="n">ulev_depths</span> <span class="o">=</span> <span class="n">ldgb</span><span class="p">(</span><span class="n">depths</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">ulev</span><span class="p">)</span>
-<span class="c1">#             print ulev_depths[0]</span>
-            <span class="n">within_layer</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">ulev_depths</span> <span class="o">&lt;</span> <span class="n">pts</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">und_ind</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-<span class="c1">#             print within_layer</span>
-            <span class="n">und_ind</span><span class="p">[</span><span class="n">within_layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">ulev</span>
-            <span class="k">if</span> <span class="n">ulev</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">und_alph</span><span class="p">[</span><span class="n">within_layer</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">a</span> <span class="o">=</span> <span class="p">((</span><span class="n">pts</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">within_layer</span><span class="p">)</span> <span class="o">-</span> <span class="n">blev_depths</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">within_layer</span><span class="p">))</span> <span class="o">/</span>
-                     <span class="p">(</span><span class="n">ulev_depths</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">within_layer</span><span class="p">)</span> <span class="o">-</span> <span class="n">blev_depths</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">within_layer</span><span class="p">)))</span>
-                <span class="n">und_alph</span><span class="p">[</span><span class="n">within_layer</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
-            <span class="n">blev_depths</span> <span class="o">=</span> <span class="n">ulev_depths</span>
 
-        <span class="n">indices</span><span class="p">[</span><span class="n">underwater</span><span class="p">]</span> <span class="o">=</span> <span class="n">und_ind</span>
-        <span class="n">alphas</span><span class="p">[</span><span class="n">underwater</span><span class="p">]</span> <span class="o">=</span> <span class="n">und_alph</span>
+        <span class="c1"># ldbg = &#39;level depth given bathymetry&#39;. This is the depth of the layer</span>
+        <span class="c1"># at each x/y point. </span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vtransform</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">ldgb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_L_Depth_given_bathymetry_t2</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">vtransform</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ldgb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_L_Depth_given_bathymetry_t1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;invalid vtransform attribute on depth object&#39;</span><span class="p">)</span>
+        <span class="n">zetas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeta</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="n">_hash</span><span class="p">,</span> <span class="n">unmask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">extrapolate</span><span class="o">=</span><span class="n">extrapolate</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">bathy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bathymetry</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="n">_hash</span><span class="p">,</span> <span class="n">unmask</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                   <span class="n">extrapolate</span><span class="o">=</span><span class="n">extrapolate</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="n">surface_depth</span> <span class="o">=</span> <span class="n">ldgb</span><span class="p">(</span><span class="n">bathy</span><span class="p">,</span> <span class="n">zetas</span><span class="p">,</span> <span class="n">surface_index</span><span class="p">,</span> <span class="n">rho_or_w</span><span class="p">)</span>
+        
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">(</span><span class="n">data</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span> <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">))</span>
+        <span class="n">alphas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">depths</span> <span class="o">&gt;</span> <span class="n">surface_depth</span><span class="p">):</span>
+            <span class="c1"># nothing is within or below the mesh, so apply surface boundary condition</span>
+            <span class="c1"># to all points and return</span>
+            <span class="k">if</span> <span class="n">surface_boundary_condition</span> <span class="o">==</span> <span class="s1">&#39;extrapolate&#39;</span><span class="p">:</span>
+                <span class="n">indices</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">surface_index</span>
+                <span class="n">alphas</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_less</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">alphas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">alphas</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">indices</span><span class="p">,</span> <span class="n">alphas</span>
+
+        <span class="c1"># use np.digitize to bin the depths into the layers</span>
+        <span class="n">transects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_transect</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">rho_or_w</span><span class="o">=</span><span class="n">rho_or_w</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="n">_hash</span><span class="p">,</span> <span class="n">extrapolate</span><span class="o">=</span><span class="n">extrapolate</span><span class="p">)</span>
+        <span class="n">vf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">,</span> <span class="n">signature</span><span class="o">=</span><span class="s1">&#39;(),(n)-&gt;()&#39;</span><span class="p">,</span> <span class="n">excluded</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">])</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">vf</span><span class="p">(</span><span class="n">depths</span><span class="p">,</span> <span class="n">transects</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        
+        <span class="c1"># transect mask is True where the point is outside the grid horizontally</span>
+        <span class="c1"># so it must be reapplied</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">transects</span><span class="o">.</span><span class="n">mask</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">alphas</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">transects</span><span class="o">.</span><span class="n">mask</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="c1"># set above surface and below seafloor alphas to allow future filtering</span>
+        <span class="n">alphas</span><span class="p">[</span><span class="n">indices</span> <span class="o">==</span> <span class="n">surface_index</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">surface_boundary_condition</span> <span class="o">==</span> <span class="s1">&#39;mask&#39;</span><span class="p">:</span>
+            <span class="n">alphas</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">alphas</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">indices</span> <span class="o">==</span> <span class="n">surface_index</span><span class="p">)</span>
+            <span class="n">indices</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">indices</span> <span class="o">==</span> <span class="n">surface_index</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">alphas</span><span class="p">[</span><span class="n">indices</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">bottom_boundary_condition</span> <span class="o">==</span> <span class="s1">&#39;mask&#39;</span><span class="p">:</span>
+            <span class="n">alphas</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">alphas</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">indices</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">indices</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">indices</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        
+        <span class="c1"># compute the remaining alphas, which should be for points within the depth interval</span>
+        <span class="n">L0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">transects</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
+        <span class="n">L1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">transects</span><span class="p">,</span> <span class="n">indices</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">within_layer</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">alphas</span><span class="p">)</span> <span class="c1">#remaining alphas would still have nan at this point</span>
+        <span class="n">alphas</span><span class="p">[</span><span class="n">within_layer</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">depths</span><span class="p">[</span><span class="n">within_layer</span><span class="p">]</span> <span class="o">-</span> <span class="n">L0</span><span class="p">[</span><span class="n">within_layer</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">L1</span><span class="p">[</span><span class="n">within_layer</span><span class="p">]</span> <span class="o">-</span> <span class="n">L0</span><span class="p">[</span><span class="n">within_layer</span><span class="p">])</span>
+        
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">alphas</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Some alphas are still unmasked and NaN. Please file a bug report&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">indices</span><span class="p">,</span> <span class="n">alphas</span></div>
 
-<div class="viewcode-block" id="S_Depth.get_section"><a class="viewcode-back" href="../../gridded.html#gridded.depth.S_Depth.get_section">[docs]</a>    <span class="k">def</span> <span class="nf">get_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">coord</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">x_coord</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_coord</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="S_Depth.get_section"><a class="viewcode-back" href="../../gridded.html#gridded.depth.S_Depth.get_section">[docs]</a>    <span class="k">def</span> <span class="nf">get_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">coord</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">x_coord</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_coord</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vtransform</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns a section  of the z-level space in time. All s-levels are</span>
 <span class="sd">        returned in the data. By providing a x_coord or y_coord you can</span>
 <span class="sd">        get cross sections in the direction specified, or both for the level</span>
@@ -591,11 +860,14 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Can only specify &quot;w&quot; or &quot;rho&quot; for coord kwarg&#39;</span><span class="p">)</span>
         <span class="n">ldgb</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">z_shp</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">vtransform</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">ldgb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_L_Depth_given_bathymetry_t2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ldgb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_L_Depth_given_bathymetry_t1</span>
+
         <span class="k">if</span> <span class="n">coord</span> <span class="o">==</span> <span class="s1">&#39;w&#39;</span><span class="p">:</span>
-            <span class="n">ldgb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_w_L_Depth_given_bathymetry</span>
             <span class="n">z_shp</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_w_levels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeta</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeta</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">coord</span> <span class="o">==</span> <span class="s1">&#39;rho&#39;</span><span class="p">:</span>
-            <span class="n">ldgb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_L_Depth_given_bathymetry</span>
             <span class="n">z_shp</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_r_levels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeta</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeta</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">time_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">index_of</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
         <span class="n">time_alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">interp_alpha</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
@@ -608,21 +880,24 @@
         <span class="n">bathy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bathymetry</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span>
         <span class="n">z_data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">z_shp</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">lvl</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">z_data</span><span class="p">)):</span>
-            <span class="n">z_data</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span> <span class="o">=</span> <span class="n">ldgb</span><span class="p">(</span><span class="n">bathy</span><span class="p">,</span><span class="n">zeta</span><span class="p">,</span><span class="n">lvl</span><span class="p">)</span>
+            <span class="n">z_data</span><span class="p">[</span><span class="n">lvl</span><span class="p">]</span> <span class="o">=</span> <span class="n">ldgb</span><span class="p">(</span><span class="n">bathy</span><span class="p">,</span> <span class="n">zeta</span><span class="p">,</span> <span class="n">lvl</span><span class="p">,</span> <span class="n">coord</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">z_data</span></div></div>
 
 
 <div class="viewcode-block" id="Depth"><a class="viewcode-back" href="../../gridded.html#gridded.depth.Depth">[docs]</a><span class="k">class</span> <span class="nc">Depth</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Factory class that generates depth objects. Also handles common loading and</span>
 <span class="sd">    parsing operations</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">ld_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">,</span> <span class="s1">&#39;levels&#39;</span><span class="p">,</span> <span class="s1">&#39;L_Depth&#39;</span><span class="p">,</span> <span class="s1">&#39;depth_levels&#39;</span> <span class="s1">&#39;depth_level&#39;</span><span class="p">]</span>
+    <span class="n">sd_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span>
+    <span class="n">surf_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;surface&#39;</span><span class="p">,</span> <span class="s1">&#39;surface only&#39;</span><span class="p">,</span> <span class="s1">&#39;surf&#39;</span><span class="p">,</span> <span class="s1">&#39;none&#39;</span><span class="p">]</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Depth is not meant to be instantiated. &quot;</span>
                                   <span class="s2">&quot;Please use the &#39;from_netCDF&#39; or &#39;surface_only&#39; function&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="Depth.surface_only"><a class="viewcode-back" href="../../gridded.html#gridded.depth.Depth.surface_only">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">surface_only</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        If instantiated directly, this will always return a DepthBase It is assumed index -1</span>
 <span class="sd">        is the surface index</span>
 <span class="sd">        &#39;&#39;&#39;</span>
@@ -631,40 +906,67 @@
 <div class="viewcode-block" id="Depth.from_netCDF"><a class="viewcode-back" href="../../gridded.html#gridded.depth.Depth.from_netCDF">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_netCDF</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">data_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">grid_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">depth_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">varname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">_default_types</span><span class="o">=</span><span class="p">((</span><span class="s1">&#39;level&#39;</span><span class="p">,</span> <span class="n">L_Depth</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="n">S_Depth</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;surface&#39;</span><span class="p">,</span> <span class="n">DepthBase</span><span class="p">)),</span>
-                    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        :param filename: File containing a depth</span>
+<span class="sd">        :type filename: string or list of string</span>
 <span class="sd">        :param dataset: Takes precedence over filename, if provided.</span>
+<span class="sd">        :type dataset: netCDF4.Dataset</span>
 <span class="sd">        :param depth_type: Must be provided if autodetection is not possible.</span>
+<span class="sd">            See Depth.ld_names, Depth.sd_names, and Depth.surf_names for the</span>
+<span class="sd">            expected values for this argument</span>
+<span class="sd">        :type depth_type: string</span>
 <span class="sd">        :returns: Instance of L_Depth or S_Depth</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_file</span> <span class="o">=</span> <span class="n">filename</span>
+            <span class="n">grid_file</span> <span class="o">=</span> <span class="n">filename</span>
+
+        <span class="n">ds</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">dg</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">grid_file</span> <span class="o">==</span> <span class="n">data_file</span><span class="p">:</span>
+                <span class="n">ds</span> <span class="o">=</span> <span class="n">dg</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">grid_file</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ds</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
+                <span class="n">dg</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">grid_file</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">grid_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">dg</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">grid_file</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dg</span> <span class="o">=</span> <span class="n">dataset</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">dataset</span>
+
         <span class="n">df</span> <span class="o">=</span> <span class="n">dataset</span> <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No filename or dataset provided&#39;</span><span class="p">)</span>
 
         <span class="bp">cls</span> <span class="o">=</span> <span class="n">depth_type</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">depth_type</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">depth_type</span><span class="p">,</span> <span class="n">string_types</span><span class="p">)</span> <span class="ow">or</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">depth_type</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">depth_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span>
                                  <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">depth_type</span><span class="p">,</span> <span class="n">DepthBase</span><span class="p">)):</span>
             <span class="bp">cls</span> <span class="o">=</span> <span class="n">Depth</span><span class="o">.</span><span class="n">_get_depth_type</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">depth_type</span><span class="p">,</span> <span class="n">topology</span><span class="p">,</span> <span class="n">_default_types</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
                                <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
+                               <span class="n">grid_file</span><span class="o">=</span><span class="n">grid_file</span><span class="p">,</span>
+                               <span class="n">data_file</span><span class="o">=</span><span class="n">data_file</span><span class="p">,</span>
                                <span class="n">topology</span><span class="o">=</span><span class="n">topology</span><span class="p">,</span>
                                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Depth.depth_type_of_var"><a class="viewcode-back" href="../../gridded.html#gridded.depth.Depth.depth_type_of_var">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">depth_type_of_var</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">varname</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        Given a varname or netCDF variable and dataset, try to determine the depth type from dimensions,</span>
-<span class="sd">        attributes, or other metadata information, and return a grid_type and topology</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">var</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span></div>
-
+    <span class="c1"># @staticmethod</span>
+    <span class="c1"># def depth_type_of_var(dataset, varname):</span>
+    <span class="c1">#     &#39;&#39;&#39;</span>
+    <span class="c1">#     Given a varname or netCDF variable and dataset, try to determine the</span>
+    <span class="c1">#     depth type from dimensions, attributes, or other metadata information,</span>
+    <span class="c1">#     and return a grid_type and topology</span>
+    <span class="c1">#     &#39;&#39;&#39;</span>
+    <span class="c1">#     var = dataset[varname]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_depth_type</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">depth_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_default_types</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -676,76 +978,62 @@
         <span class="n">S_Depth</span> <span class="o">=</span> <span class="n">_default_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sigma&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">L_Depth</span> <span class="o">=</span> <span class="n">_default_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;level&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">Surface_Depth</span> <span class="o">=</span> <span class="n">_default_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;surface&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">ld_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;level&#39;</span><span class="p">,</span> <span class="s1">&#39;levels&#39;</span><span class="p">,</span> <span class="s1">&#39;L_Depth&#39;</span><span class="p">,</span> <span class="s1">&#39;depth_levels&#39;</span> <span class="s1">&#39;depth_level&#39;</span><span class="p">]</span>
-        <span class="n">sd_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span>
-        <span class="n">surf_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;surface&#39;</span><span class="p">,</span> <span class="s1">&#39;surface only&#39;</span><span class="p">,</span> <span class="s1">&#39;surf&#39;</span><span class="p">,</span> <span class="s1">&#39;none&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">depth_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">depth_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ld_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">depth_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">Depth</span><span class="o">.</span><span class="n">ld_names</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">L_Depth</span>
-            <span class="k">elif</span> <span class="n">depth_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">sd_names</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">depth_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">Depth</span><span class="o">.</span><span class="n">sd_names</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">S_Depth</span>
-            <span class="k">elif</span> <span class="n">depth_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">surf_names</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">depth_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">Depth</span><span class="o">.</span><span class="n">surf_names</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">Surface_Depth</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Specified depth_type not recognized/supported&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">topology</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;faces&#39;</span> <span class="ow">in</span> <span class="n">topology</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">or</span>
-                <span class="n">topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;depth_type&#39;</span><span class="p">,</span> <span class="s1">&#39;notype&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ld_names</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;faces&#39;</span> <span class="ow">in</span> <span class="n">topology</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                    <span class="ow">or</span> <span class="n">topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;depth_type&#39;</span><span class="p">,</span> <span class="s1">&#39;notype&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ld_names</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">L_Depth</span>
-            <span class="k">elif</span> <span class="n">topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;depth_type&#39;</span><span class="p">,</span> <span class="s1">&#39;notype&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">sd_names</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">topology</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;depth_type&#39;</span><span class="p">,</span> <span class="s1">&#39;notype&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">Depth</span><span class="o">.</span><span class="n">sd_names</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">S_Depth</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">Surface_Depth</span>
+
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">L_Depth</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">L_Depth</span>
-            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">t1</span> <span class="o">=</span> <span class="n">search_dataset_for_any_long_name</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">S_Depth</span><span class="o">.</span><span class="n">cf_names</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">t1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">S_Depth</span>
+            <span class="k">else</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">S_Depth</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">S_Depth</span>
-                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">L_Depth</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">L_Depth</span>
+                <span class="k">except</span><span class="p">:</span>
                     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;Unable to automatically determine depth system so reverting to surface-only mode. Please verify the index of the surface is correct.&#39;&#39;&#39;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">Surface_Depth</span></div>
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 
-
-    </p>
+    <p>&#169; Copyright .</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
