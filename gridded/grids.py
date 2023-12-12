@@ -158,7 +158,6 @@ class Grid_U(GridBase, UGrid):
         if init_args['faces'].shape[0] == 3:
             init_args['faces'] = np.ascontiguousarray(np.array(init_args['faces']).T - 1)
 
-        print("found grid vars:", init_args, gt)
         return init_args, gt
 
     @classmethod
