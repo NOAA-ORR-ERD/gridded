@@ -1,5 +1,6 @@
 
 import warnings
+import os
 
 import numpy as np
 from gridded.time import Time
@@ -323,7 +324,7 @@ class S_Depth(DepthBase):
         self.name = name
         self.time = time
         self.grid = grid
-        self.bathymetry = bathymetry
+        self.bathymetry = bathymetry # Nodal bathymetry only.
         self.zeta = zeta
         self.terms = {}
         self.vtransform = vtransform
@@ -335,7 +336,7 @@ class S_Depth(DepthBase):
             for k, v in terms.items():
                 setattr(self, k, v)
         if self.surface_index is None:
-            self.surface_index = self.num_w_levels - 1
+            self.surface_index = self.num_levels - 1
         if self.bottom_index is None:
             self.bottom_index = 0
 
@@ -343,6 +344,292 @@ class S_Depth(DepthBase):
         # self.w_coordinates = self.compute_coordinates('w')
         self.default_surface_boundary_condition = 'extrapolate'
         self.default_bottom_boundary_condition = 'mask'
+
+    @classmethod
+    def from_netCDF(cls,
+                    filename=None,
+                    varnames=None,
+                    grid_topology=None,
+                    name=None,
+                    time=None,
+                    grid=None,
+                    dataset=None,
+                    data_file=None,
+                    grid_file=None,
+                    # load_all=False,
+                    bathymetry=None,
+                    zeta=None,
+                    terms=None,
+                    vtransform=2,
+                    positive_down=True,
+                    **kwargs
+                    ):
+        '''
+        :param filename: A string or ordered list of string of netCDF filename(s)
+        :type filename: str or list[str]
+
+        :param varnames: Direct mapping of component name to netCDF variable name. Use
+                         this if auto detection fails. Partial definition is allowable.
+                         Unspecified terms will use the value in `.default_names`::
+                           {'Cs_r': 'Cs_r',
+                            'Cs_w': Cs_w',
+                            's_rho': 's_rho'),
+                            's_w': 's_w',
+                            'bathymetry': 'h',
+                            'hc': 'hc'),
+                            'zeta': 'zeta')
+                            }
+        :type varnames: dict
+
+        :param name: Human-readable name for this object
+        :type name: str
+
+        :param time: Time dimension (for zeta)
+        :type time: gridded.time.Time or subclass
+
+        :param grid: X-Y dmension (for bathymetry & zeta)
+        :type grid: subclass of gridded.grids.GridBase
+        '''
+        Grid = cls._default_component_types['grid']
+        Time = cls._default_component_types['time']
+        Variable = cls._default_component_types['variable']
+        if filename is not None:
+            try:
+                filename = os.fspath(filename)
+            except TypeError:
+                pass
+            data_file = grid_file = filename
+        ds = None
+        dg = None
+        if dataset is None:
+            if grid_file == data_file:
+                ds = dg = get_dataset(grid_file)
+            else:
+                ds = get_dataset(data_file)
+                dg = get_dataset(grid_file)
+        else:
+            if grid_file is not None:
+                dg = get_dataset(grid_file)
+            else:
+                dg = dataset
+            ds = dataset
+        if data_file is None:
+            data_file = os.path.split(ds.filepath())[-1]
+
+        if grid is None:
+            grid = Grid.from_netCDF(grid_file,
+                                    dataset=dg,
+                                    grid_topology=grid_topology)
+        if name is None:
+            name = cls.__name__ + str(cls._def_count)
+            cls._def_count += 1
+        varnames = cls.default_names.copy()
+        
+        
+        
+        # Do a comprehensive search for netCDF4 Variables all at once
+        vn_search = search_dataset_for_variables_by_varname(ds, varnames)
+        ds_search = search_dataset_for_variables_by_longname(ds, cls.cf_names)
+        varnames = merge_var_search_dicts(ds_search, vn_search)
+        if ds != dg:
+            dg_search = search_dataset_for_variables_by_longname(dg, cls.cf_names)
+            varnames = merge_var_search_dicts(varnames, dg_search)
+        
+        if bathymetry is None:
+            bathy_var = varnames.get('bathymetry', None)
+            if bathy_var is None:
+                err = 'Unable to locate bathymetry in data file'
+                if dg:
+                    raise ValueError(err + ' or grid file')
+                raise ValueError(err)
+            bathymetry = Variable.from_netCDF(dataset=bathy_var._grp,
+                                              varname=bathy_var.name,
+                                              grid=grid,
+                                              name='bathymetry',
+                                              )
+
+        if zeta is None:
+            zeta_var = varnames.get('zeta', None)
+            if zeta_var is None:
+                warn = 'Unable to locate zeta in data file'
+                if dg:
+                    warnings.warn(warn + ' or grid file.')
+                warn += ' Generating constant (0) zeta.'
+                warnings.warn(err)
+                zeta = Variable.constant(0)
+            else:
+                zeta = Variable.from_netCDF(dataset=zeta_var._grp,
+                                            varname=zeta_var.name,
+                                            grid=grid,
+                                            name='zeta')
+                
+        if time is None:
+            time = zeta.time
+        if terms is None:
+            terms = {}
+            for term, tvar in varnames.items():
+                if term in ['bathymetry', 'zeta']:
+                    # skip these because they're done separately...
+                    continue
+                terms[term] = tvar[:]
+        if vtransform is None:
+            vtransform = 2  #default for ROMS
+            #  messing about trying to detect this.
+
+        return cls(name=name,
+                   time=time,
+                   grid=grid,
+                   bathymetry=bathymetry,
+                   zeta=zeta,
+                   terms=terms,
+                   vtransform=vtransform,
+                   positive_down=positive_down,
+                   **kwargs)
+    @property
+    def num_levels(self):
+        raise NotImplementedError('num_levels not implemented for S_Depth, required in subclasses')
+
+    @property
+    def num_layers(self):
+        raise NotImplementedError('num_layers not implemented for S_Depth, required in subclasses')
+
+    def __len__(self):
+        return self.num_levels
+        
+    def get_transect(self, points, time, data_shape, _hash=None, **kwargs):
+        '''
+        :param points: array of points to interpolate to
+        :type points: numpy array of shape (n, 3)
+        
+        :param time: time to interpolate to
+        :type time: datetime.datetime
+        
+        :param data_shape: Shape of the variable to be interpolated. The first dimension is expected to be depth
+        :type rho_or_w: tuple of int
+        
+        :return: numpy array of shape (n, data_shape[0]) of n depth level transects
+        '''
+        raise NotImplementedError('get_transect not implemented for S_Depth, required in subclasses')
+
+    def get_surface_depth(self, points, time, data_shape, _hash=None, **kwargs):
+        '''
+        :param points: array of points to interpolate to
+        :type points: numpy array of shape (n, 3)
+        
+        :param time: time to interpolate to
+        :type time: datetime.datetime
+        
+        :param data_shape: Shape of the variable to be interpolated. The first dimension is expected to be depth
+        :type rho_or_w: tuple of int
+        
+        :return: numpy array of shape (n, 1) of n surface level values
+        '''
+        raise NotImplementedError('get_surface_depth not implemented for S_Depth, required in subclasses')
+        
+
+    def interpolation_alphas(self,
+                             points,
+                             time,
+                             data_shape,
+                             surface_boundary_condition=None,
+                             bottom_boundary_condition=None,
+                             _hash=None,
+                             extrapolate=False,
+                             **kwargs):
+        '''
+        Returns a pair of arrays. The 1st array is of the depth indices
+        of all the points. The 2nd value is an array of the interpolation
+        alphas for the points between their depth index and depth_index+1.
+
+        If a depth is between coordinate N and N+1, the index will be N.
+        If a depth is exactly on a coordinate, the index will be N.
+
+        Any points that are 'off grid' will be subject to the boundary conditions
+        'mask' or 'extrapolate'. 'mask' will mask the index and the alpha of the point.
+        'extrapolate' will set the index to the surface or bottom index, and the alpha to
+        0 or 1 depending on the orientation of the layers
+        '''
+        depths = points[:,2]
+        surface_boundary_condition = self.default_surface_boundary_condition if surface_boundary_condition is None else surface_boundary_condition
+        bottom_boundary_condition = self.default_bottom_boundary_condition if bottom_boundary_condition is None else bottom_boundary_condition
+
+        surface_index = None
+        if data_shape[0] == self.num_levels:
+            surface_index = self.surface_index
+        elif data_shape[0] == self.num_layers:
+            surface_index = self.surface_index-1
+        else:
+            raise ValueError('Cannot get depth interpolation alphas for data shape specified; does not fit r or w depth axis')
+        
+        transects = self.get_transect(points, time, data_shape=data_shape, _hash=_hash, extrapolate=extrapolate)
+        surface_depth = transects[:, surface_index]
+        
+        indices = np.ma.MaskedArray(data=-np.ones((len(points)), dtype=np.int64), mask=np.zeros((len(points)), dtype=bool))
+        alphas = np.ma.MaskedArray(data=np.empty((len(points)), dtype=np.float64) * np.nan, mask=np.zeros((len(points)), dtype=bool))
+
+        if not np.any(depths > surface_depth):
+            # nothing is within or below the mesh, so apply surface boundary condition
+            # to all points and return
+            if surface_boundary_condition == 'extrapolate':
+                indices[:] = surface_index
+                alphas[:] = 0
+            else:
+                indices = np.ma.masked_less(indices, 0)
+                alphas = np.ma.masked_invalid(alphas, 0)
+            return indices, alphas
+
+        #use np.digitize to bin the depths into the layers
+        vf = np.vectorize(np.digitize, signature='(),(n)->()', excluded=['right'])
+        indices = vf(depths, transects, right=True) - 1
+        
+        # transect mask is True where the point is outside the grid horizontally
+        # so it must be reapplied
+        indices = np.ma.array(indices, mask=transects.mask[:,0])
+        alphas.mask = transects.mask[:,0]
+        
+        # set above surface and below seafloor alphas to allow future filtering
+        alphas[indices == surface_index] = 0
+        if surface_boundary_condition == 'mask':
+            alphas.mask = np.logical_or(alphas.mask, indices == surface_index)
+            indices.mask[indices == surface_index] = True
+        alphas[indices == -1] = 1
+        if bottom_boundary_condition == 'mask':
+            alphas.mask = np.logical_or(alphas.mask, indices == -1)
+            indices.mask[indices == -1] = True
+        
+        # compute the remaining alphas, which should be for points within the depth interval
+        L0 = np.take(transects, indices)
+        L1 = np.take(transects, indices + 1)
+        within_layer = np.isnan(alphas) #remaining alphas would still have nan at this point
+        alphas[within_layer] = (depths[within_layer] - L0[within_layer]) / (L1[within_layer] - L0[within_layer])
+        
+        if any(np.isnan(alphas)):
+            raise ValueError('Some alphas are still unmasked and NaN. Please file a bug report')
+        return indices, alphas
+
+    
+class ROMS_Depth(S_Depth):
+    '''
+    Sigma coordinate depth object for ROMS style output
+    '''
+    _def_count = 0
+    default_names = {'Cs_r': ['Cs_r'],
+                     'Cs_w': ['Cs_w'],
+                     's_rho': ['s_rho'],
+                     's_w': ['s_w'],
+                     'hc': ['hc'],
+                     'bathymetry': ['h'],
+                     'zeta': ['zeta']
+                     }
+
+    cf_names = {'Cs_r': ['S-coordinate stretching curves at RHO-points'],
+                'Cs_w': ['S-coordinate stretching curves at W-points'],
+                's_rho': ['S-coordinate at RHO-points'],
+                's_w':['S-coordinate at W-points'],
+                'hc': ['S-coordinate parameter, critical depth'],
+                'bathymetry': ['bathymetry at RHO-points', 'Final bathymetry at RHO-points'],
+                'zeta': ['free-surface']
+                }
 
     @classmethod
     def from_netCDF(cls,
@@ -423,6 +710,8 @@ class S_Depth(DepthBase):
             cls._def_count += 1
         varnames = cls.default_names.copy()
         
+        
+        
         # Do a comprehensive search for netCDF4 Variables all at once
         vn_search = search_dataset_for_variables_by_varname(ds, varnames)
         ds_search = search_dataset_for_variables_by_longname(ds, cls.cf_names)
@@ -484,188 +773,11 @@ class S_Depth(DepthBase):
 
     @property
     def num_levels(self):
-        raise NotImplementedError('num_levels not implemented for S_Depth, required in subclasses')
-
-    @property
-    def num_layers(self):
-        raise NotImplementedError('num_layers not implemented for S_Depth, required in subclasses')
-        
-    def get_transect(self, points, time, data_shape, _hash=None, **kwargs):
-        '''
-        :param points: array of points to interpolate to
-        :type points: numpy array of shape (n, 3)
-        
-        :param time: time to interpolate to
-        :type time: datetime.datetime
-        
-        :param data_shape: Shape of the variable to be interpolated. The first dimension is expected to be depth
-        :type rho_or_w: tuple of int
-        
-        :return: numpy array of shape (n, data_shape[0]) of n depth level transects
-        '''
-        raise NotImplementedError('get_transect not implemented for S_Depth, required in subclasses')
-
-    def get_surface_depth(self, points, time, data_shape, _hash=None, **kwargs):
-        '''
-        :param points: array of points to interpolate to
-        :type points: numpy array of shape (n, 3)
-        
-        :param time: time to interpolate to
-        :type time: datetime.datetime
-        
-        :param data_shape: Shape of the variable to be interpolated. The first dimension is expected to be depth
-        :type rho_or_w: tuple of int
-        
-        :return: numpy array of shape (n, 1) of n surface level values
-        '''
-        raise NotImplementedError('get_surface_depth not implemented for S_Depth, required in subclasses')
-        
-
-    def interpolation_alphas(self,
-                             points,
-                             time,
-                             data_shape,
-                             surface_boundary_condition=None,
-                             bottom_boundary_condition=None,
-                             _hash=None,
-                             extrapolate=False,
-                             **kwargs):
-        '''
-        Returns a pair of arrays. The 1st array is of the depth indices
-        of all the points. The 2nd value is an array of the interpolation
-        alphas for the points between their depth index and depth_index+1.
-
-        If a depth is between coordinate N and N+1, the index will be N.
-        If a depth is exactly on a coordinate, the index will be N.
-
-        Any points that are 'off grid' will be subject to the boundary conditions
-        'mask' or 'extrapolate'. 'mask' will mask the index and the alpha of the point.
-        'extrapolate' will set the index to the surface or bottom index, and the alpha to
-        0 or 1 depending on the orientation of the layers
-        '''
-        depths = points[:,2]
-        surface_boundary_condition = self.default_surface_boundary_condition if surface_boundary_condition is None else surface_boundary_condition
-        bottom_boundary_condition = self.default_bottom_boundary_condition if bottom_boundary_condition is None else bottom_boundary_condition
-
-        surface_index = None
-        if data_shape[0] == self.num_w_levels:
-            surface_index = self.surface_index
-        elif data_shape[0] == self.num_r_levels:
-            surface_index = self.surface_index-1
-        else:
-            raise ValueError('Cannot get depth interpolation alphas for data shape specified; does not fit r or w depth axis')
-        
-        transects = self.get_transect(points, time, data_shape=data_shape, _hash=_hash, extrapolate=extrapolate)
-        surface_depth = transects[:, surface_index]
-        
-        indices = np.ma.MaskedArray(data=-np.ones((len(points)), dtype=np.int64), mask=np.zeros((len(points)), dtype=bool))
-        alphas = np.ma.MaskedArray(data=np.empty((len(points)), dtype=np.float64) * np.nan, mask=np.zeros((len(points)), dtype=bool))
-
-        if not np.any(depths > surface_depth):
-            # nothing is within or below the mesh, so apply surface boundary condition
-            # to all points and return
-            if surface_boundary_condition == 'extrapolate':
-                indices[:] = surface_index
-                alphas[:] = 0
-            else:
-                indices = np.ma.masked_less(indices, 0)
-                alphas = np.ma.masked_invalid(alphas, 0)
-            return indices, alphas
-
-        #use np.digitize to bin the depths into the layers
-        vf = np.vectorize(np.digitize, signature='(),(n)->()', excluded=['right'])
-        indices = vf(depths, transects, right=True) - 1
-        
-        # transect mask is True where the point is outside the grid horizontally
-        # so it must be reapplied
-        indices = np.ma.array(indices, mask=transects.mask[:,0])
-        alphas.mask = transects.mask[:,0]
-        
-        # set above surface and below seafloor alphas to allow future filtering
-        alphas[indices == surface_index] = 0
-        if surface_boundary_condition == 'mask':
-            alphas.mask = np.logical_or(alphas.mask, indices == surface_index)
-            indices.mask[indices == surface_index] = True
-        alphas[indices == -1] = 1
-        if bottom_boundary_condition == 'mask':
-            alphas.mask = np.logical_or(alphas.mask, indices == -1)
-            indices.mask[indices == -1] = True
-        
-        # compute the remaining alphas, which should be for points within the depth interval
-        L0 = np.take(transects, indices)
-        L1 = np.take(transects, indices + 1)
-        within_layer = np.isnan(alphas) #remaining alphas would still have nan at this point
-        alphas[within_layer] = (depths[within_layer] - L0[within_layer]) / (L1[within_layer] - L0[within_layer])
-        
-        if any(np.isnan(alphas)):
-            raise ValueError('Some alphas are still unmasked and NaN. Please file a bug report')
-        return indices, alphas
-
-    
-class ROMS_Depth(S_Depth):
-    '''
-    Sigma coordinate depth object for ROMS style output
-    '''
-    _def_count = 0
-    default_names = {'Cs_r': ['Cs_r'],
-                     'Cs_w': ['Cs_w'],
-                     's_rho': ['s_rho'],
-                     's_w': ['s_w'],
-                     'hc': ['hc'],
-                     'bathymetry': ['h'],
-                     'zeta': ['zeta']
-                     }
-
-    cf_names = {'Cs_r': ['S-coordinate stretching curves at RHO-points'],
-                'Cs_w': ['S-coordinate stretching curves at W-points'],
-                's_rho': ['S-coordinate at RHO-points'],
-                's_w':['S-coordinate at W-points'],
-                'hc': ['S-coordinate parameter, critical depth'],
-                'bathymetry': ['bathymetry at RHO-points', 'Final bathymetry at RHO-points'],
-                'zeta': ['free-surface']
-                }
-
-    @property
-    def num_levels(self):
         return len(self.s_w)
 
     @property
     def num_layers(self):
         return len(self.s_rho)
-
-    def __len__(self):
-        return self.num_w_levels
-
-    def compute_coordinates(self, rho_or_w):
-        """
-        Uses zeta, bathymetry, and the s-coordinate terms to produce the
-        time-dependent coordinate variable.
-        
-        :return: numpy array of s-coordinates
-        """
-        if rho_or_w == 'rho':
-            s_c = self.s_rho
-            Cs = self.Cs_r
-        elif rho_or_w == 'w':
-            s_c = self.s_w
-            Cs = self.Cs_w
-        else:
-            raise ValueError('invalid rho_or_w argument (must be "rho" or "w")')
-        if len(self.zeta.data.shape) == 2: #need this check to workaround a 'constant' zeta object
-            zeta = np.zeros((len(self.time.data), ) + self.bathymetry.data.shape)
-        else:
-            zeta = self.zeta.data[:]
-        h = self.bathymetry.data[:]
-        hc = self.hc
-        hCs = h * Cs[:,np.newaxis, np.newaxis]
-        s_coord = None
-        if self.vtransform == 1:
-            S = (hc * s_c)[:, np.newaxis, np.newaxis] + hCs - (hc * Cs)[:, np.newaxis, np.newaxis]
-            s_coord = -(S + zeta[:, np.newaxis, :, :] * (1 + S / h))
-        elif self.vtransform == 2:
-            S = ((hc * s_c)[:, np.newaxis, np.newaxis] + hCs) / (hc + h)
-            s_coord = -(zeta[:, np.newaxis, :, :] + (zeta[:, np.newaxis, :, :] + h) * S)
-        return s_coord
             
     def get_transect(self, points, time, data_shape=None, _hash=None, **kwargs):
         '''
@@ -704,7 +816,7 @@ class FVCOM_Depth(S_Depth):
         'siglay_center': ['siglev_center'], # mid layer depth coordinate on centers
         'siglev': ['siglev'], # layer depth coordinate on nodes
         'siglev_center': ['siglev_center'], # layer depth coordinate on centers
-        'h': ['h'], # bathymetry on nodes
+        'bathymetry': ['h'], # bathymetry on nodes
         'h_center': ['h_center'], # bathymetry on centers
         'zeta': ['zeta'], # free surface
     }
@@ -714,7 +826,7 @@ class FVCOM_Depth(S_Depth):
         'siglay_center': ['ocean_sigma/general_coordinate'],
         'siglev': ['ocean_sigma/general_coordinate'],
         'siglev_center': ['ocean_sigma/general_coordinate'],
-        'h': ['sea_floor_depth_below_geoid'],
+        'bathymetry': ['sea_floor_depth_below_geoid'],
         'h_center': ['sea_floor_depth_below_geoid'],
         'zeta': ['sea_surface_height_above_geoid'],
     }
@@ -740,30 +852,22 @@ class FVCOM_Depth(S_Depth):
         
         :return: numpy array of shape (n, num_w_levels) of n s-coordinate transects
         '''
-        if data_shape[1] == len(self.h): #data_shape[1] is the number of nodes
-            h = self.h
-            if data_shape[0] == len(self.num_levels):
-                sig = self.siglev
-            else:
-                sig = self.siglay
-        else: #data_shape[1] is the number of centers
-            h = self.h_center
-            if data_shape[0] == len(self.num_layers):
-                sig = self.siglev_center
-            else:
-                sig = self.siglay_center
-                
-        bathy = h.at(points, time, unmask=False, _hash=_hash, **kwargs)
-        zeta = self.zeta.at(points, time, unmask=False, _hash=_hash, **kwargs)
+        
+        #because FVCOM sigma is defined for every node separately.
         breakpoint()
-        # hCs = h * C_s[np.newaxis, :]
-        # if self.vtransform == 1:
-        #     S = (hc* s_c) + hCs - (hc * C_s)[np.newaxis, :]
-        #     s_coord = -(S + zeta * (1 + S / h))
+        sigma = self.grid.interpolate_var_to_points(points[:, 0:2], self.siglay[:].T)
+                
+        bathy = self.bathymetry.at(points, time, unmask=False, _hash=_hash, **kwargs)
+        zeta = self.zeta.at(points, time, unmask=False, _hash=_hash, **kwargs)
+        
+        transects = -(zeta + (zeta + bathy) * sigma)
+        breakpoint()
+        return transects
+        
         # elif self.vtransform == 2:
         #     S = ((hc * s_c) + hCs) / (hc + h)
         #     s_coord = -(zeta + (zeta + h) * S)
-        # return s_coord
+        # if no stretching or crit depth (hc, Cs_r, Cs_w) then S = s_c
 
 class Depth(object):
     '''
@@ -835,8 +939,8 @@ class Depth(object):
 
         return cls.from_netCDF(filename=filename,
                                dataset=dataset,
-                               grid_file=grid_file,
-                               data_file=data_file,
+                               grid_file=dg,
+                               data_file=ds,
                                topology=topology,
                                **kwargs)
 

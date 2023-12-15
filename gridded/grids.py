@@ -473,7 +473,7 @@ class Grid(object):
         Redirect to grid-specific loading routine.
         '''
         if issubclass(grid_type, UGrid):
-            return grid_type.from_ncfile(filename)
+            return grid_type.from_ncfile(filename=filename, dataset=dataset)
         elif issubclass(grid_type, SGrid):
             ds = get_dataset(filename, dataset)
             g = grid_type.load_grid(ds)
