@@ -11,6 +11,7 @@ except ImportError:  # py2
 
 import numpy as np
 import netCDF4 as nc4
+import os
 
 
 must_have = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute__']
@@ -360,6 +361,37 @@ def get_dataset(ncfile, dataset=None):
     else:
         return nc4.MFDataset(ncfile)
 
+def parse_filename_dataset_args(filename=None,
+                                dataset=None,
+                                data_file=None,
+                                grid_file=None,):
+    """A perinnial problem is that we need to be able to accept a variety of
+    filename/dataset arguments. This function will return a tuple of 'ds' and 'dg'
+    where ds is the dataset for the data and dg is the dataset for the grid. If such
+    datasets are from the same file, it will return the same object for both.
+    """
+    if filename is not None:
+        try:
+            filename = os.fspath(filename)
+        except TypeError:
+            pass
+        data_file = grid_file = filename
+    ds = None
+    dg = None
+    if dataset is None:
+        if grid_file == data_file:
+            ds = dg = get_dataset(grid_file)
+        else:
+            ds = get_dataset(data_file)
+            dg = get_dataset(grid_file)
+    else:
+        if grid_file is not None:
+            dg = get_dataset(grid_file)
+        else:
+            dg = dataset
+        ds = dataset
+    
+    return ds, dg
 
 def get_writable_dataset(ncfile, format="netcdf4"):
     """
@@ -389,6 +421,27 @@ def get_dataset_attrs(ds):
     :param ds: an open netCDF4.Dataset
     """
     return {name: ds.getncattr(name) for name in ds.ncattrs()}
+
+def search_netcdf_vars(cls=None, ds=None, dg=None):
+    """
+    Given a class with a .default_names and .cf_names attributes, search a datafile 
+    netCDF4.Dataset and a possible grid netCDF4.Dataset for variables that are sought by
+    the class
+    """
+    vn_search = search_dataset_for_variables_by_varname(ds, cls.default_names)
+    ds_search = search_dataset_for_variables_by_longname(ds, cls.cf_names)
+    found_vars = merge_var_search_dicts(ds_search, vn_search)
+    if ds != dg:
+        dg_vn_search = search_dataset_for_variables_by_varname(dg, cls.default_names)
+        dg_ln_search = search_dataset_for_variables_by_longname(dg, cls.cf_names)
+        dg_search = merge_var_search_dicts(dg_ln_search, dg_vn_search)
+        found_vars = merge_var_search_dicts(found_vars, dg_search)
+    return found_vars
+    
+def can_create_class(cls, ds=None, dg=None):
+    found_vars = search_netcdf_vars(cls, ds, dg)
+    # all variables must be found (no None values)
+    return all(found_vars.values())
 
 def varnames_merge(cls, inc_varnames=None):
     """
