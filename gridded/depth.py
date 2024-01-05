@@ -32,8 +32,6 @@ class DepthBase(object):
         '''
         :param surface_index: array index of 'highest' level (closest to sea level)
         :param bottom_index: array index of 'lowest' level (closest to seafloor)
-        :param positive_down: orientation of points coordinates
-                              (for interpolation functions)
         '''
         self.name=name
         self.surface_index = surface_index
@@ -301,7 +299,6 @@ class S_Depth(DepthBase):
                  zeta=None,
                  terms=None,
                  vtransform=2,
-                 positive_down=True,
                  surface_boundary_condition='extrapolate',
                  bottom_boundary_condition='mask',
                  **kwargs):
@@ -642,146 +639,6 @@ class ROMS_Depth(S_Depth):
                 'bathymetry': ['bathymetry at RHO-points', 'Final bathymetry at RHO-points'],
                 'zeta': ['free-surface']
                 }
-
-    @classmethod
-    def from_netCDF(cls,
-                    filename=None,
-                    varnames=None,
-                    grid_topology=None,
-                    name=None,
-                    # units=None,
-                    time=None,
-                    # time_origin=None,
-                    grid=None,
-                    dataset=None,
-                    data_file=None,
-                    grid_file=None,
-                    # load_all=False,
-                    bathymetry=None,
-                    zeta=None,
-                    terms=None,
-                    # fill_value=0,
-                    vtransform=2,
-                    positive_down=True,
-                    **kwargs
-                    ):
-        '''
-        :param filename: A string or ordered list of string of netCDF filename(s)
-        :type filename: str or list[str]
-
-        :param varnames: Direct mapping of component name to netCDF variable name. Use
-                         this if auto detection fails. Partial definition is allowable.
-                         Unspecified terms will use the value in `.default_names`::
-                           {'Cs_r': 'Cs_r',
-                            'Cs_w': Cs_w',
-                            's_rho': 's_rho'),
-                            's_w': 's_w',
-                            'bathymetry': 'h',
-                            'hc': 'hc'),
-                            'zeta': 'zeta')
-                            }
-        :type varnames: dict
-
-        :param name: Human-readable name for this object
-        :type name: str
-
-        :param time: Time dimension (for zeta)
-        :type time: gridded.time.Time or subclass
-
-        :param grid: X-Y dmension (for bathymetry & zeta)
-        :type grid: subclass of gridded.grids.GridBase
-        '''
-        Grid = cls._default_component_types['grid']
-        Time = cls._default_component_types['time']
-        Variable = cls._default_component_types['variable']
-        if filename is not None:
-            data_file = filename
-            grid_file = filename
-
-        ds = None
-        dg = None
-        if dataset is None:
-            if grid_file == data_file:
-                ds = dg = get_dataset(grid_file)
-            else:
-                ds = get_dataset(data_file)
-                dg = get_dataset(grid_file)
-        else:
-            if grid_file is not None:
-                dg = get_dataset(grid_file)
-            else:
-                dg = dataset
-            ds = dataset
-
-        if grid is None:
-            grid = Grid.from_netCDF(grid_file,
-                                    dataset=dg,
-                                    grid_topology=grid_topology)
-        if name is None:
-            name = cls.__name__ + str(cls._def_count)
-            cls._def_count += 1
-        varnames = cls.default_names.copy()
-        
-        
-        
-        # Do a comprehensive search for netCDF4 Variables all at once
-        vn_search = search_dataset_for_variables_by_varname(ds, varnames)
-        ds_search = search_dataset_for_variables_by_longname(ds, cls.cf_names)
-        varnames = merge_var_search_dicts(ds_search, vn_search)
-        if ds != dg:
-            dg_search = search_dataset_for_variables_by_longname(dg, cls.cf_names)
-            varnames = merge_var_search_dicts(varnames, dg_search)
-        
-        if bathymetry is None:
-            bathy_var = varnames.get('bathymetry', None)
-            if bathy_var is None:
-                err = 'Unable to locate bathymetry in data file'
-                if dg:
-                    raise ValueError(err + ' or grid file')
-                raise ValueError(err)
-            bathymetry = Variable.from_netCDF(dataset=bathy_var._grp,
-                                              varname=bathy_var.name,
-                                              grid=grid,
-                                              name='bathymetry',
-                                              )
-
-        if zeta is None:
-            zeta_var = varnames.get('zeta', None)
-            if zeta_var is None:
-                warn = 'Unable to locate zeta in data file'
-                if dg:
-                    warnings.warn(warn + ' or grid file.')
-                warn += ' Generating constant (0) zeta.'
-                warnings.warn(err)
-                zeta = Variable.constant(0)
-            else:
-                zeta = Variable.from_netCDF(dataset=zeta_var._grp,
-                                            varname=zeta_var.name,
-                                            grid=grid,
-                                            name='zeta')
-                
-        if time is None:
-            time = zeta.time
-        if terms is None:
-            terms = {}
-            for term, tvar in varnames.items():
-                if term in ['bathymetry', 'zeta']:
-                    # skip these because they're done separately...
-                    continue
-                terms[term] = tvar[:]
-        if vtransform is None:
-            vtransform = 2  #default for ROMS
-            #  messing about trying to detect this.
-
-        return cls(name=name,
-                   time=time,
-                   grid=grid,
-                   bathymetry=bathymetry,
-                   zeta=zeta,
-                   terms=terms,
-                   vtransform=vtransform,
-                   positive_down=positive_down,
-                   **kwargs)
 
     @property
     def num_levels(self):
