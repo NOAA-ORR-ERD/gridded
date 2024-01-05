@@ -62,6 +62,7 @@ def fvcom_eleven_points_with_depth():
     df['h_center'].grid = 'Bathymetry_Mesh2'
     df['h_center'].coordinates = 'Mesh2_face_y Mesh2_face_x'
     df['h_center'].grid_location = 'center'
+    df['zeta'][:] = np.zeros(df['zeta'].shape)
     
     zeta_attrs = {
         'long_name': 'Water Surface Elevation',
@@ -75,7 +76,7 @@ def fvcom_eleven_points_with_depth():
     }
     df['zeta'].setncatts(zeta_attrs)
     
-    df['h'][:] = np.ones(df['h'].shape) * 10
+    df['h'][:] = np.linspace(0, 10, df['h'].shape[0]).reshape(df['h'].shape)
     df['h_center'][:] = np.ones(df['h_center'].shape) * 10
     df['Mesh2_depth'][:] = df['h'][:]
     df['siglev'][:] = np.linspace(0, -1, 5).T[:,np.newaxis]
