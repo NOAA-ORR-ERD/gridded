@@ -35,12 +35,12 @@ def test_from_netCDF():
         ds = nc.Dataset.fromcdl(fn, ncfilename=fn+'.nc')
         if not valid_depth_test_dataset(ds):
             continue
-        d = S_Depth.from_netCDF(dataset=ds)
+        d = S_Depth.from_netCDF(data_file=ds, grid_file=ds)
 
 @pytest.fixture(scope="module")
 def get_fvcom_depth():
     ds = nc.Dataset(os.path.join(test_dir, 'UGRIDv0.9_eleven_points_with_depth.nc'))
-    return FVCOM_Depth.from_netCDF(dataset=ds)
+    return FVCOM_Depth.from_netCDF(data_file=ds, grid_file=ds)
 
 
 @pytest.fixture(scope="module")
@@ -207,8 +207,18 @@ class Test_FVCOM_Depth(object):
     def test_construction(self, get_fvcom_depth):
         assert get_fvcom_depth is not None
         
-    def test_transect_generation(get_fvcom_depth):
-        pass
+    def test_get_transect(self, get_fvcom_depth):
+        dp = get_fvcom_depth
+        tris = dp.grid.nodes.take(dp.grid.faces, axis=0)
+        centroids = np.mean(tris, axis=1)
+        transects = dp.get_transect(centroids, dp.zeta.time.min_time)
+        
+        #because we use the centroids, the values should the average of the 3 nodes
+        #Not intending to test interpolation here there's a separate test for that
+        
+        expected_transects = np.mean((dp.siglev * dp.bathymetry.data[:]).take(dp.grid.faces, axis=1), axis=2)
+        expected_transects = expected_transects.T * -1
+        assert np.all(np.isclose(transects, expected_transects))
 
 @pytest.fixture(scope="module")
 def get_database_nc():
