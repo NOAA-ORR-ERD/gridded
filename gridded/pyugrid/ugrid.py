@@ -760,7 +760,9 @@ class UGrid(object):
 #                                       "variable defined on the faces")
         if location == 'node':
             pos_alphas = self.interpolation_alphas(points, inds, _copy, _memo, _hash)
-            vals = variable.take(self.faces[inds], axis=-1)
+            vals = variable.take(self.faces[inds], axis=0)
+            if len(vals.shape) == (len(pos_alphas.shape) + 1):
+                pos_alphas = pos_alphas[:,:,np.newaxis]
             vals[inds == -1] = vals[inds == -1] * 0
             return np.sum(vals * pos_alphas, axis=1)
         return None
