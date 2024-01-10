@@ -11,8 +11,11 @@ from .grids import Grid, Grid_R, Grid_S, Grid_U
 from .variable import Variable, VectorVariable
 from .time import Time
 
-from .depth import DepthBase
+from .depth import DepthBase, L_Depth, S_Depth
 DepthBase._default_component_types['variable'] = Variable
+S_Depth._default_component_types['variable'] = Variable
+S_Depth._default_component_types['bathymetry'] = Variable
+S_Depth._default_component_types['zeta'] = Variable
 
 
 

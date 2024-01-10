@@ -21,6 +21,7 @@ class DepthBase(object):
     _default_component_types = {'time': Time,
                                 'grid': Grid,
                                 'variable': None}
+    #'variable' is None here to avoid import issues. It is set in the __init__.py
 
     def __init__(self,
                  name=None,
@@ -290,6 +291,11 @@ class S_Depth(DepthBase):
     Represents the ocean s-coordinates as implemented by ROMS,
     It may or may not be useful for other systems.
     '''
+    _default_component_types = {'time': Time,
+                                'grid': Grid,
+                                'variable': None,
+                                'bathymetry': None,
+                                'zeta': None,}
 
     def __init__(self,
                  name=None,
@@ -325,11 +331,6 @@ class S_Depth(DepthBase):
         :param vtransform: S-coordinate transform type. 1 = Old, 2 = New
         :type vtransform: int (default 2)
 
-        :param positive_down: Flag for interpreting depth values as positive or negative
-        This applies to any coordinates passed into the various functions, NOT the values
-        of the S-Coordinates that this object represents
-        :type positive_down: boolean
-
         :param surface_boundary_condition: Determines how to handle points above the surface
         :type surface_boundary_condition: string ('extrapolate' or 'mask')
 
@@ -345,7 +346,6 @@ class S_Depth(DepthBase):
         self.zeta = zeta
         self.terms = {}
         self.vtransform = vtransform
-        self.positive_down = positive_down
         if terms is None:
             raise ValueError('Must provide terms for sigma coordinate')
         else:
@@ -378,7 +378,6 @@ class S_Depth(DepthBase):
                     zeta=None,
                     terms=None,
                     vtransform=2,
-                    positive_down=True,
                     **kwargs
                     ):
         '''
@@ -410,6 +409,8 @@ class S_Depth(DepthBase):
         Grid = cls._default_component_types['grid']
         Time = cls._default_component_types['time']
         Variable = cls._default_component_types['variable']
+        Bathymetry = cls._default_component_types['bathymetry']
+        Zeta = cls._default_component_types['zeta']
         
         ds, dg = parse_filename_dataset_args(filename=filename,
                                              dataset=dataset,
@@ -419,8 +420,7 @@ class S_Depth(DepthBase):
             data_file = os.path.split(ds.filepath())[-1]
 
         if grid is None:
-            grid = Grid.from_netCDF(grid_file,
-                                    dataset=dg,
+            grid = Grid.from_netCDF(dataset=dg,
                                     grid_topology=grid_topology)
         if name is None:
             name = cls.__name__ + str(cls._def_count)
@@ -436,7 +436,7 @@ class S_Depth(DepthBase):
                 if dg:
                     raise ValueError(err + ' or grid file')
                 raise ValueError(err)
-            bathymetry = Variable.from_netCDF(dataset=bathy_var._grp,
+            bathymetry = Bathymetry.from_netCDF(dataset=bathy_var._grp,
                                               varname=bathy_var.name,
                                               grid=grid,
                                               time=time,
@@ -451,9 +451,9 @@ class S_Depth(DepthBase):
                     warnings.warn(warn + ' or grid file.')
                 warn += ' Generating constant (0) zeta.'
                 warnings.warn(err)
-                zeta = Variable.constant(0)
+                zeta = Zeta.constant(0)
             else:
-                zeta = Variable.from_netCDF(dataset=zeta_var._grp,
+                zeta = Zeta.from_netCDF(dataset=zeta_var._grp,
                                             varname=zeta_var.name,
                                             grid=grid,
                                             time=time,
@@ -479,7 +479,6 @@ class S_Depth(DepthBase):
                    zeta=zeta,
                    terms=terms,
                    vtransform=vtransform,
-                   positive_down=positive_down,
                    **kwargs)
     @property
     def num_levels(self):

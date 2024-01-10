@@ -135,6 +135,7 @@ def get_l_depth():
 class Test_ROMS_Depth(object):
     def test_construction(self, get_roms_depth):
         assert get_roms_depth is not None
+        assert get_roms_depth.num_levels == 11
 
     def test_interpolation_alphas_bottom(self, get_roms_depth):
         '''

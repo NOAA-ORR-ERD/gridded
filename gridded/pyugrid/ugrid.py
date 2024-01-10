@@ -167,7 +167,7 @@ class UGrid(object):
         """
         grid = klass()
         if filename is not None:
-            read_netcdf.load_grid_from_ncfile(filename, grid, mesh_name)
+            read_netcdf.load_grid_from_ncfilename(filename, grid, mesh_name)
             return grid
         if dataset is not None:
             read_netcdf.load_grid_from_nc_dataset(dataset, grid, mesh_name)
