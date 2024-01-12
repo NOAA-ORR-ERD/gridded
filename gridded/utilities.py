@@ -66,7 +66,7 @@ def gen_celltree_mask_from_center_mask(center_mask, sl):
 def regrid_variable(grid, o_var, location='node'):
     from gridded.variable import Variable
     from gridded.grids import Grid_S, Grid_U
-    from gridded.depth import S_Depth, Depth
+    from gridded.depth import S_Depth, L_Depth, DepthBase
     """
     Takes a Variable or VectorVariable and interpolates the data onto grid.
     You may pass a location ('nodes', 'faces', 'edge1', 'edge2) and the
@@ -103,9 +103,9 @@ def regrid_variable(grid, o_var, location='node'):
         the grid of the source variable {1}".format(grid, o_var))
     n_depth = None
     if o_var.depth is not None:
-        if isinstance(o_var.depth, S_Depth):
+        if issubclass(o_var.depth, S_Depth):
             n_depth = _regrid_s_depth(grid, o_var.depth)
-        elif isinstance(o_var.depth, Depth):
+        elif isinstance(o_var.depth, DepthBase) or isinstance(o_var.depth, L_Depth):
             n_depth = o_var.depth
         else:
             raise NotImplementedError("Can only regrid sigma depths for now")
@@ -152,13 +152,11 @@ def _regrid_s_depth(grid, o_depth):
     """
     Creates a new S_Depth object from an existing one that works on a new grid.
     """
-    from gridded.grids import Grid_S, Grid_U
-    from gridded.depth import S_Depth
     o_bathy = o_depth.bathymetry
     o_zeta = o_depth.zeta
     n_bathy = regrid_variable(grid, o_bathy)
     n_zeta = regrid_variable(grid, o_zeta)
-    n_depth = S_Depth(time=o_depth.time,
+    n_depth = o_depth.__class__(time=o_depth.time,
                       grid=grid,
                       bathymetry=n_bathy,
                       zeta=n_zeta,
