@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-__version__ = "0.5.9"
+__version__ = "0.6.0"
 
 VALID_SGRID_LOCATIONS = (None, 'center', 'edge1', 'edge2', 'node')
 VALID_UGRID_LOCATIONS = (None, 'node', 'face', 'edge', 'boundary')
