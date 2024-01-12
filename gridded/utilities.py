@@ -103,7 +103,7 @@ def regrid_variable(grid, o_var, location='node'):
         the grid of the source variable {1}".format(grid, o_var))
     n_depth = None
     if o_var.depth is not None:
-        if issubclass(o_var.depth, S_Depth):
+        if issubclass(o_var.depth.__class__, S_Depth):
             n_depth = _regrid_s_depth(grid, o_var.depth)
         elif isinstance(o_var.depth, DepthBase) or isinstance(o_var.depth, L_Depth):
             n_depth = o_var.depth
