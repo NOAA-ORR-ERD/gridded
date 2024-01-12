@@ -8,7 +8,7 @@ import numpy as np
 import netCDF4 as nc
 
 from gridded import utilities
-from gridded.tests.test_depth import get_s_depth
+from gridded.tests.test_depth import get_roms_depth
 
 
 data_dir = os.path.join(os.path.split(__file__)[0], 'test_data')
@@ -120,16 +120,16 @@ def test_spatial_data_metadata():
     assert np.all(a5.T == res_5)
 
 
-def test_regrid_variable_TDStoS(get_s_depth):
+def test_regrid_variable_TDStoS(get_roms_depth):
     # Time is present
     # Depth is present
     # Grid_S to Grid_S
     from gridded.variable import Variable
     from gridded.time import Time
     from gridded.grids import Grid_S
-    sd = get_s_depth
+    sd = get_roms_depth
     grid = sd.grid
-    n_levels = sd.num_w_levels
+    n_levels = sd.num_levels
     data = np.ones((1,
                     n_levels, grid.node_lon.shape[0],
                     grid.node_lon.shape[1]))
@@ -156,14 +156,14 @@ def test_regrid_variable_TDStoS(get_s_depth):
     assert v2.data.shape == (v1.data.shape[0], v1.data.shape[1], sz - 1, sz - 1)
 
 
-def test_regrid_variable_StoS(get_s_depth):
+def test_regrid_variable_StoS(get_roms_depth):
     # Time is not present
     # Depth is not present
     # Grid_S to Grid_S
     from gridded.variable import Variable
     from gridded.time import Time
     from gridded.grids import Grid_S
-    sd = get_s_depth
+    sd = get_roms_depth
     grid = sd.grid
     data = np.ones((grid.node_lon.shape[0], grid.node_lon.shape[1]))
 

@@ -7,6 +7,7 @@ import pytest
 import numpy as np
 import netCDF4 as nc
 import gridded
+from math import sqrt
 
 from gridded.variable import Variable, VectorVariable
 from gridded.tests.utilities import get_test_file_dir, get_test_cdl_filelist
@@ -14,7 +15,7 @@ from gridded.grids import Grid_S
 from gridded.time import Time
 from gridded.utilities import search_dataset_for_variables_by_varname
 
-from gridded.depth import S_Depth, L_Depth
+from gridded.depth import S_Depth, ROMS_Depth, FVCOM_Depth, L_Depth
 
 test_dir = get_test_file_dir()
 cdl_files = get_test_cdl_filelist()
@@ -34,12 +35,16 @@ def test_from_netCDF():
         ds = nc.Dataset.fromcdl(fn, ncfilename=fn+'.nc')
         if not valid_depth_test_dataset(ds):
             continue
-        d = S_Depth.from_netCDF(dataset=ds)
-    
+        d = S_Depth.from_netCDF(data_file=ds, grid_file=ds)
+
+@pytest.fixture(scope="module")
+def get_fvcom_depth():
+    ds = nc.Dataset(os.path.join(test_dir, 'UGRIDv0.9_eleven_points_with_depth.nc'))
+    return FVCOM_Depth.from_netCDF(data_file=ds, grid_file=ds)
 
 
 @pytest.fixture(scope="module")
-def get_s_depth():
+def get_roms_depth():
     """
     This is setup for a ROMS S-level Depth that is on a square grid with a center
     mound. Control vars: sz=xy size, center_el=height of the mound in meters,
@@ -88,12 +93,10 @@ def get_s_depth():
     s_rho = (s_w[0:-1] + s_w[1:]) / 2
     # equidistant layers, no stretching
     Cs_w = np.linspace(-1, 0, nz)
-    Cs_w = 1 - 1 / np.exp(2 * Cs_w)
-    Cs_w /= -Cs_w[0]
     Cs_r = (Cs_w[0:-1] + Cs_w[1:]) / 2
-    hc = np.array([0])
+    hc = np.array([0,])
 
-    sd = S_Depth(
+    sd = ROMS_Depth(
         time=zeta.time,
         grid=zeta.grid,
         bathymetry=bathy,
@@ -129,57 +132,44 @@ def get_l_depth():
     return ld1, ld2
 
 
-class Test_S_Depth(object):
-    def test_construction(self, get_s_depth):
-        assert get_s_depth is not None
+class Test_ROMS_Depth(object):
+    def test_construction(self, get_roms_depth):
+        assert get_roms_depth is not None
+        assert get_roms_depth.num_levels == 11
 
-    def test_structure(self, get_s_depth):
-        sd = get_s_depth
-        sd.Cs_w = np.linspace(-1, 0, len(sd.Cs_w))
-        sd.Cs_r = (sd.Cs_w[0:-1] + sd.Cs_w[1:]) / 2
-
-        sz = sd.bathymetry.data.shape[1]
-        levels = sd.get_section(sd.time.data[1], "w")[
-            :, :, :
-        ]  # 3D cross section
-        edge = np.linspace(20, 0, len(sd.Cs_w))
-        center = np.linspace(10, 0, len(sd.Cs_w))
-        assert np.allclose(levels[:, 0, 0], edge)
-        assert np.allclose(
-            levels[:, int(sz / 2), int(sz / 2)], center
-        )
-
-    def test_interpolation_alphas_bottom(self, get_s_depth):
+    def test_interpolation_alphas_bottom(self, get_roms_depth):
         '''
         We will focus on the center mound to see if the correct alphas and
         indices are returned for various points nearby.
         interpolation_alphas(self, points, time, data_shape, _hash=None, extrapolate=False):
         '''
-        sd = get_s_depth
+        sd = get_roms_depth
         # query center mound (20,20) at 3 depths. 1st point is 0.1m off the seafloor and 10% of
         # the distance to the next s-layer (meaning, expected alpha returned is 10%)
         # 2nd point is directly on the seafloor (should register as 'in bounds' and 0 alpha)
-        # 3rd point is 0.1m underground, and should indicate with -2 alpha
+        # 3rd point is 0.1m underground, and should indicate with masked value.
+        # 4th point is off grid, masked expected.
+        # 5th point is above grid, 0 or masked expected depending on boundary condition
         points = np.array([[20,20, 9.9],[20,20,10.0], [20,20,10.1], [-1, -1, 5], [20, 20, -0.1]])
         ts = sd.time.data[1]
         assert sd.default_bottom_boundary_condition == 'mask'
-        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_levels,])
         expected_idx = np.ma.array(np.array([0,0,-1,-1,10]), mask = [False, False, True, True, False])
         expected_alpha = np.ma.array(np.array([0.1, 0, -1, -1, 0]), mask = [False, False, True, True, False])
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
         
         sd.default_bottom_boundary_condition == 'extrapolate'
-        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_levels,])
         expected_idx = np.ma.array(np.array([0,0,-1]), mask = [False, False, False])
         expected_alpha = np.ma.array(np.array([0.1, 0, 1]), mask = [False, False, False])
 
-    def test_interpolation_alphas_surface(self, get_s_depth):
-        sd = get_s_depth
+    def test_interpolation_alphas_surface(self, get_roms_depth):
+        sd = get_roms_depth
         points = np.array([[20,20, 0],[20,20,0.1], [20,20,-0.1]])
         ts = sd.time.data[1]
         assert sd.default_surface_boundary_condition == 'extrapolate'
-        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_levels,])
         # only the element 0.1m deep should register with an index and alpha since
         # it is the only element below surface.
         expected_idx = np.ma.array(np.array([10,9,10]), mask = [False, False, False])
@@ -188,7 +178,7 @@ class Test_S_Depth(object):
         assert np.all(np.isclose(alphas, expected_alpha))
         
         sd.default_surface_boundary_condition == 'mask'
-        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_levels,])
         # only the element 0.1m deep should register with an index and alpha since
         # it is the only element below surface.
         expected_idx = np.ma.array(np.array([-1,9,-1]), mask = [True, False, True])
@@ -199,20 +189,37 @@ class Test_S_Depth(object):
         sd.default_surface_boundary_condition == 'extrapolate'
         # switch to timestep with -0.5m zeta
         ts = sd.time.data[0]
-        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_levels,])
         expected_idx = np.ma.array(np.array([10,10,10]), mask = [False, False, False])
         expected_alpha = np.ma.array(np.array([0, 0, 0]), mask = [False, False, False])
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
 
         sd.default_surface_boundary_condition = 'mask'
-        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_w_levels,])
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_levels,])
         # only the element 0.1m deep should register with an index and alpha since
         # it is the only element below surface.
         expected_idx = np.ma.array(np.array([-1,-1,-1]), mask = [True, True, True])
         expected_alpha = np.ma.array(np.array([0, 0.9, 0]), mask = [True, True, True])
         assert np.all(idx.mask == expected_idx.mask)
         assert np.all(alphas.mask == expected_alpha.mask)
+        
+class Test_FVCOM_Depth(object):
+    def test_construction(self, get_fvcom_depth):
+        assert get_fvcom_depth is not None
+        
+    def test_get_transect(self, get_fvcom_depth):
+        dp = get_fvcom_depth
+        tris = dp.grid.nodes.take(dp.grid.faces, axis=0)
+        centroids = np.mean(tris, axis=1)
+        transects = dp.get_transect(centroids, dp.zeta.time.min_time)
+        
+        #because we use the centroids, the values should the average of the 3 nodes
+        #Not intending to test interpolation here there's a separate test for that
+        
+        expected_transects = np.mean((dp.siglev * dp.bathymetry.data[:]).take(dp.grid.faces, axis=1), axis=2)
+        expected_transects = expected_transects.T * -1
+        assert np.all(np.isclose(transects, expected_transects))
 
 @pytest.fixture(scope="module")
 def get_database_nc():
@@ -229,6 +236,7 @@ def get_database_nc():
     return time, depth, ds
 
 class Test_L_Depth(object):
+    
     def test_construction(self, get_l_depth):
 
         assert get_l_depth is not None

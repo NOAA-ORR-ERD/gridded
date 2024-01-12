@@ -3,7 +3,7 @@ from gridded.pysgrid.sgrid import SGrid
 from gridded.pyugrid.ugrid import UGrid
 import numpy as np
 
-from gridded.utilities import get_dataset, gen_celltree_mask_from_center_mask
+from gridded.utilities import get_dataset, parse_filename_dataset_args
 
 
 class GridBase(object):
@@ -473,7 +473,7 @@ class Grid(object):
         Redirect to grid-specific loading routine.
         '''
         if issubclass(grid_type, UGrid):
-            return grid_type.from_ncfile(filename)
+            return grid_type.from_ncfile(filename=filename, dataset=dataset)
         elif issubclass(grid_type, SGrid):
             ds = get_dataset(filename, dataset)
             g = grid_type.load_grid(ds)
@@ -486,6 +486,8 @@ class Grid(object):
     @staticmethod
     def from_netCDF(filename=None,
                     dataset=None,
+                    data_file=None,
+                    grid_file=None,
                     grid_type=None,
                     grid_topology=None,
                     _default_types=(('ugrid', Grid_U),
@@ -509,28 +511,29 @@ class Grid(object):
 
         :returns: Instance of Grid_U, Grid_S, or Grid_R
         '''
-        gf = dataset if filename is None else get_dataset(filename, dataset)
-        if gf is None:
-            raise ValueError('No filename or dataset provided')
+        df, dg = parse_filename_dataset_args(filename=filename,
+                                             dataset=dataset,
+                                             data_file=data_file,
+                                             grid_file=grid_file)
 
         cls = grid_type
         if (grid_type is None or
                 isinstance(grid_type, str) or
                 not issubclass(grid_type, GridBase)):
-            cls = Grid._get_grid_type(gf, grid_type, grid_topology, _default_types)
+            cls = Grid._get_grid_type(dg, grid_type, grid_topology, _default_types)
 
         # if grid_topology is passed in, don't look for the variable
         if not grid_topology:
-            compliant = Grid._find_topology_var(None, gf)
+            compliant = Grid._find_topology_var(None, dg)
         else:
             compliant = None
 
         if compliant is not None:
-            c = Grid._load_grid(filename, cls, dataset)
+            c = Grid._load_grid(filename, cls, dg)
             c.grid_topology = compliant.__dict__
         else:
             init_args, gt = cls._find_required_grid_attrs(filename,
-                                                          dataset=dataset,
+                                                          dataset=dg,
                                                           grid_topology=grid_topology)
             c = cls(grid_topology=gt, **init_args)
         return c
