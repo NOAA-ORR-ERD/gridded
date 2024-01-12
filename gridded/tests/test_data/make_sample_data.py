@@ -9,8 +9,11 @@ This exists because we don't want to put large binary files in the repo.
 """
 
 import make_sgrid_files
+import make_ugrid_files
 
 make_sgrid_files.make_all()
+
+make_ugrid_files.make_all()
 
 
 

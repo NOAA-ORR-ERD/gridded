@@ -610,6 +610,18 @@ class SGrid(object):
             if _memo:
                 self._add_memo(points, res, self._cell_ind_memo_dict, _copy, _hash)
             return res
+        
+    def index_of(self,
+                 points,
+                _memo=False,
+                _copy=False,
+                _hash=None,
+                use_mask=True):
+        return self.locate_faces(points=points,
+                                 _memo=_memo,
+                                 _copy=_copy,
+                                 _hash=_hash,
+                                 use_mask=use_mask)
 
     def locate_nearest(self,
                        points,

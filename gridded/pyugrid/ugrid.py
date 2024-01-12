@@ -154,7 +154,7 @@ class UGrid(object):
         self._alpha_memo_dict = OrderedDict()
 
     @classmethod
-    def from_ncfile(klass, nc_url, mesh_name=None):  # , load_data=False):
+    def from_ncfile(klass, filename=None, dataset=None, mesh_name=None):  # , load_data=False):
         """
         create a UGrid object from a netcdf file name (or opendap url)
 
@@ -166,8 +166,12 @@ class UGrid(object):
                                Will be raised
         """
         grid = klass()
-        read_netcdf.load_grid_from_ncfilename(nc_url, grid, mesh_name)  # , load_data)
-        return grid
+        if filename is not None:
+            read_netcdf.load_grid_from_ncfilename(filename, grid, mesh_name)
+            return grid
+        if dataset is not None:
+            read_netcdf.load_grid_from_nc_dataset(dataset, grid, mesh_name)
+            return grid
 
     @classmethod
     def from_nc_dataset(klass, nc, mesh_name=None):  # , load_data=False):
@@ -538,7 +542,7 @@ class UGrid(object):
         else:
             return None
 
-    def locate_faces(self, points, method='celltree', _copy=False, _memo=True, _hash=None):
+    def locate_faces(self, points, method='celltree', _memo=True, _copy=False, _hash=None):
         """
         Returns the face indices, one per point.
 
@@ -602,6 +606,20 @@ class UGrid(object):
             return indices[0]
         else:
             return indices
+        
+    def index_of(self,
+                 points,
+                 method='celltree',
+                _memo=False,
+                _copy=False,
+                _hash=None,
+                use_mask=True):
+        return self.locate_faces(points=points,
+                                 method=method,
+                                 _memo=_memo,
+                                 _copy=_copy,
+                                 _hash=_hash,
+                                 use_mask=use_mask)
 
     def build_celltree(self):
         """
@@ -742,7 +760,9 @@ class UGrid(object):
 #                                       "variable defined on the faces")
         if location == 'node':
             pos_alphas = self.interpolation_alphas(points, inds, _copy, _memo, _hash)
-            vals = variable[self.faces[inds]]
+            vals = variable.take(self.faces[inds], axis=0)
+            if len(vals.shape) == (len(pos_alphas.shape) + 1):
+                pos_alphas = pos_alphas[:,:,np.newaxis]
             vals[inds == -1] = vals[inds == -1] * 0
             return np.sum(vals * pos_alphas, axis=1)
         return None
