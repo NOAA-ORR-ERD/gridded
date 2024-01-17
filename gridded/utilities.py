@@ -63,6 +63,8 @@ def gen_celltree_mask_from_center_mask(center_mask, sl):
     input_mask = convert_mask_to_numpy_mask(center_mask)
     return input_mask[sl]
 
+#1/16/2024 Jay Hennen: I'm 'privating' this function pending a review and likely rewrite. 
+#
 def regrid_variable(grid, o_var, location='node'):
     from gridded.variable import Variable
     from gridded.grids import Grid_S, Grid_U
@@ -126,10 +128,11 @@ def regrid_variable(grid, o_var, location='node'):
     pts[:, 0:2] = dest_points
     if o_var.time is not None:
         for t_idx, t in enumerate(o_var.time.data):
-            if n_depth is not None and isinstance(n_depth, S_Depth):
-                for lev_idx, lev_data in enumerate(o_var.depth.get_section(t)):
+            if n_depth is not None and issubclass(n_depth.__class__, S_Depth):
+                transect = o_var.depth.get_transect(o_var.grid.nodes.reshape(-1,2), t, data_shape=(len(n_depth),)).T
+                for lev_idx, lev_data in enumerate(transect):
                     lev = Variable(name='level{0}'.format(lev_idx),
-                                   data=lev_data,
+                                   data=lev_data.reshape(o_var.grid.node_lon.shape),
                                    grid=o_var.grid)
                     zs = lev.at(pts, t)
                     pts[:, 2] = zs[:,0]
