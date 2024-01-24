@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-__version__ = "0.6.2"
+__version__ = "0.6.3"
 
 VALID_SGRID_LOCATIONS = (None, 'center', 'edge1', 'edge2', 'node')
 VALID_UGRID_LOCATIONS = (None, 'node', 'face', 'edge', 'boundary')
@@ -17,7 +17,7 @@ S_Depth._default_component_types['variable'] = Variable
 S_Depth._default_component_types['bathymetry'] = Variable
 S_Depth._default_component_types['zeta'] = Variable
 
-
+from .time import OutOfTimeRangeError
 
 __all__ = ["Variable",
            "VectorVariable",
@@ -26,5 +26,7 @@ __all__ = ["Variable",
            "Grid_S",
            "Grid_U",
            "Dataset",
-           "Time"]
+           "Time",
+           "OutOfTimeRangeError",
+           ]
 

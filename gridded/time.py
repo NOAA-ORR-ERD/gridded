@@ -9,6 +9,20 @@ from datetime import datetime, timedelta
 from gridded.utilities import get_dataset
 
 
+class OutOfTimeRangeError(ValueError):
+    """
+    Used for when data is asked for outside of the range of times supported by a Time object.
+    """
+    pass
+
+
+class TimeSeriesError(ValueError):
+    """
+    Used for when data is asked for outside of the range of times supported by a Time object.
+    """
+    pass
+
+
 class Time(object):
 
     # Used to make a singleton with the constant_time class method.
@@ -67,9 +81,9 @@ class Time(object):
                 self.data += timedelta(hours=tz_offset)
 
         if not self._timeseries_is_ascending(self.data):
-            raise ValueError("Time sequence is not ascending")
+            raise TimeSeriesError("Time sequence is not ascending")
         if self._has_duplicates(self.data):
-            raise ValueError("Time sequence has duplicate entries")
+            raise TimeSeriesError("Time sequence has duplicate entries")
 
         super(Time, self).__init__(*args, **kwargs)
 
@@ -219,6 +233,7 @@ class Time(object):
         return not ((time < self.min_time) or (time > self.max_time))
 
     def valid_time(self, time):
+<<<<<<< Updated upstream
         """
         Raises a ValueError if time is not within the bounds of the timeseries
         """
@@ -226,6 +241,13 @@ class Time(object):
         # if time < self.min_time or time > self.max_time:
             raise ValueError('time specified ({0}) is not within the bounds of the time ({1} to {2})'.format(
                 time.strftime('%c'), self.min_time.strftime('%c'), self.max_time.strftime('%c')))
+=======
+        if time < self.min_time or time > self.max_time:
+            raise OutOfTimeRangeError('time specified ({0}) is not within the bounds of '
+                                      'the time ({1} to {2})'.format(time.strftime('%c'),
+                                                                 self.min_time.strftime('%c'),
+                                                                 self.max_time.strftime('%c')))
+>>>>>>> Stashed changes
 
 
     def index_of(self, time, extrapolate=False):
