@@ -442,7 +442,7 @@ def search_netcdf_vars(cls=None, ds=None, dg=None):
 def can_create_class(cls, ds=None, dg=None):
     found_vars = search_netcdf_vars(cls, ds, dg)
     # all variables must be found (no None values)
-    return all(found_vars.values())
+    return not (None in found_vars.values())
 
 def varnames_merge(cls, inc_varnames=None):
     """
