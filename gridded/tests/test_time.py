@@ -235,7 +235,7 @@ def test_interp_alpha_outside(dt, expected):
     assert alpha == expected
 
 
-@pytest.mark.xfail
+#@pytest.mark.xfail
 @pytest.mark.parametrize("shift, expected",
                          [(-timedelta(days=365), 1.0),  # before
                           (timedelta(days=365), 1.0),  # after
@@ -245,17 +245,20 @@ def test_interp_alpha_constant_time(shift, expected):
     """
     What should the constant time Time object give for alphas?
 
-    I would expect always 1.0! It seems to be always 0.0
+    Turns out it should never be called.
 
-    Maybe this isn't used anywhere?
+    So is a bit of over testing, but there you go.
+
+    -- see gridded.Variable.at -- this won't get called for constant time object.
     """
     t = Time.constant_time()
 
-    print(t.data[0])
+    print(t.data)
+    print(t.min_time)
+    print(t.max_time)
 
-    # on the nose
-    alpha = t.interp_alpha(t.data[0] + shift)
-    assert alpha == expected
+    with pytest.raises(TimeSeriesError):
+        alpha = t.interp_alpha(t.data[0] + shift)
 
 # def test_index_of_contant_time():
 #     pass

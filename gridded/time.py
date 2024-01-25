@@ -279,13 +279,15 @@ class Time(object):
         :return: interpolation alpha
         :rtype: float (0 <= r <= 1)
         '''
+        if len(self.data) == 1:
+            raise TimeSeriesError("Can't compute interp_alpha for single time")
         if (not extrapolate) and (not len(self.data) == 1):
             self.valid_time(time)
         i0 = self.index_of(time, extrapolate)
         if i0 > len(self.data) - 1:
-            return 1
+            return 1.0
         if i0 == 0:
-            return 0
+            return 0.0
         t0 = self.data[i0 - 1]
         t1 = self.data[i0]
         return (time - t0).total_seconds() / (t1 - t0).total_seconds()
