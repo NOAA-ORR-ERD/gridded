@@ -3,8 +3,7 @@ from gridded.pysgrid.sgrid import SGrid
 from gridded.pyugrid.ugrid import UGrid
 import numpy as np
 
-#from gridded.utilities import get_dataset, parse_filename_dataset_args
-from gridded.utilities import get_dataset  # , gen_celltree_mask_from_center_mask
+from gridded.utilities import get_dataset, parse_filename_dataset_args
 
 
 class GridBase(object):

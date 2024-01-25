@@ -233,22 +233,11 @@ class Time(object):
         return not ((time < self.min_time) or (time > self.max_time))
 
     def valid_time(self, time):
-<<<<<<< Updated upstream
-        """
-        Raises a ValueError if time is not within the bounds of the timeseries
-        """
-        if not self.time_in_bounds(time):
-        # if time < self.min_time or time > self.max_time:
-            raise ValueError('time specified ({0}) is not within the bounds of the time ({1} to {2})'.format(
-                time.strftime('%c'), self.min_time.strftime('%c'), self.max_time.strftime('%c')))
-=======
         if time < self.min_time or time > self.max_time:
             raise OutOfTimeRangeError('time specified ({0}) is not within the bounds of '
                                       'the time ({1} to {2})'.format(time.strftime('%c'),
                                                                  self.min_time.strftime('%c'),
                                                                  self.max_time.strftime('%c')))
->>>>>>> Stashed changes
-
 
     def index_of(self, time, extrapolate=False):
         '''

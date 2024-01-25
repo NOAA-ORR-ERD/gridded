@@ -1,21 +1,18 @@
 #!/usr/bin/env python
 
-# py2/3 compatibility
-
 import copy
 from datetime import datetime, timedelta
 
 import numpy as np
 
-from gridded.time import Time
+from gridded.time import Time, TimeSeriesError, OutOfTimeRangeError
 
 import pytest
 
 SAMPLE_TIMESERIES = []
 start = datetime(2023, 11, 28, 12)
 dt = timedelta(minutes=15)
-for i in range(10):
-    SAMPLE_TIMESERIES.append(start + i * dt)
+SAMPLE_TIMESERIES = [(start + i * dt) for i in range(10)]
 STS = SAMPLE_TIMESERIES
 
 
@@ -29,7 +26,7 @@ def test_init():
 def test_init_with_timeseries():
     t = Time(SAMPLE_TIMESERIES)
 
-    # an implementaiton detail -- kindof
+    # an implementation detail -- kind of
     assert isinstance(t.data, np.ndarray)
 
 
@@ -67,7 +64,6 @@ def test_tz_offset_hours():
     assert t.data[-1] == SAMPLE_TIMESERIES[-1] + offset
 
 
-
 def test_get_time_array():
     t = Time(SAMPLE_TIMESERIES)
 
@@ -75,8 +71,6 @@ def test_get_time_array():
 
     assert ta is not t.data
     assert np.array_equal(ta, SAMPLE_TIMESERIES)
-
-
 
 
 def test_info():
@@ -102,7 +96,7 @@ def test_reset_data():
     t.data = SAMPLE_TIMESERIES
 
     assert np.array_equal(t.data, SAMPLE_TIMESERIES)
-    # an implementaiton detail, but want to make sure
+    # an implementation detail, but want to make sure
     assert isinstance(t.data, np.ndarray)
 
 
@@ -145,6 +139,7 @@ def test_eq_constant_time():
 
     assert t1 == t2
 
+
 def test_eq_different_type():
     """
     A Time object is never equal to any other type
@@ -159,7 +154,7 @@ def test_out_of_order():
     data2 = copy.copy(SAMPLE_TIMESERIES)
     data2.insert(1, data2[4])
 
-    with pytest.raises(ValueError):
+    with pytest.raises(TimeSeriesError):
         Time(data2)
 
 
@@ -167,8 +162,16 @@ def test_decending():
     data2 = copy.copy(SAMPLE_TIMESERIES)
     data2.reverse()
 
-    with pytest.raises(ValueError):
+    with pytest.raises(TimeSeriesError):
         Time(data2)
+
+
+def test_duplicate():
+    data2 = SAMPLE_TIMESERIES[:5] + SAMPLE_TIMESERIES[4:]
+
+    with pytest.raises(TimeSeriesError):
+        Time(data2)
+
 
 def test_min_max():
     t = Time(SAMPLE_TIMESERIES)
@@ -195,9 +198,9 @@ def test_valid_time():
     assert t.valid_time(SAMPLE_TIMESERIES[2] + timedelta(minutes=10)) is None
     assert t.valid_time(SAMPLE_TIMESERIES[-1]) is None
 
-    with pytest.raises(ValueError):
+    with pytest.raises(OutOfTimeRangeError):
         t.valid_time(SAMPLE_TIMESERIES[0] - timedelta(seconds=1))
-    with pytest.raises(ValueError):
+    with pytest.raises(OutOfTimeRangeError):
         t.valid_time(SAMPLE_TIMESERIES[-1] + timedelta(seconds=1))
 
 
@@ -225,7 +228,7 @@ def test_interp_alpha_outside(dt, expected):
     t = Time(SAMPLE_TIMESERIES)
 
     print(dt)
-    with pytest.raises(ValueError):
+    with pytest.raises(OutOfTimeRangeError):
         alpha = t.interp_alpha(dt)
 
     alpha = t.interp_alpha(dt, extrapolate=True)
@@ -240,7 +243,7 @@ def test_interp_alpha_outside(dt, expected):
                           ])
 def test_interp_alpha_constant_time(shift, expected):
     """
-    What should the constant time Time give for alphas?
+    What should the constant time Time object give for alphas?
 
     I would expect always 1.0! It seems to be always 0.0
 
@@ -254,10 +257,14 @@ def test_interp_alpha_constant_time(shift, expected):
     alpha = t.interp_alpha(t.data[0] + shift)
     assert alpha == expected
 
+# def test_index_of_contant_time():
+#     pass
+
 
 ## this needs a big data file -- could use some refactoring
 ## It would be good to test the netcdf stuff.
 ## there must be a sample file with time in it somewhere??
+## However -- this is testing a lot that doesn't need a data file.
 
 # class TestTime:
 #     time_var = circular_3D['time']
