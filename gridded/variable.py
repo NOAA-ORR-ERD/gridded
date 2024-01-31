@@ -13,7 +13,7 @@ from gridded.utilities import (get_dataset,
                                search_dataset_for_variables_by_varname)
 from gridded import VALID_LOCATIONS
 from gridded.grids import Grid, Grid_U, Grid_S, Grid_R
-from gridded.depth import Depth
+from gridded.depth import Depth, DepthBase
 from gridded.time import Time
 
 import logging
@@ -696,6 +696,13 @@ class Variable(object):
             val_func = self._xy_interp
         else:
             val_func = self._time_interp
+        
+        #special case to proceed for DepthBase
+        #if surface_index is -1 substitue the real last index
+        if isinstance(self.depth, DepthBase):
+            sl = self.depth.surface_index if self.depth.surface_index != -1 else self.data.shape[1] - 1
+            return val_func(points, time, extrapolate, slices=slices + (sl,), **kwargs)
+        
         d_indices, d_alphas = self.depth.interpolation_alphas(points,
                                                               time,
                                                               self.data.shape[1:],
@@ -717,7 +724,10 @@ class Variable(object):
         
         #the two cases may be optimizations that are not worth the trouble
         #if problems continue to arise, get rid of them
-        elif np.all(d_indices == -1) and not np.any(d_indices.mask):
+        #they are *meant* to handle cases where the particles are 'off grid'
+        #
+        elif np.all(d_indices == 0) and not np.any(d_indices.mask):
+            #all particles are 
             return val_func(points, time, extrapolate, slices=slices + (0,), **kwargs)
         elif np.all(d_indices == self.data.shape[dim_idx] - 1) and not np.any(d_indices.mask):
             return val_func(points, time, extrapolate, slices=slices + (self.data.shape[dim_idx] - 1,), **kwargs)
