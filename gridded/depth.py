@@ -47,6 +47,7 @@ class DepthBase(object):
                                 grid_file=None,
                                 data_file=None,):
         return True
+
     @classmethod
     def from_netCDF(cls,
                     surface_index=-1,
@@ -145,7 +146,7 @@ class DepthBase(object):
 
 
 class L_Depth(DepthBase):
-    
+
     default_terms = [('depth_levels')]
     default_names = {'depth_levels': ['depth','depth_levels', 'Depth']}
     cf_names = {'depth_levels': 'depth'}
@@ -154,11 +155,11 @@ class L_Depth(DepthBase):
                  terms=None,
                  **kwargs):
         super(L_Depth, self).__init__(**kwargs)
-        self.terms={}
+        self.terms = {}
         if terms is None:
             raise ValueError('Must provide terms for level depth coordinate')
         else:
-            self.terms=terms
+            self.terms = terms
             for k, v in terms.items():
                 setattr(self, k, v)
 
@@ -172,7 +173,7 @@ class L_Depth(DepthBase):
                                                  dataset=dataset,
                                                  grid_file=grid_file,
                                                  data_file=data_file)
-            
+
             return can_create_class(cls, ds, dg)
     @classmethod
     def from_netCDF(cls,
@@ -420,7 +421,7 @@ class S_Depth(DepthBase):
         Variable = cls._default_component_types['variable']
         Bathymetry = cls._default_component_types['bathymetry']
         Zeta = cls._default_component_types['zeta']
-        
+
         ds, dg = parse_filename_dataset_args(filename=filename,
                                              dataset=dataset,
                                              grid_file=grid_file,
@@ -516,7 +517,7 @@ class S_Depth(DepthBase):
                                                  dataset=dataset,
                                                  grid_file=grid_file,
                                                  data_file=data_file)
-            
+
             return can_create_class(cls, ds, dg)
 
     def __len__(self):
@@ -541,17 +542,17 @@ class S_Depth(DepthBase):
         '''
         :param points: array of points to interpolate to
         :type points: numpy array of shape (n, 3)
-        
+
         :param time: time to interpolate to
         :type time: datetime.datetime
-        
+
         :param data_shape: Shape of the variable to be interpolated. The first dimension is expected to be depth
         :type rho_or_w: tuple of int
-        
+
         :return: numpy array of shape (n, 1) of n surface level values
         '''
         raise NotImplementedError('get_surface_depth not implemented for S_Depth, required in subclasses')
-        
+
 
     def interpolation_alphas(self,
                              points,
@@ -690,22 +691,22 @@ class ROMS_Depth(S_Depth):
     @property
     def num_layers(self):
         return len(self.s_rho)
-            
+
     def get_transect(self, points, time, data_shape=None, _hash=None, **kwargs):
         '''
         :param points: array of points to interpolate to
         :type points: numpy array of shape (n, 3)
-        
+
         :param time: time to interpolate to
         :type time: datetime.datetime
-        
+
         :param data_shape: shape of the variable to be interpolated. This param is used to determine
         whether to index on the sigma layers or levels
         :type data_shape: tuple of int
-        
+
         :return: numpy array of shape (n, num_w_levels) of n s-coordinate transects
         '''
-        
+
         s_c = self.s_rho if data_shape[0] == self.num_layers else self.s_w
         C_s = self.Cs_r if data_shape[0] == self.num_layers else self.Cs_w
         h = self.bathymetry.at(points, time, unmask=False, _hash=_hash, **kwargs)
@@ -719,7 +720,7 @@ class ROMS_Depth(S_Depth):
             S = ((hc * s_c) + hCs) / (hc + h)
             s_coord = -(zeta + (zeta + h) * S)
         return s_coord
-    
+
 
 class FVCOM_Depth(S_Depth):
     _def_count = 0
@@ -732,7 +733,7 @@ class FVCOM_Depth(S_Depth):
         'h_center': ['h_center'], # bathymetry on centers
         'zeta': ['zeta'], # free surface
     }
-    
+
     cf_names = {
         'siglay': ['ocean_sigma/general_coordinate'],
         'siglay_center': ['ocean_sigma/general_coordinate'],
@@ -757,31 +758,31 @@ class FVCOM_Depth(S_Depth):
     @property
     def num_layers(self):
         return len(self.siglay)
-            
+
     def get_transect(self, points, time, data_shape=None, _hash=None, **kwargs):
         '''
         :param points: array of points to interpolate to
         :type points: numpy array of shape (n, 3)
-        
+
         :param time: time to interpolate to
         :type time: datetime.datetime
-        
+
         :param rho_or_w: 'rho' or 'w' to interpolate to rho or w points
         :type rho_or_w: string
-        
+
         :return: numpy array of shape (n, num_w_levels) of n s-coordinate transects
         '''
-        
+
         #because FVCOM sigma is defined for every node separately.
         sigma = self.grid.interpolate_var_to_points(points[:, 0:2], self.siglev[:].T, location='node')
-                
+
         bathy = self.bathymetry.at(points, time, unmask=False, _hash=_hash, **kwargs)
         zeta = self.zeta.at(points, time, unmask=False, _hash=_hash, **kwargs)
-        
+
         transects = -(zeta + (zeta + bathy) * sigma)
         breakpoint()
         return transects
-        
+
         # elif self.vtransform == 2:
         #     S = ((hc * s_c) + hCs) / (hc + h)
         #     s_coord = -(zeta + (zeta + h) * S)

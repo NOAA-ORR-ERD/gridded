@@ -1,18 +1,274 @@
 #!/usr/bin/env python
 
-# py2/3 compatibility
+import copy
+from datetime import datetime, timedelta
 
-from gridded.time import Time
+import numpy as np
+
+from gridded.time import Time, TimeSeriesError, OutOfTimeRangeError
+
+import pytest
+
+SAMPLE_TIMESERIES = []
+start = datetime(2023, 11, 28, 12)
+dt = timedelta(minutes=15)
+SAMPLE_TIMESERIES = [(start + i * dt) for i in range(10)]
+STS = SAMPLE_TIMESERIES
 
 
 def test_init():
     """
-    can one even be initialized?
+    can one even be initialized with no data?
     """
     t = Time()
 
 
+def test_init_with_timeseries():
+    t = Time(SAMPLE_TIMESERIES)
+
+    # an implementation detail -- kind of
+    assert isinstance(t.data, np.ndarray)
+
+
+def test_origin():
+    origin = datetime(1984, 1, 1, 6)
+    t = Time(SAMPLE_TIMESERIES, origin=origin)
+
+    assert t.data[0] == origin
+    assert t.data[-1] == origin + (SAMPLE_TIMESERIES[-1] - SAMPLE_TIMESERIES[0])
+
+
+def test_displacement():
+    disp = -timedelta(days=35, hours=12)
+    t = Time(SAMPLE_TIMESERIES, displacement=disp)
+
+    assert t.data[0] == SAMPLE_TIMESERIES[0] + disp
+    assert t.data[-1] == SAMPLE_TIMESERIES[-1] + disp
+
+
+def test_tz_offset():
+    offset = -8
+    offset = timedelta(hours=offset)
+    t = Time(SAMPLE_TIMESERIES, tz_offset=offset)
+
+    assert t.data[0] == SAMPLE_TIMESERIES[0] + offset
+    assert t.data[-1] == SAMPLE_TIMESERIES[-1] + offset
+
+
+def test_tz_offset_hours():
+    offset = -8
+    t = Time(SAMPLE_TIMESERIES, tz_offset=offset)
+
+    offset = timedelta(hours=offset)
+    assert t.data[0] == SAMPLE_TIMESERIES[0] + offset
+    assert t.data[-1] == SAMPLE_TIMESERIES[-1] + offset
+
+
+def test_get_time_array():
+    t = Time(SAMPLE_TIMESERIES)
+
+    ta = t.get_time_array()
+
+    assert ta is not t.data
+    assert np.array_equal(ta, SAMPLE_TIMESERIES)
+
+
+def test_info():
+    # just to make sure it's not broken
+    t = Time(SAMPLE_TIMESERIES)
+
+    info = t.info
+
+    print(info)
+
+    assert True
+
+
+def test_iter():
+    t = Time(SAMPLE_TIMESERIES)
+    data2 = list(t)
+
+    assert data2 == SAMPLE_TIMESERIES
+
+
+def test_reset_data():
+    t = Time()
+    t.data = SAMPLE_TIMESERIES
+
+    assert np.array_equal(t.data, SAMPLE_TIMESERIES)
+    # an implementation detail, but want to make sure
+    assert isinstance(t.data, np.ndarray)
+
+
+def test_eq():
+    t1 = Time(data=copy.copy(SAMPLE_TIMESERIES))
+    t2 = Time(data=copy.copy(SAMPLE_TIMESERIES))
+
+    assert t1 == t2
+
+
+def test_eq_diff_length():
+    data2 = copy.copy(SAMPLE_TIMESERIES)
+    del data2[-1]
+    t1 = Time(data=copy.copy(SAMPLE_TIMESERIES))
+    t2 = Time(data=data2)
+
+    assert t1 != t2
+
+
+def test_eq_diff_values():
+    data2 = copy.copy(SAMPLE_TIMESERIES)
+    data2[4] = data2[4] + timedelta(minutes=5)
+    t1 = Time(data=copy.copy(SAMPLE_TIMESERIES))
+    t2 = Time(data=data2)
+
+    assert t1 != t2
+
+
+def test_eq_diff_one_constant():
+    data2 = copy.copy(SAMPLE_TIMESERIES)
+    t1 = Time(data=data2)
+    t2 = Time(data=[data2[2]])
+
+    assert t1 != t2
+
+
+def test_eq_constant_time():
+    t1 = Time.constant_time()
+    t2 = Time.constant_time()
+
+    assert t1 == t2
+
+
+def test_eq_different_type():
+    """
+    A Time object is never equal to any other type
+    """
+    t = Time(SAMPLE_TIMESERIES)
+
+    assert not t == 'a string'
+    assert not "a string" == t
+
+
+def test_out_of_order():
+    data2 = copy.copy(SAMPLE_TIMESERIES)
+    data2.insert(1, data2[4])
+
+    with pytest.raises(TimeSeriesError):
+        Time(data2)
+
+
+def test_decending():
+    data2 = copy.copy(SAMPLE_TIMESERIES)
+    data2.reverse()
+
+    with pytest.raises(TimeSeriesError):
+        Time(data2)
+
+
+def test_duplicate():
+    data2 = SAMPLE_TIMESERIES[:5] + SAMPLE_TIMESERIES[4:]
+
+    with pytest.raises(TimeSeriesError):
+        Time(data2)
+
+
+def test_min_max():
+    t = Time(SAMPLE_TIMESERIES)
+
+    assert t.min_time == SAMPLE_TIMESERIES[0]
+    assert t.max_time == SAMPLE_TIMESERIES[-1]
+
+
+def test_time_in_bounds():
+    t = Time(SAMPLE_TIMESERIES)
+
+    assert t.time_in_bounds(SAMPLE_TIMESERIES[0])
+    assert t.time_in_bounds(SAMPLE_TIMESERIES[2] + timedelta(minutes=10))
+    assert t.time_in_bounds(SAMPLE_TIMESERIES[-1])
+
+    assert not t.time_in_bounds(SAMPLE_TIMESERIES[0] - timedelta(seconds=1))
+    assert not t.time_in_bounds(SAMPLE_TIMESERIES[-1] + timedelta(seconds=1))
+
+
+def test_valid_time():
+    t = Time(SAMPLE_TIMESERIES)
+
+    assert t.valid_time(SAMPLE_TIMESERIES[0]) is None
+    assert t.valid_time(SAMPLE_TIMESERIES[2] + timedelta(minutes=10)) is None
+    assert t.valid_time(SAMPLE_TIMESERIES[-1]) is None
+
+    with pytest.raises(OutOfTimeRangeError):
+        t.valid_time(SAMPLE_TIMESERIES[0] - timedelta(seconds=1))
+    with pytest.raises(OutOfTimeRangeError):
+        t.valid_time(SAMPLE_TIMESERIES[-1] + timedelta(seconds=1))
+
+
+@pytest.mark.parametrize("dt, expected",
+                         [(STS[3], 1.0),  # exact time
+                          (STS[4] + (STS[5] - STS[4]) / 2, 0.5),  # in the middle
+                          (STS[4] + (STS[5] - STS[4]) / 4, 0.25),  # in the middle
+                          (STS[0], 0.0),  # at the beginning
+                          (STS[-1], 1.0),  # at the end
+                          ])
+def test_interp_alpha(dt, expected):
+    t = Time(SAMPLE_TIMESERIES)
+
+    print(dt)
+    alpha = t.interp_alpha(dt)
+
+    assert alpha == expected
+
+
+@pytest.mark.parametrize("dt, expected",
+                         [(STS[0] - timedelta(seconds=1), 0.0),  # a little before
+                          (STS[-1] + timedelta(seconds=1), 1.0),  # a little after
+                          ])
+def test_interp_alpha_outside(dt, expected):
+    t = Time(SAMPLE_TIMESERIES)
+
+    print(dt)
+    with pytest.raises(OutOfTimeRangeError):
+        alpha = t.interp_alpha(dt)
+
+    alpha = t.interp_alpha(dt, extrapolate=True)
+    assert alpha == expected
+
+
+#@pytest.mark.xfail
+@pytest.mark.parametrize("shift, expected",
+                         [(-timedelta(days=365), 1.0),  # before
+                          (timedelta(days=365), 1.0),  # after
+                          (timedelta(0), 1.0),  # on the nose
+                          ])
+def test_interp_alpha_constant_time(shift, expected):
+    """
+    What should the constant time Time object give for alphas?
+
+    Turns out it should never be called.
+
+    So is a bit of over testing, but there you go.
+
+    -- see gridded.Variable.at -- this won't get called for constant time object.
+    """
+    t = Time.constant_time()
+
+    print(t.data)
+    print(t.min_time)
+    print(t.max_time)
+
+    with pytest.raises(TimeSeriesError):
+        alpha = t.interp_alpha(t.data[0] + shift)
+
+# def test_index_of_contant_time():
+#     pass
+
+
 ## this needs a big data file -- could use some refactoring
+## It would be good to test the netcdf stuff.
+## there must be a sample file with time in it somewhere??
+## However -- this is testing a lot that doesn't need a data file.
+
 # class TestTime:
 #     time_var = circular_3D['time']
 #     time_arr = nc.num2date(time_var[:], units=time_var.units)

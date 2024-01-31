@@ -9,7 +9,23 @@ from datetime import datetime, timedelta
 from gridded.utilities import get_dataset
 
 
+class OutOfTimeRangeError(ValueError):
+    """
+    Used for when data is asked for outside of the range of times supported by a Time object.
+    """
+    pass
+
+
+class TimeSeriesError(ValueError):
+    """
+    Used for when data is asked for outside of the range of times supported by a Time object.
+    """
+    pass
+
+
 class Time(object):
+
+    # Used to make a singleton with the constant_time class method.
     _const_time = None
 
     def __init__(self,
@@ -25,15 +41,20 @@ class Time(object):
         Representation of a time axis. Provides interpolation alphas and indexing.
 
         :param time: Ascending list of times to use
+        :type time: netCDF4.Variable or Sequence of `datetime.datetime`
+
         :param tz_offset: offset to compensate for time zone shifts
+        :type tz_offset: `datetime.timedelta` or float or integer hours
+
         :param origin: shifts the time interval to begin at the time specified
-        :param displacement: displacement to apply to the time data. Allows shifting entire time interval into future or past
-        :type time: netCDF4.Variable or [] of datetime.datetime
-        :type tz_offset: datetime.timedelta
-        :type origin: datetime.timedelta
-        :type displacement: datetime.timedelta
+        :type origin: `datetime.datetime`
+
+        :param displacement: displacement to apply to the time data.
+               Allows shifting entire time interval into future or past
+        :type displacement: `datetime.timedelta`
         '''
 
+        # fixme -- this conversion should be done in the netcdf loading code.
         if isinstance(data, (nc4.Variable, nc4._netCDF4._Variable)):
             if (hasattr(nc4, 'num2pydate')):
                 self.data = nc4.num2pydate(data[:], units=data.units)
@@ -53,18 +74,19 @@ class Time(object):
         self.filename = filename
         self.varname = varname
 
-#         if self.filename is None:
-#             self.filename = self.id + '_time.txt'
-
         if tz_offset is not None:
-            self.data += tz_offset
+            try:
+                self.data += tz_offset
+            except TypeError:
+                self.data += timedelta(hours=tz_offset)
 
         if not self._timeseries_is_ascending(self.data):
-            raise ValueError("Time sequence is not ascending")
+            raise TimeSeriesError("Time sequence is not ascending")
         if self._has_duplicates(self.data):
-            raise ValueError("Time sequence has duplicate entries")
+            raise TimeSeriesError("Time sequence has duplicate entries")
 
         super(Time, self).__init__(*args, **kwargs)
+
     @classmethod
     def from_netCDF(cls,
                     filename=None,
@@ -104,11 +126,18 @@ class Time(object):
                    varname=varname,
                    tz_offset=tz_offset,
                    **kwargs
-                       )
+                   )
         return time
 
     @classmethod
     def constant_time(cls):
+        """
+        Returns a Time object that represents no change in time
+
+        In practice, that's a Time object with a single datetime
+        """
+        # this caches a single instance of a constant time object
+        # in the class, and always returns the same one (a singleton)
         if cls._const_time is None:
             cls._const_time = cls(np.array([datetime.now()]))
         return cls._const_time
@@ -118,10 +147,12 @@ class Time(object):
         return self._data
 
     @data.setter
-    def data(self, d):
-        if isinstance(d, self.__class__) or d.__class__ in self.__class__.__mro__:
-            d = d.data
-        self._data = d
+    def data(self, data):
+        # If it's passed in a Time object, it gets its data object
+        # Fixme: Why? this seems like more magic than necessary
+        if isinstance(data, self.__class__) or data.__class__ in self.__class__.__mro__:
+            data = data.data
+        self._data = np.asarray(data)
 
     @property
     def info(self):
@@ -149,11 +180,14 @@ class Time(object):
         return len(self.data)
 
     def __iter__(self):
-        return self.data.__iter__()
+        return iter(self.data)
 
     def __eq__(self, other):
-        r = self.data == other.data
-        return all(r) if hasattr(r, '__len__') else r
+        # r = self.data == other.data
+        # return all(r) if hasattr(r, '__len__') else r
+        if not isinstance(other, self.__class__):
+            return False
+        return np.array_equal(self.data, other.data)
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -183,31 +217,39 @@ class Time(object):
         return self.data[-1]
 
     def get_time_array(self):
-        return self.data[:]
+        """
+        returns a copy of the internal data array
+        """
+        return self.data.copy()
 
     def time_in_bounds(self, time):
         '''
         Checks if time provided is within the bounds represented by this object.
 
         :param time: time to be queried
-        :type time: datetime.datetime
-        :rtype: boolean
+        :type time: `datetime.datetime`
+        :rtype: bool
         '''
-        return not time < self.min_time or time > self.max_time
+        return not ((time < self.min_time) or (time > self.max_time))
 
     def valid_time(self, time):
         if time < self.min_time or time > self.max_time:
-            raise ValueError('time specified ({0}) is not within the bounds of the time ({1} to {2})'.format(
-                time.strftime('%c'), self.min_time.strftime('%c'), self.max_time.strftime('%c')))
+            raise OutOfTimeRangeError('time specified ({0}) is not within the bounds of '
+                                      'the time ({1} to {2})'.format(time.strftime('%c'),
+                                                                 self.min_time.strftime('%c'),
+                                                                 self.max_time.strftime('%c')))
 
     def index_of(self, time, extrapolate=False):
         '''
         Returns the index of the provided time with respect to the time intervals in the file.
 
         :param time: Time to be queried
-        :param extrapolate:
-        :type time: datetime.datetime
-        :type extrapolate: boolean
+        :type time: `datetime.datetime`
+
+        :param extrapolate: whether to allow extrapolation:
+                            i.e. will not raise if outside the bounds of the time data.
+        :type extrapolate: bool
+
         :return: index of first time before specified time
         :rtype: integer
         '''
@@ -218,24 +260,34 @@ class Time(object):
             index = 0
         return index
 
+
     def interp_alpha(self, time, extrapolate=False):
         '''
         Returns interpolation alpha for the specified time
 
+        This is the weighting to give the index before
+        -- 1-alpha would be the weight to the index after.
+
+
         :param time: Time to be queried
-        :param extrapolate:
-        :type time: datetime.datetime
-        :type extrapolate: boolean
+        :type time: `datetime.datetime`
+
+        :param extrapolate: if True, 0.0 (before) or 1.0 (after) is returned.
+                            if False, a ValueError is raised if outside the time series.
+        :type extrapolate: bool
+
         :return: interpolation alpha
-        :rtype: double (0 <= r <= 1)
+        :rtype: float (0 <= r <= 1)
         '''
-        if not len(self.data) == 1 or not extrapolate:
+        if len(self.data) == 1:
+            raise TimeSeriesError("Can't compute interp_alpha for single time")
+        if (not extrapolate) and (not len(self.data) == 1):
             self.valid_time(time)
         i0 = self.index_of(time, extrapolate)
         if i0 > len(self.data) - 1:
-            return 1
+            return 1.0
         if i0 == 0:
-            return 0
+            return 0.0
         t0 = self.data[i0 - 1]
         t1 = self.data[i0]
         return (time - t0).total_seconds() / (t1 - t0).total_seconds()
