@@ -43,7 +43,7 @@ def get_fvcom_depth():
     return FVCOM_Depth.from_netCDF(data_file=ds, grid_file=ds)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def get_roms_depth():
     """
     This is setup for a ROMS S-level Depth that is on a square grid with a center
@@ -131,31 +131,191 @@ def get_l_depth():
     )
     return ld1, ld2
 
+class Test_S_Depth(object):
+    def test_apply_boundary_conditions(self):
+        #Test 1 surf 0 bottom 9 surf extrapolate bottom mask
+        depths = [-0.1, 0, 0.1, 1, 6, 8, 8.9, 9, 9.1] #for human reference
+        #v = v1 - (1-a)*(v1 - v0)
+        indices = np.ma.masked_array(data=np.array([-1, 0, 0, 1, 3, 8, 8, 9, 9]), mask = np.zeros((9), dtype=bool))
+        indices.mask[4] = True
+        alphas = np.ma.masked_array(data=np.ones((indices.shape))*np.nan, mask=np.zeros((indices.shape), dtype=bool))
+        alphas.mask[4] = True
+        surface_index = 0
+        bottom_index = 9
+        surface_boundary_condition = 'extrapolate'
+        bottom_boundary_condition = 'mask'
+        expected_indices = indices.copy()
+        expected_indices.mask[-2:] = True # [False, False, False, False, True, False, False, True, True]
+        
+        expected_alphas = alphas.copy()
+        expected_alphas[:] = [1, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, 10000, 10000]
+        expected_alphas.mask = alphas.mask.copy()
+        expected_alphas.mask[-2:] = True # [False, False, False, False, True, False, False, True, True]
+        #10K doesnt actually matter, just an alternative to nan since they should be masked
+        sd = S_Depth(terms={'s_w':np.arange(0,-1, 10)})
+        idx, alp, oob_mask = sd._apply_boundary_conditions(indices, alphas, surface_index, bottom_index, surface_boundary_condition, bottom_boundary_condition)
+        assert np.all(idx == expected_indices)
+        assert np.all(idx.mask == expected_indices.mask)
+        assert alp[0] == expected_alphas[0]
+        assert alp[4] is np.ma.masked
+        assert alp[-2] is np.ma.masked
+        assert alp[-1] is np.ma.masked
+        assert np.all(alp.mask == expected_alphas.mask)
+        
+        #Test 2 surf 9 bottom 0 surf extrapolate bottom mask
+        depths = [-1, 0, 0.1, 1, 6, 8, 8.9, 9, 9.1] #for human reference
+        #v = v1 - (1-a)*(v1 - v0)
+        indices = np.ma.masked_array(data=np.array([9, 8, 8, 7, 3, 1, 0, 0, -1]), mask = np.zeros((9), dtype=bool))
+        indices.mask[4] = True
+        alphas = np.ma.masked_array(data=np.ones((indices.shape))*np.nan, mask=np.zeros((indices.shape), dtype=bool))
+        alphas.mask[4] = True
+        surface_index = 9
+        bottom_index = 0
+        surface_boundary_condition = 'extrapolate'
+        bottom_boundary_condition = 'mask'
+        expected_indices = indices.copy()
+        expected_indices.mask[-1] = True # [True, True, False, False, True, False, False, False, False]
+        
+        expected_alphas = alphas.copy()
+        expected_alphas[:] = [0, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, 1]
+        expected_alphas.mask = alphas.mask.copy()
+        expected_alphas.mask[-1] = True # [True, True, False, False, True, False, False, False, False]
+        #10K doesnt actually matter, just an alternative to nan since they should be masked
+        
+        sd = S_Depth(terms={'s_w':np.arange(-1,0, 10)})
+        idx, alp, oob_mask = sd._apply_boundary_conditions(indices, alphas, surface_index, bottom_index, surface_boundary_condition, bottom_boundary_condition)
+        assert np.all(idx == expected_indices)
+        assert np.all(idx.mask == expected_indices.mask)
+        assert alp[0] == expected_alphas[0]
+        assert alp[4] is np.ma.masked
+        assert alp[-1] is np.ma.masked
+        assert np.all(alp.mask == expected_alphas.mask)
+        
+        #Test 3 surf 9 bottom 0 surf extrapolate bottom extrapolate
+        depths = [-1, 0, 0.1, 1, 6, 8, 8.9, 9, 9.1] #for human reference
+        #v = v1 - (1-a)*(v1 - v0)
+        indices = np.ma.masked_array(data=np.array([9, 8, 8, 7, 3, 1, 0, 0, -1]), mask = np.zeros((9), dtype=bool))
+        indices.mask[4] = True
+        alphas = np.ma.masked_array(data=np.ones((indices.shape))*np.nan, mask=np.zeros((indices.shape), dtype=bool))
+        alphas.mask[4] = True
+        surface_index = 9
+        bottom_index = 0
+        surface_boundary_condition = 'extrapolate'
+        bottom_boundary_condition = 'extrapolate'
+        expected_indices = indices.copy()
+        
+        expected_alphas = alphas.copy()
+        expected_alphas[:] = [0, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, 1]
+        expected_alphas.mask = alphas.mask.copy()
+        #10K doesnt actually matter, just an alternative to nan since they should be masked
+        
+        sd = S_Depth(terms={'s_w':np.arange(-1,0, 10)})
+        idx, alp, oob_mask = sd._apply_boundary_conditions(indices, alphas, surface_index, bottom_index, surface_boundary_condition, bottom_boundary_condition)
+        assert np.all(idx == expected_indices)
+        assert np.all(idx.mask == expected_indices.mask)
+        assert alp[0] == 0
+        assert alp[4] is np.ma.masked
+        assert alp[-1] == 1
+        assert np.all(alp.mask == expected_alphas.mask)
+        
+    def test_mask_surface(self):
+        #Test 3 surf 9 bottom 0 surf extrapolate bottom extrapolate
+        depths = [-1, 0, 0.1, 1, 6, 8, 8.9, 9, 9.1] #for human reference
+        #v = v1 - (1-a)*(v1 - v0)
+        indices = np.ma.masked_array(data=np.array([9, 8, 8, 7, 3, 1, 0, 0, -1]), mask = np.zeros((9), dtype=bool))
+        indices.mask[4] = True
+        alphas = np.ma.masked_array(data=np.ones((indices.shape))*np.nan, mask=np.zeros((indices.shape), dtype=bool))
+        alphas.mask[4] = True
+        surface_index = 9
+        bottom_index = 0
+        surface_boundary_condition = 'mask'
+        bottom_boundary_condition = 'mask'
+        expected_indices = indices.copy()
+        expected_indices.mask[0] = True
+        expected_indices.mask[-1] = True
+        
+        expected_alphas = alphas.copy()
+        expected_alphas[:] = [0, 1, np.nan, np.nan, np.nan, np.nan, np.nan, 0, 1]
+        expected_alphas.mask = alphas.mask.copy()
+        expected_alphas.mask[0] = True
+        expected_alphas.mask[-1] = True
+        
+        sd = S_Depth(terms={'s_w':np.arange(-1,0, 10)})
+        idx, alp, oob_mask = sd._apply_boundary_conditions(indices, alphas, surface_index, bottom_index, surface_boundary_condition, bottom_boundary_condition)
+        assert np.all(idx == expected_indices)
+        assert np.all(idx.mask == expected_indices.mask)
+        assert alp[0] is np.ma.masked
+        assert alp[4] is np.ma.masked
+        assert alp[-1] is np.ma.masked
+        assert np.all(alp.mask == expected_alphas.mask)
+            
 
 class Test_ROMS_Depth(object):
     def test_construction(self, get_roms_depth):
         assert get_roms_depth is not None
         assert get_roms_depth.num_levels == 11
 
-    def test_interpolation_alphas_bottom(self, get_roms_depth):
+    def test_interpolation_alphas(self, get_roms_depth):
         '''
         We will focus on the center mound to see if the correct alphas and
         indices are returned for various points nearby.
         interpolation_alphas(self, points, time, data_shape, _hash=None, extrapolate=False):
-        '''
-        sd = get_roms_depth
+        
+        With ROMS, the bottom level is index 0 and the top level is last index (in this case, 10)
         # query center mound (20,20) at 3 depths. 1st point is 0.1m off the seafloor and 10% of
         # the distance to the next s-layer (meaning, expected alpha returned is 10%)
-        # 2nd point is directly on the seafloor (should register as 'in bounds' and 0 alpha)
+        # this is an index of 0 and an alpha of 0.1
+        # 2nd point is directly on the seafloor (should register as 'in bounds' index 0 and 0 alpha)
         # 3rd point is 0.1m underground, and should indicate with masked value.
-        # 4th point is off grid, masked expected.
-        # 5th point is above grid, 0 or masked expected depending on boundary condition
-        points = np.array([[20,20, 9.9],[20,20,10.0], [20,20,10.1], [-1, -1, 5], [20, 20, -0.1]])
+        # 4th point is off grid, masked index and alpha expected.
+        # 5th point is 0.1m ABOVE surface. Expected index of 10 and alpha of 0
+        # 6th point is directly at surface. Expected index of 10 and alpha of 0
+        #7th point is 0.1m below surface. Expected index of 9 and alpha of 0.9
+        '''
+        sd = get_roms_depth
+        points = np.array([[20,20, 9.9],[20,20,10.0], [20,20,10.1], [-1, -1, 5], [20, 20, -0.1], [20, 20, 0], [20,20, 0.1]])
         ts = sd.time.data[1]
         assert sd.default_bottom_boundary_condition == 'mask'
         idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_levels,])
-        expected_idx = np.ma.array(np.array([0,0,-1,-1,10]), mask = [False, False, True, True, False])
-        expected_alpha = np.ma.array(np.array([0.1, 0, -1, -1, 0]), mask = [False, False, True, True, False])
+        expected_idx = np.ma.array(np.array([0, -1000, -1000, -1000, 10, 9, 9]), mask = [False, True, True, True, False, False, False])
+        expected_alpha = np.ma.array(np.array([0.1, -1000, -1000, -1000, 0, 1, 0.9]), mask = [False, True, True, True, False, False, False])
+        assert np.all(idx == expected_idx)
+        assert np.all(np.isclose(alphas, expected_alpha))
+        
+        sd.default_bottom_boundary_condition == 'extrapolate'
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_levels,])
+        expected_idx = np.ma.array(np.array([0, -1000,-1000, -1000, 10, 9, 9]), mask = [False, False, True, True, False, False, False])
+        expected_alpha = np.ma.array(np.array([0.1, -1000, -1000, -1000, 0, 1, 0.9]), mask = [False, False, True, True, False, False, False])
+        assert np.all(idx == expected_idx)
+        assert np.all(np.isclose(alphas, expected_alpha))
+
+    def test_interpolation_alphas_reversed(self, get_roms_depth):
+        '''
+        Same as the previous test, but with the depth system reversed as it may be in FVCOM
+        
+        # query center mound (20,20) at 3 depths. 1st point is 0.1m off the seafloor and 10% of
+        # the distance to the next s-layer (meaning, expected alpha returned is 10%)
+        # 1st point is 0.1 off the seafloor this is an index of 9 and an alpha of 0.9
+        # 2nd point is directly on the seafloor (should register as 'in bounds' index 10 and 0 alpha)
+        # 3rd point is 0.1m underground, and should indicate with masked value.
+        # 4th point is off grid, masked index and alpha expected.
+        # 5th point is 0.1m ABOVE surface. Expected index of 0 and alpha of 0
+        # 6th point is directly at surface. Expected index of 0 and alpha of 0
+        #7th point is 0.1m below surface. Expected index of 1 and alpha of 0.1
+        '''
+        sd = get_roms_depth
+        sd.Cs_r = sd.Cs_r[::-1]
+        sd.Cs_w = sd.Cs_w[::-1]
+        sd.hc = sd.hc[::-1]
+        sd.s_rho = sd.s_rho[::-1]
+        sd.s_w = sd.s_w[::-1]
+        
+        points = np.array([[20,20, 9.9],[20,20,10.0], [20,20,10.1], [-1, -1, 5], [20, 20, -0.1], [20, 20, 0], [20,20, 0.1]])
+        ts = sd.time.data[1]
+        assert sd.default_bottom_boundary_condition == 'mask'
+        idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_levels,])
+        expected_idx = np.ma.array(np.array([9, -1000, -1000, -1000, -1, 0, 0]), mask = [False, True, True, True, False, False, False])
+        expected_alpha = np.ma.array(np.array([0.9, -1000, -1000, -1000, 1, 0, 0.1]), mask = [False, True, True, True, False, False, False])
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
         
@@ -163,30 +323,35 @@ class Test_ROMS_Depth(object):
         idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_levels,])
         expected_idx = np.ma.array(np.array([0,0,-1]), mask = [False, False, False])
         expected_alpha = np.ma.array(np.array([0.1, 0, 1]), mask = [False, False, False])
+        
+        expected_idx = np.ma.array(np.array([9, 9, -1000, -1000, -1, 0, 0]), mask = [False, False, True, True, False, False, False])
+        expected_alpha = np.ma.array(np.array([0.9, 0, -1000, -1000, 1, 0, 0.1]), mask = [False, False, True, True, False, False, False])
+        assert np.all(idx == expected_idx)
+        assert np.all(np.isclose(alphas, expected_alpha))
 
     def test_interpolation_alphas_surface(self, get_roms_depth):
         sd = get_roms_depth
-        points = np.array([[20,20, 0],[20,20,0.1], [20,20,-0.1]])
+        points = np.array([[20,20, -0.1],[20,20,0], [20,20,0.1]])
         ts = sd.time.data[1]
         assert sd.default_surface_boundary_condition == 'extrapolate'
         idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_levels,])
         # only the element 0.1m deep should register with an index and alpha since
         # it is the only element below surface.
-        expected_idx = np.ma.array(np.array([10,9,10]), mask = [False, False, False])
-        expected_alpha = np.ma.array(np.array([0, 0.9, 0]), mask = [False, False, False])
+        expected_idx = np.ma.array(np.array([10,9,9]), mask = [False, False, False])
+        expected_alpha = np.ma.array(np.array([0, 1, 0.9]), mask = [False, False, False])
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
         
-        sd.default_surface_boundary_condition == 'mask'
+        sd.default_surface_boundary_condition = 'mask'
         idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_levels,])
         # only the element 0.1m deep should register with an index and alpha since
         # it is the only element below surface.
-        expected_idx = np.ma.array(np.array([-1,9,-1]), mask = [True, False, True])
-        expected_alpha = np.ma.array(np.array([0, 0.9, 0]), mask = [True, False, True])
+        expected_idx = np.ma.array(np.array([-1,9,9]), mask = [True, False, False])
+        expected_alpha = np.ma.array(np.array([0, 1, 0.9]), mask = [True, False, False])
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
 
-        sd.default_surface_boundary_condition == 'extrapolate'
+        sd.default_surface_boundary_condition = 'extrapolate'
         # switch to timestep with -0.5m zeta
         ts = sd.time.data[0]
         idx, alphas = sd.interpolation_alphas(points, ts, [sd.num_levels,])
