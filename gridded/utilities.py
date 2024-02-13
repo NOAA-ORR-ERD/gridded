@@ -368,17 +368,22 @@ def parse_filename_dataset_args(filename=None,
                                 grid_file=None,):
     """A perinnial problem is that we need to be able to accept a variety of
     filename/dataset arguments. This function will return a tuple of 'ds' and 'dg'
-    where ds is the dataset for the data and dg is the dataset for the grid. If such
+    where ds is the netCDF4.Dataset for the data and dg is the netCDF4.Dataset for the grid. If such
     datasets are from the same file, it will return the same object for both.
+    
+    :param filename: str or pathlike
+    :param dataset: netCDF4.Dataset
+    :param data_file: str, pathlike, or netCDF4.Dataset
+    :param grid_file: str, pathlike, or netCDF4.Dataset
     """
+    ds = None
+    dg = None
     if filename is not None:
         try:
             filename = os.fspath(filename)
         except TypeError:
             pass
         data_file = grid_file = filename
-    ds = None
-    dg = None
     if dataset is None:
         if grid_file == data_file:
             ds = dg = get_dataset(grid_file)

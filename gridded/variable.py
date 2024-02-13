@@ -244,11 +244,10 @@ class Variable(object):
                             varname=time.varname,
                             origin=time_origin)
         if depth is None:
-                depth = Depth.from_netCDF(filename=filename,
-                                          data_file=data_file,
-                                          grid_file=grid_file,
-                                          time=time,
-                                          grid=grid,
+            if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
+                    isinstance(grid, Grid_U) and len(data.shape) == 3):
+                depth = Depth.from_netCDF(grid_file=dg,
+                                          dataset=ds,
                                           **kwargs
                                           )
         if location is None:
@@ -939,11 +938,14 @@ class VectorVariable(object):
             if time_origin is not None:
                 time = Time(data=time.data, filename=data_file, varname=time.varname, origin=time_origin)
         if depth is None:
-                depth = Depth.from_netCDF(filename=filename,
-                                          data_file=data_file,
-                                          grid_file=grid_file,
-                                          time=time,
-                                          grid=grid,
+            #before refactoring this, note that not being selective about looking for
+            #depth can cause infinite recursion. For example, if Bathymetry is sought
+            #to create the ROMS_Depth object, which then seeks a Depth object which then
+            #seeks a Bathymetry object.
+            if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
+                    isinstance(grid, Grid_U) and len(data.shape) == 3):
+                depth = Depth.from_netCDF(grid_file=dg,
+                                          dataset=ds,
                                           **kwargs
                                           )
         if variables is None:
