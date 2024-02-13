@@ -10,7 +10,8 @@ from gridded.utilities import (get_dataset,
                                _reorganize_spatial_data,
                                _align_results_to_spatial_data,
                                asarraylike,
-                               search_dataset_for_variables_by_varname)
+                               search_dataset_for_variables_by_varname,
+                               parse_filename_dataset_args)
 from gridded import VALID_LOCATIONS
 from gridded.grids import Grid, Grid_U, Grid_S, Grid_R
 from gridded.depth import Depth, DepthBase
@@ -208,23 +209,11 @@ class Variable(object):
         if filename is not None:
             data_file = filename
             grid_file = filename
-
-        ds = None
-        dg = None
-        if dataset is None:
-            if grid_file == data_file:
-                ds = dg = get_dataset(grid_file)
-            else:
-                ds = get_dataset(data_file)
-                dg = get_dataset(grid_file)
-        else:
-            if grid_file is not None:
-                dg = get_dataset(grid_file)
-            else:
-                dg = dataset
-            ds = dataset
-        if data_file is None:
-            data_file = os.path.split(ds.filepath())[-1]
+            
+        ds, dg = parse_filename_dataset_args(filename=filename,
+                                             dataset=dataset,
+                                             grid_file=grid_file,
+                                             data_file=data_file)
 
         if grid is None:
             grid = Grid.from_netCDF(grid_file,
@@ -255,10 +244,11 @@ class Variable(object):
                             varname=time.varname,
                             origin=time_origin)
         if depth is None:
-            if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
-                    isinstance(grid, Grid_U) and len(data.shape) == 3):
-                depth = Depth.from_netCDF(grid_file=dg,
-                                          dataset=ds,
+                depth = Depth.from_netCDF(filename=filename,
+                                          data_file=data_file,
+                                          grid_file=grid_file,
+                                          time=time,
+                                          grid=grid,
                                           **kwargs
                                           )
         if location is None:
@@ -923,22 +913,12 @@ class VectorVariable(object):
         if filename is not None:
             data_file = filename
             grid_file = filename
-
-        ds = None
-        dg = None
-        if dataset is None:
-            if grid_file == data_file:
-                ds = dg = get_dataset(grid_file)
-            else:
-                ds = get_dataset(data_file)
-                dg = get_dataset(grid_file)
-        else:
-            if grid_file is not None:
-                dg = get_dataset(grid_file)
-            else:
-                dg = dataset
-            ds = dataset
-
+            
+        ds, dg = parse_filename_dataset_args(filename=filename,
+                                                dataset=dataset,
+                                                grid_file=grid_file,
+                                                data_file=data_file)
+        
         if grid is None:
             grid = Grid.from_netCDF(grid_file,
                                     dataset=dg,
@@ -959,24 +939,13 @@ class VectorVariable(object):
             if time_origin is not None:
                 time = Time(data=time.data, filename=data_file, varname=time.varname, origin=time_origin)
         if depth is None:
-            if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
-                    isinstance(grid, Grid_U) and len(data.shape) == 3):
-                depth = Depth.from_netCDF(grid_file,
-                                          dataset=dg,
+                depth = Depth.from_netCDF(filename=filename,
+                                          data_file=data_file,
+                                          grid_file=grid_file,
+                                          time=time,
+                                          grid=grid,
                                           **kwargs
                                           )
-
-#         if depth is None:
-#             if (isinstance(grid, Grid_S) and len(data.shape) == 4 or
-#                         (len(data.shape) == 3 and time is None) or
-#                     (isinstance(grid, Grid_U) and len(data.shape) == 3 or
-#                         (len(data.shape) == 2 and time is None))):
-#                 from gnome.environment.environment_objects import S_Depth
-#                 depth = S_Depth.from_netCDF(grid=grid,
-#                                             depth=1,
-#                                             data_file=data_file,
-#                                             grid_file=grid_file,
-#                                             **kwargs)
         if variables is None:
             variables = []
             for vn in varnames:

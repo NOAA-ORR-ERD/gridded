@@ -426,8 +426,6 @@ class S_Depth(DepthBase):
                                              dataset=dataset,
                                              grid_file=grid_file,
                                              data_file=data_file)
-        if data_file is None:
-            data_file = os.path.split(ds.filepath())[-1]
 
         if grid is None:
             grid = Grid.from_netCDF(dataset=dg,
@@ -513,12 +511,20 @@ class S_Depth(DepthBase):
                                 dataset=None,
                                 grid_file=None,
                                 data_file=None,):
-            ds, dg = parse_filename_dataset_args(filename=filename,
-                                                 dataset=dataset,
-                                                 grid_file=grid_file,
-                                                 data_file=data_file)
+        ds, dg = parse_filename_dataset_args(filename=filename,
+                                                dataset=dataset,
+                                                grid_file=grid_file,
+                                                data_file=data_file)
 
-            return can_create_class(cls, ds, dg)
+        found_vars = search_netcdf_vars(cls, ds, dg)
+        #necessary to support optional zeta when called from Depth.from_netCDF
+        #this is a hack that circumvents the 'can_create_class' function
+        #what we really need is a way to specify that a sought attriubute is optional
+        #in the 'schema' (default_names, cf_names, etc)
+        if found_vars['zeta'] is None: 
+            found_vars.pop('zeta', None)
+        # all variables must be found (no None values)
+        return not (None in found_vars.values())
 
     def __len__(self):
         return self.num_levels
@@ -861,4 +867,8 @@ class Depth(object):
             typ = typs[np.argmax(available_to_create)]
             if sum(available_to_create) > 1:
                 warnings.warn('''Multiple depth systems detected. Using the first one found: {0}'''.format(typ.__repr__), RuntimeWarning)
-            return typ.from_netCDF(data_file=ds, grid_file=dg, **kwargs)
+            return typ.from_netCDF(filename=filename,
+                                   dataset=dataset,
+                                   data_file=data_file,
+                                   grid_file=grid_file,
+                                   **kwargs)
