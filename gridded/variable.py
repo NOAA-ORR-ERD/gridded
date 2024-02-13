@@ -518,7 +518,6 @@ class Variable(object):
     def dimension_ordering(self, order):
         self._order = order
 
-#     @profile
     def at(self,
            points=None,
            time=None,
@@ -570,7 +569,12 @@ class Variable(object):
 
         :return: returns a Nx1 array of interpolated values
         :rtype: double
+
+        If time is out of bounds of the time series, and extrapolate is False, a
+        gridded.time.OutOfTimeRangeError is raised.
+
         """
+
         if points is None and (lons is None or lats is None):
             raise ValueError("Must provide either points or separate lons and lats")
         if points is None:
@@ -1217,6 +1221,10 @@ class VectorVariable(object):
 
         :return: NxM array of interpolated values N = len(points) M = len(self.variables)
         :rtype: np.array or np.ma.MaskedArray
+
+        If time is out of bounds of the time series, and extrapolate is False, a
+        gridded.time.OutOfTimeRangeError is raised.
+
         """
         if points is None and (lons is None or lats is None):
             raise ValueError("Must provide either points or separate lons and lats")

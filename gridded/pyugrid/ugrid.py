@@ -874,8 +874,12 @@ class UGrid(object):
 
         This is a not-very-smart just loop through all the faces method.
 
+        If face_face_connectivity is None, it will be computed
         """
+
         boundaries = []
+        if self.face_face_connectivity is None:
+            self.build_face_face_connectivity()
         for i, face in enumerate(self.face_face_connectivity):
             for j, neighbor in enumerate(face):
                 if neighbor == -1:

@@ -32,9 +32,10 @@ class DepthBase(object):
                  **kwargs):
         '''
         :param surface_index: array index of 'highest' level (closest to sea level)
+
         :param bottom_index: array index of 'lowest' level (closest to seafloor)
         '''
-        self.name=name
+        self.name = name
         self.surface_index = surface_index
         self.bottom_index = bottom_index
         self.default_surface_boundary_condition = default_surface_boundary_condition
@@ -210,9 +211,13 @@ class L_Depth(DepthBase):
                              *args,
                              **kwargs):
         '''
-        Returns a pair of values. The 1st value is an array of the depth indices of all the particles.
-        The 2nd value is an array of the interpolation alphas for the particles between their depth
-        index and depth_index+1. If both values are None, then all particles are on the surface layer.
+        Returns a pair of values.
+
+        The 1st value is an array of the depth indices of all the particles.
+
+        The 2nd value is an array of the interpolation alphas for the particles
+        between their depth index and depth_index+1. If both values are None,
+        then all particles are on the surface layer.
         '''
         points = np.asarray(points, dtype=np.float64)
         points = points.reshape(-1, 3)
@@ -230,19 +235,19 @@ class L_Depth(DepthBase):
         L1 = self.depth_levels[-1]
         idxs = np.digitize(depths, self.depth_levels, right=False if L0 < L1 else True) - 1
         indices = np.ma.MaskedArray(data=idxs, mask=np.zeros((len(idxs)), dtype=bool))
-        
+
         alphas = np.ma.MaskedArray(data=np.empty((len(points)), dtype=np.float64) * np.nan, mask=np.zeros((len(points)), dtype=bool))
-        
-        #set above surface and below seafloor alphas to allow future filtering
-        
+
+        # set above surface and below seafloor alphas to allow future filtering
+
         if L0 < L1:
-            #0, 1, 2, 3, 4, 5, 6
+            # 0, 1, 2, 3, 4, 5, 6
             above_surface = indices == -1
             above_alpha = 1
             below_bottom = indices == (len(self.depth_levels) - 1)
             below_alpha = 0
         else:
-            #6, 5, 4, 3, 2, 1, 0
+            # 6, 5, 4, 3, 2, 1, 0
             above_surface = indices == (len(self.depth_levels) - 1)
             above_alpha = 0
             below_bottom = indices == -1
@@ -736,17 +741,21 @@ class FVCOM_Depth(S_Depth):
         #     s_coord = -(zeta + (zeta + h) * S)
         # if no stretching or crit depth (hc, Cs_r, Cs_w) then S = s_c
 
-class Depth(object):
+
+class Depth():
     '''
-    Factory class that generates depth objects. Also handles common loading and
-    parsing operations
+    Factory class that generates depth objects.
+
+    Also handles common loading and parsing operations
     '''
     ld_types = [L_Depth]
     sd_types = [ROMS_Depth, FVCOM_Depth]
     surf_types = [DepthBase]
+
     def __init__(self):
         raise NotImplementedError("Depth is not meant to be instantiated. "
                                   "Please use the 'from_netCDF' or 'surface_only' function")
+
     @staticmethod
     def surface_only(surface_index=-1,
                      **kwargs):
@@ -767,12 +776,15 @@ class Depth(object):
         '''
         :param filename: File containing a depth
         :type filename: string or list of string
+
         :param dataset: Takes precedence over filename, if provided.
         :type dataset: netCDF4.Dataset
+
         :param depth_type: Must be provided if autodetection is not possible.
             See Depth.ld_names, Depth.sd_names, and Depth.surf_names for the
             expected values for this argument
         :type depth_type: string
+
         :returns: Instance of L_Depth or S_Depth
         '''
         ds, dg = parse_filename_dataset_args(filename=filename,

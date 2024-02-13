@@ -23,6 +23,7 @@ def get_test_file_dir():
     test_file_dir = os.path.join(os.path.dirname(__file__), 'test_data')
     return test_file_dir
 
+
 def get_test_cdl_filelist():
     dirpath = os.path.join(get_test_file_dir(), 'cdl')
     return glob.glob(os.path.join(dirpath, '*.cdl'))
