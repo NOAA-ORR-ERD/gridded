@@ -697,12 +697,6 @@ class Variable(object):
         else:
             val_func = self._time_interp
         
-        #special case to proceed for DepthBase
-        #if surface_index is -1 substitue the real last index
-        if isinstance(self.depth, DepthBase):
-            sl = self.depth.surface_index if self.depth.surface_index != -1 else self.data.shape[1] - 1
-            return val_func(points, time, extrapolate, slices=slices + (sl,), **kwargs)
-        
         d_indices, d_alphas = self.depth.interpolation_alphas(points,
                                                               time,
                                                               self.data.shape[1:],

@@ -588,7 +588,6 @@ class S_Depth(DepthBase):
             raise NotImplementedError('Interpolation of data on depth layers not supported yet')
         
         transects = self.get_transect(points, time, data_shape=data_shape, _hash=_hash, extrapolate=extrapolate)
-        breakpoint()
         
         indices = np.ma.MaskedArray(data=-np.ones((len(points)), dtype=np.int64) * 1000, mask=np.zeros((len(points)), dtype=bool))
         alphas = np.ma.MaskedArray(data=np.empty((len(points)), dtype=np.float64) * np.nan, mask=np.zeros((len(points)), dtype=bool))
@@ -605,19 +604,12 @@ class S_Depth(DepthBase):
         # so it must be reapplied
         indices = np.ma.array(indices, mask=transects.mask[:,0])
         alphas.mask = transects.mask[:,0]
-        breakpoint()
-        
-        #STILL NEED TO APPLY SURFACE CONDITION
-        #finishthecode
-        # set above surface and below seafloor alphas to allow future filtering
-        alphas[indices == surface_index] = 0
-        if surface_boundary_condition == 'mask':
-            alphas.mask = np.logical_or(alphas.mask, indices == surface_index)
-            indices.mask[indices == surface_index] = True
-        alphas[indices == self.bottom_index] = 1
-        if bottom_boundary_condition == 'mask':
-            alphas.mask = np.logical_or(alphas.mask, indices == self.bottom_index)
-            indices.mask[indices == self.bottom_index] = True
+        indices, alphas, oob_mask = self._apply_boundary_conditions(indices,
+                                                                    alphas,
+                                                                    surface_index,
+                                                                    bottom_index,
+                                                                    surface_boundary_condition,
+                                                                    bottom_boundary_condition)
         
         # compute the remaining alphas, which should be for points within the depth interval
         L0 = np.take(transects, indices)
@@ -648,7 +640,33 @@ class S_Depth(DepthBase):
         surface_boundary_condition = self.default_surface_boundary_condition if surface_boundary_condition is None else surface_boundary_condition
         bottom_boundary_condition = self.default_bottom_boundary_condition if bottom_boundary_condition is None else bottom_boundary_condition
         
-        return indices, alphas
+        if surface_index == 0:
+            #ascending ordered depths (FVCOM-like) (0, 10, 20, ...)
+            above_surf_mask = indices < surface_index
+            below_bottom_mask = indices >= bottom_index
+            alphas[above_surf_mask] = 1
+            alphas[below_bottom_mask] = 0
+        else:
+            #descending ordered depths (ROMS-like) (..., 30, 20, 10, 0)
+            above_surf_mask = indices >= surface_index
+            below_bottom_mask = indices < bottom_index
+            alphas[above_surf_mask] = 0
+            alphas[below_bottom_mask] = 1
+        oob_mask = np.logical_or(above_surf_mask, below_bottom_mask)
+        indices.mask = np.logical_or(indices.mask, oob_mask)
+        alphas.mask = np.logical_or(alphas.mask, oob_mask)
+            
+        if surface_boundary_condition == 'extrapolate':
+            indices.mask[above_surf_mask] = False
+            alphas.mask[above_surf_mask] = False
+        if bottom_boundary_condition == 'extrapolate':
+            indices.mask[below_bottom_mask] = False
+            alphas.mask[below_bottom_mask] = False
+        
+        
+        
+        
+        return indices, alphas, oob_mask
             
         
         
@@ -780,7 +798,6 @@ class FVCOM_Depth(S_Depth):
         zeta = self.zeta.at(points, time, unmask=False, _hash=_hash, **kwargs)
 
         transects = -(zeta + (zeta + bathy) * sigma)
-        breakpoint()
         return transects
 
         # elif self.vtransform == 2:
