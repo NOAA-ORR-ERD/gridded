@@ -356,7 +356,7 @@ class Variable(object):
             raise ValueError("Data/time interval mismatch")
         if isinstance(t, Time_class):
             self._time = t
-        elif isinstance(t, collections.Iterable) or isinstance(t, nc4.Variable):
+        elif isinstance(t, collections.abc.Iterable) or isinstance(t, nc4.Variable):
             self._time = Time_class(t)
         else:
             raise ValueError("Time must be set with an iterable container or netCDF variable")
