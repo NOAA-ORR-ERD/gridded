@@ -25,8 +25,8 @@ class DepthBase(object):
 
     def __init__(self,
                  name=None,
-                 surface_index=None,
-                 bottom_index=None,
+                 surface_index=-1,
+                 bottom_index=0,
                  default_surface_boundary_condition='extrapolate',
                  default_bottom_boundary_conditon='mask',
                  **kwargs):
@@ -55,6 +55,18 @@ class DepthBase(object):
                     **kwargs):
         return cls(surface_index,
                    **kwargs)
+
+    @property
+    def surface_index(self):
+        #Subclasses are REQUIRED to implement this property in the manner appropriate
+        #for the system being represented
+        return self._surface_index
+
+    @property
+    def bottom_index(self):
+        #Subclasses are REQUIRED to implement this property in the manner appropriate
+        #for the system being represented
+        return self._bottom_index
 
     def interpolation_alphas(self,
                              points,
@@ -137,7 +149,7 @@ class DepthBase(object):
 class L_Depth(DepthBase):
 
     default_terms = [('depth_levels')]
-    default_names = {'depth_levels': ['depth', 'depth_levels']}
+    default_names = {'depth_levels': ['depth','depth_levels', 'Depth']}
     cf_names = {'depth_levels': 'depth'}
 
     def __init__(self,
@@ -173,8 +185,6 @@ class L_Depth(DepthBase):
                     name=None,
                     topology=None,
                     terms=None,
-                    surface_index=None,
-                    bottom_index=None,
                     **kwargs
                     ):
         df, dg = parse_filename_dataset_args(filename=filename,
@@ -188,19 +198,22 @@ class L_Depth(DepthBase):
             terms = {}
             for term, tvar in nc_vars.items():
                 terms[term] = tvar[:]
-        if surface_index is None:
-            surface_index = np.argmin(terms['depth_levels'])
-        if bottom_index is None:
-            bottom_index = np.argmax(terms['depth_levels'])
         # 2023-02-21 set the depth of the top layer to zero
+        surface_index = np.argmin(terms['depth_levels'])
         terms['depth_levels'][surface_index] = 0.0
         # 2023-02-21 set the depth of the top layer to zero
 
         return cls(name=name,
                    terms=terms,
-                   surface_index=surface_index,
-                   bottom_index=bottom_index,
                    **kwargs)
+
+    @property
+    def surface_index(self):
+        return np.argmin(self.depth_levels)
+
+    @property
+    def bottom_index(self):
+        return np.argmax(self.depth_levels)
 
     def interpolation_alphas(self,
                              points, 
@@ -358,10 +371,6 @@ class S_Depth(DepthBase):
             self.terms=terms
             for k, v in terms.items():
                 setattr(self, k, v)
-        if self.surface_index is None:
-            self.surface_index = self.num_levels - 1
-        if self.bottom_index is None:
-            self.bottom_index = 0
 
         # self.rho_coordinates = self.compute_coordinates('rho')
         # self.w_coordinates = self.compute_coordinates('w')
@@ -422,8 +431,6 @@ class S_Depth(DepthBase):
                                              dataset=dataset,
                                              grid_file=grid_file,
                                              data_file=data_file)
-        if data_file is None:
-            data_file = os.path.split(ds.filepath())[-1]
 
         if grid is None:
             grid = Grid.from_netCDF(dataset=dg,
@@ -486,6 +493,15 @@ class S_Depth(DepthBase):
                    terms=terms,
                    vtransform=vtransform,
                    **kwargs)
+
+    @property
+    def surface_index(self):
+        raise NotImplementedError('surface_index not implemented for S_Depth, required in subclasses')
+
+    @property
+    def bottom_index(self):
+        raise NotImplementedError('bottom_index not implemented for S_Depth, required in subclasses')
+
     @property
     def num_levels(self):
         raise NotImplementedError('num_levels not implemented for S_Depth, required in subclasses')
@@ -500,12 +516,20 @@ class S_Depth(DepthBase):
                                 dataset=None,
                                 grid_file=None,
                                 data_file=None,):
-            ds, dg = parse_filename_dataset_args(filename=filename,
-                                                 dataset=dataset,
-                                                 grid_file=grid_file,
-                                                 data_file=data_file)
+        ds, dg = parse_filename_dataset_args(filename=filename,
+                                                dataset=dataset,
+                                                grid_file=grid_file,
+                                                data_file=data_file)
 
-            return can_create_class(cls, ds, dg)
+        found_vars = search_netcdf_vars(cls, ds, dg)
+        #necessary to support optional zeta when called from Depth.from_netCDF
+        #this is a hack that circumvents the 'can_create_class' function
+        #what we really need is a way to specify that a sought attriubute is optional
+        #in the 'schema' (default_names, cf_names, etc)
+        if found_vars['zeta'] is None:
+            found_vars.pop('zeta', None)
+        # all variables must be found (no None values)
+        return not (None in found_vars.values())
 
     def __len__(self):
         return self.num_levels
@@ -567,49 +591,36 @@ class S_Depth(DepthBase):
         surface_boundary_condition = self.default_surface_boundary_condition if surface_boundary_condition is None else surface_boundary_condition
         bottom_boundary_condition = self.default_bottom_boundary_condition if bottom_boundary_condition is None else bottom_boundary_condition
 
-        surface_index = None
-        if data_shape[0] == self.num_levels:
-            surface_index = self.surface_index
-        elif data_shape[0] == self.num_layers:
-            surface_index = self.surface_index-1
-        else:
+        surface_index = self.surface_index
+        bottom_index = self.bottom_index
+        if data_shape[0] != self.num_levels and data_shape[0] != self.num_layers:
             raise ValueError('Cannot get depth interpolation alphas for data shape specified; does not fit r or w depth axis')
+        if data_shape[0] == self.num_layers:
+            raise NotImplementedError('Interpolation of data on depth layers not supported yet')
 
         transects = self.get_transect(points, time, data_shape=data_shape, _hash=_hash, extrapolate=extrapolate)
-        surface_depth = transects[:, surface_index]
-        
-        indices = np.ma.MaskedArray(data=-np.ones((len(points)), dtype=np.int64), mask=np.zeros((len(points)), dtype=bool))
+
+        indices = np.ma.MaskedArray(data=-np.ones((len(points)), dtype=np.int64) * 1000, mask=np.zeros((len(points)), dtype=bool))
         alphas = np.ma.MaskedArray(data=np.empty((len(points)), dtype=np.float64) * np.nan, mask=np.zeros((len(points)), dtype=bool))
 
-        if not np.any(depths > surface_depth):
-            # nothing is within or below the mesh, so apply surface boundary condition
-            # to all points and return
-            if surface_boundary_condition == 'extrapolate':
-                indices[:] = surface_index
-                alphas[:] = 0
-            else:
-                indices = np.ma.masked_less(indices, 0)
-                alphas = np.ma.masked_invalid(alphas, 0)
-            return indices, alphas
-
-        #use np.digitize to bin the depths into the layers
+        #use np.digitize to bin the depths into the layers.
+        #https://numpy.org/doc/stable/reference/generated/numpy.digitize.html
+        #bins[i-1] <= x < bins[i] should be satisfied for FVCOM (right=False, increasing order)
+        #bins[i-1] > x >= bins[i] should be satisfied for ROMS (right=False, decreasing order)
+        #this means the surface level will be 'within bounds' and the seafloor level will NOT be
         vf = np.vectorize(np.digitize, signature='(),(n)->()', excluded=['right'])
-        indices = vf(depths, transects, right=True) - 1
+        indices = vf(depths, transects, right=False) - 1
         
         # transect mask is True where the point is outside the grid horizontally
         # so it must be reapplied
         indices = np.ma.array(indices, mask=transects.mask[:,0])
         alphas.mask = transects.mask[:,0]
-        
-        # set above surface and below seafloor alphas to allow future filtering
-        alphas[indices == surface_index] = 0
-        if surface_boundary_condition == 'mask':
-            alphas.mask = np.logical_or(alphas.mask, indices == surface_index)
-            indices.mask[indices == surface_index] = True
-        alphas[indices == -1] = 1
-        if bottom_boundary_condition == 'mask':
-            alphas.mask = np.logical_or(alphas.mask, indices == -1)
-            indices.mask[indices == -1] = True
+        indices, alphas, oob_mask = self._apply_boundary_conditions(indices,
+                                                                    alphas,
+                                                                    surface_index,
+                                                                    bottom_index,
+                                                                    surface_boundary_condition,
+                                                                    bottom_boundary_condition)
         
         # compute the remaining alphas, which should be for points within the depth interval
         L0 = np.take(transects, indices)
@@ -620,6 +631,55 @@ class S_Depth(DepthBase):
         if any(np.isnan(alphas)):
             raise ValueError('Some alphas are still unmasked and NaN. Please file a bug report')
         return indices, alphas
+
+    def _apply_boundary_conditions(self,
+                                   indices,
+                                   alphas,
+                                   surface_index=None,
+                                   bottom_index=None,
+                                   surface_boundary_condition=None,
+                                   bottom_boundary_condition=None):
+        '''
+        Applies the boundary conditions to the indices and alphas
+        indices is expected to be fresh from the np.digitize step, meaning values
+        from 0 to num_levels are expected.
+        alphas is expected to still contain nans, but this function can still work by
+        masking and setting values to 0 or 1 depending on the boundary condition
+        '''
+        surface_index = self.surface_index if surface_index is None else surface_index
+        bottom_index = self.bottom_index if bottom_index is None else bottom_index
+        surface_boundary_condition = self.default_surface_boundary_condition if surface_boundary_condition is None else surface_boundary_condition
+        bottom_boundary_condition = self.default_bottom_boundary_condition if bottom_boundary_condition is None else bottom_boundary_condition
+
+        if surface_index == 0:
+            #ascending ordered depths (FVCOM-like) (0, 10, 20, ...)
+            above_surf_mask = indices < surface_index
+            below_bottom_mask = indices >= bottom_index
+            alphas[above_surf_mask] = 1
+            alphas[below_bottom_mask] = 0
+        else:
+            #descending ordered depths (ROMS-like) (..., 30, 20, 10, 0)
+            above_surf_mask = indices >= surface_index
+            below_bottom_mask = indices < bottom_index
+            alphas[above_surf_mask] = 0
+            alphas[below_bottom_mask] = 1
+        oob_mask = np.logical_or(above_surf_mask, below_bottom_mask)
+        indices.mask = np.logical_or(indices.mask, oob_mask)
+        alphas.mask = np.logical_or(alphas.mask, oob_mask)
+
+        if surface_boundary_condition == 'extrapolate':
+            indices.mask[above_surf_mask] = False
+            alphas.mask[above_surf_mask] = False
+        if bottom_boundary_condition == 'extrapolate':
+            indices.mask[below_bottom_mask] = False
+            alphas.mask[below_bottom_mask] = False
+
+
+
+
+        return indices, alphas, oob_mask
+
+
 
 
 class ROMS_Depth(S_Depth):
@@ -644,6 +704,14 @@ class ROMS_Depth(S_Depth):
                 'bathymetry': ['bathymetry at RHO-points', 'Final bathymetry at RHO-points'],
                 'zeta': ['free-surface']
                 }
+
+    @property
+    def surface_index(self):
+        return np.argmax(self.s_w)
+
+    @property
+    def bottom_index(self):
+        return np.argmin(self.s_w)
 
     @property
     def num_levels(self):
@@ -705,6 +773,13 @@ class FVCOM_Depth(S_Depth):
         'zeta': ['sea_surface_height_above_geoid'],
     }
 
+    @property
+    def surface_index(self):
+        return np.argmax(self.siglev[:,0])
+
+    @property
+    def bottom_index(self):
+        return np.argmin(self.siglev[:,0])
     @property
     def num_levels(self):
         return len(self.siglev)
@@ -804,4 +879,8 @@ class Depth():
             typ = typs[np.argmax(available_to_create)]
             if sum(available_to_create) > 1:
                 warnings.warn('''Multiple depth systems detected. Using the first one found: {0}'''.format(typ.__repr__), RuntimeWarning)
-            return typ.from_netCDF(data_file=ds, grid_file=dg, **kwargs)
+            return typ.from_netCDF(filename=filename,
+                                   dataset=dataset,
+                                   data_file=data_file,
+                                   grid_file=grid_file,
+                                   **kwargs)
