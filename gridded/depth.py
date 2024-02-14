@@ -371,7 +371,6 @@ class S_Depth(DepthBase):
         # self.w_coordinates = self.compute_coordinates('w')
         self.default_surface_boundary_condition = 'extrapolate'
         self.default_bottom_boundary_condition = 'mask'
-
     @classmethod
     def from_netCDF(cls,
                     filename=None,
@@ -444,12 +443,11 @@ class S_Depth(DepthBase):
                 if dg:
                     raise ValueError(err + ' or grid file')
                 raise ValueError(err)
-            bathymetry = Bathymetry.from_netCDF(dataset=bathy_var._grp,
-                                              varname=bathy_var.name,
-                                              grid=grid,
-                                              time=time,
-                                              name='bathymetry',
-                                              )
+            bathymetry = Bathymetry(data=bathy_var,
+                                    grid=grid,
+                                    time=time,
+                                    name='bathymetry',
+                                    )
 
         if zeta is None:
             zeta_var = nc_vars.get('zeta', None)
@@ -461,11 +459,10 @@ class S_Depth(DepthBase):
                 warnings.warn(err)
                 zeta = Zeta.constant(0)
             else:
-                zeta = Zeta.from_netCDF(dataset=zeta_var._grp,
-                                            varname=zeta_var.name,
-                                            grid=grid,
-                                            time=time,
-                                            name='zeta')
+                zeta = Zeta(data=zeta_var,
+                            grid=grid,
+                            time=time,
+                            name='zeta')
                 
         if time is None:
             time = zeta.time

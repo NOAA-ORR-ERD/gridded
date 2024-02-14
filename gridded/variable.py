@@ -234,18 +234,25 @@ class Variable(object):
                 units = data.units
             except AttributeError:
                 units = None
+                
         if time is None:
-            time = Time.from_netCDF(filename=data_file,
-                                    dataset=ds,
-                                    datavar=data)
+            timevarname = Time.locate_time_var_from_var(data)
+            if timevarname is not None:
+                timevarname = ds[timevarname]
+            time = Time(data=timevarname)
+            
             if time_origin is not None:
                 time = Time(data=time.data,
                             filename=time.filename,
                             varname=time.varname,
                             origin=time_origin)
+        else:
+            timevarname = 1 if len(time) > 1 else 0
         if depth is None:
-            if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
-                    isinstance(grid, Grid_U) and len(data.shape) == 3):
+            istimevar = 0 if timevarname is None else 1
+            
+            if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 3 + istimevar or
+                    isinstance(grid, Grid_U) and len(data.shape) == 2 + istimevar):
                 depth = Depth.from_netCDF(grid_file=dg,
                                           dataset=ds,
                                           **kwargs

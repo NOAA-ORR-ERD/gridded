@@ -56,6 +56,8 @@ def get_roms_depth():
     sig = 0.75
     nz = 11
     node_lat, node_lon = np.mgrid[0:sz, 0:sz]
+    
+    #bathymetry data
     b_data = np.empty((sz, sz))
     for x in range(0, sz):
         for y in range(0, sz):
@@ -68,6 +70,8 @@ def get_roms_depth():
                     * ((sig) ** 2)
                 )
             )
+    
+    #zeta data        
     z_data = np.empty((3, sz, sz))
     for t in range(0, 3):
         for x in range(0, sz):
@@ -75,6 +79,8 @@ def get_roms_depth():
                 z_data[t, x, y] = (t - 1.0) / 2.0
     g = Grid_S(node_lon=node_lon, node_lat=node_lat)
     bathy = Variable(name="bathy", grid=g, data=b_data)
+    
+    #time data
     t_data = np.array(
         [
             Time.constant_time().data[0]

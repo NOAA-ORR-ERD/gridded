@@ -88,6 +88,17 @@ class Time(object):
         super(Time, self).__init__(*args, **kwargs)
 
     @classmethod
+    def locate_time_var_from_var(cls, datavar):
+        if hasattr(datavar, 'time') and datavar.time in datavar._grp.dimensions.keys():
+            varname = datavar.time
+        else:
+            varname = datavar.dimensions[0] if 'time' in datavar.dimensions[0] else None
+        
+        return varname
+        
+        
+
+    @classmethod
     def from_netCDF(cls,
                     filename=None,
                     dataset=None,
@@ -115,12 +126,9 @@ class Time(object):
         if dataset is None:
             dataset = get_dataset(filename)
         if datavar is not None:
-            if hasattr(datavar, 'time') and datavar.time in dataset.dimensions.keys():
-                varname = datavar.time
-            else:
-                varname = datavar.dimensions[0] if 'time' in datavar.dimensions[0] else None
-                if varname is None:
-                    return cls.constant_time()
+            varname = cls.locate_time_var_from_var(datavar)
+            if varname is None:
+                return cls.constant_time()
         time = cls(data=dataset[varname],
                    filename=filename,
                    varname=varname,
