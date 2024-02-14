@@ -60,6 +60,8 @@ class Time(object):
                 self.data = nc4.num2pydate(data[:], units=data.units)
             else:
                 self.data = nc4.num2date(data[:], units=data.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
+        elif isinstance(data, Time):
+            self.data = data.data
         elif data is None:
             self.data = np.array([datetime.now()])
         else:
