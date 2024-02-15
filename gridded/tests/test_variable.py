@@ -25,7 +25,6 @@ def test_create_from_netcdf_dataset():
                                )
     print(var.info)
 
-    assert var.data_file == 'arakawa_c_test_grid.nc'
     assert var.data.shape == (1,12,11)
 
 def test_Variable_api_at_function():

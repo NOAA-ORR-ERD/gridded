@@ -60,6 +60,8 @@ class Time(object):
                 self.data = nc4.num2pydate(data[:], units=data.units)
             else:
                 self.data = nc4.num2date(data[:], units=data.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
+        elif isinstance(data, Time):
+            self.data = data.data
         elif data is None:
             self.data = np.array([datetime.now()])
         else:
@@ -86,6 +88,17 @@ class Time(object):
             raise TimeSeriesError("Time sequence has duplicate entries")
 
         super(Time, self).__init__(*args, **kwargs)
+
+    @classmethod
+    def locate_time_var_from_var(cls, datavar):
+        if hasattr(datavar, 'time') and datavar.time in datavar._grp.dimensions.keys():
+            varname = datavar.time
+        else:
+            varname = datavar.dimensions[0] if 'time' in datavar.dimensions[0] else None
+        
+        return varname
+        
+        
 
     @classmethod
     def from_netCDF(cls,
@@ -115,12 +128,9 @@ class Time(object):
         if dataset is None:
             dataset = get_dataset(filename)
         if datavar is not None:
-            if hasattr(datavar, 'time') and datavar.time in dataset.dimensions.keys():
-                varname = datavar.time
-            else:
-                varname = datavar.dimensions[0] if 'time' in datavar.dimensions[0] else None
-                if varname is None:
-                    return cls.constant_time()
+            varname = cls.locate_time_var_from_var(datavar)
+            if varname is None:
+                return cls.constant_time()
         time = cls(data=dataset[varname],
                    filename=filename,
                    varname=varname,
