@@ -456,7 +456,7 @@ class S_Depth(DepthBase):
                 if dg:
                     warnings.warn(warn + ' or grid file.')
                 warn += ' Generating constant (0) zeta.'
-                warnings.warn(err)
+                warnings.warn(warn)
                 zeta = Zeta.constant(0)
             else:
                 zeta = Zeta(data=zeta_var,
