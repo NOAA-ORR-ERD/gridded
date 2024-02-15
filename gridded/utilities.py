@@ -214,7 +214,7 @@ def _reorganize_spatial_data(points):
     if points_arr.dtype in (np.object_, np.string_, np.bool_):
         raise TypeError('points data does not convert to a numeric array type')
     shp = points_arr.shape
-    #special cases
+    # special cases
     if len(shp) == 1:
         #two valid cases: [lon, lat] and [lon, lat, depth]. all others = error
         if shp == (2,) or shp == (3,):
