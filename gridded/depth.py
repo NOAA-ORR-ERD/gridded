@@ -220,6 +220,8 @@ class L_Depth(DepthBase):
                              data_shape=None,
                              surface_boundary_condition=None,
                              bottom_boundary_condition=None,
+                             extrapolate=False,
+                             _hash=None,
                              *args,
                              **kwargs):
         '''
