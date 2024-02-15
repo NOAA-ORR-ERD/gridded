@@ -36,8 +36,8 @@ class DepthBase(object):
         :param bottom_index: array index of 'lowest' level (closest to seafloor)
         '''
         self.name = name
-        self.surface_index = surface_index
-        self.bottom_index = bottom_index
+        self._surface_index = surface_index
+        self._bottom_index = bottom_index
         self.default_surface_boundary_condition = default_surface_boundary_condition
         self.default_bottom_boundary_condition = default_bottom_boundary_conditon
 
@@ -215,12 +215,22 @@ class L_Depth(DepthBase):
     def bottom_index(self):
         return np.argmax(self.depth_levels)
 
+    @property
+    def num_levels(self):
+        return len(self.depth_levels)
+
+    @property
+    def num_layers(self):
+        return self.num_levels - 1
+
     def interpolation_alphas(self,
                              points, 
                              time = None,
                              data_shape=None,
                              surface_boundary_condition=None,
                              bottom_boundary_condition=None,
+                             extrapolate=False,
+                             _hash=None,
                              *args,
                              **kwargs):
         '''
@@ -238,6 +248,8 @@ class L_Depth(DepthBase):
         surface_boundary_condition = self.default_surface_boundary_condition if surface_boundary_condition is None else surface_boundary_condition
         bottom_boundary_condition = self.default_bottom_boundary_condition if bottom_boundary_condition is None else bottom_boundary_condition
         
+        if data_shape is not None and data_shape[0] == 1 or self.num_levels == 1: #surface only
+            return super(L_Depth, self).interpolation_alphas(points, time, data_shape, _hash=_hash, extrapolate=extrapolate, **kwargs)
         
         # process remaining points that are 'above the surface' or 'below the ground'
         # L0 and L1 bound the entire vertical layer
@@ -461,7 +473,7 @@ class S_Depth(DepthBase):
                 if dg:
                     warnings.warn(warn + ' or grid file.')
                 warn += ' Generating constant (0) zeta.'
-                warnings.warn(err)
+                warnings.warn(warn)
                 zeta = Zeta.constant(0)
             else:
                 zeta = Zeta(data=zeta_var,
@@ -590,6 +602,10 @@ class S_Depth(DepthBase):
 
         surface_index = self.surface_index
         bottom_index = self.bottom_index
+
+        if data_shape is not None and data_shape[0] == 1 or self.num_levels == 1: #surface only
+            return super(S_Depth, self).interpolation_alphas(points, time, data_shape, _hash=_hash, extrapolate=extrapolate, **kwargs)
+
         if data_shape[0] != self.num_levels and data_shape[0] != self.num_layers:
             raise ValueError('Cannot get depth interpolation alphas for data shape specified; does not fit r or w depth axis')
         if data_shape[0] == self.num_layers:
