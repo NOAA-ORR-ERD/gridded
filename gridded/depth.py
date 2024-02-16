@@ -32,9 +32,10 @@ class DepthBase(object):
                  **kwargs):
         '''
         :param surface_index: array index of 'highest' level (closest to sea level)
+
         :param bottom_index: array index of 'lowest' level (closest to seafloor)
         '''
-        self.name=name
+        self.name = name
         self._surface_index = surface_index
         self._bottom_index = bottom_index
         self.default_surface_boundary_condition = default_surface_boundary_condition
@@ -60,13 +61,13 @@ class DepthBase(object):
         #Subclasses are REQUIRED to implement this property in the manner appropriate
         #for the system being represented
         return self._surface_index
-    
+
     @property
     def bottom_index(self):
         #Subclasses are REQUIRED to implement this property in the manner appropriate
         #for the system being represented
         return self._bottom_index
-    
+
     def interpolation_alphas(self,
                              points,
                              time,
@@ -209,11 +210,11 @@ class L_Depth(DepthBase):
     @property
     def surface_index(self):
         return np.argmin(self.depth_levels)
-    
+
     @property
     def bottom_index(self):
         return np.argmax(self.depth_levels)
-    
+
     @property
     def num_levels(self):
         return len(self.depth_levels)
@@ -221,7 +222,7 @@ class L_Depth(DepthBase):
     @property
     def num_layers(self):
         return self.num_levels - 1
-    
+
     def interpolation_alphas(self,
                              points, 
                              time = None,
@@ -233,9 +234,13 @@ class L_Depth(DepthBase):
                              *args,
                              **kwargs):
         '''
-        Returns a pair of values. The 1st value is an array of the depth indices of all the particles.
-        The 2nd value is an array of the interpolation alphas for the particles between their depth
-        index and depth_index+1. If both values are None, then all particles are on the surface layer.
+        Returns a pair of values.
+
+        The 1st value is an array of the depth indices of all the particles.
+
+        The 2nd value is an array of the interpolation alphas for the particles
+        between their depth index and depth_index+1. If both values are None,
+        then all particles are on the surface layer.
         '''
         points = np.asarray(points, dtype=np.float64)
         points = points.reshape(-1, 3)
@@ -255,19 +260,19 @@ class L_Depth(DepthBase):
         L1 = self.depth_levels[-1]
         idxs = np.digitize(depths, self.depth_levels, right=False if L0 < L1 else True) - 1
         indices = np.ma.MaskedArray(data=idxs, mask=np.zeros((len(idxs)), dtype=bool))
-        
+
         alphas = np.ma.MaskedArray(data=np.empty((len(points)), dtype=np.float64) * np.nan, mask=np.zeros((len(points)), dtype=bool))
-        
-        #set above surface and below seafloor alphas to allow future filtering
-        
+
+        # set above surface and below seafloor alphas to allow future filtering
+
         if L0 < L1:
-            #0, 1, 2, 3, 4, 5, 6
+            # 0, 1, 2, 3, 4, 5, 6
             above_surface = indices == -1
             above_alpha = 1
             below_bottom = indices == (len(self.depth_levels) - 1)
             below_alpha = 0
         else:
-            #6, 5, 4, 3, 2, 1, 0
+            # 6, 5, 4, 3, 2, 1, 0
             above_surface = indices == (len(self.depth_levels) - 1)
             above_alpha = 0
             below_bottom = indices == -1
@@ -497,15 +502,15 @@ class S_Depth(DepthBase):
                    terms=terms,
                    vtransform=vtransform,
                    **kwargs)
-    
+
     @property
     def surface_index(self):
         raise NotImplementedError('surface_index not implemented for S_Depth, required in subclasses')
-    
+
     @property
     def bottom_index(self):
         raise NotImplementedError('bottom_index not implemented for S_Depth, required in subclasses')
-        
+
     @property
     def num_levels(self):
         raise NotImplementedError('num_levels not implemented for S_Depth, required in subclasses')
@@ -530,7 +535,7 @@ class S_Depth(DepthBase):
         #this is a hack that circumvents the 'can_create_class' function
         #what we really need is a way to specify that a sought attriubute is optional
         #in the 'schema' (default_names, cf_names, etc)
-        if found_vars['zeta'] is None: 
+        if found_vars['zeta'] is None:
             found_vars.pop('zeta', None)
         # all variables must be found (no None values)
         return not (None in found_vars.values())
@@ -597,17 +602,17 @@ class S_Depth(DepthBase):
 
         surface_index = self.surface_index
         bottom_index = self.bottom_index
-        
+
         if data_shape is not None and data_shape[0] == 1 or self.num_levels == 1: #surface only
             return super(S_Depth, self).interpolation_alphas(points, time, data_shape, _hash=_hash, extrapolate=extrapolate, **kwargs)
-        
+
         if data_shape[0] != self.num_levels and data_shape[0] != self.num_layers:
             raise ValueError('Cannot get depth interpolation alphas for data shape specified; does not fit r or w depth axis')
         if data_shape[0] == self.num_layers:
             raise NotImplementedError('Interpolation of data on depth layers not supported yet')
-        
+
         transects = self.get_transect(points, time, data_shape=data_shape, _hash=_hash, extrapolate=extrapolate)
-        
+
         indices = np.ma.MaskedArray(data=-np.ones((len(points)), dtype=np.int64) * 1000, mask=np.zeros((len(points)), dtype=bool))
         alphas = np.ma.MaskedArray(data=np.empty((len(points)), dtype=np.float64) * np.nan, mask=np.zeros((len(points)), dtype=bool))
 
@@ -658,7 +663,7 @@ class S_Depth(DepthBase):
         bottom_index = self.bottom_index if bottom_index is None else bottom_index
         surface_boundary_condition = self.default_surface_boundary_condition if surface_boundary_condition is None else surface_boundary_condition
         bottom_boundary_condition = self.default_bottom_boundary_condition if bottom_boundary_condition is None else bottom_boundary_condition
-        
+
         if surface_index == 0:
             #ascending ordered depths (FVCOM-like) (0, 10, 20, ...)
             above_surf_mask = indices < surface_index
@@ -674,22 +679,22 @@ class S_Depth(DepthBase):
         oob_mask = np.logical_or(above_surf_mask, below_bottom_mask)
         indices.mask = np.logical_or(indices.mask, oob_mask)
         alphas.mask = np.logical_or(alphas.mask, oob_mask)
-            
+
         if surface_boundary_condition == 'extrapolate':
             indices.mask[above_surf_mask] = False
             alphas.mask[above_surf_mask] = False
         if bottom_boundary_condition == 'extrapolate':
             indices.mask[below_bottom_mask] = False
             alphas.mask[below_bottom_mask] = False
-        
-        
-        
-        
+
+
+
+
         return indices, alphas, oob_mask
-            
-        
-        
-    
+
+
+
+
 class ROMS_Depth(S_Depth):
     '''
     Sigma coordinate depth object for ROMS style output
@@ -716,7 +721,7 @@ class ROMS_Depth(S_Depth):
     @property
     def surface_index(self):
         return np.argmax(self.s_w)
-    
+
     @property
     def bottom_index(self):
         return np.argmin(self.s_w)
@@ -784,7 +789,7 @@ class FVCOM_Depth(S_Depth):
     @property
     def surface_index(self):
         return np.argmax(self.siglev[:,0])
-    
+
     @property
     def bottom_index(self):
         return np.argmin(self.siglev[:,0])
@@ -824,17 +829,21 @@ class FVCOM_Depth(S_Depth):
         #     s_coord = -(zeta + (zeta + h) * S)
         # if no stretching or crit depth (hc, Cs_r, Cs_w) then S = s_c
 
-class Depth(object):
+
+class Depth():
     '''
-    Factory class that generates depth objects. Also handles common loading and
-    parsing operations
+    Factory class that generates depth objects.
+
+    Also handles common loading and parsing operations
     '''
     ld_types = [L_Depth]
     sd_types = [ROMS_Depth, FVCOM_Depth]
     surf_types = [DepthBase]
+
     def __init__(self):
         raise NotImplementedError("Depth is not meant to be instantiated. "
                                   "Please use the 'from_netCDF' or 'surface_only' function")
+
     @staticmethod
     def surface_only(surface_index=-1,
                      **kwargs):
@@ -855,12 +864,15 @@ class Depth(object):
         '''
         :param filename: File containing a depth
         :type filename: string or list of string
+
         :param dataset: Takes precedence over filename, if provided.
         :type dataset: netCDF4.Dataset
+
         :param depth_type: Must be provided if autodetection is not possible.
             See Depth.ld_names, Depth.sd_names, and Depth.surf_names for the
             expected values for this argument
         :type depth_type: string
+
         :returns: Instance of L_Depth or S_Depth
         '''
         ds, dg = parse_filename_dataset_args(filename=filename,

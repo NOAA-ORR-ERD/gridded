@@ -38,7 +38,7 @@ IND_DT = np.int32
 NODE_DT = np.float64  # datatype used for node coordinates.
 
 
-class UGrid(object):
+class UGrid():
     """
     A basic class to hold an unstructured grid as defined in the UGrid convention.
 
@@ -205,16 +205,13 @@ class UGrid(object):
         """
         summary of information about the grid
         """
-        msg = ["UGrid object:"]
-
+        msg = [f"UGrid object: {self.mesh_name}"]
         msg.append("Number of nodes: %i" % len(self.nodes))
         msg.append("Number of faces: %i with %i vertices per face" %
                    (len(self.faces), self.num_vertices))
         if self.boundaries is not None:
             msg.append("Number of boundaries: %i" % len(self.boundaries))
 
-        # if self._data:
-        #     msg.append("Variables: " + ", ".join([str(v) for v in self._data.keys()]))
         return "\n".join(msg)
 
     def __eq__(self, other):
@@ -874,8 +871,12 @@ class UGrid(object):
 
         This is a not-very-smart just loop through all the faces method.
 
+        If face_face_connectivity is None, it will be computed
         """
+
         boundaries = []
+        if self.face_face_connectivity is None:
+            self.build_face_face_connectivity()
         for i, face in enumerate(self.face_face_connectivity):
             for j, neighbor in enumerate(face):
                 if neighbor == -1:
