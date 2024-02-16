@@ -28,21 +28,21 @@ jobs:
             cd ..
             pytest --pyargs gridded
 
-  # lint:
-  #   name: Flake8 linting
-  #   runs-on: "ubuntu-latest"
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: conda-incubator/setup-miniconda@v2
-  #       with:
-  #         activate-environment: lint
-  #         python-version: 3.9
-  #         auto-activate-base: false
-  #     - shell: bash -l {0}
-  #       run: |
-  #         conda config --add channels conda-forge
-  #     - name: Lint
-  #       shell: bash -l {0}
-  #       run: |
-  #           conda install flake8
-  #           python -m flake8 --statistics gridded/
+  lint:
+    name: Flake8 linting
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: lint
+          python-version: 3.9
+          auto-activate-base: false
+      - shell: bash -l {0}
+        run: |
+          conda config --add channels conda-forge
+      - name: Lint
+        shell: bash -l {0}
+        run: |
+            conda install flake8
+            python -m flake8  --exit-zero --statistics gridded/
