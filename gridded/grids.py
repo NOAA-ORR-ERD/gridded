@@ -398,11 +398,35 @@ class Grid_R(GridBase):
         points = np.asarray(points, dtype=np.float64)
         just_one = (points.ndim == 1)
         points = points.reshape(-1, 2)
+        points_y = points[:, 1] #lat
+        points_x = points[:, 0] #lon
         y, x = self.lonlat_to_yx(variable)
+        
         if slices is not None:
             variable = variable[slices]
             if np.ma.isMA(variable):
                 variable = variable.filled(0)  # eventually should use Variable fill value
+        
+        # idx_y = np.digitize(points_y, y) - 1
+        # idx_x = np.digitize(points_x, x) - 1
+        
+        # v1 = variable[idx_y, idx_x]
+        # v2 = variable[idx_y, idx_x + 1]
+        # v3 = variable[idx_y + 1, idx_x]
+        # v4 = variable[idx_y + 1, idx_x + 1]
+        
+        # ay = 1- (y[idx_y + 1] - points_y) / (y[idx_y + 1] - y[idx_y])
+        # ax = 1- (x[idx_x + 1] - points_x) / (x[idx_x + 1] - x[idx_x])
+        
+        # vx1 = v1 + ax * (v2 - v1)
+        # vx2 = v3 + ax * (v4 - v3)
+        
+        # iv = vx1 + ay * (vx2 - vx1)
+        # if just_one:
+        #     return iv[0]
+        # else:
+        #     return iv
+        
         interp_func = RegularGridInterpolator((y, x),
                                               variable,
                                               method=method,
@@ -412,6 +436,8 @@ class Grid_R(GridBase):
             vals = interp_func(points, method=method)
         else:
             vals = interp_func(points[:, ::-1], method=method)
+            
+        breakpoint()
         if just_one:
             return vals[0]
         else:
@@ -424,16 +450,16 @@ class Grid_R(GridBase):
         But now we are checking variable dimensions to which part
         of the grid it is on.
         """
-        shape = None
-        node_shape = self.nodes.shape[0:-1]
-        # centers_shape = self.centers.shape[0:-1]
-        try:
-            shape = np.array(variable.shape)
-        except:  # fixme -- AttributeError??
-            return None  # Variable has no shape attribute!
-        if len(variable.shape) < 2:
-            return None
-        difference = (shape[-2:] - node_shape).tolist()
+        if hasattr(variable, 'location'):
+            return variable.location
+        
+        x_len = len(self.node_lon)
+        y_len = len(self.node_lat)
+        node_shape = np.array((y_len, x_len))
+        var_shape = np.array(variable.shape[-2:])
+        if np.isclose(node_shape[::-1], var_shape, atol=1).all():
+            node_shape = node_shape[::-1] # reverse the dimensions
+        difference = (var_shape - node_shape).tolist()
         if (difference == [1, 1] or difference == [-1, -1]) and self.center_lon is not None:
             return 'center'
         elif difference == [1, 0] and self.edge1_lon is not None:
