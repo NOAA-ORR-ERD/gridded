@@ -608,8 +608,8 @@ class S_Depth(DepthBase):
 
         if data_shape[0] != self.num_levels and data_shape[0] != self.num_layers:
             raise ValueError('Cannot get depth interpolation alphas for data shape specified; does not fit r or w depth axis')
-        if data_shape[0] == self.num_layers:
-            raise NotImplementedError('Interpolation of data on depth layers not supported yet')
+        #if data_shape[0] == self.num_layers:
+        #    raise NotImplementedError('Interpolation of data on depth layers not supported yet')
 
         transects = self.get_transect(points, time, data_shape=data_shape, _hash=_hash, extrapolate=extrapolate)
 
@@ -816,7 +816,13 @@ class FVCOM_Depth(S_Depth):
         '''
 
         #because FVCOM sigma is defined for every node separately.
-        sigma = self.grid.interpolate_var_to_points(points[:, 0:2], self.siglev[:].T, location='node')
+        sigvar = None
+        if data_shape[0] == self.num_layers:
+            sigvar = self.siglay[:].T
+        else:
+            sigvar = self.siglev[:].T
+        sigma = self.grid.interpolate_var_to_points(points[:, 0:2], sigvar, location='node')
+        
 
         bathy = self.bathymetry.at(points, time, unmask=False, _hash=_hash, **kwargs)
         zeta = self.zeta.at(points, time, unmask=False, _hash=_hash, **kwargs)
