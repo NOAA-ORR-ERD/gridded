@@ -437,7 +437,6 @@ class Grid_R(GridBase):
         else:
             vals = interp_func(points[:, ::-1], method=method)
             
-        breakpoint()
         if just_one:
             return vals[0]
         else:
