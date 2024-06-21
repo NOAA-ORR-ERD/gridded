@@ -456,8 +456,6 @@ class Grid_R(GridBase):
         y_len = len(self.node_lat)
         node_shape = np.array((y_len, x_len))
         var_shape = np.array(variable.shape[-2:])
-        if np.isclose(node_shape[::-1], var_shape, atol=1).all():
-            node_shape = node_shape[::-1] # reverse the dimensions
         difference = (var_shape - node_shape).tolist()
         if (difference == [1, 1] or difference == [-1, -1]) and self.center_lon is not None:
             return 'center'
