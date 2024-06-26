@@ -143,7 +143,11 @@ class Grid_U(GridBase, UGrid):
         #        from 1, or in C order and index from 0
         #        Those are actually independent concepts!
         if init_args['faces'].shape[0] == 3:
-            init_args['faces'] = np.ascontiguousarray(np.array(init_args['faces']).T - 1)
+            #fortran order faces need to be transposed
+            init_args['faces'] = np.ascontiguousarray(np.array(init_args['faces']).T)
+        if init_args['faces'].max() == init_args['faces'].shape[0]:
+            #if faces contains 1-based indices, convert to 0-based
+            init_args['faces'] -= 1
 
         return init_args, gt
 
