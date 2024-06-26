@@ -543,7 +543,7 @@ class S_Depth(DepthBase):
     def __len__(self):
         return self.num_levels
         
-    def get_transect(self, points, time, data_shape, _hash=None, **kwargs):
+    def get_transect(self, points, time, data_shape=None, _hash=None, **kwargs):
         '''
         :param points: array of points to interpolate to
         :type points: numpy array of shape (n, 3)
@@ -552,7 +552,7 @@ class S_Depth(DepthBase):
         :type time: datetime.datetime
         
         :param data_shape: Shape of the variable to be interpolated. The first dimension is expected to be depth
-        :type rho_or_w: tuple of int
+        :type data_shape: tuple of int
         
         :return: numpy array of shape (n, data_shape[0]) of n depth level transects
         '''
@@ -748,6 +748,8 @@ class ROMS_Depth(S_Depth):
 
         :return: numpy array of shape (n, num_w_levels) of n s-coordinate transects
         '''
+        if data_shape is None:
+            data_shape = (self.num_levels, )
 
         s_c = self.s_rho if data_shape[0] == self.num_layers else self.s_w
         C_s = self.Cs_r if data_shape[0] == self.num_layers else self.Cs_w
@@ -809,15 +811,19 @@ class FVCOM_Depth(S_Depth):
         :param time: time to interpolate to
         :type time: datetime.datetime
 
-        :param rho_or_w: 'rho' or 'w' to interpolate to rho or w points
-        :type rho_or_w: string
+        :param data_shape:  Describes the shape of the data to be interpolated. 
+        If the first dimension is the number of layers or if None, then siglay is used. 
+        If the first dimension is the number of levels, then siglev is used.
+        :type data_shape: tuple of int or None
 
         :return: numpy array of shape (n, num_w_levels) of n s-coordinate transects
         '''
 
         #because FVCOM sigma is defined for every node separately.
         sigvar = None
-        if data_shape[0] == self.num_layers:
+        if data_shape is None:
+            sigvar = self.siglev[:].T
+        elif data_shape[0] == self.num_layers:
             sigvar = self.siglay[:].T
         else:
             sigvar = self.siglev[:].T
