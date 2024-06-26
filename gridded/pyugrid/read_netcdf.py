@@ -38,7 +38,7 @@ def find_mesh_names(nc):
     return mesh_names
 
 
-def is_valid_mesh(nc, varname):
+def     is_valid_mesh(nc, varname):
     """
     determine if the given variable name is a valid mesh definition
 
@@ -218,7 +218,10 @@ def load_grid_from_nc_dataset(nc, grid, mesh_name=None):  # , load_data=True):
             try:
                 start_index = int(var.start_index)
             except AttributeError:
-                start_index = 0
+                if array.max() == grid.nodes.shape[0]:
+                    start_index = 1
+                else:
+                    start_index = 0
             if start_index >= 1:
                 array -= start_index
                 # Check for flag value.
