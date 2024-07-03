@@ -32,8 +32,8 @@ def find_grid_topology_var(nc):
         raise ValueError(msg(len(grid_topology)))
 
     grid_topology = grid_topology[0]
-    topology_dimension = grid_topology.topology_dimension if hasattr(grid_topology, 'topology_dimension') else None  # noqa
-
+    topology_dimension = int(grid_topology.topology_dimension) if hasattr(grid_topology, 'topology_dimension') else None  # noqa
+    
     if topology_dimension != 2:
         msg = ('Only 2 dimensions topology are supported.'
                'Got {0}'.format)
