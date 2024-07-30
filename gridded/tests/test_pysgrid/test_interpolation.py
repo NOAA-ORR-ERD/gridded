@@ -5,6 +5,7 @@ Created on Feb 17, 2016
 """
 
 import numpy as np
+import pytest
 
 from gridded.pysgrid.sgrid import SGrid
 from gridded.pysgrid.utils import points_in_polys
@@ -105,3 +106,89 @@ def test_nearest_neighbor():
                         [2, 2]], dtype=np.int64)
 
     assert np.all(inds == ind_ans)
+
+def test_mirror_mask_values():
+    values = np.ma.MaskedArray(data=[[9999, 7],      [9999, -11],      [150, 9999]],
+                                 mask=[[True, False], [True, False],     [False, True]])
+    mm_values = sgrid.mirror_mask_values(values)
+    assert np.all(mm_values == [[-7, 7], [11, -11], [150, -150]])
+    assert isinstance(mm_values, np.ndarray)
+
+def test_compute_interpolant():
+    
+    with pytest.warns(UserWarning, match='Alphas do not sum to 1'):
+        values = [-10, 10]
+        alphas = [0.75, 0.252]
+        interp = sgrid.compute_interpolant(values, alphas)
+    
+    #basic test, linear arrays    
+    values = [-10, 10]
+    alphas = [0.75, 0.25]
+    interp = sgrid.compute_interpolant(values, alphas, mask_behavior='zero')
+    assert interp == -5
+    
+    #basic test, linear masked arrays    
+    values = np.ma.MaskedArray(data=[-10, 10], mask=[True, False])
+    alphas = [0.75, 0.25]
+    interp = sgrid.compute_interpolant(values, alphas, mask_behavior='zero')
+    assert interp == 2.5
+    values = np.ma.MaskedArray(data=[-6, 6,9000,6], mask=[True, False, True, False])
+    alphas = [0.25,0.25,0.25,0.25]
+    interp = sgrid.compute_interpolant(values, alphas, mask_behavior='mask')
+    assert interp is np.ma.masked
+    
+    #basic test, vector arrays
+    values = [[-10, 10], [10, -10]]
+    alphas = [[0.75, 0.25], [0.5, 0.5]]
+    interp = sgrid.compute_interpolant(values, alphas, mask_behavior='zero')
+    assert np.all(interp == [-5, 0])
+    assert isinstance(interp, np.ndarray)
+    values = [[1, 2, 3, 4], [10, -10, -10, 10]]
+    alphas = [[0.25, 0.25, 0.25, 0.25], [0.5, 0.5, 0 , 0]]
+    interp = sgrid.compute_interpolant(values, alphas, mask_behavior='zero')
+    assert np.all(interp == [2.5, 0])
+    assert isinstance(interp, np.ndarray)
+    
+    #nan alphas/values test
+    values = [[np.nan, np.nan], [10, -10], [150, 200]]
+    alphas = [[0.75, 0.25], [0.5, 0.5], [np.nan, np.nan]]
+    interp = sgrid.compute_interpolant(values, alphas, mask_behavior='zero')
+    assert np.isnan(interp[0])
+    assert np.isnan(interp[2])
+    assert isinstance(interp, np.ndarray)
+    
+    #masked values test, 'zero' mask_behavior (both points masked)
+    values = np.ma.MaskedArray(data=[[-10, 10],      [10, -10],      [150, 200]],
+                               mask=[[False, False], [False, False], [True, True]])
+    alphas = np.ma.MaskedArray(data=[[0.75, 0.25],   [0.5, 0.5],     [0.5, 0.5]],
+                               mask=[[False, False], [False, False], [False, False]])
+    interp = sgrid.compute_interpolant(values, alphas, mask_behavior='zero')
+    assert np.all(interp == [-5, 0, 0])
+    assert isinstance(interp, np.ma.MaskedArray)
+    
+    #masked values test, 'mask' mask_behavior (both point masked)
+    values = np.ma.MaskedArray(data=[[-10, 10],      [10, -10],      [150, 200]],
+                               mask=[[False, False], [False, False], [True, True]])
+    alphas = np.ma.MaskedArray(data=[[0.75, 0.25],   [0.5, 0.5],     [0.5, 0.5]],
+                               mask=[[False, False], [False, False], [False, False]])
+    interp = sgrid.compute_interpolant(values, alphas, mask_behavior='mask')
+    assert np.all(interp == [-5, 0, np.ma.masked])
+    assert isinstance(interp, np.ma.MaskedArray)
+    
+    #masked values test, 'zero' mask_behavior (one point masked)
+    values = np.ma.MaskedArray(data=[[-10, 10],      [10, -10],      [150, 200]],
+                               mask=[[False, False], [False, False], [True, False]])
+    alphas = np.ma.MaskedArray(data=[[0.75, 0.25],   [0.5, 0.5],     [0.5, 0.5]],
+                               mask=[[False, False], [False, False], [False, False]])
+    interp = sgrid.compute_interpolant(values, alphas, mask_behavior='zero')
+    assert np.all(interp == [-5, 0, 100])
+    assert isinstance(interp, np.ma.MaskedArray)
+    
+    #masked values test, 'mask' mask_behavior (one point masked)
+    values = np.ma.MaskedArray(data=[[-10, 10],      [10, -10],      [150, 200]],
+                               mask=[[False, False], [False, False], [True, False]])
+    alphas = np.ma.MaskedArray(data=[[0.75, 0.25],   [0.5, 0.5],     [0.5, 0.5]],
+                               mask=[[False, False], [False, False], [False, False]])
+    interp = sgrid.compute_interpolant(values, alphas, mask_behavior='mask')
+    assert np.all(interp == [-5, 0, np.ma.masked])
+    assert isinstance(interp, np.ma.MaskedArray)
