@@ -59,7 +59,7 @@ def     is_valid_mesh(nc, varname):
         ):
             return True
     except AttributeError:
-        logger.info('Attribute error %s', mesh_var)
+        logger.info('Attribute error {0}'.format(mesh_var.name))
         # not a valid mesh variable
         return False
 
