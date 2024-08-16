@@ -211,7 +211,7 @@ def _reorganize_spatial_data(points):
     if points is None:
         return None
     points_arr = np.array(points).squeeze()
-    if points_arr.dtype in (np.object_, np.string_, np.bool_):
+    if points_arr.dtype in (np.object_, np.bytes_, np.bool_):
         raise TypeError('points data does not convert to a numeric array type')
     shp = points_arr.shape
     # special cases
