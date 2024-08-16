@@ -19,6 +19,7 @@ NOTE: only tested for triangular and quad mesh grids at the moment.
 
 import hashlib
 from collections import OrderedDict
+import warnings
 
 import numpy as np
 
@@ -299,7 +300,23 @@ class UGrid():
         # Room here to do consistency checking, etc.
         # For now -- simply make sure it's a numpy array.
         if faces_indexes is not None:
-            self._faces = np.asanyarray(faces_indexes, dtype=IND_DT)
+            faces_indexes = np.asanyarray(faces_indexes, dtype=IND_DT)
+            if faces_indexes.max() > len(self.nodes):
+                #faces index maximum greater than number of nodes
+                raise ValueError("faces index maximum out of range. max: {0}, nodes: {1}".format(faces_indexes.max(), len(self.nodes)))
+            if faces_indexes.max() == len(self.nodes):
+                #faces index maximum equal to number of nodes, so we need to decrement by 1
+                #but only if the minimum is also gte 1
+                if faces_indexes.min() >= 1:
+                    faces_indexes[faces_indexes > 0] -= 1
+                    warnings.warn("faces index maximum equal to number of nodes, automatic decrement by 1 applied")
+                else:
+                    raise ValueError("faces indices have an improper range. min: {0}, max: {1}".format(faces_indexes.min(), faces_indexes.max()))
+            if faces_indexes.min() < -1:
+                #faces index minimum less than -1
+                raise ValueError("faces index minimum out of range. min: {0}".format(faces_indexes.min()))
+            self._faces = faces_indexes
+                
         else:
             self._faces = None
             # Other things are no longer valid.
