@@ -231,6 +231,7 @@ def load_grid_from_nc_dataset(nc, grid, mesh_name=None):  # , load_data=True):
                     array[array == flag_value - start_index] = flag_value
                 except AttributeError:
                     pass
+            assert array.max() < grid.nodes.shape[0]
             setattr(grid, defs['grid_attr'], array)
         except KeyError:
             pass  # OK not to have this...

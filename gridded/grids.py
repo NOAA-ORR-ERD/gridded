@@ -145,7 +145,7 @@ class Grid_U(GridBase, UGrid):
         if init_args['faces'].shape[0] == 3:
             #fortran order faces need to be transposed
             init_args['faces'] = np.ascontiguousarray(np.array(init_args['faces']).T)
-        if init_args['faces'].max() == init_args['faces'].shape[0]:
+        if init_args['faces'].max() == init_args['node_lon'].shape[0]:
             #if faces contains 1-based indices, convert to 0-based
             init_args['faces'] -= 1
 
