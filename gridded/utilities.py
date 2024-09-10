@@ -335,7 +335,7 @@ def asarraylike(obj):
 
 def isstring(obj):
     """
-    py2/3 compaitlbie way to test for a string
+    py2/3 compatble way to test for a string
     """
     try:
         return isinstance(obj, basestring)
@@ -350,12 +350,19 @@ def get_dataset(ncfile, dataset=None):
 
     if dataset is not None, it should be a valid netCDF4 Dataset object,
     and it will simply be returned
+
+    fixme: why can you pass in a dataset specifically ???
     """
     if dataset is not None:
         return dataset
     if isinstance(ncfile, (nc4.Dataset, nc4.MFDataset)):
         return ncfile
-    elif isstring(ncfile):
+    try:
+        ncfile = os.fspath(ncfile)
+    except TypeError:
+        pass  # not a string of PathLike -- could be a list or invalid ...
+
+    if isinstance(ncfile, str):  # single path
         return nc4.Dataset(ncfile)
     elif isinstance(ncfile, Iterable) and len(ncfile) == 1:
         return nc4.Dataset(ncfile[0])

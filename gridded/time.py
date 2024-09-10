@@ -55,6 +55,7 @@ class Time(object):
         '''
 
         # fixme -- this conversion should be done in the netcdf loading code.
+
         if isinstance(data, (nc4.Variable, nc4._netCDF4._Variable)):
             if (hasattr(nc4, 'num2pydate')):
                 self.data = nc4.num2pydate(data[:], units=data.units)
@@ -109,29 +110,41 @@ class Time(object):
                     tz_offset=None,
                     **kwargs):
         """
-        construct a Time object from a netcdf file
+        construct a Time object from a netcdf file.
 
-        :param filename=None: name of netcddf file
+        You can specify the time variable name, or another variable,
+        for which you want the corresponding times.
+
+        :param filename=None: name of netcdf file
 
         :param dataset=None: netcdf dataset object (one or the other)
 
-        :param varname=None: name of the netcdf variable
+        :param varname=None: Name of the time variable.
 
-        :param datavar=None: Either the time variable name, or
-                             A netcdf variable that needs a Time object.
+        :param datavar=None: A netcdf variable or name of netcdf variable
+                             for which you want the corresponding time
+                             object.
                              It will try to find the time variable that
                              corresponds to the passed in variable.
 
         :param tz_offset=None: offset to adjust for timezone, in hours.
 
         """
+        if varname is None and datavar is None:
+            raise TypeError('you must pass in either a varname or a datavar')
         if dataset is None:
             dataset = get_dataset(filename)
-        if datavar is not None:
+
+        if varname is None and datavar is not None:
+            if isinstance(datavar, str):
+                datavar = dataset.variables[datavar]
             varname = cls.locate_time_var_from_var(datavar)
+            # fixme: This seems risky -- better to raise and deal with it elsewhere.
             if varname is None:
                 return cls.constant_time()
-        time = cls(data=dataset[varname],
+        if isinstance(varname, str):
+            tvar = dataset.variables[varname]
+        time = cls(data=tvar,
                    filename=filename,
                    varname=varname,
                    tz_offset=tz_offset,

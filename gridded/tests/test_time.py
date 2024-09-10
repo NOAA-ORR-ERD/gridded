@@ -2,8 +2,10 @@
 
 import copy
 from datetime import datetime, timedelta
+from pathlib import Path
 
 import numpy as np
+import netCDF4
 
 from gridded.time import Time, TimeSeriesError, OutOfTimeRangeError
 
@@ -15,6 +17,7 @@ dt = timedelta(minutes=15)
 SAMPLE_TIMESERIES = [(start + i * dt) for i in range(10)]
 STS = SAMPLE_TIMESERIES
 
+TEST_DATA = Path(__file__).parent / 'test_data'
 
 def test_init():
     """
@@ -28,6 +31,65 @@ def test_init_with_timeseries():
 
     # an implementation detail -- kind of
     assert isinstance(t.data, np.ndarray)
+
+
+def test_invalid_timeseries():
+    with pytest.raises(TypeError):
+        t = Time("")
+
+def test_from_netcdf_filename_no_var():
+    """
+    initialize from a netcdf filename
+    """
+    with pytest.raises(TypeError):
+        t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc")
+
+def test_from_netcdf_filename_specify_time_var_name():
+    """
+    initialize from a netcdf filename and a time variable name
+    """
+    # note: not the best example, as the time
+    #       variable is using float seconds, so loses precision.
+    t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc", varname='time')
+
+    assert len(t.data) == 10
+    assert t.data[0] == datetime(2024, 5, 23, 0, 0)
+
+
+def test_from_netcdf_filename_specify_var_name():
+    """
+    initialize from a netcdf filename and specifying a variable
+    that you want the time for.
+    """
+    t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc", datavar='v')
+
+    assert len(t.data) == 10
+    assert t.data[0] == datetime(2024, 5, 23, 0, 0)
+
+
+def test_from_netcdf_filename_specify_var():
+    """
+    initialize from a netcdf filename and specifying a variable
+    that you want the time for.
+    """
+    ncds = netCDF4.Dataset(filename=TEST_DATA / "tri_grid_example-FVCOM.nc")
+    datavar = ncds.variables['v']
+    t = Time.from_netCDF(dataset=ncds, datavar=datavar)
+
+    assert len(t.data) == 10
+    assert t.data[0] == datetime(2024, 5, 23, 0, 0)
+
+
+def test_from_netcdf_filename_bad():
+    """
+    initialize from a bad netcdf filename
+    """
+    with pytest.raises(OSError):
+        t = Time.from_netCDF(filename="http://this.that.com", varname='time')
+
+    with pytest.raises(OSError):
+        t = Time.from_netCDF(filename="non_existant_file.nc", varname='time')
+
 
 
 def test_origin():
