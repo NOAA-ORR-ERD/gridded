@@ -1414,8 +1414,8 @@ class SGridAttributes(object):
         except TypeError:
             center_lat, center_lon = None, None
         else:
-            center_lat = self.nc[grid_cell_center_lat_var]
-            center_lon = self.nc[grid_cell_center_lon_var]
+            center_lat = self.nc[grid_cell_center_lat_var][:]
+            center_lon = self.nc[grid_cell_center_lon_var][:]
         return center_lon, center_lat
 
     def get_cell_node_lat_lon(self):
@@ -1424,8 +1424,8 @@ class SGridAttributes(object):
         except TypeError:
             node_lon, node_lat = None, None
         else:
-            node_lat = self.nc[node_lat_var]
-            node_lon = self.nc[node_lon_var]
+            node_lat = self.nc[node_lat_var][:]
+            node_lon = self.nc[node_lon_var][:]
         return node_lon, node_lat
 
     def get_cell_edge1_lat_lon(self):
@@ -1434,8 +1434,8 @@ class SGridAttributes(object):
         except:
             edge1_lon, edge1_lat = None, None
         else:
-            edge1_lon = self.nc[edge1_lon_var]
-            edge1_lat = self.nc[edge1_lat_var]
+            edge1_lon = self.nc[edge1_lon_var][:]
+            edge1_lat = self.nc[edge1_lat_var][:]
         return edge1_lon, edge1_lat
 
     def get_cell_edge2_lat_lon(self):
@@ -1444,8 +1444,8 @@ class SGridAttributes(object):
         except TypeError:
             edge2_lon, edge2_lat = None, None
         else:
-            edge2_lon = self.nc[edge2_lon_var]
-            edge2_lat = self.nc[edge2_lat_var]
+            edge2_lon = self.nc[edge2_lon_var][:]
+            edge2_lat = self.nc[edge2_lat_var][:]
         return edge2_lon, edge2_lat
 
     def get_masks(self, node, center, edge1, edge2):
@@ -1457,13 +1457,13 @@ class SGridAttributes(object):
         node_mask = center_mask = edge1_mask = edge2_mask = None
         for mc in mask_candidates:
             if node_shape and self.nc.variables[mc].shape == node_shape and node_mask is None:
-                node_mask = self.nc.variables[mc]
+                node_mask = self.nc.variables[mc][:]
             if center_shape and self.nc.variables[mc].shape == center_shape and center_mask is None:
-                center_mask = self.nc.variables[mc]
+                center_mask = self.nc.variables[mc][:]
             if edge1_shape and self.nc.variables[mc].shape == edge1_shape and edge1_mask is None:
-                edge1_mask = self.nc.variables[mc]
+                edge1_mask = self.nc.variables[mc][:]
             if edge2_shape and self.nc.variables[mc].shape == edge2_shape and edge2_mask is None:
-                edge2_mask = self.nc.variables[mc]
+                edge2_mask = self.nc.variables[mc][:]
 
         return node_mask, center_mask, edge1_mask, edge2_mask
 
