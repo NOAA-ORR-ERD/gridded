@@ -34,12 +34,17 @@ def convert_mask_to_numpy_mask(mask_var):
              and hasattr(mask_var, 'option_0'))
     if type1:
         fm = mask_var.flag_meanings
+        fv = mask_var.flag_values
         try:
             fm = fm.split()
         except AttributeError:
             pass  # must not be a string -- we assume it's a sequence already
+        try:
+            fv = fv.split()
+        except AttributeError:
+            pass
         meaning_mask = [False if ('water' in s or 'lake' in s) else True for s in fm]
-        tfmap = dict(zip(mask_var.flag_values, meaning_mask))
+        tfmap = dict(zip(fv, meaning_mask))
         for k, v in tfmap.items():
             ret_mask[mask_data == k] = v
     elif type2:  # special case where option_0 == land,
