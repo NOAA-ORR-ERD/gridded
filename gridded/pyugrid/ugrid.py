@@ -298,7 +298,6 @@ class UGrid():
     @faces.setter
     def faces(self, faces_indexes):
         # Room here to do consistency checking, etc.
-        # For now -- simply make sure it's a numpy array.
         if self._nodes is None:
             raise ValueError("Nodes must be defined before faces")
         if faces_indexes is not None:
