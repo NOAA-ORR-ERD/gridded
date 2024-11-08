@@ -1086,6 +1086,7 @@ class SGrid(object):
         points = points.reshape(-1, 2)
 
         ind = indices
+        breakpoint()
         if hash is None:
             _hash = self._hash_of_pts(points)
 
@@ -1156,6 +1157,7 @@ class SGrid(object):
             alpha_dim_idx = 0
             alpha = per_cell_log_offset[:, ::-1] #swap the value we want into alpha2
             alpha[:, 0] = 1 - alpha[:, 1] #compute alpha1
+            breakpoint()
 
             u1 = self.get_variable_at_index(var, zero_aligned_idxs)
             m1 = np.logical_xor(self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs - u2_offset))
@@ -1165,7 +1167,7 @@ class SGrid(object):
             m2 = np.logical_xor(self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs + u2_offset))
             u2.mask = np.logical_or(u2.mask, m2)
 
-            result = self.compute_interpolant(np.concatenate((u1, u2), axis=-1), alpha)
+            result = self.compute_interpolant(np.ma.concatenate((u1, u2), axis=-1), alpha)
 
         elif location in edge2_alternate_names:
             #interpolate as a uniform gradient from 'bottom' to 'top'
@@ -1186,6 +1188,7 @@ class SGrid(object):
             alpha_dim_idx = 1
             alpha = per_cell_log_offset #no swap needed, alpha2 is already in the correct place
             alpha[:, 0] = 1 - alpha[:, 1] #compute alpha1
+            breakpoint()
 
             v1 = self.get_variable_at_index(var, zero_aligned_idxs)
             m1 = np.logical_xor(self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs - v2_offset))
@@ -1195,7 +1198,7 @@ class SGrid(object):
             m2 = np.logical_xor(self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs + v2_offset))
             v2.mask = np.logical_or(v2.mask, m2)
 
-            result = self.compute_interpolant(np.concatenate((v1, v2), axis=-1), alpha)
+            result = self.compute_interpolant(np.ma.concatenate((v1, v2), axis=-1), alpha)
 
         elif location in node_alternate_names:
             l = per_cell_log_offset[:, 0]
