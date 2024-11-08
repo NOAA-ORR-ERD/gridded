@@ -16,6 +16,21 @@ start = datetime(2023, 11, 28, 12)
 dt = timedelta(minutes=15)
 SAMPLE_TIMESERIES = [(start + i * dt) for i in range(10)]
 STS = SAMPLE_TIMESERIES
+# import copy
+# from datetime import datetime, timedelta
+
+# import numpy as np
+
+# from gridded.time import Time
+
+import pytest
+
+SAMPLE_TIMESERIES = []
+start = datetime(2023, 11, 28, 12)
+dt = timedelta(minutes=15)
+for i in range(10):
+    SAMPLE_TIMESERIES.append(start + i * dt)
+STS = SAMPLE_TIMESERIES
 
 TEST_DATA = Path(__file__).parent / 'test_data'
 
@@ -158,7 +173,11 @@ def test_reset_data():
     t.data = SAMPLE_TIMESERIES
 
     assert np.array_equal(t.data, SAMPLE_TIMESERIES)
+<<<<<<< HEAD
     # an implementation detail, but want to make sure
+=======
+    # an implementaiton detail, but want to make sure
+>>>>>>> 173f1af0c694edfd74bf9599da47e205761e5f7e
     assert isinstance(t.data, np.ndarray)
 
 
@@ -201,7 +220,10 @@ def test_eq_constant_time():
 
     assert t1 == t2
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 173f1af0c694edfd74bf9599da47e205761e5f7e
 def test_eq_different_type():
     """
     A Time object is never equal to any other type
@@ -216,7 +238,11 @@ def test_out_of_order():
     data2 = copy.copy(SAMPLE_TIMESERIES)
     data2.insert(1, data2[4])
 
+<<<<<<< HEAD
     with pytest.raises(TimeSeriesError):
+=======
+    with pytest.raises(ValueError):
+>>>>>>> 173f1af0c694edfd74bf9599da47e205761e5f7e
         Time(data2)
 
 
@@ -224,6 +250,7 @@ def test_decending():
     data2 = copy.copy(SAMPLE_TIMESERIES)
     data2.reverse()
 
+<<<<<<< HEAD
     with pytest.raises(TimeSeriesError):
         Time(data2)
 
@@ -235,6 +262,11 @@ def test_duplicate():
         Time(data2)
 
 
+=======
+    with pytest.raises(ValueError):
+        Time(data2)
+
+>>>>>>> 173f1af0c694edfd74bf9599da47e205761e5f7e
 def test_min_max():
     t = Time(SAMPLE_TIMESERIES)
 
@@ -260,9 +292,15 @@ def test_valid_time():
     assert t.valid_time(SAMPLE_TIMESERIES[2] + timedelta(minutes=10)) is None
     assert t.valid_time(SAMPLE_TIMESERIES[-1]) is None
 
+<<<<<<< HEAD
     with pytest.raises(OutOfTimeRangeError):
         t.valid_time(SAMPLE_TIMESERIES[0] - timedelta(seconds=1))
     with pytest.raises(OutOfTimeRangeError):
+=======
+    with pytest.raises(ValueError):
+        t.valid_time(SAMPLE_TIMESERIES[0] - timedelta(seconds=1))
+    with pytest.raises(ValueError):
+>>>>>>> 173f1af0c694edfd74bf9599da47e205761e5f7e
         t.valid_time(SAMPLE_TIMESERIES[-1] + timedelta(seconds=1))
 
 
@@ -290,7 +328,11 @@ def test_interp_alpha_outside(dt, expected):
     t = Time(SAMPLE_TIMESERIES)
 
     print(dt)
+<<<<<<< HEAD
     with pytest.raises(OutOfTimeRangeError):
+=======
+    with pytest.raises(ValueError):
+>>>>>>> 173f1af0c694edfd74bf9599da47e205761e5f7e
         alpha = t.interp_alpha(dt)
 
     alpha = t.interp_alpha(dt, extrapolate=True)
@@ -305,7 +347,11 @@ def test_interp_alpha_outside(dt, expected):
                           ])
 def test_interp_alpha_constant_time(shift, expected):
     """
+<<<<<<< HEAD
     What should the constant time Time object give for alphas?
+=======
+    What should the constant time Time give for alphas?
+>>>>>>> 173f1af0c694edfd74bf9599da47e205761e5f7e
 
     Turns out it should never be called.
 
@@ -322,14 +368,20 @@ def test_interp_alpha_constant_time(shift, expected):
     with pytest.raises(TimeSeriesError):
         alpha = t.interp_alpha(t.data[0] + shift)
 
+<<<<<<< HEAD
 # def test_index_of_contant_time():
 #     pass
 
+=======
+>>>>>>> 173f1af0c694edfd74bf9599da47e205761e5f7e
 
 ## this needs a big data file -- could use some refactoring
 ## It would be good to test the netcdf stuff.
 ## there must be a sample file with time in it somewhere??
+<<<<<<< HEAD
 ## However -- this is testing a lot that doesn't need a data file.
+=======
+>>>>>>> 173f1af0c694edfd74bf9599da47e205761e5f7e
 
 # class TestTime:
 #     time_var = circular_3D['time']
