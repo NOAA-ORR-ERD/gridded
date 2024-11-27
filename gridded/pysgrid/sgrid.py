@@ -1165,7 +1165,7 @@ class SGrid(object):
             m2 = np.logical_xor(self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs + u2_offset))
             u2.mask = np.logical_or(u2.mask, m2)
 
-            result = self.compute_interpolant(np.concatenate((u1, u2), axis=-1), alpha)
+            result = self.compute_interpolant(np.ma.concatenate((u1, u2), axis=-1), alpha)
 
         elif location in edge2_alternate_names:
             #interpolate as a uniform gradient from 'bottom' to 'top'
@@ -1195,7 +1195,7 @@ class SGrid(object):
             m2 = np.logical_xor(self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs + v2_offset))
             v2.mask = np.logical_or(v2.mask, m2)
 
-            result = self.compute_interpolant(np.concatenate((v1, v2), axis=-1), alpha)
+            result = self.compute_interpolant(np.ma.concatenate((v1, v2), axis=-1), alpha)
 
         elif location in node_alternate_names:
             l = per_cell_log_offset[:, 0]
@@ -1213,7 +1213,7 @@ class SGrid(object):
             alphas = np.stack((aa, ab, ac, ad), axis=-1)
             vals = self.get_variable_by_index(var, zero_aligned_idxs)
             vals *= alphas
-            result = np.sum(vals, axis=1)
+            result = np.ma.sum(vals, axis=1)
         else:
             raise ValueError('invalid location name')
 
