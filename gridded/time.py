@@ -239,6 +239,40 @@ class Time(object):
         '''
         return self.data[-1]
 
+    @property
+    def tz_offset(self):
+        '''
+        Timezone offset of the time series
+
+        :rtype: datetime.timedelta
+        '''
+        if not hasattr(self, '_tz_offset'):
+            self._tz_offset = timedelta(0)
+            return timedelta(0)
+        else:
+            return self._tz_offset
+
+    @tz_offset.setter
+    def tz_offset(self, offset):
+        '''
+        Set the timezone offset of the time series. Replaces the current offset by
+        reverting the current offset and applying the new offset.
+
+        :param offset: offset to adjust for timezone, in hours.
+        :type offset: float, integer, or datetime.timedelta
+        '''
+        if isinstance(offset, (float, int)):
+            offset = timedelta(hours=offset)
+        if isinstance(offset, None):
+            offset = timedelta(0)
+        
+        if self._tz_offset is not None:
+            #undo previous offset
+            self.data -= self._tz_offset
+        
+        self.data += offset
+        self._tz_offset = offset
+
     def get_time_array(self):
         """
         returns a copy of the internal data array

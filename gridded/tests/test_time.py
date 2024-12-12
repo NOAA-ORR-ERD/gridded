@@ -322,6 +322,24 @@ def test_interp_alpha_constant_time(shift, expected):
     with pytest.raises(TimeSeriesError):
         alpha = t.interp_alpha(t.data[0] + shift)
 
+def test_tz_offset():
+    #on construction
+    offset = -8
+    offset = timedelta(hours=offset)
+    t = Time(SAMPLE_TIMESERIES, tz_offset=offset)
+
+    assert t.tz_offset == timedelta(hours=-8)
+    assert t.data[0] == SAMPLE_TIMESERIES[0] + offset
+    assert t.data[-1] == SAMPLE_TIMESERIES[-1] + offset
+    
+    #changing it changes the data
+    offset = 8
+    offset = timedelta(hours=offset)
+    t.tz_offset = offset
+    assert t.tz_offset == timedelta(hours=8)
+    assert t.data[0] == SAMPLE_TIMESERIES[0] + offset
+    
+
 # def test_index_of_contant_time():
 #     pass
 
