@@ -125,21 +125,25 @@ def test_displacement():
 
 
 def test_tz_offset():
+    #test tz_offset with timedelta
     offset = -8
     offset = timedelta(hours=offset)
     t = Time(SAMPLE_TIMESERIES, tz_offset=offset)
 
-    assert t.data[0] == SAMPLE_TIMESERIES[0] + offset
-    assert t.data[-1] == SAMPLE_TIMESERIES[-1] + offset
+    #tz_offset in constructor does not change data
+    assert t.data[0] == SAMPLE_TIMESERIES[0]
+    assert t.data[-1] == SAMPLE_TIMESERIES[-1]
 
 
 def test_tz_offset_hours():
+    #test tz_offset with hours
     offset = -8
     t = Time(SAMPLE_TIMESERIES, tz_offset=offset)
 
+    #tz_offset in constructor does not change data
     offset = timedelta(hours=offset)
-    assert t.data[0] == SAMPLE_TIMESERIES[0] + offset
-    assert t.data[-1] == SAMPLE_TIMESERIES[-1] + offset
+    assert t.data[0] == SAMPLE_TIMESERIES[0]
+    assert t.data[-1] == SAMPLE_TIMESERIES[-1]
 
 
 def test_get_time_array():
@@ -339,15 +343,16 @@ def test_tz_offset():
     t = Time(SAMPLE_TIMESERIES, tz_offset=offset)
 
     assert t.tz_offset == timedelta(hours=-8)
-    assert t.data[0] == SAMPLE_TIMESERIES[0] + offset
-    assert t.data[-1] == SAMPLE_TIMESERIES[-1] + offset
+    assert t.data[0] == SAMPLE_TIMESERIES[0] #setting tz_offset in constructor doesn't change the data
+    assert t.data[-1] == SAMPLE_TIMESERIES[-1]
     
     #changing it changes the data, referencing the zero datum.
     offset = 8
     offset = timedelta(hours=offset)
     t.tz_offset = offset
     assert t.tz_offset == timedelta(hours=8)
-    assert t.data[0] == SAMPLE_TIMESERIES[0] + offset
+    # -8 -> 0 -> 8 == 16 hours ahead
+    assert t.data[0] == SAMPLE_TIMESERIES[0] + offset + offset
     
 
 # def test_index_of_contant_time():

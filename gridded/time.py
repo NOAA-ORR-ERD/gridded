@@ -81,7 +81,13 @@ class Time(object):
         self.varname = varname
 
         if tz_offset is not None:
-            self.tz_offset = tz_offset
+            if isinstance(tz_offset, (float, int)):
+                tz_offset = timedelta(hours=tz_offset)
+            if tz_offset is None:
+                tz_offset = timedelta(0)
+            #set the private attribute directly, because using the property
+            #can cause the data to be shifted twice in case of loading from a serialization of this object
+        self._tz_offset = tz_offset
         if displacement is not None:
             self.displacement = displacement
 
