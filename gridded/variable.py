@@ -111,8 +111,7 @@ class Variable(object):
         self.units = units
         self.location = location
         self.data = data
-        self.time = (time if time is not None else
-                     self._default_component_types['time'].constant_time())
+        self.time = time
         self.data_file = data_file
         # the "main" filename for a Varibale should be the grid data.
         self.filename = data_file
@@ -257,12 +256,6 @@ class Variable(object):
                         origin=time_origin,
                         displacement=displacement,
                         tz_offset=tz_offset)
-            
-            if time_origin is not None:
-                time = Time(data=time.data,
-                            filename=time.filename,
-                            varname=time.varname,
-                            origin=time_origin)
         else:
             timevarname = 1 if len(time) > 1 else 0
         if depth is None:
@@ -317,13 +310,11 @@ class Variable(object):
         #Sets a Variable up to represent a constant scalar field. The result
         #will return a constant value for all times and places.
         Grid = Grid_S
-        Time = cls._default_component_types['time']
         _data = np.full((3,3), value)
         _node_lon = np.array(([-360, 0, 360], [-360, 0, 360], [-360, 0, 360]))
         _node_lat = np.array(([-89.95, -89.95, -89.95], [0, 0, 0], [89.95, 89.95, 89.95]))
         _grid = Grid(node_lon=_node_lon, node_lat=_node_lat)
-        _time = Time.constant_time()
-        return cls(grid=_grid, time=_time, data=_data, fill_value=value)
+        return cls(grid=_grid, data=_data, fill_value=value)
 
     @property
     def location(self):
@@ -822,8 +813,20 @@ class Variable(object):
 
 class VectorVariable(object):
 
+    # Keys are component names ('u', 'v', etc) and values are the netCDF4 names.
+    # eg {'u': ['u', 'U', 'eastward_sea_water_velocity']}
     default_names = {}
+    
+    # Keys are component names ('u', 'v', etc) and values are the CF names.
+    # eg {'u': ['u', 'U', 'eastward_sea_water_velocity']}
     cf_names = {}
+    
+    # This list of strings specify names for each component of the vector variable.
+    # The names should be the same as keys in default_names and cf_names
+    # for example, ['u', 'v'] will allow vv.u and vv.v to be used to access the components
+    # instead of vv.variables[0] and vv.variables[1]
+    # An error will raise if comp_order is longer than the number of components (vv.variables)
+    # upon object initialization
     comp_order = []
 
     _def_count = 0
@@ -861,13 +864,13 @@ class VectorVariable(object):
                 time = Time(time)
             units = variables[0].units if units is None else units
             time = variables[0].time if time is None else time
+        self._time = time
         if units is None:
             units = variables[0].units
         self._units = units
         if variables is None or len(variables) < 2:
             raise ValueError('Variables must be an array-like of 2 or more Variable objects')
         self.variables = variables
-        self._time = time
         unused_args = kwargs.keys() if kwargs is not None else None
         if len(unused_args) > 0:
             kwargs = {}
@@ -890,6 +893,8 @@ class VectorVariable(object):
                     units=None,
                     time=None,
                     time_origin=None,
+                    displacement=None,
+                    tz_offset=None,
                     grid=None,
                     depth=None,
                     data_file=None,
@@ -920,6 +925,16 @@ class VectorVariable(object):
         :param time: Time axis of the data
         :type time: [] of datetime.datetime, netCDF4 Variable, or Time object
 
+        :param tz_offset: offset to compensate for time zone shifts
+        :type tz_offset: `datetime.timedelta` or float or integer hours
+
+        :param origin: shifts the time interval to begin at the time specified
+        :type origin: `datetime.datetime`
+
+        :param displacement: displacement to apply to the time data.
+               Allows shifting entire time interval into future or past
+        :type displacement: `datetime.timedelta`
+        
         :param data: Underlying data source
         :type data: netCDF4.Variable or numpy.array
 
@@ -962,27 +977,33 @@ class VectorVariable(object):
             cls._def_count += 1
         data = ds[varnames[0]]
         if time is None:
-            time = Time.from_netCDF(filename=data_file,
-                                    dataset=ds,
-                                    datavar=data)
-            if time_origin is not None:
-                time = Time(data=time.data, filename=data_file, varname=time.varname, origin=time_origin)
+            timevarname = Time.locate_time_var_from_var(data)
+            if timevarname is not None:
+                timevarname = ds[timevarname]
+            time = Time(data=timevarname,
+                        filename=data_file,
+                        varname=timevarname,
+                        origin=time_origin,
+                        displacement=displacement,
+                        tz_offset=tz_offset)
+        else:
+            timevarname = 1 if len(time) > 1 else 0
         if depth is None:
-            #before refactoring this, note that not being selective about looking for
-            #depth can cause infinite recursion. For example, if Bathymetry is sought
-            #to create the ROMS_Depth object, which then seeks a Depth object which then
-            #seeks a Bathymetry object.
-            if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
-                    isinstance(grid, Grid_U) and len(data.shape) == 3):
+            istimevar = 0 if timevarname is None else 1
+            
+            if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 3 + istimevar or
+                    isinstance(grid, Grid_U) and len(data.shape) == 2 + istimevar):
                 depth = Depth.from_netCDF(grid_file=dg,
                                           dataset=ds,
+                                          time=time,
+                                          grid=grid,
                                           **kwargs
                                           )
+        
         if variables is None:
             variables = []
             for vn in varnames:
                 if vn is not None:
-                    # Fixme: We're calling from_netCDF from itself ?!?!?
                     variables.append(Variable.from_netCDF(filename=filename,
                                                           varname=vn,
                                                           grid_topology=grid_topology,

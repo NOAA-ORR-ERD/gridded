@@ -89,7 +89,6 @@ class Time(object):
             raise TimeSeriesError("Time sequence is not ascending")
         if self._has_duplicates(self.data):
             raise TimeSeriesError("Time sequence has duplicate entries")
-        breakpoint()
         super(Time, self).__init__(*args, **kwargs)
 
     @classmethod
