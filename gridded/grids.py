@@ -10,7 +10,7 @@ class GridBase(object):
     '''
     Base object for grids to share common behavior
     '''
-    _def_count = 0
+    _instance_count = 0
 
     def __init__(self,
                  filename=None,
@@ -25,9 +25,9 @@ class GridBase(object):
         if 'name' in kwargs:
             self.name = kwargs['name']
         else:
-            self.name = self.__class__.__name__ + '_' + str(type(self)._def_count)
+            self.name = self.__class__.__name__ + '_' + str(type(self)._instance_count)
         self.filename = filename
-        type(self)._def_count += 1
+        type(self)._instance_count += 1
 
         super(GridBase, self).__init__(**kwargs)
 

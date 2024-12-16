@@ -383,7 +383,7 @@ class Test_FVCOM_Depth(object):
         dp = get_fvcom_depth
         tris = dp.grid.nodes.take(dp.grid.faces, axis=0)
         centroids = np.mean(tris, axis=1)
-        transects = dp.get_transect(centroids, dp.zeta.time.min_time)
+        transects = dp.get_transect(centroids, datetime.datetime.now())
         
         #because we use the centroids, the values should the average of the 3 nodes
         #Not intending to test interpolation here there's a separate test for that

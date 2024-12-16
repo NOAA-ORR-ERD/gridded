@@ -322,21 +322,15 @@ def test_interp_alpha_outside(dt, expected):
 def test_interp_alpha_constant_time(shift, expected):
     """
     What should the constant time Time object give for alphas?
-
-    Turns out it should never be called.
-
-    So is a bit of over testing, but there you go.
-
-    -- see gridded.Variable.at -- this won't get called for constant time object.
+    Jay: 0.0
     """
     t = Time.constant_time()
 
     print(t.data)
     print(t.min_time)
     print(t.max_time)
-
-    with pytest.raises(TimeSeriesError):
-        alpha = t.interp_alpha(t.data[0] + shift)
+    alpha = t.interp_alpha(t.data[0] + shift)
+    assert alpha == 0.0
 
 def test_tz_offset():
     #on construction

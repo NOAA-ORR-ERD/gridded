@@ -211,7 +211,7 @@ class Time(object):
         # return all(r) if hasattr(r, '__len__') else r
         if not isinstance(other, self.__class__):
             return False
-        return np.array_equal(self.data, other.data)
+        return np.array_equal(self.data, other.data) and self.tz_offset == other.tz_offset
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -359,8 +359,6 @@ class Time(object):
         :return: interpolation alpha
         :rtype: float (0 <= r <= 1)
         '''
-        if len(self.data) == 1:
-            raise TimeSeriesError("Can't compute interp_alpha for single time")
         if (not extrapolate) and (not len(self.data) == 1):
             self.valid_time(time)
         i0 = self.index_of(time, extrapolate)

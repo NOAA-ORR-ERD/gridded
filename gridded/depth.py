@@ -17,7 +17,7 @@ from gridded.utilities import (get_dataset,
 
 
 class DepthBase(object):
-    _def_count = 0
+    _instance_count = 0
     _default_component_types = {'time': Time,
                                 'grid': Grid,
                                 'variable': None}
@@ -193,7 +193,7 @@ class L_Depth(DepthBase):
                                              data_file=data_file)
         nc_vars = search_netcdf_vars(cls, df, dg)
         if name is None:
-            name = cls.__name__ + str(cls._def_count)
+            name = cls.__name__ + '_' + str(cls._instance_count)
         if terms is None:
             terms = {}
             for term, tvar in nc_vars.items():
@@ -386,8 +386,8 @@ class S_Depth(DepthBase):
 
         # self.rho_coordinates = self.compute_coordinates('rho')
         # self.w_coordinates = self.compute_coordinates('w')
-        self.default_surface_boundary_condition = 'extrapolate'
-        self.default_bottom_boundary_condition = 'mask'
+        self.default_surface_boundary_condition = surface_boundary_condition
+        self.default_bottom_boundary_condition = bottom_boundary_condition
     @classmethod
     def from_netCDF(cls,
                     filename=None,
@@ -395,6 +395,9 @@ class S_Depth(DepthBase):
                     grid_topology=None,
                     name=None,
                     time=None,
+                    time_origin=None,
+                    displacement=None,
+                    tz_offset=None,
                     grid=None,
                     dataset=None,
                     data_file=None,
@@ -429,6 +432,16 @@ class S_Depth(DepthBase):
         :param time: Time dimension (for zeta)
         :type time: gridded.time.Time or subclass
 
+        :param tz_offset: offset to compensate for time zone shifts
+        :type tz_offset: `datetime.timedelta` or float or integer hours
+
+        :param origin: shifts the time interval to begin at the time specified
+        :type origin: `datetime.datetime`
+
+        :param displacement: displacement to apply to the time data.
+               Allows shifting entire time interval into future or past
+        :type displacement: `datetime.timedelta`
+        
         :param grid: X-Y dmension (for bathymetry & zeta)
         :type grid: subclass of gridded.grids.GridBase
         '''
@@ -447,12 +460,30 @@ class S_Depth(DepthBase):
             grid = Grid.from_netCDF(dataset=dg,
                                     grid_topology=grid_topology)
         if name is None:
-            name = cls.__name__ + str(cls._def_count)
-            cls._def_count += 1
+            name = cls.__name__ + '_' + str(cls._instance_count)
+            cls._instance_count += 1
         
         # Do a comprehensive search for netCDF4 Variables all at once
         nc_vars = search_netcdf_vars(cls, ds, dg)
         
+        if time is None:
+            zeta_var = nc_vars.get('zeta', None)
+            if zeta_var is None:
+                warn = 'Unable to locate zeta in data file'
+                if dg:
+                    warnings.warn(warn + ' or grid file.')
+                warn += ' Generating constant (0) zeta.'
+                warnings.warn(warn)
+                time = Time.constant_time()
+            else:
+                time = Time.from_netCDF(
+                    datavar=zeta_var,
+                    filename=data_file,
+                    origin=time_origin,
+                    displacement=displacement,
+                    tz_offset=tz_offset
+                )
+                                        
         if bathymetry is None:
             bathy_var = nc_vars.get('bathymetry', None)
             if bathy_var is None:
@@ -462,7 +493,6 @@ class S_Depth(DepthBase):
                 raise ValueError(err)
             bathymetry = Bathymetry(data=bathy_var,
                                     grid=grid,
-                                    time=time,
                                     name='bathymetry',
                                     )
 
@@ -480,9 +510,7 @@ class S_Depth(DepthBase):
                             grid=grid,
                             time=time,
                             name='zeta')
-                
-        if time is None:
-            time = zeta.time
+
         if terms is None:
             terms = {}
             for term, tvar in nc_vars.items():
@@ -699,7 +727,7 @@ class ROMS_Depth(S_Depth):
     '''
     Sigma coordinate depth object for ROMS style output
     '''
-    _def_count = 0
+    _instance_count = 0
     default_names = {'Cs_r': ['Cs_r'],
                      'Cs_w': ['Cs_w'],
                      's_rho': ['s_rho'],
@@ -767,7 +795,7 @@ class ROMS_Depth(S_Depth):
 
 
 class FVCOM_Depth(S_Depth):
-    _def_count = 0
+    _instance_count = 0
     default_names = {
         'siglay': ['siglay'], # mid layer depth coordinate on nodes
         'siglay_center': ['siglev_center'], # mid layer depth coordinate on centers

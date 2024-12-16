@@ -37,7 +37,7 @@ class Variable(object):
     """
     default_names = []
     cf_names = []
-    _def_count = 0
+    _instance_count = 0
 
     _default_component_types = {'time': Time,
                                 'grid': Grid,
@@ -238,8 +238,8 @@ class Variable(object):
                                 'must supply variable name')
         data = ds.variables[varname]
         if name is None:
-            name = cls.__name__ + str(cls._def_count)
-            cls._def_count += 1
+            name = cls.__name__ + '_' + str(cls._instance_count)
+            cls._instance_count += 1
         if units is None:
             try:
                 units = data.units
@@ -829,7 +829,7 @@ class VectorVariable(object):
     # upon object initialization
     comp_order = []
 
-    _def_count = 0
+    _instance_count = 0
 
     ''''
     These are the classes which are used when internal components are created
@@ -973,8 +973,8 @@ class VectorVariable(object):
             if all([v is None for v in varnames]):
                 raise ValueError('No compatible variable names found!')
         if name is None:
-            name = cls.__name__ + str(cls._def_count)
-            cls._def_count += 1
+            name = cls.__name__ + '_' + str(cls._instance_count)
+            cls._instance_count += 1
         data = ds[varnames[0]]
         if time is None:
             timevarname = Time.locate_time_var_from_var(data)
