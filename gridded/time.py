@@ -34,7 +34,7 @@ class Time(object):
                  varname=None,
                  tz_offset=None,
                  origin=None,
-                 displacement=timedelta(seconds=0),
+                 displacement=None,
                  *args,
                  **kwargs):
         '''
@@ -67,27 +67,29 @@ class Time(object):
             self.data = np.array([datetime.now()])
         else:
             self.data = np.asarray(data)
+        
+        #Quick check to ensure data is 'datetime-like' enough
+        #to be compatible with timedelta operations    
+        self.data += timedelta(seconds=0)
 
         if origin is not None:
             diff = self.data[0] - origin
             self.data -= diff
 
-        self.data += displacement
 
         self.filename = filename
         self.varname = varname
 
         if tz_offset is not None:
-            try:
-                self.data += tz_offset
-            except TypeError:
-                self.data += timedelta(hours=tz_offset)
+            self.tz_offset = tz_offset
+        if displacement is not None:
+            self.displacement = displacement
 
         if not self._timeseries_is_ascending(self.data):
             raise TimeSeriesError("Time sequence is not ascending")
         if self._has_duplicates(self.data):
             raise TimeSeriesError("Time sequence has duplicate entries")
-
+        breakpoint()
         super(Time, self).__init__(*args, **kwargs)
 
     @classmethod
@@ -261,9 +263,11 @@ class Time(object):
         :param offset: offset to adjust for timezone, in hours.
         :type offset: float, integer, or datetime.timedelta
         '''
+        if not hasattr(self, '_tz_offset'):
+            self._tz_offset = timedelta(0)
         if isinstance(offset, (float, int)):
             offset = timedelta(hours=offset)
-        if isinstance(offset, None):
+        if offset is None:
             offset = timedelta(0)
         
         if self._tz_offset is not None:
@@ -273,6 +277,26 @@ class Time(object):
         self.data += offset
         self._tz_offset = offset
 
+    @property
+    def displacement(self):
+        if not hasattr (self, '_displacement'):
+            self._displacement = None
+        return self._displacement
+    
+    @displacement.setter
+    def displacement(self, displacement):
+        if not hasattr(self, '_displacement') or self._displacement is None:
+            if displacement is None:
+                self._displacement = None
+                return
+            if isinstance(displacement, (float, int)):
+                displacement = timedelta(hours=displacement)
+            self.data += displacement
+            self._displacement = displacement
+        else:
+            raise AttributeError('displacement is settable only once')
+        
+    
     def get_time_array(self):
         """
         returns a copy of the internal data array

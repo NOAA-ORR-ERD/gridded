@@ -106,6 +106,22 @@ def test_displacement():
 
     assert t.data[0] == SAMPLE_TIMESERIES[0] + disp
     assert t.data[-1] == SAMPLE_TIMESERIES[-1] + disp
+    
+    assert t.displacement == disp
+    #displacement cannot be re-assigned
+    with pytest.raises(AttributeError):
+        t.displacement = timedelta(days=1)
+    
+    t2 = Time(SAMPLE_TIMESERIES)
+    #displacement can be assigned once, after object creation
+    t2.displacement = disp
+    assert t2.data[0] == SAMPLE_TIMESERIES[0] + disp
+    assert t2.data[-1] == SAMPLE_TIMESERIES[-1] + disp
+    assert t2.displacement == disp
+    
+    #displacement cannot be re-assigned
+    with pytest.raises(AttributeError):
+        t2.displacement = timedelta(days=1) 
 
 
 def test_tz_offset():
@@ -332,7 +348,7 @@ def test_tz_offset():
     assert t.data[0] == SAMPLE_TIMESERIES[0] + offset
     assert t.data[-1] == SAMPLE_TIMESERIES[-1] + offset
     
-    #changing it changes the data
+    #changing it changes the data, referencing the zero datum.
     offset = 8
     offset = timedelta(hours=offset)
     t.tz_offset = offset
