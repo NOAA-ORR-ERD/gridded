@@ -143,6 +143,8 @@ class Variable(object):
                     units=None,
                     time=None,
                     time_origin=None,
+                    displacement=None,
+                    tz_offset=None,
                     grid=None,
                     depth=None,
                     dataset=None,
@@ -201,6 +203,16 @@ class Variable(object):
 
         :param grid_file: Name of grid source file, if data and grid files are separate
         :type grid_file: string
+        
+        :param tz_offset: offset to compensate for time zone shifts
+        :type tz_offset: `datetime.timedelta` or float or integer hours
+
+        :param origin: shifts the time interval to begin at the time specified
+        :type origin: `datetime.datetime`
+
+        :param displacement: displacement to apply to the time data.
+               Allows shifting entire time interval into future or past
+        :type displacement: `datetime.timedelta`
         '''
 
         Grid = cls._default_component_types['grid']
@@ -234,12 +246,17 @@ class Variable(object):
                 units = data.units
             except AttributeError:
                 units = None
-                
+              
         if time is None:
             timevarname = Time.locate_time_var_from_var(data)
             if timevarname is not None:
                 timevarname = ds[timevarname]
-            time = Time(data=timevarname)
+            time = Time(data=timevarname,
+                        filename=data_file,
+                        varname=timevarname,
+                        origin=time_origin,
+                        displacement=displacement,
+                        tz_offset=tz_offset)
             
             if time_origin is not None:
                 time = Time(data=time.data,
@@ -255,6 +272,8 @@ class Variable(object):
                     isinstance(grid, Grid_U) and len(data.shape) == 2 + istimevar):
                 depth = Depth.from_netCDF(grid_file=dg,
                                           dataset=ds,
+                                          time=time,
+                                          grid=grid,
                                           **kwargs
                                           )
         if location is None:
