@@ -35,6 +35,7 @@ class Time(object):
                  tz_offset=None,
                  origin=None,
                  displacement=None,
+                 new_tz_offset=None,
                  *args,
                  **kwargs):
         '''
@@ -43,8 +44,11 @@ class Time(object):
         :param time: Ascending list of times to use
         :type time: netCDF4.Variable or Sequence of `datetime.datetime`
 
-        :param tz_offset: offset to compensate for time zone shifts
-        :type tz_offset: `datetime.timedelta` or float or integer hours
+        :param data_: timezone of the data. If not provided, tz_offset is used.
+        :type data_tz: `datetime.timedelta` or float or integer hours
+
+        :param time_offset: offset to compensate for time zone shifts
+        :type time_offset: `datetime.timedelta` or float or integer hours
 
         :param origin: shifts the time interval to begin at the time specified
         :type origin: `datetime.datetime`
@@ -79,17 +83,22 @@ class Time(object):
 
         self.filename = filename
         self.varname = varname
+                
 
-        if tz_offset is not None:
-            if isinstance(tz_offset, (float, int)):
-                tz_offset = timedelta(hours=tz_offset)
-            if tz_offset is None:
-                tz_offset = timedelta(0)
-            #set the private attribute directly, because using the property
-            #can cause the data to be shifted twice in case of loading from a serialization of this object
-        else:
-            tz_offset = timedelta(0)
+        if isinstance(tz_offset, (float, int)):
+            tz_offset = timedelta(hours=tz_offset)
+            
+        #set the private attribute directly, because using the property
+        #can cause the data to be shifted twice in case of loading from a serialization of this object
         self._tz_offset = tz_offset
+            
+        if new_tz_offset is not None:
+            self.tz_offset = new_tz_offset
+        
+
+        
+            
+        
         if displacement is not None:
             self.displacement = displacement
 
@@ -256,8 +265,8 @@ class Time(object):
         :rtype: datetime.timedelta
         '''
         if not hasattr(self, '_tz_offset'):
-            self._tz_offset = timedelta(0)
-            return timedelta(0)
+            self._tz_offset = None
+            return None
         else:
             return self._tz_offset
 
@@ -271,11 +280,12 @@ class Time(object):
         :type offset: float, integer, or datetime.timedelta
         '''
         if not hasattr(self, '_tz_offset'):
-            self._tz_offset = timedelta(0)
+            self._tz_offset = None
         if isinstance(offset, (float, int)):
             offset = timedelta(hours=offset)
         if offset is None:
-            offset = timedelta(0)
+            self._tz_offset = None
+            return
         
         if self._tz_offset is not None:
             #undo previous offset
