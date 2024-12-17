@@ -365,7 +365,55 @@ def test_tz_offset():
     assert t.tz_offset == timedelta(hours=8)
     # -8 -> 0 -> 8 == 16 hours ahead
     assert t.data[0] == SAMPLE_TIMESERIES[0] + offset + offset
-    
+
+
+def test_from_netcdf_tz_offset_Z():
+    """
+    make sure you can load time from a netcdf file with Z specified
+    """
+    filename = TEST_DATA / "just_time_UTC.nc"
+    t = Time.from_netCDF(filename=filename, varname='time')
+
+    print(t)
+
+    assert t.tz_offset == timedelta(0)
+
+@pytest.mark.parametrize(('filename', 'offset'), [("just_time_UTC.nc", 0),
+                                                  ("just_time_UTC-0.nc", 0),
+                                                  ("just_time_naive.nc", 0),
+                                                  ("just_time_offset-7.nc", -7),
+                                                  ])
+def test_from_netcdf_tz_offset_Z(filename, offset):
+    """
+    make sure you can load time from a netcdf file with Z specified
+
+    NOTE: currently naive time in netcdf is assumed to be UTC -- correct??
+    """
+    filename = TEST_DATA / filename
+    t = Time.from_netCDF(filename=filename, varname='time')
+
+    assert t.tz_offset == timedelta(hours=offset)
+
+
+def test_from_netcdf_tz_offset_set_UTC():
+    """
+    Make sure you can load time from a netcdf file that's naive, specifying UTC (0 offset)
+    """
+    filename = TEST_DATA / "just_time_naive.nc"
+    t = Time.from_netCDF(filename=filename, varname='time', tz_offset=0)
+
+    assert t.tz_offset == timedelta(hours=0)
+
+
+def test_from_netcdf_tz_offset_set_None():
+    """
+    Make sure you can load time from a netcdf file and tell it to keep it Naive.
+    """
+    filename = TEST_DATA / "just_time_naive.nc"
+    t = Time.from_netCDF(filename=filename, varname='time', tz_offset=None)
+
+    assert t.tz_offset == None
+
 
 # def test_index_of_contant_time():
 #     pass

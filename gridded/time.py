@@ -23,9 +23,10 @@ class TimeSeriesError(ValueError):
     pass
 
 
-class Time(object):
+class Time:
 
     # Used to make a singleton with the constant_time class method.
+    #  question: why not a ContantTime Class?
     _const_time = None
 
     def __init__(self,
@@ -60,12 +61,12 @@ class Time(object):
 
         # fixme -- this conversion should be done in the netcdf loading code.
 
-        if isinstance(data, (nc4.Variable, nc4._netCDF4._Variable)):
-            if (hasattr(nc4, 'num2pydate')):
-                self.data = nc4.num2pydate(data[:], units=data.units)
-            else:
-                self.data = nc4.num2date(data[:], units=data.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
-        elif isinstance(data, Time):
+        # if isinstance(data, (nc4.Variable, nc4._netCDF4._Variable)):
+        #     if (hasattr(nc4, 'num2pydate')):
+        #         self.data = nc4.num2pydate(data[:], units=data.units)
+        #     else:
+        #         self.data = nc4.num2date(data[:], units=data.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
+        if isinstance(data, Time):
             self.data = data.data
         elif data is None:
             self.data = np.array([datetime.now()])
@@ -162,7 +163,10 @@ class Time(object):
                 return cls.constant_time()
         if isinstance(varname, str):
             tvar = dataset.variables[varname]
-        time = cls(data=tvar,
+
+        tdata = nc4.num2date(tvar[:], units=tvar.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
+
+        time = cls(data=tdata,
                    filename=filename,
                    varname=varname,
                    tz_offset=tz_offset,
