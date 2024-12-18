@@ -414,6 +414,23 @@ def test_from_netcdf_tz_offset_set_Naive():
 
     assert t.tz_offset == None
 
+
+def test_from_netcdf_tz_offset_set_new_offset():
+    """
+    Make sure you can load time from a netcdf file and tell it to keep it Naive.
+    """
+    filename = TEST_DATA / "just_time_offset-7.nc"
+    t = Time.from_netCDF(filename=filename, varname='time', new_tz_offset=-3)
+
+    assert t.tz_offset == timedelta(hours=-3)
+    # add an assert that the times are correct!
+    ds = netCDF4.Dataset(filename)
+    time_var = ds.variables['time']
+    times = netCDF4.num2date(time_var, time_var.units)
+    assert times[0] == t.data[0] - timedelta(hours=4)
+
+
+
 @pytest.mark.parametrize(('offset', 'unit_str', 'name'), [(0, 'days since 2024-1-1T00:00:00Z', 'UTC'),
                                                           (0, 'days since 2024-1-1T00:00:00+00:00', 'UTC'),
                                                           (None, 'days since 2024-1-1T00:00:00', None),

@@ -102,7 +102,6 @@ class Time:
                Allows shifting entire time interval into future or past
         :type displacement: `datetime.timedelta`
         '''
-
         if isinstance(data, Time):
             self.data = data.data
         elif data is None:
@@ -123,23 +122,15 @@ class Time:
         self.filename = filename
         self.varname = varname
 
-        if tz_offset is not None:
-            if isinstance(tz_offset, (float, int)):
-                tz_offset = timedelta(hours=tz_offset)
-            if tz_offset is None:
-                tz_offset = timedelta(0)
-            # set the private attribute directly, because using the property
-            # can cause the data to be shifted twice in case of loading from a serialization of this object
-        else:
-            tz_offset = timedelta(0)
+        if isinstance(tz_offset, (float, int)):
+            tz_offset = timedelta(hours=tz_offset)
+
+        # set the private attribute directly, because using the property
+        # can cause the data to be shifted twice in case of loading from a serialization of this object
         self._tz_offset = tz_offset
 
         if new_tz_offset is not None:
             self.tz_offset = new_tz_offset
-
-
-
-
 
         if displacement is not None:
             self.displacement = displacement
@@ -159,7 +150,6 @@ class Time:
         
         return varname
         
-        
 
     @classmethod
     def from_netCDF(cls,
@@ -168,6 +158,7 @@ class Time:
                     varname=None,
                     datavar=None,
                     tz_offset=None,
+                    new_tz_offset=None,
                     **kwargs):
         """
         construct a Time object from a netcdf file.
@@ -191,6 +182,11 @@ class Time:
                                If None: offset will be read from file, if present.
                                If not in file, UTC will be assumed
                                If 'Naive', then no offset will be assigned.
+
+        :param new_tz_offset=None: New Timezone offset desired in hours.
+                                   Data will be shifted to the new offset.
+                                   If tz_offset is set to Naive, then this will fail.
+                                   (it can't be changed without knowing what it was to begin with)
         """
         if varname is None and datavar is None:
             raise TypeError('you must pass in either a varname or a datavar')
@@ -206,11 +202,11 @@ class Time:
                 return cls.constant_time()
         if isinstance(varname, str):
             tvar = dataset.variables[varname]
-
         # figure out the timezone_offset
+        name = ""  # this should be passed in ...
         if isinstance(tz_offset, str) and tz_offset.lower() == 'naive':
             tz_offset = None
-        else:
+        elif tz_offset is None:
             # look in the time units attribute:
             tz_offset, name = parse_time_offset(tvar.units)
 
@@ -220,6 +216,7 @@ class Time:
                    filename=filename,
                    varname=varname,
                    tz_offset=tz_offset,
+                   new_tz_offset=new_tz_offset,
                    **kwargs
                    )
         return time
@@ -247,6 +244,7 @@ class Time:
         # Fixme: Why? this seems like more magic than necessary
         if isinstance(data, self.__class__) or data.__class__ in self.__class__.__mro__:
             data = data.data
+        # add check for valid datetime list?
         self._data = np.asarray(data)
 
     @property
@@ -342,7 +340,7 @@ class Time:
             return
         
         if self._tz_offset is not None:
-            #undo previous offset
+            # undo previous offset
             self.data -= self._tz_offset
         
         self.data += offset
@@ -365,6 +363,7 @@ class Time:
             self.data += displacement
             self._displacement = displacement
         else:
+            # why not jsut make  this an init thing, then??
             raise AttributeError('displacement is settable only once')
         
     
