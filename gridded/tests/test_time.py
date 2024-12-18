@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import netCDF4
 
-from gridded.time import Time, TimeSeriesError, OutOfTimeRangeError
+from gridded.time import Time, TimeSeriesError, OutOfTimeRangeError, parse_time_offset
 
 import pytest
 
@@ -405,18 +405,29 @@ def test_from_netcdf_tz_offset_set_UTC():
     assert t.tz_offset == timedelta(hours=0)
 
 
-def test_from_netcdf_tz_offset_set_None():
+def test_from_netcdf_tz_offset_set_Naive():
     """
     Make sure you can load time from a netcdf file and tell it to keep it Naive.
     """
     filename = TEST_DATA / "just_time_naive.nc"
-    t = Time.from_netCDF(filename=filename, varname='time', tz_offset=None)
+    t = Time.from_netCDF(filename=filename, varname='time', tz_offset='Naive')
 
     assert t.tz_offset == None
 
-
-# def test_index_of_contant_time():
-#     pass
+@pytest.mark.parametrize(('offset', 'unit_str', 'name'), [(0, 'days since 2024-1-1T00:00:00Z', 'UTC'),
+                                                          (0, 'days since 2024-1-1T00:00:00+00:00', 'UTC'),
+                                                          (None, 'days since 2024-1-1T00:00:00', None),
+                                                          (-7, 'days since 2024-1-1T00:00:00-7:00', '-07:00'),
+                                                          (3.5, 'days since 2024-1-1T00:00:00+3:30', '+03:30'),
+                                                          ])
+def test_parse_time_offset(offset, unit_str, name):
+    """
+    Do we get the right offset from the units string?
+    """
+    tz_off, new_name = parse_time_offset(unit_str)
+    print (tz_off, name)
+    assert tz_off == offset
+    assert new_name == name
 
 
 ## this needs a big data file -- could use some refactoring
