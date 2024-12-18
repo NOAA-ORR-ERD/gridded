@@ -19,6 +19,7 @@ STS = SAMPLE_TIMESERIES
 
 TEST_DATA = Path(__file__).parent / 'test_data'
 
+
 def test_init():
     """
     can one even be initialized with no data?
@@ -37,12 +38,14 @@ def test_invalid_timeseries():
     with pytest.raises(TypeError):
         t = Time("")
 
+
 def test_from_netcdf_filename_no_var():
     """
     initialize from a netcdf filename
     """
     with pytest.raises(TypeError):
         t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc")
+
 
 def test_from_netcdf_filename_specify_time_var_name():
     """
@@ -91,7 +94,6 @@ def test_from_netcdf_filename_bad():
         t = Time.from_netCDF(filename="non_existant_file.nc", varname='time')
 
 
-
 def test_origin():
     origin = datetime(1984, 1, 1, 6)
     t = Time(SAMPLE_TIMESERIES, origin=origin)
@@ -106,22 +108,22 @@ def test_displacement():
 
     assert t.data[0] == SAMPLE_TIMESERIES[0] + disp
     assert t.data[-1] == SAMPLE_TIMESERIES[-1] + disp
-    
+
     assert t.displacement == disp
     #displacement cannot be re-assigned
     with pytest.raises(AttributeError):
         t.displacement = timedelta(days=1)
-    
+
     t2 = Time(SAMPLE_TIMESERIES)
     #displacement can be assigned once, after object creation
     t2.displacement = disp
     assert t2.data[0] == SAMPLE_TIMESERIES[0] + disp
     assert t2.data[-1] == SAMPLE_TIMESERIES[-1] + disp
     assert t2.displacement == disp
-    
+
     #displacement cannot be re-assigned
     with pytest.raises(AttributeError):
-        t2.displacement = timedelta(days=1) 
+        t2.displacement = timedelta(days=1)
 
 
 def test_tz_offset():
@@ -145,18 +147,22 @@ def test_tz_offset_hours():
     assert t.data[0] == SAMPLE_TIMESERIES[0]
     assert t.data[-1] == SAMPLE_TIMESERIES[-1]
 
+
 def test_new_tz_offset():
     new_tz_offset = timedelta(hours=-8)
     t = Time(SAMPLE_TIMESERIES, new_tz_offset=new_tz_offset)
     assert np.all(t.data == np.array(SAMPLE_TIMESERIES) + new_tz_offset)
+
 
 def test_tz_offset_with_new_tz_offset():
     tz_offset = timedelta(hours=3)
     new_tz_offset = timedelta(hours=-8)
     t = Time(SAMPLE_TIMESERIES, tz_offset=tz_offset, new_tz_offset=new_tz_offset)
     assert np.all(t.data == np.array(SAMPLE_TIMESERIES) - tz_offset + new_tz_offset)
-    assert t.tz_offset == tz_offset
-    
+    print(t.tz_offset.total_seconds() / 3600)
+    print(tz_offset.total_seconds() / 3600)
+    assert t.tz_offset == new_tz_offset
+
 
 def test_get_time_array():
     t = Time(SAMPLE_TIMESERIES)
@@ -298,13 +304,15 @@ def test_valid_time():
         t.valid_time(SAMPLE_TIMESERIES[-1] + timedelta(seconds=1))
 
 
-@pytest.mark.parametrize("dt, expected",
-                         [(STS[3], 1.0),  # exact time
-                          (STS[4] + (STS[5] - STS[4]) / 2, 0.5),  # in the middle
-                          (STS[4] + (STS[5] - STS[4]) / 4, 0.25),  # in the middle
-                          (STS[0], 0.0),  # at the beginning
-                          (STS[-1], 1.0),  # at the end
-                          ])
+@pytest.mark.parametrize(
+    "dt, expected",
+    [
+        (STS[3], 1.0),  # exact time
+        (STS[4] + (STS[5] - STS[4]) / 2, 0.5),  # in the middle
+        (STS[4] + (STS[5] - STS[4]) / 4, 0.25),  # in the middle
+        (STS[0], 0.0),  # at the beginning
+        (STS[-1], 1.0),  # at the end
+    ])
 def test_interp_alpha(dt, expected):
     t = Time(SAMPLE_TIMESERIES)
 
@@ -314,10 +322,12 @@ def test_interp_alpha(dt, expected):
     assert alpha == expected
 
 
-@pytest.mark.parametrize("dt, expected",
-                         [(STS[0] - timedelta(seconds=1), 0.0),  # a little before
-                          (STS[-1] + timedelta(seconds=1), 1.0),  # a little after
-                          ])
+@pytest.mark.parametrize(
+    "dt, expected",
+    [
+        (STS[0] - timedelta(seconds=1), 0.0),  # a little before
+        (STS[-1] + timedelta(seconds=1), 1.0),  # a little after
+    ])
 def test_interp_alpha_outside(dt, expected):
     t = Time(SAMPLE_TIMESERIES)
 
@@ -330,11 +340,13 @@ def test_interp_alpha_outside(dt, expected):
 
 
 #@pytest.mark.xfail
-@pytest.mark.parametrize("shift, expected",
-                         [(-timedelta(days=365), 1.0),  # before
-                          (timedelta(days=365), 1.0),  # after
-                          (timedelta(0), 1.0),  # on the nose
-                          ])
+@pytest.mark.parametrize(
+    "shift, expected",
+    [
+        (-timedelta(days=365), 1.0),  # before
+        (timedelta(days=365), 1.0),  # after
+        (timedelta(0), 1.0),  # on the nose
+    ])
 def test_interp_alpha_constant_time(shift, expected):
     """
     What should the constant time Time object give for alphas?
@@ -348,6 +360,7 @@ def test_interp_alpha_constant_time(shift, expected):
     alpha = t.interp_alpha(t.data[0] + shift)
     assert alpha == 0.0
 
+
 def test_tz_offset():
     #on construction
     offset = -8
@@ -355,9 +368,10 @@ def test_tz_offset():
     t = Time(SAMPLE_TIMESERIES, tz_offset=offset)
 
     assert t.tz_offset == timedelta(hours=-8)
-    assert t.data[0] == SAMPLE_TIMESERIES[0] #setting tz_offset in constructor doesn't change the data
+    assert t.data[0] == SAMPLE_TIMESERIES[
+        0]  #setting tz_offset in constructor doesn't change the data
     assert t.data[-1] == SAMPLE_TIMESERIES[-1]
-    
+
     #changing it changes the data, referencing the zero datum.
     offset = 8
     offset = timedelta(hours=offset)
@@ -378,12 +392,14 @@ def test_from_netcdf_tz_offset_Z():
 
     assert t.tz_offset == timedelta(0)
 
-@pytest.mark.parametrize(('filename', 'offset'), [("just_time_UTC.nc", 0),
-                                                  ("just_time_UTC-0.nc", 0),
-                                                  ("just_time_naive.nc", 0),
-                                                  ("just_time_offset-7.nc", -7),
-                                                  ])
-def test_from_netcdf_tz_offset_Z(filename, offset):
+
+@pytest.mark.parametrize(('filename', 'offset'), [
+    ("just_time_UTC.nc", 0),
+    ("just_time_UTC-0.nc", 0),
+    ("just_time_naive.nc", 0),
+    ("just_time_offset-7.nc", -7),
+])
+def test_from_netcdf_tz_offset_in_file(filename, offset):
     """
     make sure you can load time from a netcdf file with Z specified
 
@@ -391,7 +407,6 @@ def test_from_netcdf_tz_offset_Z(filename, offset):
     """
     filename = TEST_DATA / filename
     t = Time.from_netCDF(filename=filename, varname='time')
-
     assert t.tz_offset == timedelta(hours=offset)
 
 
@@ -430,19 +445,19 @@ def test_from_netcdf_tz_offset_set_new_offset():
     assert times[0] == t.data[0] - timedelta(hours=4)
 
 
-
-@pytest.mark.parametrize(('offset', 'unit_str', 'name'), [(0, 'days since 2024-1-1T00:00:00Z', 'UTC'),
-                                                          (0, 'days since 2024-1-1T00:00:00+00:00', 'UTC'),
-                                                          (None, 'days since 2024-1-1T00:00:00', None),
-                                                          (-7, 'days since 2024-1-1T00:00:00-7:00', '-07:00'),
-                                                          (3.5, 'days since 2024-1-1T00:00:00+3:30', '+03:30'),
-                                                          ])
+@pytest.mark.parametrize(('offset', 'unit_str', 'name'), [
+    (0, 'days since 2024-1-1T00:00:00Z', 'UTC'),
+    (0, 'days since 2024-1-1T00:00:00+00:00', 'UTC'),
+    (None, 'days since 2024-1-1T00:00:00', None),
+    (-7, 'days since 2024-1-1T00:00:00-7:00', '-07:00'),
+    (3.5, 'days since 2024-1-1T00:00:00+3:30', '+03:30'),
+])
 def test_parse_time_offset(offset, unit_str, name):
     """
     Do we get the right offset from the units string?
     """
     tz_off, new_name = parse_time_offset(unit_str)
-    print (tz_off, name)
+    print(tz_off, name)
     assert tz_off == offset
     assert new_name == name
 
@@ -487,7 +502,6 @@ def test_parse_time_offset(offset, unit_str, name):
 #             ts.index_of(after, False)
 #         assert ts.index_of(ts.time[-1], True) == 10
 #         assert ts.index_of(ts.time[0], True) == 0
-
 
 # class TestS_Depth_T1:
 #

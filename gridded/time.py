@@ -209,6 +209,8 @@ class Time:
         elif tz_offset is None:
             # look in the time units attribute:
             tz_offset, name = parse_time_offset(tvar.units)
+            if tz_offset is None:  # assuming, for netcdf files, that no specified offset is UTC
+                tz_offset = 0
 
         tdata = nc4.num2date(tvar[:], units=tvar.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
         # Fixme: use the name and pass it through?
