@@ -5,11 +5,12 @@ jobs:
   test:
     name: Miniconda ${{ matrix.os }} Py${{ matrix.pyver }}
     runs-on: ${{ matrix.os }}
-    continue-on-error: true
+    continue-on-error: false
     strategy:
         matrix:
             os: ["ubuntu-latest", "windows-latest", "macos-latest"]
             pyver: ["3.9", "3.10", "3.11", "3.12"]
+        fail-fast: false
     steps:
       - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v3
