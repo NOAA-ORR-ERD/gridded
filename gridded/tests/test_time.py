@@ -159,10 +159,10 @@ def test_tz_offset_with_new_tz_offset():
     new_tz_offset = timedelta(hours=-8)
     t = Time(SAMPLE_TIMESERIES, tz_offset=tz_offset, new_tz_offset=new_tz_offset)
     assert np.all(t.data == np.array(SAMPLE_TIMESERIES) - tz_offset + new_tz_offset)
-    assert t.tz_offset == new_tz_offset
     print(t.tz_offset.total_seconds() / 3600)
     print(tz_offset.total_seconds() / 3600)
     assert t.tz_offset == new_tz_offset
+
 
 def test_get_time_array():
     t = Time(SAMPLE_TIMESERIES)
