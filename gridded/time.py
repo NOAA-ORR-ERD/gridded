@@ -67,7 +67,7 @@ def parse_time_offset(unit_str):
     return offset_hours, name
 
 
-class Time:
+class Time(object):
 
     # Used to make a singleton with the constant_time class method.
     #  question: why not a ContantTime Class?
@@ -102,6 +102,13 @@ class Time:
                Allows shifting entire time interval into future or past
         :type displacement: `datetime.timedelta`
         '''
+        # fixme: This should be happening in various from_netcdf methods.
+        # if isinstance(data, (nc4.Variable, nc4._netCDF4._Variable)):
+        #     if (hasattr(nc4, 'num2pydate')):
+        #         self.data = nc4.num2pydate(data[:], units=data.units)
+        #     else:
+        #         self.data = nc4.num2date(data[:], units=data.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
+        # elif isinstance(data, Time):
         if isinstance(data, Time):
             self.data = data.data
         elif data is None:
