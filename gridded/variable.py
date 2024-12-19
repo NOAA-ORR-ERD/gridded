@@ -245,23 +245,25 @@ class Variable(object):
                 units = data.units
             except AttributeError:
                 units = None
-              
+
         if time is None:
             timevarname = Time.locate_time_var_from_var(data)
             if timevarname is None:
-                tdata = None
+                time = Time()
             else:
-                timevar = ds[timevarname]
-                tdata = nc4.num2date(timevar[:], units=timevar.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
-            # why isn't this using Time.from_netcdf? (currently doesn't support origin and displacement)
-            time = Time(data=tdata,
+                time = Time.from_netCDF(
                         filename=data_file,
+                        dataset=ds,
                         varname=timevarname,
+                        # datavar=None,
+                        tz_offset=tz_offset,
+                        new_tz_offset=None,
                         origin=time_origin,
-                        displacement=displacement,
-                        tz_offset=tz_offset)
+                        displacement=displacement
+                        )
         else:
             timevarname = 1 if len(time) > 1 else 0
+
         if depth is None:
             istimevar = 0 if timevarname is None else 1
             
@@ -985,19 +987,21 @@ class VectorVariable(object):
         if time is None:
             timevarname = Time.locate_time_var_from_var(data)
             if timevarname is None:
-                tdata = None
+                time = Time()
             else:
-                timevar = ds[timevarname]
-                tdata = nc4.num2date(timevar[:], units=timevar.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
-            # why isn't this using Time.from_netcdf? (currently doesn't support origin and displacement)
-            time = Time(data=tdata,
+                time = Time.from_netCDF(
                         filename=data_file,
+                        dataset=ds,
                         varname=timevarname,
+                        # datavar=None,
+                        tz_offset=tz_offset,
+                        new_tz_offset=None,
                         origin=time_origin,
-                        displacement=displacement,
-                        tz_offset=tz_offset)
+                        displacement=displacement
+                        )
         else:
             timevarname = 1 if len(time) > 1 else 0
+
         if depth is None:
             istimevar = 0 if timevarname is None else 1
             

@@ -22,6 +22,7 @@ class TimeSeriesError(ValueError):
     """
     pass
 
+
 def offset_as_iso_string(offset_hours):
     """
     returns the offset as an isostring:
@@ -42,6 +43,8 @@ def offset_as_iso_string(offset_hours):
 
 
 def parse_time_offset(unit_str):
+    # NOTE: this uses dateutil -- which isn't otherwise required
+    #       we could write it by hand instead.
     """
     find the time offset from a CF-style time units string.
 
@@ -102,13 +105,6 @@ class Time(object):
                Allows shifting entire time interval into future or past
         :type displacement: `datetime.timedelta`
         '''
-        # fixme: This should be happening in various from_netcdf methods.
-        # if isinstance(data, (nc4.Variable, nc4._netCDF4._Variable)):
-        #     if (hasattr(nc4, 'num2pydate')):
-        #         self.data = nc4.num2pydate(data[:], units=data.units)
-        #     else:
-        #         self.data = nc4.num2date(data[:], units=data.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
-        # elif isinstance(data, Time):
         if isinstance(data, Time):
             self.data = data.data
         elif data is None:
@@ -119,7 +115,11 @@ class Time(object):
         # Quick check to ensure data is 'datetime-like' enough
         # to be compatible with timedelta operations
         # fixme: add a try:except around this to raise a meaningful error
-        self.data += timedelta(seconds=0)
+
+        try:
+            self.data += timedelta(seconds=0)
+        except TypeError:
+            raise TypeError(f"Time datatype: {self.data.dtype} not compatible with datetime.")
 
         if origin is not None:
             diff = self.data[0] - origin
@@ -166,6 +166,8 @@ class Time(object):
                     datavar=None,
                     tz_offset=None,
                     new_tz_offset=None,
+                    origin=None,
+                    displacement=None,
                     **kwargs):
         """
         construct a Time object from a netcdf file.
@@ -226,6 +228,8 @@ class Time(object):
                    varname=varname,
                    tz_offset=tz_offset,
                    new_tz_offset=new_tz_offset,
+                   origin=origin,
+                   displacement=displacement,
                    **kwargs
                    )
         return time

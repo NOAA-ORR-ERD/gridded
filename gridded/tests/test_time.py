@@ -35,8 +35,8 @@ def test_init_with_timeseries():
 
 
 def test_invalid_timeseries():
-    with pytest.raises(TypeError):
-        t = Time("")
+    with pytest.raises(TypeError, match='not compatible with datetime'):
+        t = Time(data = ["2012-02-03T12:00"])
 
 
 def test_from_netcdf_filename_no_var():
