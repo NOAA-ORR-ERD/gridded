@@ -5,19 +5,12 @@ jobs:
   test:
     name: Miniconda ${{ matrix.os }} Py${{ matrix.pyver }}
     runs-on: ${{ matrix.os }}
-<<<<<<< HEAD
-    continue-on-error: true
-=======
     continue-on-error: false
->>>>>>> tz_offset
     strategy:
         matrix:
             os: ["ubuntu-latest", "windows-latest", "macos-latest"]
             pyver: ["3.9", "3.10", "3.11", "3.12"]
-<<<<<<< HEAD
-=======
         fail-fast: false
->>>>>>> tz_offset
     steps:
       - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v3
