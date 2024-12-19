@@ -22,10 +22,55 @@ class TimeSeriesError(ValueError):
     """
     pass
 
+def offset_as_iso_string(offset_hours):
+    """
+    returns the offset as an isostring:
+
+    -8:00
+
+    3:30
+
+    etc ...
+    """
+    if offset_hours is None:
+        return ""
+    else:
+        sign = "-" if offset_hours <0 else "+"
+        hours = int(abs(offset_hours))
+        minutes = int((abs(offset_hours) - hours) * 60)
+        return f"{sign}{hours:0>2}:{minutes:0>2}"
+
+
+def parse_time_offset(unit_str):
+    """
+    find the time offset from a CF-style time units string.
+
+    Follows the ISO format(s):
+
+    ('UTC', 'days since 2024-1-1T00:00:00Z'),
+    ('UTC-0', 'days since 2024-1-1T00:00:00+00:00'),
+    ('naive', 'days since 2024-1-1T00:00:00'),
+    ('offset-7', 'days since 2024-1-1T00:00:00-7:00')
+    """
+    import dateutil
+    t_string = unit_str.split('since')[1]
+    dt = dateutil.parser.parse(t_string)
+    offset = dt.utcoffset()
+    if offset is None:
+        offset_hours = None
+        name = None
+    else:
+        offset_hours = offset.total_seconds() / 3600
+        name = dt.tzname()
+        if name is None:
+            name = offset_as_iso_string(offset_hours)
+    return offset_hours, name
+
 
 class Time(object):
 
     # Used to make a singleton with the constant_time class method.
+    #  question: why not a ContantTime Class?
     _const_time = None
 
     def __init__(self,
@@ -57,23 +102,23 @@ class Time(object):
                Allows shifting entire time interval into future or past
         :type displacement: `datetime.timedelta`
         '''
-
-        # fixme -- this conversion should be done in the netcdf loading code.
-
-        if isinstance(data, (nc4.Variable, nc4._netCDF4._Variable)):
-            if (hasattr(nc4, 'num2pydate')):
-                self.data = nc4.num2pydate(data[:], units=data.units)
-            else:
-                self.data = nc4.num2date(data[:], units=data.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
-        elif isinstance(data, Time):
+        # fixme: This should be happening in various from_netcdf methods.
+        # if isinstance(data, (nc4.Variable, nc4._netCDF4._Variable)):
+        #     if (hasattr(nc4, 'num2pydate')):
+        #         self.data = nc4.num2pydate(data[:], units=data.units)
+        #     else:
+        #         self.data = nc4.num2date(data[:], units=data.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
+        # elif isinstance(data, Time):
+        if isinstance(data, Time):
             self.data = data.data
         elif data is None:
             self.data = np.array([datetime.now()])
         else:
             self.data = np.asarray(data)
         
-        #Quick check to ensure data is 'datetime-like' enough
-        #to be compatible with timedelta operations    
+        # Quick check to ensure data is 'datetime-like' enough
+        # to be compatible with timedelta operations
+        # fixme: add a try:except around this to raise a meaningful error
         self.data += timedelta(seconds=0)
 
         if origin is not None:
@@ -83,22 +128,17 @@ class Time(object):
 
         self.filename = filename
         self.varname = varname
-                
 
         if isinstance(tz_offset, (float, int)):
             tz_offset = timedelta(hours=tz_offset)
-            
-        #set the private attribute directly, because using the property
-        #can cause the data to be shifted twice in case of loading from a serialization of this object
+
+        # set the private attribute directly, because using the property
+        # can cause the data to be shifted twice in case of loading from a serialization of this object
         self._tz_offset = tz_offset
-            
+
         if new_tz_offset is not None:
             self.tz_offset = new_tz_offset
-        
 
-        
-            
-        
         if displacement is not None:
             self.displacement = displacement
 
@@ -117,7 +157,6 @@ class Time(object):
         
         return varname
         
-        
 
     @classmethod
     def from_netCDF(cls,
@@ -126,6 +165,7 @@ class Time(object):
                     varname=None,
                     datavar=None,
                     tz_offset=None,
+                    new_tz_offset=None,
                     **kwargs):
         """
         construct a Time object from a netcdf file.
@@ -145,8 +185,15 @@ class Time(object):
                              It will try to find the time variable that
                              corresponds to the passed in variable.
 
-        :param tz_offset=None: offset to adjust for timezone, in hours.
+        :param tz_offset=None: Timezone offset the data are in, in hours.
+                               If None: offset will be read from file, if present.
+                               If not in file, UTC will be assumed
+                               If 'Naive', then no offset will be assigned.
 
+        :param new_tz_offset=None: New Timezone offset desired in hours.
+                                   Data will be shifted to the new offset.
+                                   If tz_offset is set to Naive, then this will fail.
+                                   (it can't be changed without knowing what it was to begin with)
         """
         if varname is None and datavar is None:
             raise TypeError('you must pass in either a varname or a datavar')
@@ -162,10 +209,23 @@ class Time(object):
                 return cls.constant_time()
         if isinstance(varname, str):
             tvar = dataset.variables[varname]
-        time = cls(data=tvar,
+        # figure out the timezone_offset
+        name = ""  # this should be passed in ...
+        if isinstance(tz_offset, str) and tz_offset.lower() == 'naive':
+            tz_offset = None
+        elif tz_offset is None:
+            # look in the time units attribute:
+            tz_offset, name = parse_time_offset(tvar.units)
+            if tz_offset is None:  # assuming, for netcdf files, that no specified offset is UTC
+                tz_offset = 0
+
+        tdata = nc4.num2date(tvar[:], units=tvar.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
+        # Fixme: use the name and pass it through?
+        time = cls(data=tdata,
                    filename=filename,
                    varname=varname,
                    tz_offset=tz_offset,
+                   new_tz_offset=new_tz_offset,
                    **kwargs
                    )
         return time
@@ -193,6 +253,7 @@ class Time(object):
         # Fixme: Why? this seems like more magic than necessary
         if isinstance(data, self.__class__) or data.__class__ in self.__class__.__mro__:
             data = data.data
+        # add check for valid datetime list?
         self._data = np.asarray(data)
 
     @property
@@ -288,7 +349,7 @@ class Time(object):
             return
         
         if self._tz_offset is not None:
-            #undo previous offset
+            # undo previous offset
             self.data -= self._tz_offset
         
         self.data += offset
@@ -311,6 +372,7 @@ class Time(object):
             self.data += displacement
             self._displacement = displacement
         else:
+            # why not jsut make  this an init thing, then??
             raise AttributeError('displacement is settable only once')
         
     

@@ -248,9 +248,13 @@ class Variable(object):
               
         if time is None:
             timevarname = Time.locate_time_var_from_var(data)
-            if timevarname is not None:
-                timevarname = ds[timevarname]
-            time = Time(data=timevarname,
+            if timevarname is None:
+                tdata = None
+            else:
+                timevar = ds[timevarname]
+                tdata = nc4.num2date(timevar[:], units=timevar.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
+            # why isn't this using Time.from_netcdf? (currently doesn't support origin and displacement)
+            time = Time(data=tdata,
                         filename=data_file,
                         varname=timevarname,
                         origin=time_origin,
@@ -812,6 +816,7 @@ class Variable(object):
 
 
 class VectorVariable(object):
+    # Fixme: a lot of code duplication in here
 
     # Keys are component names ('u', 'v', etc) and values are the netCDF4 names.
     # eg {'u': ['u', 'U', 'eastward_sea_water_velocity']}
@@ -976,11 +981,16 @@ class VectorVariable(object):
             name = cls.__name__ + '_' + str(cls._instance_count)
             cls._instance_count += 1
         data = ds[varnames[0]]
+
         if time is None:
             timevarname = Time.locate_time_var_from_var(data)
-            if timevarname is not None:
-                timevarname = ds[timevarname]
-            time = Time(data=timevarname,
+            if timevarname is None:
+                tdata = None
+            else:
+                timevar = ds[timevarname]
+                tdata = nc4.num2date(timevar[:], units=timevar.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
+            # why isn't this using Time.from_netcdf? (currently doesn't support origin and displacement)
+            time = Time(data=tdata,
                         filename=data_file,
                         varname=timevarname,
                         origin=time_origin,
