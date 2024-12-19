@@ -9,3 +9,4 @@ scipy
 netcdf4>=1.4
 cell_tree2d>=0.3
 cftime
+dateutil
