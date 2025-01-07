@@ -26,12 +26,26 @@ def test_init():
     """
     t = Time()
 
+def test_int_with_data_None():
+    t1 = Time()
+    t2 = Time(data=None)
+
+    print(t1.data)
+    print(t2.data)
+    assert t1 == t2
+
 
 def test_init_with_timeseries():
     t = Time(SAMPLE_TIMESERIES)
 
     # an implementation detail -- kind of
     assert isinstance(t.data, np.ndarray)
+
+
+def test_init_with_Time_object():
+    t1 = Time(SAMPLE_TIMESERIES)
+    t2 = Time(t1)
+    assert t1 == t2
 
 
 def test_invalid_timeseries():
@@ -127,40 +141,37 @@ def test_displacement():
 
 
 def test_tz_offset():
-    #test tz_offset with timedelta
     offset = -8
-    offset = timedelta(hours=offset)
     t = Time(SAMPLE_TIMESERIES, tz_offset=offset)
 
-    #tz_offset in constructor does not change data
+    # tz_offset in constructor does not change data
     assert t.data[0] == SAMPLE_TIMESERIES[0]
     assert t.data[-1] == SAMPLE_TIMESERIES[-1]
 
 
-def test_tz_offset_hours():
-    #test tz_offset with hours
-    offset = -8
-    t = Time(SAMPLE_TIMESERIES, tz_offset=offset)
-
-    #tz_offset in constructor does not change data
-    offset = timedelta(hours=offset)
-    assert t.data[0] == SAMPLE_TIMESERIES[0]
-    assert t.data[-1] == SAMPLE_TIMESERIES[-1]
+def test_new_tz_offset_no_tz_offset():
+    """
+    you can't set a new offset without specifying the original offset"
+    """
+    new_tz_offset = 8
+    with pytest.raises(ValueError):
+        t = Time(SAMPLE_TIMESERIES, new_tz_offset=new_tz_offset)
 
 
-def test_new_tz_offset():
-    new_tz_offset = timedelta(hours=-8)
-    t = Time(SAMPLE_TIMESERIES, new_tz_offset=new_tz_offset)
-    assert np.all(t.data == np.array(SAMPLE_TIMESERIES) + new_tz_offset)
+def test_new_tz_offset_from_zero():
+    new_tz_offset = -8
+    t = Time(SAMPLE_TIMESERIES, tz_offset=0, new_tz_offset=new_tz_offset)
+    assert np.all(t.data == np.array(SAMPLE_TIMESERIES) + timedelta(hours=new_tz_offset))
 
 
 def test_tz_offset_with_new_tz_offset():
-    tz_offset = timedelta(hours=3)
-    new_tz_offset = timedelta(hours=-8)
+    # tz_offset = timedelta(hours=3)
+    tz_offset = 3
+    new_tz_offset = -8
     t = Time(SAMPLE_TIMESERIES, tz_offset=tz_offset, new_tz_offset=new_tz_offset)
-    assert np.all(t.data == np.array(SAMPLE_TIMESERIES) - tz_offset + new_tz_offset)
-    print(t.tz_offset.total_seconds() / 3600)
-    print(tz_offset.total_seconds() / 3600)
+    assert np.all(t.data == np.array(SAMPLE_TIMESERIES) - timedelta(hours=tz_offset) + timedelta(hours=(new_tz_offset)))
+    print(t.tz_offset)
+    print(tz_offset)
     assert t.tz_offset == new_tz_offset
 
 
@@ -360,25 +371,25 @@ def test_interp_alpha_constant_time(shift, expected):
     alpha = t.interp_alpha(t.data[0] + shift)
     assert alpha == 0.0
 
+# I think these are covered in the tests above.
+# def test_tz_offset():
+#     #on construction
+#     offset = -8
+#     offset = timedelta(hours=offset)
+#     t = Time(SAMPLE_TIMESERIES, tz_offset=offset)
 
-def test_tz_offset():
-    #on construction
-    offset = -8
-    offset = timedelta(hours=offset)
-    t = Time(SAMPLE_TIMESERIES, tz_offset=offset)
+#     assert t.tz_offset == timedelta(hours=-8)
+#     assert t.data[0] == SAMPLE_TIMESERIES[
+#         0]  #setting tz_offset in constructor doesn't change the data
+#     assert t.data[-1] == SAMPLE_TIMESERIES[-1]
 
-    assert t.tz_offset == timedelta(hours=-8)
-    assert t.data[0] == SAMPLE_TIMESERIES[
-        0]  #setting tz_offset in constructor doesn't change the data
-    assert t.data[-1] == SAMPLE_TIMESERIES[-1]
-
-    #changing it changes the data, referencing the zero datum.
-    offset = 8
-    offset = timedelta(hours=offset)
-    t.tz_offset = offset
-    assert t.tz_offset == timedelta(hours=8)
-    # -8 -> 0 -> 8 == 16 hours ahead
-    assert t.data[0] == SAMPLE_TIMESERIES[0] + offset + offset
+#     #changing it changes the data, referencing the zero datum.
+#     offset = 8
+#     offset = timedelta(hours=offset)
+#     t.tz_offset = offset
+#     assert t.tz_offset == timedelta(hours=8)
+#     # -8 -> 0 -> 8 == 16 hours ahead
+#     assert t.data[0] == SAMPLE_TIMESERIES[0] + offset + offset
 
 
 def test_from_netcdf_tz_offset_Z():
@@ -390,16 +401,17 @@ def test_from_netcdf_tz_offset_Z():
 
     print(t)
 
-    assert t.tz_offset == timedelta(0)
+    assert t.tz_offset == 0
+    assert t.tz_offset_name == "UTC"
 
 
-@pytest.mark.parametrize(('filename', 'offset'), [
-    ("just_time_UTC.nc", 0),
-    ("just_time_UTC-0.nc", 0),
-    ("just_time_naive.nc", 0),
-    ("just_time_offset-7.nc", -7),
+@pytest.mark.parametrize(('filename', 'offset', 'name'), [
+    ("just_time_UTC.nc", 0, 'UTC'),
+    ("just_time_UTC-0.nc", 0, 'UTC'),
+    ("just_time_naive.nc", 0, 'UTC'),
+    ("just_time_offset-7.nc", -7, '-07:00'),
 ])
-def test_from_netcdf_tz_offset_in_file(filename, offset):
+def test_from_netcdf_tz_offset_in_file(filename, offset, name):
     """
     make sure you can load time from a netcdf file with Z specified
 
@@ -407,7 +419,20 @@ def test_from_netcdf_tz_offset_in_file(filename, offset):
     """
     filename = TEST_DATA / filename
     t = Time.from_netCDF(filename=filename, varname='time')
-    assert t.tz_offset == timedelta(hours=offset)
+    assert t.tz_offset == offset
+    assert t.tz_offset_name == name
+
+def test_from_netcdf_tz_offset_in_file_provide_name():
+    """
+    make sure you can load time from a netcdf file with Z specified
+
+    NOTE: currently naive time in netcdf is assumed to be UTC -- correct??
+    """
+    filename, offset, name = ("just_time_offset-7.nc", -7, 'PDT')
+    filename = TEST_DATA / filename
+    t = Time.from_netCDF(filename=filename, varname='time', tz_offset_name=name)
+    assert t.tz_offset == offset
+    assert t.tz_offset_name == name
 
 
 def test_from_netcdf_tz_offset_set_UTC():
@@ -417,7 +442,7 @@ def test_from_netcdf_tz_offset_set_UTC():
     filename = TEST_DATA / "just_time_naive.nc"
     t = Time.from_netCDF(filename=filename, varname='time', tz_offset=0)
 
-    assert t.tz_offset == timedelta(hours=0)
+    assert t.tz_offset == 0
 
 
 def test_from_netcdf_tz_offset_set_Naive():
@@ -428,6 +453,7 @@ def test_from_netcdf_tz_offset_set_Naive():
     t = Time.from_netCDF(filename=filename, varname='time', tz_offset='Naive')
 
     assert t.tz_offset == None
+    assert t.tz_offset_name == "No Timezone Specified"
 
 
 def test_from_netcdf_tz_offset_set_new_offset():
@@ -437,8 +463,8 @@ def test_from_netcdf_tz_offset_set_new_offset():
     filename = TEST_DATA / "just_time_offset-7.nc"
     t = Time.from_netCDF(filename=filename, varname='time', new_tz_offset=-3)
 
-    assert t.tz_offset == timedelta(hours=-3)
-    # add an assert that the times are correct!
+    assert t.tz_offset == -3
+
     ds = netCDF4.Dataset(filename)
     time_var = ds.variables['time']
     times = netCDF4.num2date(time_var, time_var.units)

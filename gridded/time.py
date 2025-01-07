@@ -54,6 +54,10 @@ def parse_time_offset(unit_str):
     ('UTC-0', 'days since 2024-1-1T00:00:00+00:00'),
     ('naive', 'days since 2024-1-1T00:00:00'),
     ('offset-7', 'days since 2024-1-1T00:00:00-7:00')
+    :param unit_str: CF-style time unit string
+
+    :returns: Number: hours, str: name:
+
     """
     import dateutil
     t_string = unit_str.split('since')[1]
@@ -77,26 +81,37 @@ class Time(object):
     _const_time = None
 
     def __init__(self,
-                 data=(datetime.now(),),
+                 data=None,
                  filename=None,
                  varname=None,
                  tz_offset=None,
+                 new_tz_offset=None,
+                 tz_offset_name="",
                  origin=None,
                  displacement=None,
-                 new_tz_offset=None,
                  *args,
                  **kwargs):
         '''
         Representation of a time axis. Provides interpolation alphas and indexing.
 
-        :param time: Ascending list of times to use
-        :type time: netCDF4.Variable or Sequence of `datetime.datetime`
+        :param data: Ascending list of times to use
+        :type data: Sequence of `datetime.datetime` objects.
 
-        :param data_: timezone of the data. If not provided, tz_offset is used.
-        :type data_tz: `datetime.timedelta` or float or integer hours
+        :param filename=None: name of file data was loaded from -- informational only
+        :param varname=None: name of variable in data file -- informational only
 
-        :param time_offset: offset to compensate for time zone shifts
-        :type time_offset: `datetime.timedelta` or float or integer hours
+        :param tz_offset=None: Timezone offset of the data. If not provided it will be NOne ("Naive")
+                               e.g. offset is not known. Use zero for UTC.
+        :type tz_offset: float or integer hours
+
+        :param new_tz_offset: Timezone offset desired -- from the offset specified by tz_offset.
+        :type new_tz_offset: float or integer hours
+
+        :param tz_offset_name="": name for the time zone offset, if desired.
+                                  example: "Pacific Daylight Time"
+                                  NOTE: only informational -- it's up to
+                                  you to have the tz_offset correct.
+        :type tz_offset_name: str.
 
         :param origin: shifts the time interval to begin at the time specified
         :type origin: `datetime.datetime`
@@ -108,14 +123,11 @@ class Time(object):
         if isinstance(data, Time):
             self.data = data.data
         elif data is None:
-            self.data = np.array([datetime.now()])
+            self.data = np.array([datetime.now().replace(second=0, microsecond=0)])
         else:
             self.data = np.asarray(data)
         
         # Quick check to ensure data is 'datetime-like' enough
-        # to be compatible with timedelta operations
-        # fixme: add a try:except around this to raise a meaningful error
-
         try:
             self.data += timedelta(seconds=0)
         except TypeError:
@@ -125,18 +137,20 @@ class Time(object):
             diff = self.data[0] - origin
             self.data -= diff
 
-
         self.filename = filename
         self.varname = varname
-
-        if isinstance(tz_offset, (float, int)):
-            tz_offset = timedelta(hours=tz_offset)
+        self.tz_offset_name = tz_offset_name
 
         # set the private attribute directly, because using the property
-        # can cause the data to be shifted twice in case of loading from a serialization of this object
+        #  can cause the data to be shifted twice in case of loading from a
+        #  serialization of this object
         self._tz_offset = tz_offset
 
         if new_tz_offset is not None:
+            if self._tz_offset is None:
+                raise ValueError("You cannot specify a new_tz_offset without specifying the current offset"
+                                 "i.e. tz_offset can not be None. Use 0 for UTC.")
+            # this will shift it relative to tz_offset
             self.tz_offset = new_tz_offset
 
         if displacement is not None:
@@ -166,36 +180,50 @@ class Time(object):
                     datavar=None,
                     tz_offset=None,
                     new_tz_offset=None,
+                    tz_offset_name=None,
                     origin=None,
                     displacement=None,
                     **kwargs):
         """
-        construct a Time object from a netcdf file.
+        Construct a Time object from a netcdf file.
 
-        You can specify the time variable name, or another variable,
-        for which you want the corresponding times.
+        By default, this will attempt to discover the data variable to use.
+        If the file is not standards conforming, you can specify the time
+        variable name, or another variable, for which you want the corresponding
+        times.
 
         :param filename=None: name of netcdf file
 
-        :param dataset=None: netcdf dataset object (one or the other)
+        :param dataset=None: netcdf dataset object (only one of filename or
+                             dataset should be specified)
 
         :param varname=None: Name of the time variable.
 
         :param datavar=None: A netcdf variable or name of netcdf variable
                              for which you want the corresponding time
                              object.
+
                              It will try to find the time variable that
                              corresponds to the passed in variable.
 
-        :param tz_offset=None: Timezone offset the data are in, in hours.
+        :param tz_offset=None: Timezone offset from UTC the data are in, in hours.
                                If None: offset will be read from file, if present.
-                               If not in file, UTC will be assumed
+                               If no offset is specified in the file, UTC (tz_offset=0)
+                               will be assumed.
                                If 'Naive', then no offset will be assigned.
+        :type tz_offset: Number in hours.
 
-        :param new_tz_offset=None: New Timezone offset desired in hours.
+        :param new_tz_offset=None: New Timezone offset from UTC desired in hours.
                                    Data will be shifted to the new offset.
                                    If tz_offset is set to Naive, then this will fail.
-                                   (it can't be changed without knowing what it was to begin with)
+                                   (It can't be changed without knowing what it was to begin with)
+        :type new_tz_offset: Number in hours.
+
+        :param tz_offset_name="": name for the time zone offset, if desired.
+                                  example: "Pacific Daylight Time"
+                                  NOTE: only informational -- it's up to
+                                  you to have the tz_offset correct.
+        :type tz_offset_name: str.
         """
         if varname is None and datavar is None:
             raise TypeError('you must pass in either a varname or a datavar')
@@ -211,23 +239,33 @@ class Time(object):
                 return cls.constant_time()
         if isinstance(varname, str):
             tvar = dataset.variables[varname]
+
         # figure out the timezone_offset
-        name = ""  # this should be passed in ...
         if isinstance(tz_offset, str) and tz_offset.lower() == 'naive':
             tz_offset = None
+            name = "No Timezone Specified"
         elif tz_offset is None:
             # look in the time units attribute:
             tz_offset, name = parse_time_offset(tvar.units)
-            if tz_offset is None:  # assuming, for netcdf files, that no specified offset is UTC
+            # assuming, for netcdf files, that no specified offset is UTC (CF standard)
+            if tz_offset is None:
                 tz_offset = 0
+                name = "UTC"
+        else:
+            name = offset_as_iso_string(tz_offset)
+        if tz_offset_name is None:
+            tz_offset_name = name
 
-        tdata = nc4.num2date(tvar[:], units=tvar.units, only_use_cftime_datetimes=False, only_use_python_datetimes=True)
+        tdata = nc4.num2date(tvar[:], units=tvar.units,
+                             only_use_cftime_datetimes=False,
+                             only_use_python_datetimes=True)
         # Fixme: use the name and pass it through?
         time = cls(data=tdata,
                    filename=filename,
                    varname=varname,
                    tz_offset=tz_offset,
                    new_tz_offset=new_tz_offset,
+                   tz_offset_name=tz_offset_name,
                    origin=origin,
                    displacement=displacement,
                    **kwargs
@@ -327,13 +365,9 @@ class Time(object):
         '''
         Timezone offset of the time series
 
-        :rtype: datetime.timedelta
+        :rtype: number
         '''
-        if not hasattr(self, '_tz_offset'):
-            self._tz_offset = None
-            return None
-        else:
-            return self._tz_offset
+        return self._tz_offset
 
     @tz_offset.setter
     def tz_offset(self, offset):
@@ -342,21 +376,14 @@ class Time(object):
         reverting the current offset and applying the new offset.
 
         :param offset: offset to adjust for timezone, in hours.
-        :type offset: float, integer, or datetime.timedelta
+        :type offset: float, integer hours
         '''
-        if not hasattr(self, '_tz_offset'):
-            self._tz_offset = None
-        if isinstance(offset, (float, int)):
-            offset = timedelta(hours=offset)
-        if offset is None:
-            self._tz_offset = None
-            return
-        
         if self._tz_offset is not None:
             # undo previous offset
-            self.data -= self._tz_offset
-        
-        self.data += offset
+            self.data -= timedelta(hours=self._tz_offset)
+            # set new offset
+            self.data += timedelta(hours=offset)
+
         self._tz_offset = offset
 
     @property
