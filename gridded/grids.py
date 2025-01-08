@@ -12,6 +12,11 @@ class GridBase(object):
     '''
     _instance_count = 0
 
+    # hack so that older code can access _def_count
+    @property
+    def _def_count(self):
+        return self._instance_count
+
     def __init__(self,
                  filename=None,
                  *args,

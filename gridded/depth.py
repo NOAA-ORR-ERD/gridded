@@ -18,6 +18,15 @@ from gridded.utilities import (get_dataset,
 
 class DepthBase(object):
     _instance_count = 0
+
+    # hack so that older code can access _def_count
+    @property
+    def _def_count(self):
+        return self._instance_count
+    @_def_count.setter
+    def _def_count(self, count):
+        self.__class__._instance_count = count
+
     _default_component_types = {'time': Time,
                                 'grid': Grid,
                                 'variable': None}
@@ -728,6 +737,14 @@ class ROMS_Depth(S_Depth):
     Sigma coordinate depth object for ROMS style output
     '''
     _instance_count = 0
+    # hack so that older code can access _def_count
+    @property
+    def _def_count(self):
+        return self._instance_count
+    @_def_count.setter
+    def _def_count(self, count):
+        self.__class__._instance_count = count
+
     default_names = {'Cs_r': ['Cs_r'],
                      'Cs_w': ['Cs_w'],
                      's_rho': ['s_rho'],
@@ -796,6 +813,15 @@ class ROMS_Depth(S_Depth):
 
 class FVCOM_Depth(S_Depth):
     _instance_count = 0
+
+    # hack so that older code can access _def_count
+    @property
+    def _def_count(self):
+        return self._instance_count
+    @_def_count.setter
+    def _def_count(self, count):
+        self.__class__._instance_count = count
+
     default_names = {
         'siglay': ['siglay'], # mid layer depth coordinate on nodes
         'siglay_center': ['siglev_center'], # mid layer depth coordinate on centers

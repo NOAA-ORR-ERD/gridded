@@ -43,6 +43,14 @@ class Variable(object):
                                 'grid': Grid,
                                 'depth': Depth}
 
+    # hack so that older code can access _def_count
+    @property
+    def _def_count(self):
+        return self._instance_count
+    @_def_count.setter
+    def _def_count(self, count):
+        self.__class__._instance_count = count
+
     def __init__(self,
                  name=None,
                  units=None,
@@ -837,6 +845,14 @@ class VectorVariable(object):
     comp_order = []
 
     _instance_count = 0
+
+    # hack so that older code can access _def_count
+    @property
+    def _def_count(self):
+        return self._instance_count
+    @_def_count.setter
+    def _def_count(self, count):
+        self.__class__._instance_count = count
 
     ''''
     These are the classes which are used when internal components are created
