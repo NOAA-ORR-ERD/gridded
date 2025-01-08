@@ -378,7 +378,7 @@ class Time(object):
         :param offset: offset to adjust for timezone, in hours.
         :type offset: float, integer hours
         '''
-        if self._tz_offset is not None:
+        if self._tz_offset is not None and offset is not None:
             # undo previous offset
             self.data -= timedelta(hours=self._tz_offset)
             # set new offset
