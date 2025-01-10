@@ -84,6 +84,7 @@ class GridBase(object):
                     v = gf_vars[n][:].reshape(-1, 2)
                     init_args[node_attrs[0]] = v[:, 0]
                     init_args[node_attrs[1]] = v[:, 1]
+            gt = grid_topology
         return init_args, gt
 
     @property
@@ -139,6 +140,7 @@ class Grid_U(GridBase, UGrid):
                 if n in face_attrs:
                     init_args[n] = gf_vars[v][:]
                     break
+            gt = grid_topology
         # fixme: This is assuming that the array will be in Fortran order and index
         #        from 1, or in C order and index from 0
         #        Those are actually independent concepts!
@@ -225,6 +227,7 @@ class Grid_S(GridBase, SGrid):
             for n, v in grid_topology.items():
                 if n in center_attrs + edge1_attrs + edge2_attrs and v in gf_vars:
                     init_args[n] = gf_vars[v][:]
+            gt = grid_topology
         return init_args, gt
 
 
