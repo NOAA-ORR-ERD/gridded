@@ -61,6 +61,8 @@ class UGrid():
                  data=None,
                  grid_topology=None,
                  mesh_name="mesh",
+                 *args,
+                 **kwargs
                  ):
         """
         ugrid class -- holds, saves, etc. an unstructured grid
@@ -153,6 +155,7 @@ class UGrid():
         self._cell_tree = None
         self._ind_memo_dict = OrderedDict()
         self._alpha_memo_dict = OrderedDict()
+        super(UGrid, self).__init__(*args, **kwargs)
 
     @classmethod
     def from_ncfile(klass, filename=None, dataset=None, mesh_name=None):  # , load_data=False):

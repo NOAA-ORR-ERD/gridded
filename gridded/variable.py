@@ -129,6 +129,7 @@ class Variable(object):
             pass                # so just use what was passed in.
         self.surface_boundary_condition = surface_boundary_condition
         self.bottom_boundary_condition = bottom_boundary_condition
+        super(Variable, self).__init__(**kwargs)
 
 #         for k in kwargs:
 #             setattr(self, k, kwargs[k])

@@ -154,6 +154,7 @@ class SGrid(object):
         self._cell_tree_mask = None
         self.grid_topology = grid_topology
         self.masked_interpolant_behavior = masked_interpolant_behavior
+        super(SGrid, self).__init__(*args, **kwargs)
 
     def __eq__(self, other):
         # Fixme: should this even exist
