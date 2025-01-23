@@ -178,6 +178,7 @@ class Grid_S(GridBase, SGrid):
                                                                      dataset=dataset,
                                                                      grid_topology=grid_topology)
 
+        #These are the attributes to search for, the keys in a grid_topology
         center_attrs = ['center_lon', 'center_lat']
         edge1_attrs = ['edge1_lon', 'edge1_lat']
         edge2_attrs = ['edge2_lon', 'edge2_lat']
@@ -185,7 +186,9 @@ class Grid_S(GridBase, SGrid):
         center_mask = 'center_mask'
         edge1_mask = 'edge1_mask'
         edge2_mask = 'edge2_mask'
+        mask_attrs = [node_mask, center_mask, edge1_mask, edge2_mask]
 
+        #These are possible netCDF4 names that the attributes could have in the file
         center_coord_names = [['center_lon', 'center_lat'], ['lon_rho', 'lat_rho'], ['lonc', 'latc']]
         edge1_coord_names = [['edge1_lon', 'edge1_lat'], ['lon_u', 'lat_u']]
         edge2_coord_names = [['edge2_lon', 'edge2_lat'], ['lon_v', 'lat_v']]
@@ -227,6 +230,9 @@ class Grid_S(GridBase, SGrid):
             for n, v in grid_topology.items():
                 if n in center_attrs + edge1_attrs + edge2_attrs and v in gf_vars:
                     init_args[n] = gf_vars[v][:]
+                if n in mask_attrs and v in gf_vars:
+                    #masks are not dereferenced
+                    init_args[n] = gf_vars[v]
             gt = grid_topology
         return init_args, gt
 
