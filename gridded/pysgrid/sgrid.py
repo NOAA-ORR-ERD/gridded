@@ -1014,7 +1014,8 @@ class SGrid(object):
             if len(filled_values.shape) == 1 and filled_values.mask.any():
                 result = np.ma.masked
             else:
-                result.mask = np.any(values.mask, axis=-1)
+                print ('compute_interpolant values.mask', values.mask)
+                result.mask = np.all(values.mask, axis=-1)
         return result
 
 
@@ -1167,6 +1168,7 @@ class SGrid(object):
             u2.mask = np.logical_or(u2.mask, m2)
 
             result = self.compute_interpolant(np.ma.concatenate((u1, u2), axis=-1), alpha)
+            print(result)
 
         elif location in edge2_alternate_names:
             #interpolate as a uniform gradient from 'bottom' to 'top'
