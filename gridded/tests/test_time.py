@@ -26,7 +26,7 @@ def test_init():
     """
     t = Time()
 
-def test_int_with_data_None():
+def test_init_with_data_None():
     t1 = Time()
     t2 = Time(data=None)
 
@@ -404,10 +404,28 @@ def test_from_netcdf_tz_offset_Z():
     assert t.tz_offset == 0
     assert t.tz_offset_name == "UTC"
 
+def test_from_netcdf_tz_offset_bad(caplog):
+    """
+    make sure you can load time from a netcdf file with the offset
+    specified incorrectly -- e.g. "U C" instead of "UTC"
+    """
+    filename = TEST_DATA / "just_time_bad_tzo.nc"
+    caplog.clear()
+    t = Time.from_netCDF(filename=filename, varname='time')
+
+    print(caplog.record_tuples)
+    log_msgs = [True for rec in caplog.record_tuples if "Couldn't parse TZ offset" in rec[2]]
+
+    assert log_msgs
+
+    assert t.tz_offset == 0
+    assert t.tz_offset_name == "UTC"
+
 
 @pytest.mark.parametrize(('filename', 'offset', 'name'), [
     ("just_time_UTC.nc", 0, 'UTC'),
     ("just_time_UTC-0.nc", 0, 'UTC'),
+    ("just_time_UTC-UTC.nc", 0, 'UTC'),
     ("just_time_naive.nc", 0, 'UTC'),
     ("just_time_offset-7.nc", -7, '-07:00'),
 ])

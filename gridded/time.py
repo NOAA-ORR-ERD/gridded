@@ -1,6 +1,7 @@
 #!/usr/binenv python
 
 from textwrap import dedent
+import logging
 import netCDF4 as nc4
 import numpy as np
 
@@ -61,8 +62,13 @@ def parse_time_offset(unit_str):
     """
     import dateutil
     t_string = unit_str.split('since')[1]
-    dt = dateutil.parser.parse(t_string)
-    offset = dt.utcoffset()
+    try:
+        dt = dateutil.parser.parse(t_string)
+    except dateutil.parser.ParserError:
+        logging.warning(f"Couldn't parse TZ offset in time string: '{t_string}'. Setting to default")
+        offset = None
+    else:
+        offset = dt.utcoffset()
     if offset is None:
         offset_hours = None
         name = None
