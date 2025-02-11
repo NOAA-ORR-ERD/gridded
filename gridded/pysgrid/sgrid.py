@@ -1168,7 +1168,6 @@ class SGrid(object):
             u2.mask = np.logical_or(u2.mask, m2)
 
             result = self.compute_interpolant(np.ma.concatenate((u1, u2), axis=-1), alpha)
-            print(result)
 
         elif location in edge2_alternate_names:
             #interpolate as a uniform gradient from 'bottom' to 'top'
