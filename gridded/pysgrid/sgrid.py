@@ -993,8 +993,11 @@ class SGrid(object):
         values = np.asanyarray(values)
         alphas = np.asanyarray(alphas)
         assert np.all(values.shape == alphas.shape) #values and alphas must be the same length
-        if check_alphas and not np.isclose(np.sum(alphas, axis=-1), 1, atol=0.001).all():
-            warnings.warn('Alphas do not sum to 1. Results may be unexpected.')
+        if check_alphas:
+            a_sum = np.sum(alphas, axis=-1)
+            a_sum = a_sum[~np.isnan(a_sum) & ~np.isinf(a_sum)]
+            if not np.isclose(a_sum, 1, atol=0.001).all():
+                warnings.warn('Alphas do not sum to 1. Results may be unexpected.')
         
         if mask_behavior is None:
             mask_behavior = self.masked_interpolant_behavior
@@ -1006,16 +1009,20 @@ class SGrid(object):
             filled_values = np.ma.filled(values, 0)
         elif mask_behavior == 'mirror':
             filled_values = self.mirror_mask_values(values)
+        elif mask_behavior == 'mask':
+            filled_values = values.copy()
+            filled_values.mask = np.tile(np.any(values.mask, axis=-1),2)
         else:
-            filled_values = values
+            raise ValueError('unrecognized mask_behavior: {0}'.format(mask_behavior))
         
+        #np sum never returns a masked array. This is desired, because final masking is determined by alpha mask
         result = np.sum(filled_values * alphas, axis=-1)
-        if hasattr(result, 'mask') or hasattr(filled_values, 'mask'):
-            if len(filled_values.shape) == 1 and filled_values.mask.any():
-                result = np.ma.masked
-            else:
-                print ('compute_interpolant values.mask', values.mask)
-                result.mask = np.all(values.mask, axis=-1)
+        print(result)
+        if mask_behavior == 'mask':
+                if len(filled_values.shape) == 1 and filled_values.mask.any():  
+                    result = np.ma.masked
+                else:
+                    result = np.ma.masked_array(result, mask=np.any(filled_values.mask, axis=-1))
         return result
 
 

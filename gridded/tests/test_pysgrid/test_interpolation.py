@@ -136,6 +136,8 @@ def test_compute_interpolant():
     alphas = [0.25,0.25,0.25,0.25]
     interp = sgrid.compute_interpolant(values, alphas, mask_behavior='mask')
     assert interp is np.ma.masked
+    interp = sgrid.compute_interpolant(values, alphas, mask_behavior='zero')
+    assert interp == 3.0
     
     #basic test, vector arrays
     values = [[-10, 10], [10, -10]]
