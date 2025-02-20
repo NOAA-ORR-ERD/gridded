@@ -545,15 +545,22 @@ class Variable(object):
         """
         Find the value of the property at positions P at time T
 
-        :param points: Cartesian coordinates to be queried (P). Lon, Lat required, Depth (Z) is optional
-            Coordinates must be organized as a 2D array or list, one coordinate per row or list element.
-            ``[[Lon1, Lat1, Z1],``
-            ``[Lon2, Lat2, Z2],``
-            ``[Lon3, Lat3, Z3],``
-            ``...]``
-            Failure to provide point data in this format may cause unexpected behavior
-            If you wish to provide point data using separate longitude and latitude arrays,
-            use the `lons=` and `lats=` kwargs. 
+        :param points: Cartesian coordinates to be queried (P).
+                       Lon, Lat required, Depth (Z) is optional
+                       Coordinates must be organized as a 2D array or list,
+                       one coordinate per row or list element.
+
+                       ::
+
+                          [[Lon1, Lat1, Z1],
+                           [Lon2, Lat2, Z2],
+                           [Lon3, Lat3, Z3],
+                           ...]
+
+                       Failure to provide point data in this format may cause
+                       unexpected behavior.  If you wish to provide point data
+                       using separate longitude and latitude arrays,
+                       use the `lons=` and `lats=` kwargs. 
         :type points: Nx3 array of double
 
         :param time: The time at which to query these points (T)
@@ -565,27 +572,33 @@ class Variable(object):
         :param extrapolate: if True, extrapolation will be supported
         :type extrapolate: boolean (default False)
 
-        :param unmask: if True and return array is a masked array, returns filled array
+        :param unmask: If True and return array is a masked array, returns
+                       filled array.
         :type unmask: boolean (default False)
-        
-        :param surface_boundary_condition: specifies how to evaluate points above the depth interval
-        :type surface_boundary_condition: string ('extrapolate' or 'mask', default 'extrapolate')
-        
-        :param bottom_boundary_condition: specifies how to evaluate points below the depth interval
-        :type bottom_boundary_condition: string ('extrapolate' or 'mask', default 'extrapolate')
 
-        :param lons: 1D iterable of longitude values. This is ignored if points is provided
+        :param surface_boundary_condition: Specifies how to evaluate points
+                                           above the depth interval.
+        :type surface_boundary_condition: string ('extrapolate' or 'mask',
+                                          default 'extrapolate')
+
+        :param bottom_boundary_condition: Specifies how to evaluate points
+                                          below the depth interval.
+        :type bottom_boundary_condition: string ('extrapolate' or 'mask',
+                                         default 'extrapolate')
+
+        :param lons: 1D iterable of longitude values. This is ignored
+                     if points is provided.
         :type lons: iterable
 
-        :param lats 1D iterable of latitude values. This is ignored if points is provided
+        :param lats: 1D iterable of latitude values. This is ignored
+                     if points is provided
         :type lons: iterable
 
         :return: returns a Nx1 array of interpolated values
         :rtype: double
 
-        If time is out of bounds of the time series, and extrapolate is False, a
-        gridded.time.OutOfTimeRangeError is raised.
-
+        If time is out of bounds of the time series, and extrapolate is False,
+        a gridded.time.OutOfTimeRangeError is raised.
         """
 
         if points is None and (lons is None or lats is None):
@@ -1221,7 +1234,9 @@ class VectorVariable(object):
 
         :param points: Cartesian coordinates to be queried (P). Lon, Lat required, Depth (Z) is optional
                        Coordinates must be organized as a 2D array or list, one coordinate per row or list element.
+
                        ::
+
                           [[Lon1, Lat1, Z1],
                            [Lon2, Lat2, Z2],
                            [Lon3, Lat3, Z3],
