@@ -357,7 +357,7 @@ class S_Depth(DepthBase):
 
         :param terms: remaining terms in dictionary layout
         :type terms: dictionary of string key to numeric value
-        See S_Depth.default_names, sans bathymetry and zeta
+                     See S_Depth.default_names, sans bathymetry and zeta
 
         :param vtransform: S-coordinate transform type. 1 = Old, 2 = New
         :type vtransform: int (default 2)
