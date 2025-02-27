@@ -141,7 +141,7 @@ class UGrid():
 
         self.mesh_name = mesh_name
         self.grid_topology = grid_topology
-        if self.grid_topology.get('topology_dimension', None):
+        if self.grid_topology is not None and self.grid_topology.get('topology_dimension', None):
             #sometimes the topology dimension is an int32, which does not JSON serialize properly.
             self.grid_topology['topology_dimension'] = int(self.grid_topology['topology_dimension'])
 
