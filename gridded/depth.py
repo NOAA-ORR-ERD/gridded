@@ -415,15 +415,15 @@ class S_Depth(DepthBase):
 
         :param varnames: Direct mapping of component name to netCDF variable name. Use
                          this if auto detection fails. Partial definition is allowable.
-                         Unspecified terms will use the value in `.default_names`::
-                           {'Cs_r': 'Cs_r',
-                            'Cs_w': Cs_w',
-                            's_rho': 's_rho'),
-                            's_w': 's_w',
-                            'bathymetry': 'h',
-                            'hc': 'hc'),
-                            'zeta': 'zeta')
-                            }
+                         Unspecified terms will use the value in `.default_names`. ::
+                             {'Cs_r': 'Cs_r',
+                              'Cs_w': Cs_w',
+                              's_rho': 's_rho'),
+                              's_w': 's_w',
+                              'bathymetry': 'h',
+                              'hc': 'hc'),
+                              'zeta': 'zeta')
+                              }
         :type varnames: dict
 
         :param name: Human-readable name for this object
@@ -439,7 +439,7 @@ class S_Depth(DepthBase):
         :type origin: `datetime.datetime`
 
         :param displacement: displacement to apply to the time data.
-               Allows shifting entire time interval into future or past
+                             Allows shifting entire time interval into future or past
         :type displacement: `datetime.timedelta`
         
         :param grid: X-Y dmension (for bathymetry & zeta)
@@ -770,8 +770,9 @@ class ROMS_Depth(S_Depth):
         :param time: time to interpolate to
         :type time: datetime.datetime
 
-        :param data_shape: shape of the variable to be interpolated. This param is
-                           used to determine whether to index on the sigma layers or levels
+        :param data_shape: shape of the variable to be interpolated.
+                           This param is used to determine whether to
+                           index on the sigma layers or levels.
         :type data_shape: tuple of int
 
         :return: numpy array of shape (n, num_w_levels) of n s-coordinate transects
@@ -840,14 +841,16 @@ class FVCOM_Depth(S_Depth):
         :type time: datetime.datetime
 
         :param data_shape:  Describes the shape of the data to be interpolated. 
-        If the first dimension is the number of layers or if None, then siglay is used. 
-        If the first dimension is the number of levels, then siglev is used.
+                            If the first dimension is the number of layers or
+                            if None, then siglay is used.
+                            If the first dimension is the number of levels, then
+                            siglev is used.
         :type data_shape: tuple of int or None
 
         :return: numpy array of shape (n, num_w_levels) of n s-coordinate transects
         '''
 
-        #because FVCOM sigma is defined for every node separately.
+        # because FVCOM sigma is defined for every node separately.
         sigvar = None
         if data_shape is None:
             sigvar = self.siglev[:].T
