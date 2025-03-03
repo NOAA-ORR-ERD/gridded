@@ -357,7 +357,7 @@ class S_Depth(DepthBase):
 
         :param terms: remaining terms in dictionary layout
         :type terms: dictionary of string key to numeric value
-                     See S_Depth.default_names, sans bathymetry and zeta
+                     See ``S_Depth.default_names``, sans bathymetry and zeta
 
         :param vtransform: S-coordinate transform type. 1 = Old, 2 = New
         :type vtransform: int (default 2)
@@ -770,8 +770,8 @@ class ROMS_Depth(S_Depth):
         :param time: time to interpolate to
         :type time: datetime.datetime
 
-        :param data_shape: shape of the variable to be interpolated. This param is used to determine
-        whether to index on the sigma layers or levels
+        :param data_shape: shape of the variable to be interpolated. This param is
+                           used to determine whether to index on the sigma layers or levels
         :type data_shape: tuple of int
 
         :return: numpy array of shape (n, num_w_levels) of n s-coordinate transects
@@ -909,8 +909,8 @@ class Depth():
         :type dataset: netCDF4.Dataset
 
         :param depth_type: Must be provided if autodetection is not possible.
-            See Depth.ld_names, Depth.sd_names, and Depth.surf_names for the
-            expected values for this argument
+                           See ``Depth.ld_names``, ``Depth.sd_names``, and
+                           ``Depth.surf_names`` for the expected values for this argument.
         :type depth_type: string
 
         :returns: Instance of L_Depth or S_Depth

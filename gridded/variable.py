@@ -548,20 +548,20 @@ class Variable(object):
         :param points: Cartesian coordinates to be queried (P).
                        Lon, Lat required, Depth (Z) is optional
                        Coordinates must be organized as a 2D array or list,
-                       one coordinate per row or list element.
+                       one coordinate per row.
 
-                       ::
+                       Failure to provide point data in this format may cause
+                       unexpected behavior.  If you wish to provide point data
+                       using separate longitude and latitude arrays,
+                       use the ``lons=`` and ``lats=`` kwargs. ::
 
                           [[Lon1, Lat1, Z1],
                            [Lon2, Lat2, Z2],
                            [Lon3, Lat3, Z3],
                            ...]
 
-                       Failure to provide point data in this format may cause
-                       unexpected behavior.  If you wish to provide point data
-                       using separate longitude and latitude arrays,
-                       use the `lons=` and `lats=` kwargs. 
         :type points: Nx3 array of double
+
 
         :param time: The time at which to query these points (T)
         :type time: datetime.datetime object
