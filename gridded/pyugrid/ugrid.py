@@ -18,10 +18,12 @@ NOTE: only tested for triangular and quad mesh grids at the moment.
 
 
 import hashlib
+from itertools import chain
 from collections import OrderedDict
 import warnings
 
 import numpy as np
+import netCDF4
 
 import gridded.pyugrid.read_netcdf as read_netcdf
 from gridded.pyugrid.util import point_in_tri
@@ -271,6 +273,8 @@ class UGrid():
     @property
     def nodes(self):
         return self._nodes
+
+    node_coordinates = nodes
 
     @property
     def node_lon(self):
@@ -1220,3 +1224,97 @@ class UGrid():
             # Add the extra attributes.
             for att_name, att_value in var.attributes.items():
                 setattr(data_var, att_name, att_value)
+
+
+class Mesh(dict):
+    REQUIRED = ('cf_role', 'topology_dimension', 'node_coordinates')
+    FILTER = ('data_model', 'dimensions', 'variables', 'name')
+    def __init__(self, name=None):
+        super().__init__()
+        self.update(dict.fromkeys(self.REQUIRED, None))
+        self['name'] = name
+        self['data_model'] = 'NETCDF4'
+        self['cf_role'] = 'mesh_topology'
+
+        self['dimension'] = {}
+        self['variables'] = {}
+
+    @classmethod
+    def from_nc(cls, ncfile):
+        rv = cls()
+
+        rv['data_model'] = ncfile.data_model
+
+        # find the first mesh variable
+        # What to do when error condition exists?
+        mesh = ncfile.get_variables_by_attributes(cf_role="mesh_topology")[0]
+        rv['name'] = mesh.name
+
+        # Ensure that the required attributes get copied (or raise an error)
+        for k in set(chain(rv.REQUIRED, mesh.ncattrs())):
+            rv[k] = getattr(mesh, k)
+
+
+        dimensions = rv['dimensions']
+        variables = rv['variables']
+
+        for x in ncfile.dimensions.values():
+            dimensions[x.name] = Dimension.from_ncdimension(x)
+
+        for x in ncfile.variables.values():
+            variables[x.name] = Variable.from_ncvariable(x)
+
+        return rv
+
+    def add_dimension(self, name, size):
+        dim = Dimension(name=name, size=size)
+        self['dimensions'][name] = dim
+        
+    def add_variable(self, name, dtype, dimension):
+        v = Variable(name=name, dtype=dtype, dimension=dimension)
+        self['variables'][name] = v
+
+    def _filtered_keys(self):
+        return self.keys() - self.FILTER
+
+    def get_attribute(self, attr):
+        for var in self._filtered_keys():
+            value = self[var]
+            if attr == value or (isinstance(value, list) and attr in value):
+                return var
+
+    def get_values(self, attr, mesh):
+        if attr in self._filtered_keys():
+            var = attr
+        else:
+            var = self.get_attribute(attr)
+        
+        values = getattr(mesh, var)
+        if isinstance(self[var], list):
+            index = self[var].index(attr)
+            return values[:, index]
+        return values
+
+class Dimension(dict):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @classmethod
+    def from_ncdimension(cls, dimension):
+        assert isinstance(dimension, netCDF4.Dimension)
+        rv = cls(name=dimension.name, size=dimension.size)
+        return rv
+
+class Variable(dict):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @classmethod
+    def from_ncvariable(cls, variable):
+        assert isinstance(variable, netCDF4.Variable)
+        rv = cls()
+        rv['name'] = variable.name
+        rv['dimension'] = variable.dimension
+        rv['dtype'] = variable.dtype
+        rv['attrs'] = dict((v, getattr(variable, v)) for v in variable.ncattrs())
+        return rv
