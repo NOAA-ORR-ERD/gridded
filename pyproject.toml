@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = "Unified API for working with results from (Met/Ocean) models on various grid types"
 readme = "README.rst"
 license = "CC0-1.0"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 authors = [
     { name = "Chris Barker", email = "chris.barker@noaa.gov"},
     { name = "Jay Hennen", email = "jay.hennen@noaa.gov"},
@@ -33,7 +33,7 @@ include = [
 [tool.ruff]
 builtins = ["ellipsis"]
 # extend-exclude = ["xarray_subset_grid/_version.py"]
-target-version = "py310"
+target-version = "py39"
 # Use a longer line length.
 line-length = 120
 
