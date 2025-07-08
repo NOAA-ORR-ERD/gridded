@@ -3,15 +3,26 @@ testing verdat read/write capability
 """
 
 import os
-import numpy as np
+from pathlib import Path
 import random
+
+import numpy as np
+
+import pooch
 
 import gridded
 from gridded import io
 
-test_filename = os.path.join(os.path.split(__file__)[0], "example_verdat.verdat")
-test_filename_no_units = os.path.join(os.path.split(__file__)[0], "example_verdat_no_units.verdat")
-test_filename_tiny = os.path.join(os.path.split(__file__)[0], "tiny.verdat")
+DATA_URL = "https://gnome.orr.noaa.gov/py_gnome_testdata/gridded_test_files/"
+
+HERE = Path(__file__).parent
+EXAMPLES = HERE / "example_files"
+OUTPUT = HERE / "output"
+OUTPUT.mkdir(exist_ok=True)
+
+test_filename = EXAMPLES / "example_verdat.verdat"
+test_filename_no_units = EXAMPLES /  "example_verdat_no_units.verdat"
+test_filename_tiny = EXAMPLES /  "tiny.verdat"
 
 
 def test_read():
@@ -79,12 +90,26 @@ def test_read_tiny():
 
 
 def test_save_verdat():
-    ds = io.load_verdat(test_filename_tiny)
+    ds = io.load_verdat(EXAMPLES /  "tiny.verdat")
 
-    outfilename = "test_out.verdat"
+    outfilename = OUTPUT / "tiny_out.verdat"
+
+    outfilename.unlink(missing_ok=True)
+
     io.save_verdat(ds, outfilename)
 
-    assert False
+    assert outfilename.is_file()
+
+    # Check at least a little bit if it's a valid verdat
+    contents = open(outfilename).readlines()
+    print(len(contents))
+
+    print(contents)
+    print(len(contents))
+
+    assert len(contents) == 16
+    assert contents[15] == "9\n"
+    assert contents[0] == "DOGS FEET\n"
 
 
 def test_order_boundary_segments():
@@ -138,6 +163,17 @@ def test_order_boundary_segments_none():
     assert len(closed_bounds) == 0
     assert len(open_bounds) == 0
 
+
+def test_general_ugrid_to_verdat():
+    """
+    Loads a regular old UGRID netCDF file, and saves it to verdat
+    """
+    ugrid_file = pooch.retrieve(
+        url=(DATA_URL + "SSCOFS.ugrid.nc"),
+        known_hash="sha256:0dcea2a2fb6ad87c7cce3ebc475fd2f0430616a5019f54f4adf97391e075e939",
+    )
+
+    assert False
 
 
 

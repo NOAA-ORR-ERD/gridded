@@ -81,13 +81,13 @@ def load_verdat(filename):
 
 def save_verdat(ds, filename, depth_var="depth"):
     """
-    Saves and approriate dataset as a verdat file
+    Saves an appropriate dataset as a verdat file
 
     :param ds: The gridded.Dataset you want to save
 
     :param filename: name (full or relative path) of the file to save
 
-    :param depth_var="depth": name of the variable iwth the depths in it.
+    :param depth_var="depth": name of the variable with the depths in it.
 
     The dataset must:
 
@@ -145,7 +145,7 @@ def order_boundary_segments(bound_segs):
     """
     verdat requires that the boundary segments all be in order
 
-    this code re-orders the segments as required
+    This code re-orders the segments as required
     """
     # make a list so they can be removed as processed
     bound_segs = bound_segs.tolist()
@@ -201,6 +201,7 @@ def make_outer_first(bounds, nodes):
     figures out which boundary is the outer boundary,
     and puts it first in the list
     """
+    # note: code for this is in the NOAA ERD ood_utils package.
     raise NotImplementedError("this code needs to be written")
     try:
         import geometry_utils
