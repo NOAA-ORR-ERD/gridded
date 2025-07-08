@@ -7,10 +7,7 @@ This module defines the gridded.Dataset --
 The core class that encapsulates the gridded data model
 
 """
-
-
-
-# py2/3 compatibility
+import warnings
 
 from gridded.grids import Grid
 from gridded.variable import Variable
@@ -21,12 +18,8 @@ from gridded.utilities import (get_dataset,
                                )
 from . import VALID_LOCATIONS
 
-"""
-The main gridded.Dataset code
-"""
 
-
-class Dataset():
+class Dataset:
     """
     An object that represent an entire complete dataset --
     a collection of Variables and the Grid that they are stored on.
@@ -72,6 +65,12 @@ class Dataset():
         the input ones ignored.
         """
         if ncfile is not None:
+            # raise ValueError("don't create from a file")
+            warnings.warn("Creating a Dataset from a netcdfile directly is deprecated. "
+                          "Please use Dataset.from_netCDF() instead. "
+                          "Or one of the utilities in gridded.io", DeprecationWarning)
+
+        if ncfile is not None:
             if (grid is not None or
                   variables is not None or
                   attributes is not None):
@@ -90,11 +89,63 @@ class Dataset():
             self.variables = {} if variables is None else variables
             self.attributes = {} if attributes is None else attributes
 
+    @classmethod
+    def from_netCDF(cls,
+                    filename=None,
+                    grid_file=None,
+                    variable_files=None,
+                    grid_topology=None):
+        """
+
+        NOTE: only loading from a single file is currently implemented.
+              you can create a DATaset by hand, by loading the grid and
+              variables separately, and then adding them
+
+        load a gridded.Dataset from a netCDF file
+
+        :param filename: filename or netCDF4 compatible OpeNDAP url.
+                         It is assumed to contain the grid and variables.
+        :param grid_file: filename of the file that contains the grid, if separate.
+
+        :param variable_files: filename of filenames that contain the variables.
+
+        NOTE: Either the filename or the grid_file and variable_files should be specified.
+              not all three.
+
+        :param grid_topology: mapping of grid topology components to netcdf variable names.
+                              used to load non-confirming files.
+        :type grid_topology: mapping with keys of topology components and values are
+                             variable names.
+        """
+        if (grid_file is not None) or (variable_files is not None):
+            raise NotImplementedError("Loading from separate netcdf files is not yet supported")
+
+        # create an empty DAtaset:
+        ds = cls()
+
+        ds.nc_dataset = get_dataset(filename)
+        ds.filename = ds.nc_dataset.filepath()
+        ds.grid = Grid.from_netCDF(filename=ds.filename,
+                                     dataset=ds.nc_dataset,
+                                     grid_topology=grid_topology)
+        ds.variables = ds._load_variables(ds.nc_dataset)
+        ds.attributes = get_dataset_attrs(ds.nc_dataset)
+
+        return ds
+
     def __getitem__(self, key):
         """
         shortcut to getting a variable object
         """
         return self.variables[key]
+
+    def __str__(self):
+        descp = (f"gridded.Dataset with:\n"
+                 f"grid: {type(self.grid)}\n"
+                 f"variables: {list(self.variables.keys())}"
+                 )
+        return descp
+
 
     def _load_variables(self, ds):
         """

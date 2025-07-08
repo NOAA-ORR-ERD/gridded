@@ -16,7 +16,6 @@ NOTE: only tested for triangular and quad mesh grids at the moment.
 
 """
 
-
 import hashlib
 from collections import OrderedDict
 import warnings
@@ -323,7 +322,7 @@ class UGrid():
                 #faces index minimum less than -1
                 raise ValueError("faces index minimum out of range. min: {0}".format(faces_indexes.min()))
             self._faces = faces_indexes
-                
+
         else:
             self._faces = None
             # Other things are no longer valid.
@@ -655,7 +654,7 @@ class UGrid():
             return indices[0]
         else:
             return indices
-        
+
     def index_of(self,
                  points,
                  method='celltree',
