@@ -4,7 +4,6 @@ Created on Mar 23, 2015
 @author: ayan
 '''
 
-from __future__ import (absolute_import, division, print_function)
 
 from collections import namedtuple
 
@@ -219,9 +218,10 @@ def calculate_angle_from_true_east(lon_lat_1, lon_lat_2):
 def points_in_polys(points, polys, polyy=None):
     """
     :param points: Numpy array of Nx2 points
+
     :param polys: Numpy array of N polygons of degree M represented
-    by Mx2 points (NxMx2) for each point, see if respective poly
-    contains it. Returns array of True/False
+                  by Mx2 points (NxMx2) for each point, see if respective poly
+                  contains it. Returns array of True/False
     """
 
     result = np.zeros((points.shape[0],), dtype=bool)

@@ -7,7 +7,6 @@ We really need a **lot** more sample data files...
 
 """
 
-from __future__ import (absolute_import, division, print_function, unicode_literals)
 
 import os
 

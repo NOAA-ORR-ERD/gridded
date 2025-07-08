@@ -11,7 +11,6 @@ The core class that encapsulates the gridded data model
 
 
 # py2/3 compatibility
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 from gridded.grids import Grid
 from gridded.variable import Variable
@@ -20,6 +19,7 @@ from gridded.utilities import (get_dataset,
                                get_writable_dataset,
                                get_dataset_attrs,
                                )
+from . import VALID_LOCATIONS
 
 """
 The main gridded.Dataset code
@@ -108,12 +108,14 @@ class Dataset():
             if is_not_grid_attr:
                 ncvar = ds[k]
                 # find the location of the variable
+                # print("working with:", ncvar)
                 try:
                     location = ncvar.location
+                    if location not in VALID_LOCATIONS:
+                        raise AttributeError("not a valid location name")
                 except AttributeError:
                     # that didn't work, need to try to infer it
                     location = self.grid.infer_location(ncvar)
-
                 if location is not None:
                     try:
                         ln = ds[k].long_name
@@ -121,6 +123,7 @@ class Dataset():
                         ln = ds[k].name # use the name attribute
                     # fixme: Variable.from_netCDF should really be able to figure out the location itself
                     #        maybe we need multiple Variable subclasses for different grid types?
+                    #        CHB: yes, we really should do that!
                     variables[k] = Variable.from_netCDF(dataset=ds,
                                                         name=ln,
                                                         varname=k,
@@ -180,9 +183,9 @@ class Dataset():
         fixme: make this a bit more flexible, more like the netCDF4 version
         """
         variables = []
-        for var in self.variables.values:
+        for var in self.variables.values():
             try:
-                if variables.attributes[attr] == value:
+                if var.attributes[attr] == value:
                     variables.append(var)
             except KeyError:
                 pass

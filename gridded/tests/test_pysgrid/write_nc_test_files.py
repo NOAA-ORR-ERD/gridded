@@ -5,7 +5,6 @@ Created on Apr 7, 2015
 
 """
 
-from __future__ import (absolute_import, division, print_function)
 
 import os
 import tempfile
@@ -15,12 +14,12 @@ import numpy as np
 from netCDF4 import Dataset
 
 from gridded.pysgrid.lookup import (LON_GRID_CELL_CENTER_LONG_NAME,
-                      LAT_GRID_CELL_CENTER_LONG_NAME,
-                      LON_GRID_CELL_NODE_LONG_NAME,
-                      LAT_GRID_CELL_NODE_LONG_NAME)
+                                    LAT_GRID_CELL_CENTER_LONG_NAME,
+                                    LON_GRID_CELL_NODE_LONG_NAME,
+                                    LAT_GRID_CELL_NODE_LONG_NAME)
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def deltares_sgrid_no_optional_attr():
     fname = tempfile.mktemp(suffix='.nc')
     nc = Dataset(fname, 'w')
@@ -79,7 +78,7 @@ def deltares_sgrid_no_optional_attr():
     os.remove(fname)
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def deltares_sgrid():
     """
     Create a netCDF file that is structurally similar to
@@ -161,7 +160,7 @@ def deltares_sgrid():
     os.remove(fname)
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def roms_sgrid():
     """
     Create a netCDF file that is structurally similar to
@@ -271,7 +270,7 @@ def roms_sgrid():
     os.remove(fname)
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def wrf_sgrid():
     fname = tempfile.mktemp(suffix='.nc')
     nc = Dataset(fname, 'w')
@@ -335,7 +334,7 @@ def wrf_sgrid():
     os.remove(fname)
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def non_compliant_sgrid():
     """
     Create a netCDF file that is structurally similar to

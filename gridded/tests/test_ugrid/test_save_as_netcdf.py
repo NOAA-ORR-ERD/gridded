@@ -7,7 +7,6 @@ Designed to be run with pytest.
 
 """
 
-from __future__ import (absolute_import, division, print_function)
 
 import os
 import netCDF4
@@ -23,18 +22,23 @@ from .utilities import chdir, two_triangles, twenty_one_triangles
 
 temp_files = os.path.join(os.path.dirname(__file__), 'temp_files')
 
-# KEEP_TEMP_FILES = False
-KEEP_TEMP_FILES = True
+# Set this to True if you want to see what gets written to debug
+KEEP_TEMP_FILES = False
+# KEEP_TEMP_FILES = True
 
+
+# kludge to keep a counter going
+file_counter = [0]
 @pytest.fixture
 def ncds():
     """
     provides a new netCDF4 Dataset
+    JAH: This needs to be explained!
     """
     if not os.path.isdir(temp_files):
         os.mkdir(temp_files)
-    fname = os.path.join(temp_files, 'temp.nc')
-    # remove file if it's already there
+    fname = os.path.join(temp_files, 'temp_{}.nc'.format(file_counter[0]))
+    file_counter[0] = file_counter[0] + 1    # remove file if it's already there
     # "clobber=True" should do this, but
     # it doesn't always clean up properly
     if os.path.isfile(fname):
@@ -51,7 +55,7 @@ def ncds():
     if not KEEP_TEMP_FILES:
         try:
             os.remove(fname)
-        except FileNotFoundError:
+        except OSError:
             pass
 
 
@@ -126,6 +130,7 @@ def test_simple_write(two_triangles, ncds):
     fname, ncds = ncds
 
     grid.save_as_netcdf(ncds)
+    ncds.close()
     ds = netCDF4.Dataset(fname)
 
     # TODO: Could be lots of tests here.
@@ -144,6 +149,7 @@ def test_set_mesh_name(two_triangles, ncds):
     fname, ncds = ncds
 
     grid.save_as_netcdf(ncds)
+    ncds.close()
     ds = netCDF4.Dataset(fname)
 
     assert nc_has_variable(ds, 'mesh_2')

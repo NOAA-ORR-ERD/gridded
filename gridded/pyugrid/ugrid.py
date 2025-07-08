@@ -16,10 +16,9 @@ NOTE: only tested for triangular and quad mesh grids at the moment.
 
 """
 
-from __future__ import (absolute_import, division, print_function)
-
 import hashlib
 from collections import OrderedDict
+import warnings
 
 import numpy as np
 
@@ -28,7 +27,7 @@ from gridded.pyugrid.util import point_in_tri
 
 from gridded.utilities import get_writable_dataset
 
-#from gridded.pyugrid.uvar import UVar
+# from gridded.pyugrid.uvar import UVar
 
 # __all__ = ['UGrid',
 #            'UVar']
@@ -39,7 +38,7 @@ IND_DT = np.int32
 NODE_DT = np.float64  # datatype used for node coordinates.
 
 
-class UGrid(object):
+class UGrid():
     """
     A basic class to hold an unstructured grid as defined in the UGrid convention.
 
@@ -59,7 +58,10 @@ class UGrid(object):
                  face_coordinates=None,
                  boundary_coordinates=None,
                  data=None,
+                 grid_topology=None,
                  mesh_name="mesh",
+                 *args,
+                 **kwargs
                  ):
         """
         ugrid class -- holds, saves, etc. an unstructured grid
@@ -137,6 +139,10 @@ class UGrid(object):
         self.boundary_coordinates = boundary_coordinates
 
         self.mesh_name = mesh_name
+        self.grid_topology = grid_topology
+        if self.grid_topology is not None and self.grid_topology.get('topology_dimension', None):
+            #sometimes the topology dimension is an int32, which does not JSON serialize properly.
+            self.grid_topology['topology_dimension'] = int(self.grid_topology['topology_dimension'])
 
         # # the data associated with the grid
         # # should be a dict of UVar objects
@@ -148,10 +154,13 @@ class UGrid(object):
         # A kdtree is used to locate nodes.
         # It will be created if/when it is needed.
         self._kdtree = None
-        self._tree = None
+        self._cell_tree = None
+        self._ind_memo_dict = OrderedDict()
+        self._alpha_memo_dict = OrderedDict()
+        super(UGrid, self).__init__(*args, **kwargs)
 
     @classmethod
-    def from_ncfile(klass, nc_url, mesh_name=None):  # , load_data=False):
+    def from_ncfile(klass, filename=None, dataset=None, mesh_name=None):  # , load_data=False):
         """
         create a UGrid object from a netcdf file name (or opendap url)
 
@@ -161,18 +170,14 @@ class UGrid(object):
                                you'll get the only mesh in the file. If there
                                is more than one mesh in the file, a ValueError
                                Will be raised
-        # :param load_data=False: flag to indicate whether you want to load the
-        #                         associated data or not.  The mesh will be
-        #                         loaded in any case.  If False, only the mesh
-        #                         will be loaded.  If True, then all the data
-        #                         associated with the mesh will be loaded.
-        #                         This could be huge!
-        # :type load_data: boolean
-
         """
         grid = klass()
-        read_netcdf.load_grid_from_ncfilename(nc_url, grid, mesh_name)  # , load_data)
-        return grid
+        if filename is not None:
+            read_netcdf.load_grid_from_ncfilename(filename, grid, mesh_name)
+            return grid
+        if dataset is not None:
+            read_netcdf.load_grid_from_nc_dataset(dataset, grid, mesh_name)
+            return grid
 
     @classmethod
     def from_nc_dataset(klass, nc, mesh_name=None):  # , load_data=False):
@@ -206,17 +211,42 @@ class UGrid(object):
         """
         summary of information about the grid
         """
-        msg = ["UGrid object:"]
-
+        msg = [f"UGrid object: {self.mesh_name}"]
         msg.append("Number of nodes: %i" % len(self.nodes))
         msg.append("Number of faces: %i with %i vertices per face" %
                    (len(self.faces), self.num_vertices))
         if self.boundaries is not None:
             msg.append("Number of boundaries: %i" % len(self.boundaries))
 
-        # if self._data:
-        #     msg.append("Variables: " + ", ".join([str(v) for v in self._data.keys()]))
         return "\n".join(msg)
+
+    def __eq__(self, other):
+        # Fixme: should this even exist
+        #        keeping it because it's used in a test.
+        if self is other:
+            return True
+        # maybe too strict?
+        if self.__class__ is not other.__class__:
+            return False
+        if (np.array_equal(self.nodes, other.nodes)
+                and np.array_equal(self.faces, other.faces)
+                and np.array_equal(self.boundaries, other.boundaries)
+            ):
+            return True
+        return False
+
+        # They should all be there!
+        # for n in ('nodes', 'faces'):
+            # if (hasattr(self, n) and
+            #     hasattr(o, n) and
+            #     getattr(self, n) is not None and
+            #     getattr(o, n) is not None):
+            #     s = getattr(self, n)
+            #     s2 = getattr(o, n)
+            #     if s.shape != s2.shape or np.any(s != s2):
+            #         return False
+        return True
+
 
     def check_consistent(self):
         """
@@ -273,9 +303,26 @@ class UGrid(object):
     @faces.setter
     def faces(self, faces_indexes):
         # Room here to do consistency checking, etc.
-        # For now -- simply make sure it's a numpy array.
+        if self._nodes is None:
+            raise ValueError("Nodes must be defined before faces")
         if faces_indexes is not None:
-            self._faces = np.asanyarray(faces_indexes, dtype=IND_DT)
+            faces_indexes = np.asanyarray(faces_indexes, dtype=IND_DT)
+            if faces_indexes.max() > len(self.nodes):
+                #faces index maximum greater than number of nodes
+                raise ValueError("faces index maximum out of range. max: {0}, nodes: {1}".format(faces_indexes.max(), len(self.nodes)))
+            if faces_indexes.max() == len(self.nodes):
+                #faces index maximum equal to number of nodes, so we need to decrement by 1
+                #but only if the minimum is also gte 1
+                if faces_indexes.min() >= 1:
+                    faces_indexes[faces_indexes > 0] -= 1
+                    warnings.warn("faces index maximum equal to number of nodes, automatic decrement by 1 applied")
+                else:
+                    raise ValueError("faces indices have an improper range. min: {0}, max: {1}".format(faces_indexes.min(), faces_indexes.max()))
+            if faces_indexes.min() < -1:
+                #faces index minimum less than -1
+                raise ValueError("faces index minimum out of range. min: {0}".format(faces_indexes.min()))
+            self._faces = faces_indexes
+
         else:
             self._faces = None
             # Other things are no longer valid.
@@ -384,19 +431,14 @@ class UGrid(object):
         """
         :param data:
 
-        Returns:
-
-        'nodes' if data will fit to the nodes,
-
-        'faces' if the data will fit to the faces,
-
-        'boundaries' if the data will fit the boundaries.
+        :returns: 'nodes' if data will fit to the nodes,
+                  'faces' if the data will fit to the faces,
+                  'boundaries' if the data will fit the boundaries.
+                  None otherwise.
 
         If data is a netcdf variable, the "location" attribute is checked.
-
-        None otherwise.
         """
-        # We should never be caling infer_locations is it was already defined
+        # We should never be calling infer_locations if it was already defined
         # try:
         #     loc = data.location
         #     if loc == "face":
@@ -548,7 +590,7 @@ class UGrid(object):
         else:
             return None
 
-    def locate_faces(self, points, method='celltree', _copy=False, _memo=True, _hash=None):
+    def locate_faces(self, points, method='celltree', _memo=True, _copy=False, _hash=None):
         """
         Returns the face indices, one per point.
 
@@ -575,8 +617,6 @@ class UGrid(object):
         points = np.asarray(points, dtype=np.float64)
         just_one = (points.ndim == 1)
         points.shape = (-1, 2)
-        if not hasattr(self, '_ind_memo_dict'):
-            self._ind_memo_dict = OrderedDict()
 
         if _memo:
             if _hash is None:
@@ -591,9 +631,9 @@ class UGrid(object):
             except ImportError:
                 raise ImportError("the cell_tree2d package must be installed to use the celltree search:\n"
                                   "https://github.com/NOAA-ORR-ERD/cell_tree2d/")
-            if self._tree is None:
+            if self._cell_tree is None:
                 self.build_celltree()
-            indices = self._tree.locate(points)
+            indices = self._cell_tree.locate(points)
         elif method == 'simple':
             indices = np.zeros((points.shape[0]), dtype=IND_DT)
             for n, point in enumerate(points):
@@ -615,6 +655,20 @@ class UGrid(object):
         else:
             return indices
 
+    def index_of(self,
+                 points,
+                 method='celltree',
+                _memo=False,
+                _copy=False,
+                _hash=None,
+                use_mask=True):
+        return self.locate_faces(points=points,
+                                 method=method,
+                                 _memo=_memo,
+                                 _copy=_copy,
+                                 _hash=_hash,
+                                 use_mask=use_mask)
+
     def build_celltree(self):
         """
         Tries to build the celltree for the current UGrid. Will fail if nodes
@@ -624,7 +678,7 @@ class UGrid(object):
         if self.nodes is None or self.faces is None:
             raise ValueError(
                 "Nodes and faces must be defined in order to create and use CellTree")
-        self._tree = CellTree(self.nodes, self.faces)
+        self._cell_tree = CellTree(self.nodes, self.faces)
 
     def interpolation_alphas(self, points, indices=None, _copy=False, _memo=True, _hash=None):
         """
@@ -640,9 +694,6 @@ class UGrid(object):
 
         TODO: mask the indices that aren't on the grid properly.
         """
-
-        if not hasattr(self, '_alpha_memo_dict'):
-            self._alpha_memo_dict = OrderedDict()
 
         if _memo:
             if _hash is None:
@@ -682,25 +733,59 @@ class UGrid(object):
     def interpolate_var_to_points(self,
                                   points,
                                   variable,
+                                  location=None,
+                                  fill_value=0,
                                   indices=None,
-                                  grid=None,
                                   alphas=None,
-                                  mask=None,
                                   slices=None,
-                                  slice_grid=True,
                                   _copy=False,
                                   _memo=True,
                                   _hash=None):
         """
-        interpolates the passed-in variable to the points in points
+        Interpolates a variable on one of the grids to an array of points.
 
-        used linear interpolation from the nodes.
+        :param points: Nx2 Array of lon/lat coordinates to be interpolated to.
+
+        :param variable: Array-like of values to associate at location on grid
+                         (node, center, edge1, edge2). This may be more than a
+                         2-dimensional array, but you must pass 'slices' kwarg
+                         with appropriate slice collection to reduce it to
+                         2 dimensions.
+
+        :param location: One of ('node', 'center', 'edge1', 'edge2') 'edge1' is
+                         conventionally associated with the 'vertical' edges and
+                         likewise 'edge2' with the 'horizontal'
+
+        :param fill_value: If masked values are encountered in interpolation, this
+                           value takes the place of the masked value
+
+        :param indices: If computed already, array of Nx2 cell indices can be passed
+                        in to increase speed.
+        :param alphas: If computed already, array of alphas can be passed in to increase
+                       speed.
+
+
+        With a numpy array:
+
+        sgrid.interpolate_var_to_points(points, sgrid.u[time_idx, depth_idx])
+
+        With a raw netCDF Variable:
+
+        sgrid.interpolate_var_to_points(points, nc.variables['u'], slices=[time_idx, depth_idx])
+
+        If you have pre-computed information, you can pass it in to avoid unnecessary
+        computation and increase performance.
+
+        - ind = # precomputed indices of points
+
+        - alphas = # precomputed alphas (useful if interpolating to the same points frequently)
         """
         points = np.asarray(points, dtype=np.float64).reshape(-1, 2)
         # location should be already known by the variable
-        location = variable.location
-        # But if it's not, then it can be infered
-        # (for compatibilty with old code)
+        if hasattr(variable, 'location'):
+            location = variable.location
+        # But if it's not, then it can be inferred
+        # (for compatibility with old code)
         if location is None:
             location = self.infer_location(variable)
             variable.location = location
@@ -715,18 +800,22 @@ class UGrid(object):
         _hash = self._hash_of_pts(points)
 
         inds = self.locate_faces(points, 'celltree', _copy, _memo, _hash)
-        if location == 'faces':
+        if location == 'face':
             vals = variable[inds]
             vals[inds == -1] = vals[inds == -1] * 0
             return vals
 #             raise NotImplementedError("Currently does not support interpolation of a "
 #                                       "variable defined on the faces")
-        if location == 'nodes':
+        if location == 'node':
             pos_alphas = self.interpolation_alphas(points, inds, _copy, _memo, _hash)
-            vals = variable[self.faces[inds]]
+            vals = variable.take(self.faces[inds], axis=0)
+            if len(vals.shape) == (len(pos_alphas.shape) + 1):
+                pos_alphas = pos_alphas[:,:,np.newaxis]
             vals[inds == -1] = vals[inds == -1] * 0
             return np.sum(vals * pos_alphas, axis=1)
         return None
+
+    interpolate = interpolate_var_to_points
 
     def build_face_face_connectivity(self):
         """
@@ -805,8 +894,12 @@ class UGrid(object):
 
         This is a not-very-smart just loop through all the faces method.
 
+        If face_face_connectivity is None, it will be computed
         """
+
         boundaries = []
+        if self.face_face_connectivity is None:
+            self.build_face_face_connectivity()
         for i, face in enumerate(self.face_face_connectivity):
             for j, neighbor in enumerate(face):
                 if neighbor == -1:
@@ -824,7 +917,39 @@ class UGrid(object):
         Not implemented yet.
 
         """
-        raise NotImplementedError
+
+        try:
+            from scipy.spatial import cKDTree
+        except ImportError:
+            raise ImportError("The scipy package is required to use "
+                              "UGrid.locatbuild_face_edge_connectivity")
+
+        faces = self.faces
+        edges = self.edges.copy()
+        face_edges = np.dstack([faces, np.roll(faces, 1, 1)])
+        if np.ma.isMA(faces) and np.ndim(faces.mask):
+            face_edges.mask = np.dstack([
+                faces.mask, np.roll(faces.mask, 1, 1)
+            ])
+        face_edges.sort(axis=-1)
+        edges.sort(axis=-1)
+
+        tree = cKDTree(edges)
+
+        face_edge_2d = face_edges.reshape((-1, 2))
+
+        if np.ma.isMA(faces) and faces.mask.any():
+            mask = face_edge_2d.mask.any(-1)
+            connectivity = np.ma.ones(
+                len(face_edge_2d), dtype=face_edge_2d.dtype,
+            )
+            connectivity.mask = mask
+            connectivity[~mask] = tree.query(face_edge_2d[~mask])[1]
+        else:
+            connectivity = tree.query(face_edge_2d)[1]
+        self.face_edge_connectivity = np.roll(
+            connectivity.reshape(faces.shape), -1, -1
+        )
 
     def build_face_coordinates(self):
         """
@@ -840,16 +965,11 @@ class UGrid(object):
         Useful if you want this in the output file.
 
         """
-        face_coordinates = np.zeros((len(self.faces), 2), dtype=NODE_DT)
-        # FIXME: there has got to be a way to vectorize this.
-        for i, face in enumerate(self.faces):
-            coords = self.nodes[face]
-            face_coordinates[i] = coords.mean(axis=0)
-        self.face_coordinates = face_coordinates
+        self.face_coordinates = self.nodes[self.faces].mean(axis=1)
 
     def build_edge_coordinates(self):
         """
-        Builds the face_coordinates array, using the average of the
+        Builds the edge_coordinates array, using the average of the
         nodes defining each edge.
 
         Note that you may want a different definition of the edge
@@ -857,17 +977,12 @@ class UGrid(object):
         an easy default.
 
 
-        This will write-over an existing face_coordinates array
+        This will write-over an existing edge_coordinates array
 
         Useful if you want this in the output file
 
         """
-        edge_coordinates = np.zeros((len(self.edges), 2), dtype=NODE_DT)
-        # FIXME: there has got to be a way to vectorize this.
-        for i, edge in enumerate(self.edges):
-            coords = self.nodes[edge]
-            edge_coordinates[i] = coords.mean(axis=0)
-        self.edge_coordinates = edge_coordinates
+        self.edge_coordinates = self.nodes[self.edges].mean(axis=1)
 
     def build_boundary_coordinates(self):
         """
@@ -883,14 +998,7 @@ class UGrid(object):
         Useful if you want this in the output file
 
         """
-        boundary_coordinates = np.zeros((len(self.boundaries), 2),
-                                        dtype=NODE_DT)
-        # FXIME: there has got to be a way to vectorize this.
-        for i, bound in enumerate(self.boundaries):
-            coords = self.nodes[bound]
-            boundary_coordinates[i] = coords.mean(axis=0)
-        self.boundary_coordinates = boundary_coordinates
-
+        self.boundary_coordinates = self.nodes[self.boundaries].mean(axis=1)
 
     def save_as_netcdf(self, filename, format='netcdf4'):
         """
@@ -1090,11 +1198,10 @@ class UGrid(object):
                 chunksizes = (len(self.boundaries),)
             else:
                 raise ValueError("I don't know how to save a variable located on: {}".format(var.location))
-            # does this variable have a time coodinate?
-            if var.time:
-                print("Yes, it has a time", var.time)
-                print("length of time:", len(var.time.data))
-                raise NotImplementedError("can't save ugrid variables with time")
+            print("Saving:", var)
+            print("name is:", var.name)
+            print("var data is:", var.data)
+            print("var data shape is:", var.data.shape)
             data_var = nclocal.createVariable(var.name,
                                               var.data.dtype,
                                               shape,
@@ -1102,8 +1209,7 @@ class UGrid(object):
                                               # zlib=False,
                                               # complevel=0,
                                               )
-            print("shape", shape)
-            print(var.data[:])
+            print("new dat var shape:", shape)
             data_var[:] = var.data[:]
             # Add the standard attributes:
             data_var.location = var.location
@@ -1113,4 +1219,3 @@ class UGrid(object):
             # Add the extra attributes.
             for att_name, att_value in var.attributes.items():
                 setattr(data_var, att_name, att_value)
-

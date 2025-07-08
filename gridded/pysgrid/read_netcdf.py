@@ -4,7 +4,6 @@ Created on Mar 19, 2015
 @author: ayan
 '''
 
-from __future__ import (absolute_import, division, print_function)
 
 import re
 
@@ -33,8 +32,8 @@ def find_grid_topology_var(nc):
         raise ValueError(msg(len(grid_topology)))
 
     grid_topology = grid_topology[0]
-    topology_dimension = grid_topology.topology_dimension if hasattr(grid_topology, 'topology_dimension') else None  # noqa
-
+    topology_dimension = int(grid_topology.topology_dimension) if hasattr(grid_topology, 'topology_dimension') else None  # noqa
+    
     if topology_dimension != 2:
         msg = ('Only 2 dimensions topology are supported.'
                'Got {0}'.format)
@@ -63,7 +62,7 @@ def parse_padding(padding_str, mesh_topology_var):
     :rtype: list.
 
     """
-    p = re.compile('([a-zA-Z0-9_]+:) ([a-zA-Z0-9_]+) (\(padding: [a-zA-Z]+\))')
+    p = re.compile(r'([a-zA-Z0-9_]+:) ([a-zA-Z0-9_]+) (\(padding: [a-zA-Z]+\))')
     padding_matches = p.findall(padding_str)
     padding_type_list = []
     for padding_match in padding_matches:
@@ -72,7 +71,7 @@ def parse_padding(padding_str, mesh_topology_var):
         sub_dim = raw_sub_dim
         # Remove parentheses. (That is why regular expressions are bad!
         # You need a commend to explain what is going on!!)
-        cleaned_padding_var = re.sub('[\(\)]', '', raw_padding_var)
+        cleaned_padding_var = re.sub(r'[\(\)]', '', raw_padding_var)
         # Get the padding value and remove spaces.
         padding_type = cleaned_padding_var.split(':')[1].strip()
         grid_padding = GridPadding(mesh_topology_var=mesh_topology_var,

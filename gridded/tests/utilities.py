@@ -2,11 +2,6 @@
 Assorted utilities useful for the tests.
 """
 
-from __future__ import (absolute_import,
-                        division,
-                        print_function,
-                        unicode_literals)
-
 import os
 import contextlib
 
@@ -16,6 +11,7 @@ except ImportError:
     import urllib2 as urllib_request  # for python 2
 
 import pytest
+import glob
 
 from .get_remote_data import get_datafile
 
@@ -26,6 +22,11 @@ def get_test_file_dir():
     """
     test_file_dir = os.path.join(os.path.dirname(__file__), 'test_data')
     return test_file_dir
+
+
+def get_test_cdl_filelist():
+    dirpath = os.path.join(get_test_file_dir(), 'cdl')
+    return glob.glob(os.path.join(dirpath, '*.cdl'))
 
 
 def get_temp_test_file(filename):

@@ -1,21 +1,20 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 from textwrap import dedent
 import collections
 import hashlib
 from functools import wraps
 import os
-
 import numpy as np
 import netCDF4 as nc4
 
 from gridded.utilities import (get_dataset,
                                _reorganize_spatial_data,
                                _align_results_to_spatial_data,
-                               asarraylike)
+                               asarraylike,
+                               search_dataset_for_variables_by_varname,
+                               parse_filename_dataset_args)
 from gridded import VALID_LOCATIONS
 from gridded.grids import Grid, Grid_U, Grid_S, Grid_R
-from gridded.depth import Depth
+from gridded.depth import Depth, DepthBase
 from gridded.time import Time
 
 import logging
@@ -30,7 +29,6 @@ class Variable(object):
     Abstractly, it is usually a scalar physical property such a temperature,
     salinity that varies over a the domain of the model.
 
-
     This more or less maps to a variable in a netcdf file, but does not have
     to come form a netcdf file, and this provides and abstraction where the
     user can access the value in world coordinates, interpolated from the grid.
@@ -39,7 +37,7 @@ class Variable(object):
     """
     default_names = []
     cf_names = []
-    _def_count = 0
+    _instance_count = 0
 
     _default_component_types = {'time': Time,
                                 'grid': Grid,
@@ -54,14 +52,15 @@ class Variable(object):
                  depth=None,
                  data_file=None,
                  grid_file=None,
-                 dataset=None,
                  varname=None,
                  fill_value=0,
                  location=None,
                  attributes=None,
+                 surface_boundary_condition='extrapolate',
+                 bottom_boundary_condition='mask',
                  **kwargs):
         '''
-        This class represents a phenomenon using gridded data
+        This class represents a value defined on a grid
 
         :param name: Name
         :type name: string
@@ -70,7 +69,7 @@ class Variable(object):
         :type units: string
 
         :param time: Time axis of the data
-        :type time: list of datetime.datetime, netCDF4 Variable, or Time object
+        :type time: list of `datetime.datetime`, netCDF4 Variable, or Time object
 
         :param data: Underlying data source
         :type data: array-like object such as netCDF4.Variable or numpy.ndarray
@@ -95,7 +94,7 @@ class Variable(object):
 
         :param attributes: attributes associated with the Variable
                            (analogous to netcdf variable attributes)
-        :type attributes: dict of key:value pairs
+        :type attributes: dict
         '''
 
 #         if any([grid is None, data is None]):
@@ -112,7 +111,7 @@ class Variable(object):
         self.units = units
         self.location = location
         self.data = data
-        self.time = time if time is not None else self._default_component_types['time'].constant_time()
+        self.time = time
         self.data_file = data_file
         # the "main" filename for a Varibale should be the grid data.
         self.filename = data_file
@@ -128,10 +127,12 @@ class Variable(object):
                 self.attributes[attr] = data.getncattr(attr)
         except AttributeError:  # must not be a netcdf variable
             pass                # so just use what was passed in.
+        self.surface_boundary_condition = surface_boundary_condition
+        self.bottom_boundary_condition = bottom_boundary_condition
+        super(Variable, self).__init__(**kwargs)
 
 #         for k in kwargs:
 #             setattr(self, k, kwargs[k])
-
 
     @classmethod
     def from_netCDF(cls,
@@ -142,11 +143,14 @@ class Variable(object):
                     units=None,
                     time=None,
                     time_origin=None,
+                    displacement=None,
+                    tz_offset=None,
                     grid=None,
                     depth=None,
                     dataset=None,
                     data_file=None,
                     grid_file=None,
+                    location=None,
                     load_all=False,  # Do we need this? I think not --- maybe a method to fully load later if wanted.
                     fill_value=0,
                     **kwargs
@@ -154,54 +158,74 @@ class Variable(object):
         '''
         Allows one-function creation of a Variable from a file.
 
-        :param filename: Default data source. Parameters below take precedence
-        :param varname: Name of the variable in the data source file
-        :param grid_topology: Description of the relationship between grid attributes and variable names.
-        :param name: Name of property
-        :param units: Units
-        :param time: Time axis of the data
-        :param data: Underlying data source
-        :param grid: Grid that the data corresponds with
-        :param depth: Depth axis object
-        :param dataset: Instance of open Dataset
-        :param data_file: Name of data source file
-        :param grid_file: Name of grid source file
+        :param filename: Default data source. Has lowest priority.
+                         If dataset, grid_file, or data_file are provided,
+                         this function uses them first
         :type filename: string
+
+        :param varname: Explicit name of the data in the data source file.
+                        Equivalent to the key used to look the item up
+                        directly eg 'ds["lon_u"]' for a netCDF4 Dataset.
         :type varname: string
+
+        :param grid_topology: Description of the relationship between grid
+                              attributes and variable names.
         :type grid_topology: {string : string, ...}
+
+        :param name: Name of this object
         :type name: string
+
+        :param units: string such as 'm/s'
         :type units: string
+
+        :param time: Time axis of the data. May be a constructed ``gridded.Time``
+                     object, or collection of datetime.datetime objects
         :type time: [] of datetime.datetime, netCDF4 Variable, or Time object
+
+        :param data: Underlying data object. May be any array-like,
+                     including netCDF4 Variable, etc
         :type data: netCDF4.Variable or numpy.array
+
+        :param grid: Grid that the data corresponds to
         :type grid: pysgrid or pyugrid
+
+        :param location: The feature where the data aligns with the grid.
+        :type location: string
+
+        :param depth: Depth axis object from ``gridded.depth``
         :type depth: Depth, S_Depth or L_Depth
+
+        :param dataset: Instance of open netCDF4.Dataset
         :type dataset: netCDF4.Dataset
+
+        :param data_file: Name of data source file, if data and grid files are separate
         :type data_file: string
+
+        :param grid_file: Name of grid source file, if data and grid files are separate
         :type grid_file: string
+        
+        :param tz_offset: offset to compensate for time zone shifts
+        :type tz_offset: `datetime.timedelta` or float or integer hours
+
+        :param origin: shifts the time interval to begin at the time specified
+        :type origin: `datetime.datetime`
+
+        :param displacement: displacement to apply to the time data.
+               Allows shifting entire time interval into future or past
+        :type displacement: `datetime.timedelta`
         '''
+
         Grid = cls._default_component_types['grid']
         Time = cls._default_component_types['time']
         Depth = cls._default_component_types['depth']
         if filename is not None:
             data_file = filename
             grid_file = filename
-
-        ds = None
-        dg = None
-        if dataset is None:
-            if grid_file == data_file:
-                ds = dg = get_dataset(grid_file)
-            else:
-                ds = get_dataset(data_file)
-                dg = get_dataset(grid_file)
-        else:
-            if grid_file is not None:
-                dg = get_dataset(grid_file)
-            else:
-                dg = dataset
-            ds = dataset
-        if data_file is None:
-            data_file = os.path.split(ds.filepath())[-1]
+            
+        ds, dg = parse_filename_dataset_args(filename=filename,
+                                             dataset=dataset,
+                                             grid_file=grid_file,
+                                             data_file=data_file)
 
         if grid is None:
             grid = Grid.from_netCDF(grid_file,
@@ -213,30 +237,48 @@ class Variable(object):
             if varname is None:
                 raise NameError('Default current names are not in the data file, '
                                 'must supply variable name')
-        data = ds[varname]
+        data = ds.variables[varname]
         if name is None:
-            name = cls.__name__ + str(cls._def_count)
-            cls._def_count += 1
+            name = cls.__name__ + '_' + str(cls._instance_count)
+            cls._instance_count += 1
         if units is None:
             try:
                 units = data.units
             except AttributeError:
                 units = None
+
         if time is None:
-            time = Time.from_netCDF(filename=data_file,
-                                    dataset=ds,
-                                    datavar=data)
-            if time_origin is not None:
-                time = Time(data=time.data,
-                            filename=time.filename,
-                            varname=time.varname,
-                            origin=time_origin)
+            timevarname = Time.locate_time_var_from_var(data)
+            if timevarname is None:
+                time = Time()
+            else:
+                time = Time.from_netCDF(
+                        filename=data_file,
+                        dataset=ds,
+                        varname=timevarname,
+                        # datavar=None,
+                        tz_offset=tz_offset,
+                        new_tz_offset=None,
+                        origin=time_origin,
+                        displacement=displacement
+                        )
+        else:
+            timevarname = 1 if len(time) > 1 else 0
+
         if depth is None:
-            if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
-                    isinstance(grid, Grid_U) and len(data.shape) == 3):
-                depth = Depth.from_netCDF(grid_file,
-                                          dataset=dg,
+            istimevar = 0 if timevarname is None else 1
+            
+            if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 3 + istimevar or
+                    isinstance(grid, Grid_U) and len(data.shape) == 2 + istimevar):
+                depth = Depth.from_netCDF(grid_file=dg,
+                                          dataset=ds,
+                                          time=time,
+                                          grid=grid,
+                                          **kwargs
                                           )
+        if location is None:
+            if hasattr(data, 'location'):
+                location = data.location
 #             if len(data.shape) == 4 or (len(data.shape) == 3 and time is None):
 #                 from gnome.environment.environment_objects import S_Depth
 #                 depth = S_Depth.from_netCDF(grid=grid,
@@ -255,6 +297,7 @@ class Variable(object):
                    grid_file=grid_file,
                    data_file=data_file,
                    fill_value=fill_value,
+                   location=location,
                    varname=varname,
                    **kwargs)
 
@@ -270,9 +313,23 @@ class Variable(object):
                 'data=Type:{1}, shape:{0.data.shape}", '
                 ')').format(self, type(self.data))
 
+    @classmethod
+    def constant(cls, value):
+        #Sets a Variable up to represent a constant scalar field. The result
+        #will return a constant value for all times and places.
+        Grid = Grid_S
+        _data = np.full((3,3), value)
+        _node_lon = np.array(([-360, 0, 360], [-360, 0, 360], [-360, 0, 360]))
+        _node_lat = np.array(([-89.95, -89.95, -89.95], [0, 0, 0], [89.95, 89.95, 89.95]))
+        _grid = Grid(node_lon=_node_lon, node_lat=_node_lat)
+        return cls(grid=_grid, data=_data, fill_value=value)
+
     @property
     def location(self):
-        return self._location
+        if self._location is None and self.data is not None and hasattr(self.data, 'location'):
+            return self.data.location
+        else:
+            return self._location
 
     @location.setter
     def location(self, location):
@@ -309,16 +366,16 @@ class Variable(object):
 
     @time.setter
     def time(self, t):
-        Time = self.__class__._default_component_types['time']
+        Time_class = self.__class__._default_component_types['time']
         if t is None:
             self._time = None
             return
         if self.data is not None and len(t) != self.data.shape[0] and len(t) > 1:
             raise ValueError("Data/time interval mismatch")
-        if isinstance(t, Time):
+        if isinstance(t, Time_class):
             self._time = t
-        elif isinstance(t, collections.Iterable) or isinstance(t, nc4.Variable):
-            self._time = Time(t)
+        elif isinstance(t, collections.abc.Iterable) or isinstance(t, nc4.Variable):
+            self._time = Time_class(t)
         else:
             raise ValueError("Time must be set with an iterable container or netCDF variable")
 
@@ -475,22 +532,37 @@ class Variable(object):
     def dimension_ordering(self, order):
         self._order = order
 
-#     @profile
     def at(self,
-           points,
-           time,
+           points=None,
+           time=None,
            units=None,
            extrapolate=False,
+           lons=None,
+           lats=None,
+           unmask=False,
            _hash=None,
            _mem=True,
-           _auto_align=True,
-           unmask=False,
            **kwargs):
         """
         Find the value of the property at positions P at time T
 
-        :param points: Coordinates to be queried (P)
-        :type points: Nx2 array of double
+        :param points: Cartesian coordinates to be queried (P).
+                       Lon, Lat required, Depth (Z) is optional
+                       Coordinates must be organized as a 2D array or list,
+                       one coordinate per row.
+
+                       Failure to provide point data in this format may cause
+                       unexpected behavior.  If you wish to provide point data
+                       using separate longitude and latitude arrays,
+                       use the ``lons=`` and ``lats=`` kwargs. ::
+
+                          [[Lon1, Lat1, Z1],
+                           [Lon2, Lat2, Z2],
+                           [Lon3, Lat3, Z3],
+                           ...]
+
+        :type points: Nx3 array of double
+
 
         :param time: The time at which to query these points (T)
         :type time: datetime.datetime object
@@ -499,12 +571,41 @@ class Variable(object):
         :type units: string such as ('m/s', 'knots', etc)
 
         :param extrapolate: if True, extrapolation will be supported
+        :type extrapolate: boolean (default False)
 
-        :type extrapolate: boolean (True or False)
+        :param unmask: If True and return array is a masked array, returns
+                       filled array.
+        :type unmask: boolean (default False)
+
+        :param surface_boundary_condition: Specifies how to evaluate points
+                                           above the depth interval.
+        :type surface_boundary_condition: string ('extrapolate' or 'mask',
+                                          default 'extrapolate')
+
+        :param bottom_boundary_condition: Specifies how to evaluate points
+                                          below the depth interval.
+        :type bottom_boundary_condition: string ('extrapolate' or 'mask',
+                                         default 'extrapolate')
+
+        :param lons: 1D iterable of longitude values. This is ignored
+                     if points is provided.
+        :type lons: iterable
+
+        :param lats: 1D iterable of latitude values. This is ignored
+                     if points is provided
+        :type lons: iterable
 
         :return: returns a Nx1 array of interpolated values
         :rtype: double
+
+        If time is out of bounds of the time series, and extrapolate is False,
+        a gridded.time.OutOfTimeRangeError is raised.
         """
+
+        if points is None and (lons is None or lats is None):
+            raise ValueError("Must provide either points or separate lons and lats")
+        if points is None:
+            points = np.column_stack((np.array(lons), np.array(lats)))
         pts = _reorganize_spatial_data(points)
 
         if _hash is None:
@@ -523,9 +624,7 @@ class Variable(object):
         else:
             value = self._xy_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
 
-
-        if _auto_align == True:
-            value = _align_results_to_spatial_data(value.copy(), points)
+        value = value.reshape(-1,1)
 
         if isinstance(value, np.ma.MaskedArray):
             np.ma.set_fill_value(value, self.fill_value)
@@ -536,16 +635,21 @@ class Variable(object):
             self._memoize_result(pts, time, value, self._result_memo, _hash=_hash)
         return value
 
+    interpolate = at #common request
+
     def _xy_interp(self, points, time, extrapolate, slices=(), **kwargs):
         '''
         Uses the py(s/u)grid interpolation to determine the values at the points, and returns it
         :param points: Coordinates to be queried (3D)
-        :param time: Time of the query
-        :param extrapolate: Turns extrapolation on or off
-        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type points: Nx3 array of double
+
+        :param time: Time of the query
         :type time: datetime.datetime object
+
+        :param extrapolate: Turns extrapolation on or off
         :type extrapolate: boolean
+
+        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type slices: tuple of integers or slice objects
         '''
         _hash = kwargs['_hash'] if '_hash' in kwargs else None
@@ -553,9 +657,11 @@ class Variable(object):
 
         value = self.grid.interpolate_var_to_points(points[:, 0:2],
                                                     self.data,
+                                                    location=self.location,
                                                     _hash=self._get_hash(points[:, 0:2],
                                                                          time),
-                                                    slices=slices, _memo=True)
+                                                    slices=slices,
+                                                    _memo=True)
         return value
 
     def _time_interp(self, points, time, extrapolate, slices=(), **kwargs):
@@ -563,12 +669,15 @@ class Variable(object):
         Uses the Time object to interpolate the result of the next level of interpolation, as specified
         by the dimension_ordering attribute.
         :param points: Coordinates to be queried (3D)
-        :param time: Time of the query
-        :param extrapolate: Turns extrapolation on or off
-        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type points: Nx3 array of double
+
+        :param time: Time of the query
         :type time: datetime.datetime object
+
+        :param extrapolate: Turns extrapolation on or off
         :type extrapolate: boolean
+
+        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type slices: tuple of integers or slice objects
         '''
         order = self.dimension_ordering
@@ -590,49 +699,91 @@ class Variable(object):
             v0 = val_func(points, time, extrapolate, slices=s0, **kwargs)
             v1 = val_func(points, time, extrapolate, slices=s1, **kwargs)
             alphas = self.time.interp_alpha(time, extrapolate)
-            value = v0 + (v1 - v0) * alphas
-            return value
+
+            return v0 + (v1 - v0) * alphas
+
 
     def _depth_interp(self, points, time, extrapolate, slices=(), **kwargs):
         '''
         Uses the Depth object to interpolate the result of the next level of interpolation, as specified
         by the dimension_ordering attribute.
         :param points: Coordinates to be queried (3D)
-        :param time: Time of the query
-        :param extrapolate: Turns extrapolation on or off
-        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type points: Nx3 array of double
+
+        :param time: Time of the query
         :type time: datetime.datetime object
+
+        :param extrapolate: Turns extrapolation on or off
         :type extrapolate: boolean
+
+        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type slices: tuple of integers or slice objects
         '''
+        surface_boundary_condition = kwargs.pop('surface_boundary_condition', self.surface_boundary_condition)
+        bottom_boundary_condition = kwargs.pop('bottom_boundary_condition', self.bottom_boundary_condition)
         order = self.dimension_ordering
-        idx = order.index('depth')
-        if order[idx + 1] != 'time':
+        dim_idx = order.index('depth')
+        if order[dim_idx + 1] != 'time':
             val_func = self._xy_interp
         else:
             val_func = self._time_interp
-        indices, alphas = self.depth.interpolation_alphas(points, time, self.data.shape[1:], _hash=kwargs.get('_hash', None), extrapolate=extrapolate)
-        if indices is None and alphas is None:
-            # all particles are on surface
-            return val_func(points, time, extrapolate, slices=slices + (self.depth.surface_index,), **kwargs)
-        else:
-            min_idx = indices[indices != -1].min() - 1
-            max_idx = indices.max()
-            values = np.zeros(len(points), dtype=np.float64)
-            v0 = val_func(points, time, extrapolate, slices=slices + (min_idx - 1,), **kwargs)
-            for idx in range(min_idx + 1, max_idx + 1):
-                v1 = val_func(points, time, extrapolate, slices=slices + (idx,), **kwargs)
-                pos_idxs = np.where(indices == idx)[0]
-                sub_vals = v0 + (v1 - v0) * alphas
-                if len(pos_idxs) > 0:
-                    values.put(pos_idxs, sub_vals.take(pos_idxs))
-                v0 = v1
-            underground = (indices == self.depth.bottom_index)
-            values[underground] = self.fill_value
-            return values
+        
+        d_indices, d_alphas = self.depth.interpolation_alphas(points,
+                                                              time,
+                                                              self.data.shape[1:],
+                                                              extrapolate=extrapolate,
+                                                              surface_boundary_condition=surface_boundary_condition,
+                                                              bottom_boundary_condition=bottom_boundary_condition,
+                                                              **kwargs)
 
-    def transect(self, times, depths, points):
+        # Check the surface index against the data shape to determine if we are using rho or w coordinates
+        surface_index = self.depth.surface_index
+        if self.depth.surface_index == self.data.shape[dim_idx]:
+            surface_index -= 1
+
+        if isinstance(d_indices, np.ma.MaskedArray) and np.all(d_indices.mask):
+            # all particles ended up masked
+            rtv = np.empty((points.shape[0],), dtype=np.float64) * np.nan
+            rtv =  np.ma.MaskedArray(data=rtv, mask=np.isnan(rtv))
+            return rtv
+        
+        #the two cases may be optimizations that are not worth the trouble
+        #if problems continue to arise, get rid of them
+        #they are *meant* to handle cases where the particles are 'off grid'
+        #
+        elif np.all(d_indices == 0) and not np.any(d_indices.mask):
+            #all particles are 
+            return val_func(points, time, extrapolate, slices=slices + (0,), **kwargs)
+        elif np.all(d_indices == self.data.shape[dim_idx] - 1) and not np.any(d_indices.mask):
+            return val_func(points, time, extrapolate, slices=slices + (self.data.shape[dim_idx] - 1,), **kwargs)
+        else:
+            msk = np.isnan(d_indices) if not np.ma.is_masked(d_indices) else d_indices.mask
+            values = np.ma.MaskedArray(data=np.empty((points.shape[0], )) * np.nan, mask=msk)
+            # Points are mixed within the grid. Some may be above the surface or under the ground
+            uniq_idx = np.unique(d_indices)
+            if np.ma.masked in uniq_idx: #the [0:-1] is required to skip all masked indices
+                uniq_idx = uniq_idx[0:-1]
+            for idx in uniq_idx: 
+                lay_idxs = np.where(d_indices == idx)[0]
+                if idx == self.data.shape[dim_idx] - 1:
+                    #special case, index == depth dim length, so only v0 is valid
+                    v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs)
+                    values.put(lay_idxs, v0)
+                    continue
+                    
+                v1 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx+1,), **kwargs)
+                v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs)
+                sub_vals = v0 + (v1 - v0) * d_alphas[lay_idxs]
+                #partially fill the values array for this layer
+                values.put(lay_idxs, sub_vals)
+        
+        return values
+
+    def _transect(self, times, depths, points):
+        '''
+        returns a transect of the Variable at given values.
+        This function is not close to finished.
+        '''
         output_shape = (len(times), len(depths), len(points))
         outarr = np.array(shape=output_shape)
         for t in range(0,len(times)):
@@ -649,13 +800,17 @@ class Variable(object):
                      names_list=None,
                      std_names_list=None):
         """
-        Function to find the default variable names if they are not provided.
+        Function to find the default variable names if they are not provided. This
+        function does nothing without defined default_names or cf_names class
+        attributes
 
         :param filename: Name of file that will be searched for variables
-        :param dataset: Existing instance of a netCDF4.Dataset
         :type filename: string
+
+        :param dataset: Existing instance of a netCDF4.Dataset
         :type dataset: netCDF.Dataset
-        :return: List of default variable names, or None if none are found
+
+        :return: name of first netCDF4.Variable that matches
         """
         df = None
         if dataset is not None:
@@ -678,12 +833,25 @@ class Variable(object):
 
 
 class VectorVariable(object):
+    # Fixme: a lot of code duplication in here
 
+    # Keys are component names ('u', 'v', etc) and values are the netCDF4 names.
+    # eg {'u': ['u', 'U', 'eastward_sea_water_velocity']}
     default_names = {}
+    
+    # Keys are component names ('u', 'v', etc) and values are the CF names.
+    # eg {'u': ['u', 'U', 'eastward_sea_water_velocity']}
     cf_names = {}
-    comp_order=[]
+    
+    # This list of strings specify names for each component of the vector variable.
+    # The names should be the same as keys in default_names and cf_names
+    # for example, ['u', 'v'] will allow vv.u and vv.v to be used to access the components
+    # instead of vv.variables[0] and vv.variables[1]
+    # An error will raise if comp_order is longer than the number of components (vv.variables)
+    # upon object initialization
+    comp_order = []
 
-    _def_count = 0
+    _instance_count = 0
 
     ''''
     These are the classes which are used when internal components are created
@@ -718,13 +886,13 @@ class VectorVariable(object):
                 time = Time(time)
             units = variables[0].units if units is None else units
             time = variables[0].time if time is None else time
+        self._time = time
         if units is None:
             units = variables[0].units
         self._units = units
         if variables is None or len(variables) < 2:
             raise ValueError('Variables must be an array-like of 2 or more Variable objects')
         self.variables = variables
-        self._time = time
         unused_args = kwargs.keys() if kwargs is not None else None
         if len(unused_args) > 0:
             kwargs = {}
@@ -747,6 +915,8 @@ class VectorVariable(object):
                     units=None,
                     time=None,
                     time_origin=None,
+                    displacement=None,
+                    tz_offset=None,
                     grid=None,
                     depth=None,
                     data_file=None,
@@ -754,33 +924,52 @@ class VectorVariable(object):
                     dataset=None,
                     load_all=False,
                     variables=None,
-                    location=None,
                     **kwargs
                     ):
         '''
         Allows one-function creation of a VectorVariable from a file.
 
         :param filename: Default data source. Parameters below take precedence
-        :param varnames: Names of the variables in the data source file
-        :param grid_topology: Description of the relationship between grid attributes and variable names.
-        :param name: Name of property
-        :param units: Units
-        :param time: Time axis of the data
-        :param data: Underlying data source
-        :param grid: Grid that the data corresponds with
-        :param dataset: Instance of open Dataset
-        :param data_file: Name of data source file
-        :param grid_file: Name of grid source file
         :type filename: string
+
+        :param varnames: Names of the variables in the data source file
         :type varnames: [] of string
+
+        :param grid_topology: Description of the relationship between grid attributes and variable names.
         :type grid_topology: {string : string, ...}
+
+        :param name: Name of property
         :type name: string
+
+        :param units: Units
         :type units: string
+
+        :param time: Time axis of the data
         :type time: [] of datetime.datetime, netCDF4 Variable, or Time object
+
+        :param tz_offset: offset to compensate for time zone shifts
+        :type tz_offset: `datetime.timedelta` or float or integer hours
+
+        :param origin: shifts the time interval to begin at the time specified
+        :type origin: `datetime.datetime`
+
+        :param displacement: displacement to apply to the time data.
+               Allows shifting entire time interval into future or past
+        :type displacement: `datetime.timedelta`
+        
+        :param data: Underlying data source
         :type data: netCDF4.Variable or numpy.array
+
+        :param grid: Grid that the data corresponds with
         :type grid: pysgrid or pyugrid
+
+        :param dataset: Instance of open Dataset
         :type dataset: netCDF4.Dataset
+
+        :param data_file: Name of data source file
         :type data_file: string
+
+        :param grid_file: Name of grid source file
         :type grid_file: string
         '''
         Grid = cls._default_component_types['grid']
@@ -790,22 +979,12 @@ class VectorVariable(object):
         if filename is not None:
             data_file = filename
             grid_file = filename
-
-        ds = None
-        dg = None
-        if dataset is None:
-            if grid_file == data_file:
-                ds = dg = get_dataset(grid_file)
-            else:
-                ds = get_dataset(data_file)
-                dg = get_dataset(grid_file)
-        else:
-            if grid_file is not None:
-                dg = get_dataset(grid_file)
-            else:
-                dg = dataset
-            ds = dataset
-
+            
+        ds, dg = parse_filename_dataset_args(filename=filename,
+                                                dataset=dataset,
+                                                grid_file=grid_file,
+                                                data_file=data_file)
+        
         if grid is None:
             grid = Grid.from_netCDF(grid_file,
                                     dataset=dg,
@@ -816,38 +995,44 @@ class VectorVariable(object):
             if all([v is None for v in varnames]):
                 raise ValueError('No compatible variable names found!')
         if name is None:
-            name = cls.__name__ + str(cls._def_count)
-            cls._def_count += 1
+            name = cls.__name__ + '_' + str(cls._instance_count)
+            cls._instance_count += 1
         data = ds[varnames[0]]
-        if time is None:
-            time = Time.from_netCDF(filename=data_file,
-                                    dataset=ds,
-                                    datavar=data)
-            if time_origin is not None:
-                time = Time(data=time.data, filename=data_file, varname=time.varname, origin=time_origin)
-        if depth is None:
-            if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 4 or
-                    isinstance(grid, Grid_U) and len(data.shape) == 3):
-                depth = Depth.from_netCDF(grid_file,
-                                          dataset=dg,
-                                          )
 
-#         if depth is None:
-#             if (isinstance(grid, Grid_S) and len(data.shape) == 4 or
-#                         (len(data.shape) == 3 and time is None) or
-#                     (isinstance(grid, Grid_U) and len(data.shape) == 3 or
-#                         (len(data.shape) == 2 and time is None))):
-#                 from gnome.environment.environment_objects import S_Depth
-#                 depth = S_Depth.from_netCDF(grid=grid,
-#                                             depth=1,
-#                                             data_file=data_file,
-#                                             grid_file=grid_file,
-#                                             **kwargs)
+        if time is None:
+            timevarname = Time.locate_time_var_from_var(data)
+            if timevarname is None:
+                time = Time()
+            else:
+                time = Time.from_netCDF(
+                        filename=data_file,
+                        dataset=ds,
+                        varname=timevarname,
+                        # datavar=None,
+                        tz_offset=tz_offset,
+                        new_tz_offset=None,
+                        origin=time_origin,
+                        displacement=displacement
+                        )
+        else:
+            timevarname = 1 if len(time) > 1 else 0
+
+        if depth is None:
+            istimevar = 0 if timevarname is None else 1
+            
+            if (isinstance(grid, (Grid_S, Grid_R)) and len(data.shape) == 3 + istimevar or
+                    isinstance(grid, Grid_U) and len(data.shape) == 2 + istimevar):
+                depth = Depth.from_netCDF(grid_file=dg,
+                                          dataset=ds,
+                                          time=time,
+                                          grid=grid,
+                                          **kwargs
+                                          )
+        
         if variables is None:
             variables = []
             for vn in varnames:
                 if vn is not None:
-                    # Fixme: We're calling from_netCDF from itself ?!?!?
                     variables.append(Variable.from_netCDF(filename=filename,
                                                           varname=vn,
                                                           grid_topology=grid_topology,
@@ -891,9 +1076,11 @@ class VectorVariable(object):
         Function to find the default variable names if they are not provided.
 
         :param filename: Name of file that will be searched for variables
-        :param dataset: Existing instance of a netCDF4.Dataset
         :type filename: string
+
+        :param dataset: Existing instance of a netCDF4.Dataset
         :type dataset: netCDF.Dataset
+
         :return: dict of component to name mapping (eg {'u': 'water_u', 'v': 'water_v', etc})
         """
         df = None
@@ -938,6 +1125,12 @@ class VectorVariable(object):
                 ')').format(self)
 
     @property
+    def location(self):
+        return [v.location for v in self.variables]
+
+    locations = location
+
+    @property
     def is_data_on_nodes(self):
         return self.grid.infer_location(self.variables[0].data) == 'node'
 
@@ -947,7 +1140,7 @@ class VectorVariable(object):
 
     @time.setter
     def time(self, t):
-        Time = self.__class__._default_component_types['time']
+        Time_class = self.__class__._default_component_types['time']
         if self.variables is not None:
             for v in self.variables:
                 try:
@@ -956,10 +1149,10 @@ class VectorVariable(object):
                     raise ValueError('''Time was not compatible with variables.
                     Set variables attribute to None to allow changing other attributes
                     Original error: {0}'''.format(str(e)))
-        if isinstance(t, Time):
+        if isinstance(t, Time_class):
             self._time = t
         elif isinstance(t, collections.Iterable) or isinstance(t, nc4.Variable):
-            self._time = Time(t)
+            self._time = Time_class(t)
         else:
             raise ValueError("Time must be set with an iterable container or netCDF variable")
 
@@ -1026,30 +1219,90 @@ class VectorVariable(object):
         else:
             return None
 
-    def at(self, points, time, units=None, extrapolate=False, memoize=True, _hash=None, _auto_align=True, **kwargs):
-        pts = _reorganize_spatial_data(points)
-        mem = memoize
-        if hash is None:
-            _hash = self._get_hash(points, time)
+    def at(self,
+           points=None,
+           time=None,
+           units=None,
+           extrapolate=False,
+           lons=None,
+           lats=None,
+           unmask=False,
+           _hash=None,
+           _mem=True,
+           **kwargs):
+        """
+        Find the value of the property at positions P at time T
 
-        if mem:
-            res = self._get_memoed(points, time, self._result_memo, _hash=_hash)
+        :param points: Cartesian coordinates to be queried (P). Lon, Lat required, Depth (Z) is optional
+                       Coordinates must be organized as a 2D array or list, one coordinate per row or list element.
+
+                       ::
+
+                          [[Lon1, Lat1, Z1],
+                           [Lon2, Lat2, Z2],
+                           [Lon3, Lat3, Z3],
+                           ...]
+
+                       Failure to provide point data in this format may cause unexpected behavior
+                       If you wish to provide point data using separate longitude and latitude arrays,
+                       use the `lons=` and `lats=` kwargs.
+
+
+        :type points: Nx3 array of double
+
+        :param time: The time at which to query these points (T)
+        :type time: `datetime.datetime` object
+
+        :param units: units the values will be returned in (or converted to)
+        :type units: string such as ('m/s', 'knots', etc)
+
+        :param extrapolate: if True, extrapolation will be supported
+        :type extrapolate: boolean (default False)
+
+        :param unmask: if True and return array is a masked array, returns filled array
+        :type unmask: boolean (default False)
+
+        :param zero_ref: Specifies whether the zero datum moves with zeta or not. Only
+                         applicable if depth dimension is present with full sigma layers
+        :type zero_ref: string 'absolute' or 'relative'
+
+        :param lons: 1D iterable of longitude values. This is ignored if points is provided
+        :type lons: iterable
+
+        :param lats 1D iterable of latitude values. This is ignored if points is provided
+        :type lons: iterable
+
+        :return: NxM array of interpolated values N = len(points) M = len(self.variables)
+        :rtype: np.array or np.ma.MaskedArray
+
+        If time is out of bounds of the time series, and extrapolate is False, a
+        gridded.time.OutOfTimeRangeError is raised.
+
+        """
+        if points is None and (lons is None or lats is None):
+            raise ValueError("Must provide either points or separate lons and lats")
+        if points is None:
+            points = np.column_stack((np.array(lons), np.array(lats)))
+        pts = _reorganize_spatial_data(points)
+        if _hash is None:
+            _hash = self._get_hash(pts, time)
+
+        if _mem:
+            res = self._get_memoed(pts, time, self._result_memo, _hash=_hash)
             if res is not None:
                 return res
 
-        value = np.column_stack([var.at(points=points,
+        value = np.ma.column_stack([var.at(points=pts,
                                         time=time,
                                         units=units,
                                         extrapolate=extrapolate,
-                                        memoize=memoize,
+                                        unmask=unmask,
+                                        _mem=_mem,
                                         _hash=_hash,
                                         **kwargs) for var in self.variables])
 
-        if _auto_align == True:
-            value = _align_results_to_spatial_data(value.copy(), points)
-
-        if mem:
-            self._memoize_result(points, time, value, self._result_memo, _hash=_hash)
+        if _mem:
+            self._memoize_result(pts, time, value, self._result_memo, _hash=_hash)
 
         return value
 
@@ -1108,6 +1361,7 @@ class VectorVariable(object):
         :param filepath: path to file you want o save to. or a writable
                          netCDF4 Dataset An existing one
                          If a path, an existing file will be clobbered.
+        :type filepath: string
 
         Follows the convention established by the netcdf UGRID working group:
 

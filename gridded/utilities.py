@@ -3,82 +3,77 @@
 """
 assorted utility functions needed by gridded
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import collections
+
+try:
+    from collections.abc import Iterable, Collection, Mapping
+except ImportError:  # py2
+    from collections import Iterable
+
 import numpy as np
 import netCDF4 as nc4
-import six
+import os
+
 
 must_have = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute__']
 
+def convert_numpy_datetime64_to_datetime(dt):
+    pass
 
-def gen_mask(mask_var, add_boundary=False):
-    """
-    Takes a mask variable (netCDF4.Variable) and creates a mask to apply to
-    vertexes in the grid. This map is for GEOMETRY PURPOSES ONLY. It should not
-    be applied to any data that may fit the grid. Such data should already have
-    a mask of it's own that is to be treated as canon.
-
-    For example ROMS mask_psi:
-    <type 'netCDF4._netCDF4.Variable'>
-    float64 mask_psi(eta_psi, xi_psi)
-        long_name: mask on psi-points
-        flag_values: [ 0.  1.]
-        flag_meanings: land water
-        grid: grid
-        location: node
-        coordinates: lat_psi lon_psi
-    unlimited dimensions:
-    current shape = (1043, 723)
-    filling off
-
-    The return of this function is a True/False array of the same shape as the variable passed in.
-    If flag_values and flag_meanings are attributes on the provided netCDF4.Variable, it will treat
-    any value not containing 'water', or 'lake' as True (masked). Otherwise, it will convert to a
-    boolean array directly on the 'truthiness' of the values.
-    Anything != 0 -> True
-    0 = False
-
-    This MAY result in an incorrect mask, if this function doesn't handle special flag
-    meanings as above.
-
-    Additionally, it will transform any True (masked) value that is adjacent to a False (unmasked)
-    value to False (unmasked). This is to avoid boundary condition problems.
-    """
+def convert_mask_to_numpy_mask(mask_var):
+    '''
+    Converts a netCDF4.Variable representing a mask into a numpy array mask
+    'Water' Values are converted to False (including 'lake', 'river' etc)
+    'land' values are converted to True
+    '''
     ret_mask = np.ones(mask_var.shape, dtype=bool)
-    input_mask = mask_var[:]
-    type1 = (isinstance(mask_var, nc4.Variable) and hasattr(mask_var, 'flag_values') and hasattr(mask_var, 'flag_meanings'))
-    type2 = (isinstance(mask_var, nc4.Variable) and hasattr(mask_var, 'option_0'))
+    mask_data = mask_var[:]
+    type1 = (isinstance(mask_var, nc4.Variable)
+             and hasattr(mask_var, 'flag_values')
+             and hasattr(mask_var, 'flag_meanings'))
+    type2 = (isinstance(mask_var, nc4.Variable)
+             and hasattr(mask_var, 'option_0'))
     if type1:
         fm = mask_var.flag_meanings
-        if isinstance(fm, six.string_types):
-            fm = fm.split(' ')
+        fv = mask_var.flag_values
+        try:
+            fm = fm.split()
+        except AttributeError:
+            pass  # must not be a string -- we assume it's a sequence already
+        try:
+            fv = fv.split()
+        except AttributeError:
+            pass
         meaning_mask = [False if ('water' in s or 'lake' in s) else True for s in fm]
-        tfmap = dict(zip(mask_var.flag_values, meaning_mask))
+        tfmap = dict(zip(fv, meaning_mask))
         for k, v in tfmap.items():
-            ret_mask[input_mask == k] = v
-    elif type2: #special case where option_0 == land, option_1 == water, etc #TODO generalize this properly
+            ret_mask[mask_data == k] = v
+    elif type2:  # special case where option_0 == land,
+                 # option_1 == water, etc
+                 # TODO: generalize this properly
         meaning_mask = [True, False]
         tfmap = dict(zip([0, 1], meaning_mask))
         for k, v in tfmap.items():
-            ret_mask[input_mask == k] = v
+            ret_mask[mask_data == k] = v
     else:
-        ret_mask[:] = input_mask
-    #add in boundary pts
-    if add_boundary:
-        testarr = np.ones(ret_mask.shape, dtype=bool)
-        np.logical_and(testarr[:, 0:-1], ~(ret_mask[:, 0:-1] & ~ret_mask[:, 1:]), testarr[:,0:-1]) #check 'right'
-        np.logical_and(testarr[:, 1:], ~(ret_mask[:, 1:] & ~ret_mask[:, 0:-1]), testarr[:, 1:]) #check 'left'
-        np.logical_and(testarr[1:, :], ~(ret_mask[1:, :] & ~ret_mask[0:-1, :]), testarr[1:, :]) #check 'down'
-        np.logical_and(testarr[0:-1, :], ~(ret_mask[0:-1, :] & ~ret_mask[1:, :]), testarr[0:-1, :]) #check 'up'
-        np.logical_and(ret_mask, testarr, ret_mask)
+        ret_mask[:] = mask_data
+
     return ret_mask
 
 
+def gen_celltree_mask_from_center_mask(center_mask, sl):
+    """
+    Generates celltree face mask from the center mask
+    """
+
+    input_mask = convert_mask_to_numpy_mask(center_mask)
+    return input_mask[sl]
+
+#1/16/2024 Jay Hennen: I'm 'privating' this function pending a review and likely rewrite. 
+#
 def regrid_variable(grid, o_var, location='node'):
     from gridded.variable import Variable
     from gridded.grids import Grid_S, Grid_U
-    from gridded.depth import S_Depth, Depth
+    from gridded.depth import S_Depth, L_Depth, DepthBase
     """
     Takes a Variable or VectorVariable and interpolates the data onto grid.
     You may pass a location ('nodes', 'faces', 'edge1', 'edge2) and the
@@ -106,18 +101,18 @@ def regrid_variable(grid, o_var, location='node'):
             dest_points = grid.face_coordinates
         else:
             dest_points = grid.centers
-    dest_points = dest_points.reshape(-1,2)
+    dest_points = dest_points.reshape(-1, 2)
     if 'edge' in location:
         raise NotImplementedError("Cannot regrid variable to edges at this time")
-    dest_indices = o_var.grid.locate_faces(dest_points,'node')
+    dest_indices = o_var.grid.locate_faces(dest_points, 'node')
     if np.all(dest_indices == -1):
         raise ValueError("Grid {0} has no destination points overlapping\
         the grid of the source variable {1}".format(grid, o_var))
     n_depth = None
     if o_var.depth is not None:
-        if isinstance(o_var.depth, S_Depth):
+        if issubclass(o_var.depth.__class__, S_Depth):
             n_depth = _regrid_s_depth(grid, o_var.depth)
-        elif isinstance(o_var.depth, Depth):
+        elif isinstance(o_var.depth, DepthBase) or isinstance(o_var.depth, L_Depth):
             n_depth = o_var.depth
         else:
             raise NotImplementedError("Can only regrid sigma depths for now")
@@ -135,21 +130,22 @@ def regrid_variable(grid, o_var, location='node'):
     location_shp = grid.node_lon.shape
 
     pts = np.zeros((dest_points.shape[0], 3))
-    pts[:,0:2] = dest_points
+    pts[:, 0:2] = dest_points
     if o_var.time is not None:
         for t_idx, t in enumerate(o_var.time.data):
-            if n_depth is not None and isinstance(n_depth, S_Depth):
-                for lev_idx, lev_data in enumerate(o_var.depth.get_section(t)):
+            if n_depth is not None and issubclass(n_depth.__class__, S_Depth):
+                transect = o_var.depth.get_transect(o_var.grid.nodes.reshape(-1,2), t, data_shape=(len(n_depth),)).T
+                for lev_idx, lev_data in enumerate(transect):
                     lev = Variable(name='level{0}'.format(lev_idx),
-                                   data=lev_data,
+                                   data=lev_data.reshape(o_var.grid.node_lon.shape),
                                    grid=o_var.grid)
                     zs = lev.at(pts, t)
-                    pts[:,2] = zs
+                    pts[:, 2] = zs[:,0]
                     n_data[t_idx, lev_idx] = o_var.at(pts, t).reshape(location_shp)
             else:
-                n_data[t_idx] = o_var.at(pts,t).reshape(location_shp)
+                n_data[t_idx] = o_var.at(pts, t).reshape(location_shp)
     else:
-        n_data = o_var.at(pts,None).reshape(location_shp)
+        n_data = o_var.at(pts, None).reshape(location_shp)
 
     n_var = Variable(name='regridded {0}'.format(o_var.name),
                      grid=grid,
@@ -159,17 +155,16 @@ def regrid_variable(grid, o_var, location='node'):
                      units=o_var.units)
     return n_var
 
+
 def _regrid_s_depth(grid, o_depth):
     """
     Creates a new S_Depth object from an existing one that works on a new grid.
     """
-    from gridded.grids import Grid_S, Grid_U
-    from gridded.depth import S_Depth
     o_bathy = o_depth.bathymetry
     o_zeta = o_depth.zeta
     n_bathy = regrid_variable(grid, o_bathy)
     n_zeta = regrid_variable(grid, o_zeta)
-    n_depth = S_Depth(time=o_depth.time,
+    n_depth = o_depth.__class__(time=o_depth.time,
                       grid=grid,
                       bathymetry=n_bathy,
                       zeta=n_zeta,
@@ -209,7 +204,7 @@ def _reorganize_spatial_data(points):
 
     Since the user may organize their spatial data in a number of ways, this
     function should be used to standardize the format so math can be done
-    consistently. It is also worth using the _spatial_data_metadata function
+    consistently. It is also worth using the _align_results_to_spatial_data function
     in case it is appropriate to reformat calculation results to be more
     like the spatial data input.
 
@@ -221,10 +216,10 @@ def _reorganize_spatial_data(points):
     if points is None:
         return None
     points_arr = np.array(points).squeeze()
-    if points_arr.dtype in (np.object_, np.string_, np.bool_):
+    if points_arr.dtype in (np.object_, np.bytes_, np.bool_):
         raise TypeError('points data does not convert to a numeric array type')
     shp = points_arr.shape
-    #special cases
+    # special cases
     if len(shp) == 1:
         #two valid cases: [lon, lat] and [lon, lat, depth]. all others = error
         if shp == (2,) or shp == (3,):
@@ -311,7 +306,10 @@ def _align_results_to_spatial_data(result, points):
         elif shp[0] < shp[1] and result.shape[0] == shp[1]:
             return result.T
         else:
-            return result
+            if shp[0] == result.shape[0] and len(result.shape) == 1:
+                return result[:, None] #enforce (N,1) shape
+            else:
+                return result
 
 
 def isarraylike(obj):
@@ -342,11 +340,11 @@ def asarraylike(obj):
 
 def isstring(obj):
     """
-    py2/3 compaitlbie wayto test for a string
+    py2/3 compatble way to test for a string
     """
     try:
         return isinstance(obj, basestring)
-    except:
+    except NameError:
         return isinstance(obj, str)
 
 
@@ -357,18 +355,61 @@ def get_dataset(ncfile, dataset=None):
 
     if dataset is not None, it should be a valid netCDF4 Dataset object,
     and it will simply be returned
+
+    fixme: why can you pass in a dataset specifically ???
     """
     if dataset is not None:
         return dataset
-    if isinstance(ncfile, nc4.Dataset):
+    if isinstance(ncfile, (nc4.Dataset, nc4.MFDataset)):
         return ncfile
-    elif isinstance(ncfile, collections.Iterable) and len(ncfile) == 1:
-        return nc4.Dataset(ncfile[0])
-    elif isstring(ncfile):
+    try:
+        ncfile = os.fspath(ncfile)
+    except TypeError:
+        pass  # not a string of PathLike -- could be a list or invalid ...
+
+    if isinstance(ncfile, str):  # single path
         return nc4.Dataset(ncfile)
+    elif isinstance(ncfile, Iterable) and len(ncfile) == 1:
+        return nc4.Dataset(ncfile[0])
     else:
         return nc4.MFDataset(ncfile)
 
+def parse_filename_dataset_args(filename=None,
+                                dataset=None,
+                                data_file=None,
+                                grid_file=None,):
+    """A perinnial problem is that we need to be able to accept a variety of
+    filename/dataset arguments. This function will return a tuple of 'ds' and 'dg'
+    where ds is the netCDF4.Dataset for the data and dg is the netCDF4.Dataset for the grid. If such
+    datasets are from the same file, it will return the same object for both.
+    
+    :param filename: str or pathlike
+    :param dataset: netCDF4.Dataset
+    :param data_file: str, pathlike, or netCDF4.Dataset
+    :param grid_file: str, pathlike, or netCDF4.Dataset
+    """
+    ds = None
+    dg = None
+    if filename is not None:
+        try:
+            filename = os.fspath(filename)
+        except TypeError:
+            pass
+        data_file = grid_file = filename
+    if dataset is None:
+        if grid_file == data_file:
+            ds = dg = get_dataset(grid_file)
+        else:
+            ds = get_dataset(data_file)
+            dg = get_dataset(grid_file)
+    else:
+        if grid_file is not None:
+            dg = get_dataset(grid_file)
+        else:
+            dg = dataset
+        ds = dataset
+    
+    return ds, dg
 
 def get_writable_dataset(ncfile, format="netcdf4"):
     """
@@ -399,5 +440,111 @@ def get_dataset_attrs(ds):
     """
     return {name: ds.getncattr(name) for name in ds.ncattrs()}
 
+def search_netcdf_vars(cls=None, ds=None, dg=None):
+    """
+    Given a class with a .default_names and .cf_names attributes, search a datafile 
+    netCDF4.Dataset and a possible grid netCDF4.Dataset for variables that are sought by
+    the class
+    """
+    vn_search = search_dataset_for_variables_by_varname(ds, cls.default_names)
+    ds_search = search_dataset_for_variables_by_longname(ds, cls.cf_names)
+    found_vars = merge_var_search_dicts(ds_search, vn_search)
+    if ds != dg:
+        dg_vn_search = search_dataset_for_variables_by_varname(dg, cls.default_names)
+        dg_ln_search = search_dataset_for_variables_by_longname(dg, cls.cf_names)
+        dg_search = merge_var_search_dicts(dg_ln_search, dg_vn_search)
+        found_vars = merge_var_search_dicts(found_vars, dg_search)
+    return found_vars
+    
+def can_create_class(cls, ds=None, dg=None):
+    found_vars = search_netcdf_vars(cls, ds, dg)
+    # all variables must be found (no None values)
+    return not (None in found_vars.values())
 
+def varnames_merge(cls, inc_varnames=None):
+    """
+    Helper function to support the `varnames` argument pattern.
 
+    `varnames` is a keyword used to specify an association between a desired subcomponent
+    of an object and a desired data source name. It is meant to be a mechanism by which 
+    custom digestion of a file can be specified.
+    """
+
+def search_dataset_for_any_long_name(ds, names):
+    """
+    Searches a netCDF4.Dataset for any netCDF4.Variable that satisfies one of the search terms.
+    :param name: list of strings or str -> list dictionary
+
+    :returns: boolean
+    """
+    if isinstance(names, Mapping):
+        names = sum(list(names.values()), [])
+            
+    for n in names:
+        t1 = ds.get_variables_by_attributes(long_name=n)
+        t2 = ds.get_variables_by_attributes(standard_name=n)
+        if t1 or t2:
+            return t1+t2
+
+def search_dataset_for_variables_by_longname(ds, possible_names):
+    """
+    For each longname list in possible_names, search the Dataset
+
+    :param ds: Dataset
+    :type ds: netCDF4.Dataset
+    :param possible_names: str -> list dictionary
+    :type possible_names: dict
+
+    :returns: str -> netCDF4.Variable dictionary
+    """
+    rtv = {}
+    for k, v in possible_names.items():
+        for query in v:
+            t1 = ds.get_variables_by_attributes(long_name=query)
+            t2 = ds.get_variables_by_attributes(standard_name=query)
+            if t1 or t2:
+                rtv[k] = (t1+t2)[0]
+                break
+        if k not in rtv:
+            rtv[k] = None
+    return rtv
+
+def search_dataset_for_variables_by_varname(ds, possible_names):
+    """
+    For each varname list in possible_names, search the Dataset
+
+    :param ds: Dataset
+    :type ds: netCDF4.Dataset
+    :param possible_names: str -> list dictionary
+    :type possible_names: dict
+
+    :returns: str -> netCDF4.Variable (or None if not found) dictionary
+    """
+    rtv = {}
+    for k, v in possible_names.items():
+        for query in v:
+            if query in ds.variables:
+                rtv[k] = ds.variables[query]
+                break
+        if k not in rtv:
+            rtv[k] = None
+    return rtv
+
+def merge_var_search_dicts(d1, d2):
+    """
+    Values in D1 take precedence over D2 if they are not None
+    :param d1: str -> netCDF4.Variable dict
+    :type d1: dict
+    :param d1: str -> netCDF4.Variable dict
+    :type d2: dict
+
+    :returns: str -> netCDF4.Variable dict
+    """
+    result = d1.copy()
+    for k, v in d2.items():
+        if k not in d1:
+            result[k] = v
+        else:
+            if result[k] is None:
+                result[k] = v
+    return result

@@ -4,7 +4,6 @@ Created on Mar 24, 2015
 @author: ayan
 '''
 
-from __future__ import (absolute_import, division, print_function)
 
 
 LAT_GRID_CELL_CENTER_LONG_NAME = ['latitude of RHO-points',  # ROMS

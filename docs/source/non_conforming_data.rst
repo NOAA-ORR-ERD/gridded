@@ -137,7 +137,7 @@ Optionally:
 
 
 The Grid
-........
+--------
 
 .. code-block:: python
 

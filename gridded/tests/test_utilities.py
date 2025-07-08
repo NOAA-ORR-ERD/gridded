@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 # py2/3 compatibility
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os
 
@@ -9,61 +8,50 @@ import numpy as np
 import netCDF4 as nc
 
 from gridded import utilities
-from gridded.tests.test_depth import get_s_depth
+from gridded.tests.test_depth import get_roms_depth
 
 
 data_dir = os.path.join(os.path.split(__file__)[0], 'test_data')
 
 
-def test_gen_mask():
-    mask = np.array(([True, True, True, True],
-                     [True, False, False, True],
-                     [True, False, False, True],
-                     [True, True, True, True]))
+def test_gen_celltree_mask_from_center_mask():
+    center_mask = np.array(([True, True, True, True, True],
+                     [True, False, True, True, True],
+                     [True, False, False, False, True],
+                     [True, True, True, True, True]))
+    center_sl = np.s_[1:-1,1:-1] #'both' padding
 
-    m = utilities.gen_mask(mask, add_boundary=False)
+    m = utilities.gen_celltree_mask_from_center_mask(center_mask, center_sl)
 
-    assert np.all(m == mask)
+    expected_mask = np.array(([False, True, True],
+                              [False, False, False]))
 
-    m2 = utilities.gen_mask(mask, add_boundary=True)
-
-    expected_mask = np.array(([True, False, False, True],
-                              [False, False, False, False],
-                              [False, False, False, False],
-                              [True, False, False, True]))
-
-    assert np.all(m2 == expected_mask)
+    assert np.all(m == expected_mask)
 
     testds = nc.Dataset('foo', mode='w', diskless=True)
-    testds.createDimension('x', 4)
+    testds.createDimension('x', 5)
     testds.createDimension('y', 4)
     testds.createVariable('mask', 'b', dimensions=('y', 'x'))
-    testds['mask'][:] = mask
+    testds['mask'][:] = center_mask
 
-    m3 = utilities.gen_mask(testds['mask'], add_boundary=True)
+    m3 = utilities.gen_celltree_mask_from_center_mask(center_mask, center_sl)
 
     assert np.all(m3 == expected_mask)
 
-    testds['mask'][:] = ~mask
+    testds['mask'][:] = ~center_mask
     testds['mask'].flag_values = [0, 1]
     testds['mask'].flag_meanings = ['land', 'water']
 
-    m4 = utilities.gen_mask(testds['mask'], add_boundary=True)
+    m4 = utilities.gen_celltree_mask_from_center_mask(center_mask, center_sl)
 
     assert np.all(m4 == expected_mask)
 
-    testds['mask'][:, 2] = [0, 2, 2, 0]
-    testds['mask'].flag_values = [0, 1, 2]
-    testds['mask'].flag_meanings = ['land', 'water', 'water2']
-
-    m5 = utilities.gen_mask(testds['mask'], add_boundary=True)
-
-    assert np.all(m5 == expected_mask)
-
+    testds['mask'][:] = ~center_mask
+    testds['mask'].flag_values = [0, 1]
     # because sometimes it's a damn string
-    testds['mask'].flag_meanings = 'land water water2'
+    testds['mask'].flag_meanings = 'land water'
 
-    m5 = utilities.gen_mask(testds['mask'], add_boundary=True)
+    m5 = utilities.gen_celltree_mask_from_center_mask(center_mask, center_sl)
 
     assert np.all(m5 == expected_mask)
     testds.close()
@@ -132,16 +120,16 @@ def test_spatial_data_metadata():
     assert np.all(a5.T == res_5)
 
 
-def test_regrid_variable_TDStoS(get_s_depth):
+def test_regrid_variable_TDStoS(get_roms_depth):
     # Time is present
     # Depth is present
     # Grid_S to Grid_S
     from gridded.variable import Variable
     from gridded.time import Time
     from gridded.grids import Grid_S
-    sd = get_s_depth
+    sd = get_roms_depth
     grid = sd.grid
-    n_levels = sd.num_w_levels
+    n_levels = sd.num_levels
     data = np.ones((1,
                     n_levels, grid.node_lon.shape[0],
                     grid.node_lon.shape[1]))
@@ -168,14 +156,14 @@ def test_regrid_variable_TDStoS(get_s_depth):
     assert v2.data.shape == (v1.data.shape[0], v1.data.shape[1], sz - 1, sz - 1)
 
 
-def test_regrid_variable_StoS(get_s_depth):
+def test_regrid_variable_StoS(get_roms_depth):
     # Time is not present
     # Depth is not present
     # Grid_S to Grid_S
     from gridded.variable import Variable
     from gridded.time import Time
     from gridded.grids import Grid_S
-    sd = get_s_depth
+    sd = get_roms_depth
     grid = sd.grid
     data = np.ones((grid.node_lon.shape[0], grid.node_lon.shape[1]))
 

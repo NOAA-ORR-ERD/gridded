@@ -1,4 +1,3 @@
-from __future__ import (absolute_import, division, print_function)
 
 import numpy as np
 
@@ -18,4 +17,4 @@ def test_point_in_tri():
         for point in dataset['points_inside']:
             assert point_in_tri(dataset['triangle'], point)
         for point in dataset['points_outside']:
-            assert ~point_in_tri(dataset['triangle'], point)
+            assert not point_in_tri(dataset['triangle'], point)

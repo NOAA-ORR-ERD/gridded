@@ -9,26 +9,14 @@ http://gnome.orr.noaa.gov/py_gnome_testdata/
 
 '''
 
-from __future__ import (absolute_import,
-                        division,
-                        print_function,
-                        unicode_literals)
-
 import os
-try:
-    import urllib.request as urllib_request  # for python 3
-except ImportError:
-    import urllib2 as urllib_request  # for python 2
+import urllib.request as urllib_request  # for python 3
 
-try:
-    from urllib.parse import urljoin
-except ImportError:
-    from urlparse import urljoin
+from urllib.parse import urljoin
 
 # maybe want to add this back in
 # import progressbar as pb
 
-# DATA_SERVER = 'http://gnome.orr.noaa.gov/py_gnome_testdata/'
 DATA_SERVER = 'https://gnome.orr.noaa.gov/py_gnome_testdata/'
 
 
@@ -60,54 +48,53 @@ def get_datafile(file_):
 
     if os.path.exists(file_):
         return file_
-    else:
 
-        # download file, then return file_ path
+    # download file, then return file_ path
+    (path_, fname) = os.path.split(file_)
+    if path_ == '':
+        path_ = '.'  # relative to current path
 
-        (path_, fname) = os.path.split(file_)
-        if path_ == '':
-            path_ = '.'     # relative to current path
+    try:
+        # Open the file using urlopen, ensuring proper closure of the connection
+        with urllib_request.urlopen(urljoin(DATA_SERVER, fname)) as resp:
+            # # progress bar
+            # widgets = [fname + ':      ',
+            #            pb.Percentage(),
+            #            ' ',
+            #            pb.Bar(),
+            #            ' ',
+            #            pb.ETA(),
+            #            ' ',
+            #            pb.FileTransferSpeed(),
+            #            ]
+            #
+            # pbar = pb.ProgressBar(widgets=widgets,
+            #                       maxval=int(resp.info().getheader('Content-Length'))
+            #                       ).start()
 
-        try:
-            resp = urllib_request.urlopen(urljoin(DATA_SERVER, fname))
-        except urllib_request.HTTPError as ex:
-            ex.msg = ("{0}. '{1}' not found on server or server is down"
-                      .format(ex.msg, fname))
-            raise ex
+            if not os.path.exists(path_):
+                os.makedirs(path_)
 
-        # # progress bar
-        # widgets = [fname + ':      ',
-        #            pb.Percentage(),
-        #            ' ',
-        #            pb.Bar(),
-        #            ' ',
-        #            pb.ETA(),
-        #            ' ',
-        #            pb.FileTransferSpeed(),
-        #            ]
+            sz_read = 0
+            with open(file_, 'wb') as fh:
+                # while sz_read < resp.info().getheader('Content-Length')
+                # goes into infinite recursion so break loop for len(data) == 0
+                while True:
+                    data = resp.read(CHUNKSIZE)
 
-        # pbar = pb.ProgressBar(widgets=widgets,
-        #                       maxval=int(resp.info().getheader('Content-Length'))
-        #                       ).start()
+                    if len(data) == 0:
+                        break
+                    else:
+                        fh.write(data)
+                        sz_read += len(data)
 
-        if not os.path.exists(path_):
-            os.makedirs(path_)
+                        # if sz_read >= CHUNKSIZE:
+                        #     pbar.update(CHUNKSIZE)
 
-        sz_read = 0
-        with open(file_, 'wb') as fh:
-            # while sz_read < resp.info().getheader('Content-Length')
-            # goes into infinite recursion so break loop for len(data) == 0
-            while True:
-                data = resp.read(CHUNKSIZE)
-
-                if len(data) == 0:
-                    break
-                else:
-                    fh.write(data)
-                    sz_read += len(data)
-
-                    # if sz_read >= CHUNKSIZE:
-                    #     pbar.update(CHUNKSIZE)
-
-        # pbar.finish()
+            # pbar.finish()
         return file_
+
+    except urllib_request.HTTPError as ex:
+        ex.msg = ("{0}. '{1}' not found on server or server is down"
+                  .format(ex.msg, fname))
+        raise ex

@@ -1,0 +1,57 @@
+name: Run tests with miniforge
+on: [push]
+
+jobs:
+  test:
+    name: Miniconda ${{ matrix.os }} Py${{ matrix.pyver }}
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+        matrix:
+            os: ["ubuntu", "windows","macos"]
+            pyver: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          activate-environment: test
+          miniforge-version: latest
+          python-version: ${{ matrix.pyver }}
+          auto-activate-base: false
+          conda-remove-defaults: true
+      - name: Setup environment
+        shell: bash -l {0}
+        run: |
+            echo "Setting up conda environment"
+            conda install -y python=${{ matrix.pyver }}  \
+                             --file conda_requirements.txt \
+                             --file conda_requirements_test.txt \
+      - name: Install the package
+        shell: bash -l {0}
+        run: |
+            python -m pip install --no-deps -vv ./
+      - name: Run pytest
+        shell: bash -l {0}
+        run: |
+            cd ..
+            pytest --pyargs gridded
+
+  lint:
+    name: Flake8 linting
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          activate-environment: test
+          miniforge-version: latest
+          python-version: 3.9
+          auto-activate-base: false
+          conda-remove-defaults: true
+      - name: Lint
+        shell: bash -l {0}
+        run: |
+            conda install flake8
+            python -m flake8  --exit-zero --statistics gridded/

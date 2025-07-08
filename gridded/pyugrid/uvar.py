@@ -11,7 +11,6 @@ FixMe: should we enable direct attribute acces via python's attribute access?
 
 """
 
-from __future__ import (absolute_import, division, print_function)
 
 import numpy as np
 from collections import OrderedDict

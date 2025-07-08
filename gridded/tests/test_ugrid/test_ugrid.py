@@ -4,10 +4,8 @@
 The basic test of the UGrid object.
 
 More specific functionality is other test modules.
-
 """
 
-from __future__ import (absolute_import, division, print_function)
 
 import numpy as np
 
@@ -102,3 +100,67 @@ def test_both_nodes_and_lat():
                      nodes=nodes
                      )
 
+def test_eq():
+    grid1 = UGrid(nodes=nodes,
+                  faces=faces,
+                  edges=edges,
+                  boundaries=boundaries,
+                  )
+
+    grid2 = UGrid(nodes=nodes,
+                  faces=faces,
+                  edges=edges,
+                  boundaries=boundaries,
+                  )
+
+    assert grid1 == grid2
+
+
+def test_eq_no_bounds():
+    grid1 = UGrid(nodes=nodes,
+                  faces=faces,
+                  edges=edges,
+                  boundaries=boundaries,
+                  )
+
+    grid2 = UGrid(nodes=nodes,
+                  faces=faces,
+                  edges=edges,
+                  )
+
+    assert grid1 != grid2
+
+
+def test_eq_diff_type():
+    # make sure it doesn't crash
+    grid1 = UGrid(nodes=nodes,
+                  faces=faces,
+                  edges=edges,
+                  boundaries=boundaries,
+                  )
+
+    assert grid1 != "A string"
+
+def test_faces_out_of_range_property():
+    one_indexed_faces = np.array([[1, 2, 3], [2, 4, 3]])
+    with pytest.warns(UserWarning, match="maximum equal to number of nodes"):
+        grid = UGrid(nodes=nodes,
+                    faces=one_indexed_faces,
+                    edges=edges,
+                    boundaries=boundaries,
+                    )
+
+    #1-index faces get auto-decremented with a warning
+    assert np.all(grid.faces == np.array([[0, 1, 2], [1, 3, 2]]))
+    
+    out_of_minimum_range_faces = np.array([[-2, 1, 2], [1, 3, 2]])
+    with pytest.raises(ValueError, match="minimum out of range"):
+        grid.faces = out_of_minimum_range_faces
+    
+    out_of_maximum_range_faces = np.array([[0, 1, 5], [1, 3, 2]])
+    with pytest.raises(ValueError, match="maximum out of range"):
+        grid.faces = out_of_maximum_range_faces
+        
+    improper_range_faces = np.array([[0, 1, 4], [1, 3, 2]])
+    with pytest.raises(ValueError, match="indices have an improper range"):
+        grid.faces = improper_range_faces

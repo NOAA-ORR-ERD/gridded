@@ -1,0 +1,55 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gridded"
+dynamic = ["version"]
+description = "Unified API for working with results from (Met/Ocean) models on various grid types"
+readme = "README.rst"
+license = "CC0-1.0"
+requires-python = ">=3.9"
+authors = [
+    { name = "Chris Barker", email = "chris.barker@noaa.gov"},
+    { name = "Jay Hennen", email = "jay.hennen@noaa.gov"},
+]
+dependencies = [
+    "netCDF4>=1.4",
+    "numpy>=2",
+]
+
+[project.urls]
+Download = "https://github.com/NOAA-ORR-ERD/gridded"
+Homepage = "https://github.com/NOAA-ORR-ERD/gridded"
+
+[tool.hatch.version]
+path = "gridded/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/gridded",
+]
+
+[tool.ruff]
+builtins = ["ellipsis"]
+# extend-exclude = ["xarray_subset_grid/_version.py"]
+target-version = "py39"
+# Use a longer line length.
+line-length = 120
+
+[tool.ruff.lint]
+ignore = [
+  "E402", # module level import not at top of file
+  "E731", # do not assign a lambda expression, use a def
+]
+select = [
+  "F",   # Pyflakes
+  "E",   # Pycodestyle
+  "W",
+  "TID", # flake8-tidy-imports (absolute imports)
+  "I",   # isort
+  "UP",  # Pyupgrade
+]
+extend-safe-fixes = [
+  "TID252", # absolute imports
+]

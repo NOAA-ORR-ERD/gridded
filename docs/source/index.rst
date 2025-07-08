@@ -10,7 +10,17 @@ Welcome to ``gridded``'s documentation!
    :align:   center
 
 
-``gridded`` is a single API for accessing / working with gridded model results on multiple grid types
+``gridded`` is a single Python API for accessing / working with gridded model results on multiple grid types.
+
+The source code for ``gridded`` can be found on gitHub at:
+
+https://github.com/NOAA-ORR-ERD/gridded
+
+It is also available as a conda package on conda-forge:
+
+``conda install -c conda-forge gridded``
+
+It is not currently available on PyPi, due to complex compiled dependences -- help accepted.
 
 
 Contents

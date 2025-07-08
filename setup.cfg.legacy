@@ -1,0 +1,49 @@
+[metadata]
+
+name = gridded
+version = attr: gridded.__version__
+description = Unified API for working with results from (Met/Ocean) models on various grid types
+long_description = file: README.rst
+author =
+    Chris Barker
+    Jay Hennen
+url = https://github.com/NOAA-ORR-ERD/gridded
+download_url = https://github.com/NOAA-ORR-ERD/gridded
+author_email = chris.barker@noaa.gov
+
+[options]
+include_package_data = True
+python_requires = >=3.8
+install_requires =
+    numpy
+    netCDF4
+tests_require =
+    pytest
+
+[options.packages.find]
+exclude =
+    examples*
+    docs*
+
+[options.package_data]
+* = *.txt, *.rst, *.nc, *.cdl
+test_data =
+    tests/test_data/*,
+    tests/test_data/cdl/*,
+    tests/test_ugrid/files/*
+
+[flake8]
+max-line-length = 120
+extend-ignore =
+  # imports not in alphabetical order (time, os)
+  H306
+exclude =
+  .git
+  __pycache__
+  docs
+  source
+  conf.py
+  build
+  dist
+
+
