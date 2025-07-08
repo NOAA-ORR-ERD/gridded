@@ -5,7 +5,7 @@ NOTE: This example works for loading a gridded dataset from
       an arbitrary text file. You should be able to work with
       it once loaded.
 
-But ASaving it back out as a conforming file is broken:
+But Saving it back out as a conforming file is broken:
 
 We need a "proper" way to save a full dataset. Currently the code can save a UGRId, but the rest of teh
 dataset info is lost. i.e. it can't find use the time variable. or it's coordinates.
@@ -68,7 +68,6 @@ with netCDF4.Dataset("SanDiego.nc") as nc:
                                           location='node',
                                           attributes=None,
                                           )
-
     # global attributes
     attrs = {key: nc.getncattr(key) for key in nc.ncattrs()}
 
@@ -78,8 +77,6 @@ with netCDF4.Dataset("SanDiego.nc") as nc:
                          variables={'Depth': depth_var},
                          attributes=attrs
                          )
-
-    ## now learn a bit about it:
 
     # What is its grid type?
     print("The dataset Grid is:", type(ds.grid))

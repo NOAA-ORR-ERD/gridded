@@ -34,12 +34,17 @@ def convert_mask_to_numpy_mask(mask_var):
              and hasattr(mask_var, 'option_0'))
     if type1:
         fm = mask_var.flag_meanings
+        fv = mask_var.flag_values
         try:
             fm = fm.split()
         except AttributeError:
             pass  # must not be a string -- we assume it's a sequence already
+        try:
+            fv = fv.split()
+        except AttributeError:
+            pass
         meaning_mask = [False if ('water' in s or 'lake' in s) else True for s in fm]
-        tfmap = dict(zip(mask_var.flag_values, meaning_mask))
+        tfmap = dict(zip(fv, meaning_mask))
         for k, v in tfmap.items():
             ret_mask[mask_data == k] = v
     elif type2:  # special case where option_0 == land,
@@ -211,10 +216,10 @@ def _reorganize_spatial_data(points):
     if points is None:
         return None
     points_arr = np.array(points).squeeze()
-    if points_arr.dtype in (np.object_, np.string_, np.bool_):
+    if points_arr.dtype in (np.object_, np.bytes_, np.bool_):
         raise TypeError('points data does not convert to a numeric array type')
     shp = points_arr.shape
-    #special cases
+    # special cases
     if len(shp) == 1:
         #two valid cases: [lon, lat] and [lon, lat, depth]. all others = error
         if shp == (2,) or shp == (3,):
@@ -335,7 +340,7 @@ def asarraylike(obj):
 
 def isstring(obj):
     """
-    py2/3 compaitlbie way to test for a string
+    py2/3 compatble way to test for a string
     """
     try:
         return isinstance(obj, basestring)
@@ -350,12 +355,19 @@ def get_dataset(ncfile, dataset=None):
 
     if dataset is not None, it should be a valid netCDF4 Dataset object,
     and it will simply be returned
+
+    fixme: why can you pass in a dataset specifically ???
     """
     if dataset is not None:
         return dataset
     if isinstance(ncfile, (nc4.Dataset, nc4.MFDataset)):
         return ncfile
-    elif isstring(ncfile):
+    try:
+        ncfile = os.fspath(ncfile)
+    except TypeError:
+        pass  # not a string of PathLike -- could be a list or invalid ...
+
+    if isinstance(ncfile, str):  # single path
         return nc4.Dataset(ncfile)
     elif isinstance(ncfile, Iterable) and len(ncfile) == 1:
         return nc4.Dataset(ncfile[0])
@@ -368,17 +380,22 @@ def parse_filename_dataset_args(filename=None,
                                 grid_file=None,):
     """A perinnial problem is that we need to be able to accept a variety of
     filename/dataset arguments. This function will return a tuple of 'ds' and 'dg'
-    where ds is the dataset for the data and dg is the dataset for the grid. If such
+    where ds is the netCDF4.Dataset for the data and dg is the netCDF4.Dataset for the grid. If such
     datasets are from the same file, it will return the same object for both.
+    
+    :param filename: str or pathlike
+    :param dataset: netCDF4.Dataset
+    :param data_file: str, pathlike, or netCDF4.Dataset
+    :param grid_file: str, pathlike, or netCDF4.Dataset
     """
+    ds = None
+    dg = None
     if filename is not None:
         try:
             filename = os.fspath(filename)
         except TypeError:
             pass
         data_file = grid_file = filename
-    ds = None
-    dg = None
     if dataset is None:
         if grid_file == data_file:
             ds = dg = get_dataset(grid_file)

@@ -16,9 +16,9 @@ NOTE: only tested for triangular and quad mesh grids at the moment.
 
 """
 
-
 import hashlib
 from collections import OrderedDict
+import warnings
 
 import numpy as np
 
@@ -38,7 +38,7 @@ IND_DT = np.int32
 NODE_DT = np.float64  # datatype used for node coordinates.
 
 
-class UGrid(object):
+class UGrid():
     """
     A basic class to hold an unstructured grid as defined in the UGrid convention.
 
@@ -60,6 +60,8 @@ class UGrid(object):
                  data=None,
                  grid_topology=None,
                  mesh_name="mesh",
+                 *args,
+                 **kwargs
                  ):
         """
         ugrid class -- holds, saves, etc. an unstructured grid
@@ -138,6 +140,9 @@ class UGrid(object):
 
         self.mesh_name = mesh_name
         self.grid_topology = grid_topology
+        if self.grid_topology is not None and self.grid_topology.get('topology_dimension', None):
+            #sometimes the topology dimension is an int32, which does not JSON serialize properly.
+            self.grid_topology['topology_dimension'] = int(self.grid_topology['topology_dimension'])
 
         # # the data associated with the grid
         # # should be a dict of UVar objects
@@ -152,6 +157,7 @@ class UGrid(object):
         self._cell_tree = None
         self._ind_memo_dict = OrderedDict()
         self._alpha_memo_dict = OrderedDict()
+        super(UGrid, self).__init__(*args, **kwargs)
 
     @classmethod
     def from_ncfile(klass, filename=None, dataset=None, mesh_name=None):  # , load_data=False):
@@ -205,16 +211,13 @@ class UGrid(object):
         """
         summary of information about the grid
         """
-        msg = ["UGrid object:"]
-
+        msg = [f"UGrid object: {self.mesh_name}"]
         msg.append("Number of nodes: %i" % len(self.nodes))
         msg.append("Number of faces: %i with %i vertices per face" %
                    (len(self.faces), self.num_vertices))
         if self.boundaries is not None:
             msg.append("Number of boundaries: %i" % len(self.boundaries))
 
-        # if self._data:
-        #     msg.append("Variables: " + ", ".join([str(v) for v in self._data.keys()]))
         return "\n".join(msg)
 
     def __eq__(self, other):
@@ -300,9 +303,26 @@ class UGrid(object):
     @faces.setter
     def faces(self, faces_indexes):
         # Room here to do consistency checking, etc.
-        # For now -- simply make sure it's a numpy array.
+        if self._nodes is None:
+            raise ValueError("Nodes must be defined before faces")
         if faces_indexes is not None:
-            self._faces = np.asanyarray(faces_indexes, dtype=IND_DT)
+            faces_indexes = np.asanyarray(faces_indexes, dtype=IND_DT)
+            if faces_indexes.max() > len(self.nodes):
+                #faces index maximum greater than number of nodes
+                raise ValueError("faces index maximum out of range. max: {0}, nodes: {1}".format(faces_indexes.max(), len(self.nodes)))
+            if faces_indexes.max() == len(self.nodes):
+                #faces index maximum equal to number of nodes, so we need to decrement by 1
+                #but only if the minimum is also gte 1
+                if faces_indexes.min() >= 1:
+                    faces_indexes[faces_indexes > 0] -= 1
+                    warnings.warn("faces index maximum equal to number of nodes, automatic decrement by 1 applied")
+                else:
+                    raise ValueError("faces indices have an improper range. min: {0}, max: {1}".format(faces_indexes.min(), faces_indexes.max()))
+            if faces_indexes.min() < -1:
+                #faces index minimum less than -1
+                raise ValueError("faces index minimum out of range. min: {0}".format(faces_indexes.min()))
+            self._faces = faces_indexes
+
         else:
             self._faces = None
             # Other things are no longer valid.
@@ -634,7 +654,7 @@ class UGrid(object):
             return indices[0]
         else:
             return indices
-        
+
     def index_of(self,
                  points,
                  method='celltree',
@@ -874,8 +894,12 @@ class UGrid(object):
 
         This is a not-very-smart just loop through all the faces method.
 
+        If face_face_connectivity is None, it will be computed
         """
+
         boundaries = []
+        if self.face_face_connectivity is None:
+            self.build_face_face_connectivity()
         for i, face in enumerate(self.face_face_connectivity):
             for j, neighbor in enumerate(face):
                 if neighbor == -1:

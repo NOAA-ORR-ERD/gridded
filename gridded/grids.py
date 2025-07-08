@@ -10,7 +10,7 @@ class GridBase(object):
     '''
     Base object for grids to share common behavior
     '''
-    _def_count = 0
+    _instance_count = 0
 
     def __init__(self,
                  filename=None,
@@ -25,9 +25,9 @@ class GridBase(object):
         if 'name' in kwargs:
             self.name = kwargs['name']
         else:
-            self.name = self.__class__.__name__ + '_' + str(type(self)._def_count)
+            self.name = self.__class__.__name__ + '_' + str(type(self)._instance_count)
         self.filename = filename
-        type(self)._def_count += 1
+        type(self)._instance_count += 1
 
         super(GridBase, self).__init__(**kwargs)
 
@@ -84,6 +84,7 @@ class GridBase(object):
                     v = gf_vars[n][:].reshape(-1, 2)
                     init_args[node_attrs[0]] = v[:, 0]
                     init_args[node_attrs[1]] = v[:, 1]
+            gt = grid_topology
         return init_args, gt
 
     @property
@@ -139,11 +140,16 @@ class Grid_U(GridBase, UGrid):
                 if n in face_attrs:
                     init_args[n] = gf_vars[v][:]
                     break
+            gt = grid_topology
         # fixme: This is assuming that the array will be in Fortran order and index
         #        from 1, or in C order and index from 0
         #        Those are actually independent concepts!
         if init_args['faces'].shape[0] == 3:
-            init_args['faces'] = np.ascontiguousarray(np.array(init_args['faces']).T - 1)
+            #fortran order faces need to be transposed
+            init_args['faces'] = np.ascontiguousarray(np.array(init_args['faces']).T)
+        if init_args['faces'].max() == init_args['node_lon'].shape[0]:
+            #if faces contains 1-based indices, convert to 0-based
+            init_args['faces'] -= 1
 
         return init_args, gt
 
@@ -172,6 +178,7 @@ class Grid_S(GridBase, SGrid):
                                                                      dataset=dataset,
                                                                      grid_topology=grid_topology)
 
+        #These are the attributes to search for, the keys in a grid_topology
         center_attrs = ['center_lon', 'center_lat']
         edge1_attrs = ['edge1_lon', 'edge1_lat']
         edge2_attrs = ['edge2_lon', 'edge2_lat']
@@ -179,7 +186,9 @@ class Grid_S(GridBase, SGrid):
         center_mask = 'center_mask'
         edge1_mask = 'edge1_mask'
         edge2_mask = 'edge2_mask'
+        mask_attrs = [node_mask, center_mask, edge1_mask, edge2_mask]
 
+        #These are possible netCDF4 names that the attributes could have in the file
         center_coord_names = [['center_lon', 'center_lat'], ['lon_rho', 'lat_rho'], ['lonc', 'latc']]
         edge1_coord_names = [['edge1_lon', 'edge1_lat'], ['lon_u', 'lat_u']]
         edge2_coord_names = [['edge2_lon', 'edge2_lat'], ['lon_v', 'lat_v']]
@@ -221,6 +230,10 @@ class Grid_S(GridBase, SGrid):
             for n, v in grid_topology.items():
                 if n in center_attrs + edge1_attrs + edge2_attrs and v in gf_vars:
                     init_args[n] = gf_vars[v][:]
+                if n in mask_attrs and v in gf_vars:
+                    #masks are not dereferenced
+                    init_args[n] = gf_vars[v]
+            gt = grid_topology
         return init_args, gt
 
 
@@ -242,9 +255,9 @@ class Grid_R(GridBase):
         """
         :param node_lon=None: vector of the node longitudes
         :param node_lat=None: vector of the node latitudes
-        :param grid_topology=None: ????
+        :param grid_topology=None: ``????``
         :param node_dimensions=None: (should only be required for netcdf)
-        :param node_coordinates=None:  ?????
+        :param node_coordinates=None:  ``?????``
         """
         self.node_lon = node_lon
         self.node_lat = node_lat
@@ -398,11 +411,35 @@ class Grid_R(GridBase):
         points = np.asarray(points, dtype=np.float64)
         just_one = (points.ndim == 1)
         points = points.reshape(-1, 2)
+        points_y = points[:, 1] #lat
+        points_x = points[:, 0] #lon
         y, x = self.lonlat_to_yx(variable)
+        
         if slices is not None:
             variable = variable[slices]
             if np.ma.isMA(variable):
                 variable = variable.filled(0)  # eventually should use Variable fill value
+        
+        # idx_y = np.digitize(points_y, y) - 1
+        # idx_x = np.digitize(points_x, x) - 1
+        
+        # v1 = variable[idx_y, idx_x]
+        # v2 = variable[idx_y, idx_x + 1]
+        # v3 = variable[idx_y + 1, idx_x]
+        # v4 = variable[idx_y + 1, idx_x + 1]
+        
+        # ay = 1- (y[idx_y + 1] - points_y) / (y[idx_y + 1] - y[idx_y])
+        # ax = 1- (x[idx_x + 1] - points_x) / (x[idx_x + 1] - x[idx_x])
+        
+        # vx1 = v1 + ax * (v2 - v1)
+        # vx2 = v3 + ax * (v4 - v3)
+        
+        # iv = vx1 + ay * (vx2 - vx1)
+        # if just_one:
+        #     return iv[0]
+        # else:
+        #     return iv
+        
         interp_func = RegularGridInterpolator((y, x),
                                               variable,
                                               method=method,
@@ -412,6 +449,7 @@ class Grid_R(GridBase):
             vals = interp_func(points, method=method)
         else:
             vals = interp_func(points[:, ::-1], method=method)
+            
         if just_one:
             return vals[0]
         else:
@@ -424,16 +462,14 @@ class Grid_R(GridBase):
         But now we are checking variable dimensions to which part
         of the grid it is on.
         """
-        shape = None
-        node_shape = self.nodes.shape[0:-1]
-        # centers_shape = self.centers.shape[0:-1]
-        try:
-            shape = np.array(variable.shape)
-        except:  # fixme -- AttributeError??
-            return None  # Variable has no shape attribute!
-        if len(variable.shape) < 2:
-            return None
-        difference = (shape[-2:] - node_shape).tolist()
+        if hasattr(variable, 'location'):
+            return variable.location
+        
+        x_len = len(self.node_lon)
+        y_len = len(self.node_lat)
+        node_shape = np.array((y_len, x_len))
+        var_shape = np.array(variable.shape[-2:])
+        difference = (var_shape - node_shape).tolist()
         if (difference == [1, 1] or difference == [-1, -1]) and self.center_lon is not None:
             return 'center'
         elif difference == [1, 0] and self.edge1_lon is not None:

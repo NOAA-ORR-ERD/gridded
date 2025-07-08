@@ -8,7 +8,7 @@
 
 # conda install --file conda_requirements.txt --file conda_requirements_dev.txt
 
-
+pip
 pytest
 pytest-cov
 progressbar
@@ -18,4 +18,5 @@ nb_conda_kernels
 cartopy
 sphinx
 sphinx_rtd_theme
+ruff
 

@@ -31,7 +31,7 @@
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx',
+#    'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages']
 
@@ -90,10 +90,28 @@ todo_include_todos = False
 #
 # html_theme = 'alabaster'
 html_theme = "sphinx_rtd_theme"
-html_theme_options = {'collapse_navigation': False,
-                      'display_version': True,
-                      'navigation_depth': 3,
-                      }
+# html_theme_options = {'collapse_navigation': False,
+#                       'display_version': True,
+#                       'navigation_depth': 3,
+#                       }
+html_theme_options = {
+#    'analytics_id': 'G-XXXXXXXXXX',  #  Provided by Google in your dashboard
+#    'analytics_anonymize_ip': False,
+    'logo_only': False,
+    'prev_next_buttons_location': 'bottom',
+    'style_external_links': False,
+#    'vcs_pageview_mode': '',
+    'style_nav_header_background': 'white',
+    'flyout_display': 'hidden',
+    'version_selector': False,  # only good when hosted on RTD
+    'language_selector': True,
+    # Toc options
+    'collapse_navigation': True,
+    'sticky_navigation': True,
+    'navigation_depth': 3,
+    'includehidden': True,
+    'titles_only': False
+}
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -182,4 +200,4 @@ texinfo_documents = [
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+# intersphinx_mapping = {'https://docs.python.org/': None}

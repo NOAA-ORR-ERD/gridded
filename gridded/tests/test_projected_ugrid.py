@@ -60,34 +60,39 @@ from gridded.grids import Grid_U
 
 from gridded import VALID_UGRID_LOCATIONS
 
-from .utilities import get_temp_test_file
+from .utilities import data_file_cache
 
+# try:
+#     data_file = get_temp_test_file("projected_coords_ugrid.nc")
+#     if data_file is None:
+#         # skip these tests if the data file couldn't be downloaded
+#         pytestmark = pytest.mark.skip
+# except: # if anything went wrong, skip these.
+#     pytestmark = pytest.mark.skip
 
-try:
-    data_file = get_temp_test_file("projected_coords_ugrid.nc")
-    if data_file is None:
-        # skip these tests if the data file couldn't be downloaded
-        pytestmark = pytest.mark.skip
-except: # if anything went wrong, skip these.
-    pytestmark = pytest.mark.skip
-
+data_file = data_file_cache.fetch("projected_coords_ugrid.nc")
 
 def test_load():
     """
     The file should load without error
     """
-    ds = Dataset(data_file)
+    ds = Dataset.from_netCDF(data_file)
 
     assert isinstance(ds.grid, Grid_U)
+
+    print(ds.grid.nodes.max(), ds.grid.nodes.min())
+    assert ds.grid.nodes.min() > 148_000  # definitely not lat-lon
 
 
 def test_find_variables():
     """
     Does it find the variables?
     """
-    ds = Dataset(data_file)
+    ds = Dataset.from_netCDF(data_file)
 
     var_names = list(ds.variables.keys())
+
+    print(var_names)
 
     all_vars =  ['mesh2d_Numlimdt',
                  'mesh2d_czs',
