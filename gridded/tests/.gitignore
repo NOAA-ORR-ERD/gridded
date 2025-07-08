@@ -1,3 +1,4 @@
 temp_data/
 test_data/cdl/*.cdl.nc
 test_io/output
+example_data/*.nc
