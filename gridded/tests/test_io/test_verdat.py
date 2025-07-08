@@ -13,6 +13,8 @@ import pooch
 import gridded
 from gridded import io
 
+from ..utilities import data_file_cache
+
 DATA_URL = "https://gnome.orr.noaa.gov/py_gnome_testdata/gridded_test_files/"
 
 HERE = Path(__file__).parent
@@ -90,7 +92,8 @@ def test_read_tiny():
 
 
 def test_save_verdat():
-    ds = io.load_verdat(EXAMPLES /  "tiny.verdat")
+    infilename = EXAMPLES /  "tiny.verdat"
+    ds = io.load_verdat(infilename)
 
     outfilename = OUTPUT / "tiny_out.verdat"
 
@@ -101,15 +104,16 @@ def test_save_verdat():
     assert outfilename.is_file()
 
     # Check at least a little bit if it's a valid verdat
+    orig_contents = open(infilename).readlines()
     contents = open(outfilename).readlines()
-    print(len(contents))
+    for l1, l2 in zip(orig_contents, contents):
+        norm1 = [s.strip() for s in l1.strip().split(",")]
+        norm2 = [s.strip() for s in l2.strip().split(",")]
+        print()
+        print(norm1)
+        print(norm2)
 
-    print(contents)
-    print(len(contents))
-
-    assert len(contents) == 16
-    assert contents[15] == "9\n"
-    assert contents[0] == "DOGS FEET\n"
+        assert norm1 == norm2
 
 
 def test_order_boundary_segments():
@@ -164,17 +168,27 @@ def test_order_boundary_segments_none():
     assert len(open_bounds) == 0
 
 
-def test_general_ugrid_to_verdat():
+def test_general_ugrid_to_verdat_no_depth():
     """
     Loads a regular old UGRID netCDF file, and saves it to verdat
     """
-    ugrid_file = pooch.retrieve(
-        url=(DATA_URL + "SSCOFS.ugrid.nc"),
-        known_hash="sha256:0dcea2a2fb6ad87c7cce3ebc475fd2f0430616a5019f54f4adf97391e075e939",
-    )
+    ugrid_file = data_file_cache.fetch("SSCOFS.ugrid.nc")
+    ds = gridded.Dataset.from_netCDF(ugrid_file)
 
-    assert False
+    outfile = OUTPUT / "SSCOFS.verdat"
+    outfile.unlink(missing_ok=True)
 
+    io.save_verdat(ds, outfile, depth_var=None)
+
+    assert outfile.is_file()
+
+    contents = open(outfile).readlines()
+
+    assert contents[0] == "DOGS \n"
+
+
+    assert contents[-1] == "190\n"
+    assert contents[-2] == "1\n"
 
 
 if __name__ == "__main__":

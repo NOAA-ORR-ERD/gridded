@@ -139,6 +139,13 @@ class Dataset:
         """
         return self.variables[key]
 
+    def __str__(self):
+        descp = (f"gridded.Dataset with:\n"
+                 f"grid: {type(self.grid)}\n"
+                 f"variables: {list(self.variables.keys())}"
+                 )
+        return descp
+
 
     def _load_variables(self, ds):
         """

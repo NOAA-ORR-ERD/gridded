@@ -12,6 +12,13 @@ It is limited to storing points with associated depths, and grid boudnaries
 import numpy as np
 import gridded
 
+# verdat only supports FEET or METERS
+FEET = ("foot", "ft", "feet")
+METER = ("meter", "m", "meters", "metre")
+UNITS_MAP = {u: "FEET" for u in FEET}
+UNITS_MAP.update({u: "METERS" for u in METER})
+
+
 
 def load_verdat(filename):
 
@@ -34,10 +41,7 @@ def load_verdat(filename):
             lons.append(lon)
             lats.append(lat)
             depths.append(depth)
-        # print(lons)
-        # print(lats)
-        # print(depths)
-        #read the boundaries:
+        # read the boundaries:
         line = infile.readline().strip()
         try:
             num_bounds = int(line)
@@ -88,27 +92,30 @@ def save_verdat(ds, filename, depth_var="depth"):
     :param filename: name (full or relative path) of the file to save
 
     :param depth_var="depth": name of the variable with the depths in it.
+                     if depth is None, all depths will be set to 1
 
-    The dataset must:
-
-    * Have a UGrid grid
-    * Have a variable for the depth
+    The dataset must: Have a UGrid grid
 
     If it has boundaries, they will be used. Otherwise,
     it will create them from the grid.
     """
-
-    depth = ds[depth_var]
     nodes = ds.grid.nodes
+    if depth_var is None:
+        depth = np.ones((nodes.shape[0],), dtype=np.float32)
+        depth_units = ""
+    else:
+        depth = ds[depth_var]
+        depth_units = UNITS_MAP[depth.units.strip().lower()]
     f_string = "{0:4d}, {1:10.6f}, {2:10.6f}, {3:8.3f}\n"
+
     with open(filename, 'w') as outfile:
-        outfile.write("DOGS ")
-        if depth.units:
-            outfile.write(depth.units.upper())
-        outfile.write("\n")
+        outfile.write("DOGS")
+        outfile.write(f" {depth_units}\n")
 
         depth = depth.data
         # write out the boundaries first
+        if ds.grid.boundaries is None:
+            ds.grid.build_boundaries()
         bounds, open_bounds = order_boundary_segments(ds.grid.boundaries)
         points_written = []
         i = 1
@@ -128,15 +135,14 @@ def save_verdat(ds, filename, depth_var="depth"):
         for j in range(len(nodes)):
             if j not in points_written:
                 outfile.write(f_string.format(i,
-                                              lon,
-                                              lat,
+                                              nodes[j, 0],
+                                              nodes[j, 1],
                                               depth[j]))
                 i += 1
         outfile.write(f_string.format(0, 0, 0, 0))
         outfile.write("{:d}\n".format(len(bounds)))
         i = 0
         for bound in bounds:
-            print(bound)
             i += len(bound)
             outfile.write("{:d}\n".format(i))
 
