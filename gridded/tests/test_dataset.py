@@ -6,22 +6,37 @@ import os
 import netCDF4 as nc
 
 from gridded import Dataset
-from .utilities import get_test_file_dir
+from gridded.grids import Grid_S
+from .utilities import TEST_DATA
 
-test_dir = get_test_file_dir()
 
 # Need to hook this up to existing test data infrastructure
 # ... and add more infrastructure
 
-sample_sgrid_file = os.path.join(test_dir, 'staggered_sine_channel.nc')
-arakawa_c_file = os.path.join(test_dir, 'arakawa_c_test_grid.nc')
+sample_sgrid_file = TEST_DATA / 'staggered_sine_channel.nc'
+arakawa_c_file = TEST_DATA / 'arakawa_c_test_grid.nc'
 
 
 def test_load_sgrid():
-    """ tests you can intitilize an conforming sgrid file"""
-    sinusoid = Dataset(sample_sgrid_file)
+    """ tests you can initialize an conforming sgrid file"""
+    sinusoid = Dataset.from_netCDF(sample_sgrid_file)
+
+    assert isinstance(sinusoid.grid, Grid_S)
 
     assert True  # just to make it a test
+
+
+def test_init_from_netcdf_file_directly():
+    """
+    This should raise a deprecation warning, but still work
+    """
+    with pytest.warns(DeprecationWarning):
+        gds = Dataset(arakawa_c_file)
+
+    print(gds.info)
+
+    assert isinstance(gds.grid, Grid_S)
+    assert len(gds.variables) == 6
 
 
 def test_info():
@@ -29,7 +44,7 @@ def test_info():
     Make sure the info property is working
     This doesn't test much -- jsut tht it won't crash
     """
-    gds = Dataset(sample_sgrid_file)
+    gds = Dataset.from_netCDF(sample_sgrid_file)
 
     info = gds.info
 
@@ -40,7 +55,7 @@ def test_info():
     assert "attributes:" in info
 
 def test_get_variable_by_attribute_one_there():
-    gds = Dataset(arakawa_c_file)
+    gds = Dataset.from_netCDF(arakawa_c_file)
 
     vars = gds.get_variables_by_attribute('long_name', 'v-momentum component')
 
@@ -48,7 +63,7 @@ def test_get_variable_by_attribute_one_there():
     assert vars[0].attributes['long_name'] == 'v-momentum component'
 
 def test_get_variable_by_attribute_multiple():
-    gds = Dataset(arakawa_c_file)
+    gds = Dataset.from_netCDF(arakawa_c_file)
 
     vars = gds.get_variables_by_attribute('units', 'meter second-1')
 
@@ -62,7 +77,7 @@ def test_get_variable_by_attribute_not_there():
     """
     This should return an empty list
     """
-    gds = Dataset(arakawa_c_file)
+    gds = Dataset.from_netCDF(arakawa_c_file)
 
     var = gds.get_variables_by_attribute('some_junk', 'more_junk')
 

@@ -24,7 +24,6 @@ class Dataset:
     An object that represent an entire complete dataset --
     a collection of Variables and the Grid that they are stored on.
     """
-
     def __init__(self,
                  ncfile=None,
                  grid=None,
@@ -68,7 +67,8 @@ class Dataset:
             # raise ValueError("don't create from a file")
             warnings.warn("Creating a Dataset from a netcdfile directly is deprecated. "
                           "Please use Dataset.from_netCDF() instead. "
-                          "Or one of the utilities in gridded.io", DeprecationWarning)
+                          "Or use one of the utilities in gridded.io",
+                          DeprecationWarning)
 
         if ncfile is not None:
             if (grid is not None or
@@ -76,18 +76,38 @@ class Dataset:
                   attributes is not None):
                 raise ValueError("You can create a Dataset from a file, or from raw data"
                                  "but not both.")
-            self.nc_dataset = get_dataset(ncfile)
-            self.filename = self.nc_dataset.filepath()
-            self.grid = Grid.from_netCDF(filename=self.filename,
-                                         dataset=self.nc_dataset,
-                                         grid_topology=grid_topology)
-            self.variables = self._load_variables(self.nc_dataset)
-            self.attributes = get_dataset_attrs(self.nc_dataset)
-        else:  # no file passed in -- create from grid and variables
+            self._init_from_netCDF(ncfile)
+        else:  # Create from grid and variables -- this is what should usually happen.
             self.filename = None
             self.grid = grid
             self.variables = {} if variables is None else variables
             self.attributes = {} if attributes is None else attributes
+
+
+    def _init_from_netCDF(self,
+                          filename=None,
+                          grid_file=None,
+                          variable_files=None,
+                          grid_topology=None):
+        """
+        internal implementation -- users should call the .from_netCDF()
+        classmethod -- see its docstring for usage.
+
+        This is used to initialize a dataset from a netCDF file --
+        done this way, so it can be called from more than one place.
+        """
+        if (grid_file is not None) or (variable_files is not None):
+            raise NotImplementedError("Loading from separate netcdf files is not yet supported")
+
+        self.nc_dataset = get_dataset(filename)
+        self.filename = self.nc_dataset.filepath()
+        self.grid = Grid.from_netCDF(filename=self.filename,
+                                     dataset=self.nc_dataset,
+                                     grid_topology=grid_topology)
+        # fixme: this should load the depth and time, and then the variables.
+        self.variables = self._variables_from_netCDF(self.nc_dataset)
+        self.attributes = get_dataset_attrs(self.nc_dataset)
+
 
     @classmethod
     def from_netCDF(cls,
@@ -96,7 +116,6 @@ class Dataset:
                     variable_files=None,
                     grid_topology=None):
         """
-
         NOTE: only loading from a single file is currently implemented.
               you can create a DATaset by hand, by loading the grid and
               variables separately, and then adding them
@@ -117,20 +136,13 @@ class Dataset:
         :type grid_topology: mapping with keys of topology components and values are
                              variable names.
         """
-        if (grid_file is not None) or (variable_files is not None):
-            raise NotImplementedError("Loading from separate netcdf files is not yet supported")
-
-        # create an empty DAtaset:
+        # create an empty Dataset:
         ds = cls()
-
-        ds.nc_dataset = get_dataset(filename)
-        ds.filename = ds.nc_dataset.filepath()
-        ds.grid = Grid.from_netCDF(filename=ds.filename,
-                                     dataset=ds.nc_dataset,
-                                     grid_topology=grid_topology)
-        ds.variables = ds._load_variables(ds.nc_dataset)
-        ds.attributes = get_dataset_attrs(ds.nc_dataset)
-
+        # initialize it
+        ds._init_from_netCDF(filename,
+                             grid_file,
+                             variable_files,
+                             grid_topology)
         return ds
 
     def __getitem__(self, key):
@@ -147,10 +159,15 @@ class Dataset:
         return descp
 
 
-    def _load_variables(self, ds):
+    def _variables_from_netCDF(self, ds):
         """
         load up the variables in the nc file
+
+        :param ds: initialized netCDF dataset
         """
+        # fixme: this needs work
+        #        It *should* have already gotten the grid and depth and time,
+        #        and then the variables can be loaded directly.
         variables = {}
         for k in ds.variables.keys():
             # find which netcdf variables are used to define the grid
