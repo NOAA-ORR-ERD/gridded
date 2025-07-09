@@ -926,15 +926,17 @@ class Depth():
         typs = cls.sd_types + cls.ld_types
         available_to_create = [typ._can_create_from_netCDF(grid_file=dg, data_file=ds) for typ in typs]
         if not any(available_to_create):
-            warnings.warn('''Unable to automatically determine depth system so
-                            reverting to surface-only mode. Manually check the
-                            (depth_object).surface_index attribute and set it
-                            to the appropriate array index for your model data''', RuntimeWarning)
+            warnings.warn("Unable to automatically determine depth system so "
+                          "reverting to surface-only mode. Manually check the "
+                          "(depth_object).surface_index attribute and set it "
+                          "to the appropriate array index for your model data",
+                          RuntimeWarning)
             return cls.surf_types[0].from_netCDF(data_file=ds, grid_file=dg, **kwargs)
         else:
             typ = typs[np.argmax(available_to_create)]
             if sum(available_to_create) > 1:
-                warnings.warn('''Multiple depth systems detected. Using the first one found: {0}'''.format(typ.__repr__), RuntimeWarning)
+                warnings.warn("Multiple depth systems detected. Using the first one found: "
+                              f"{typ!r}", RuntimeWarning)
             return typ.from_netCDF(filename=filename,
                                    dataset=dataset,
                                    data_file=data_file,

@@ -17,6 +17,7 @@ import pytest
 
 HERE = Path(__file__).parent
 EXAMPLE_DATA = HERE / "example_data"
+TEST_DATA = HERE / "test_data"
 
 # # Files on PYGNOME server -- add them here as needed
 data_file_cache = pooch.create(

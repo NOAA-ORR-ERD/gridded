@@ -168,15 +168,16 @@ class Time(object):
             raise TimeSeriesError("Time sequence has duplicate entries")
         super(Time, self).__init__(*args, **kwargs)
 
-    @classmethod
-    def locate_time_var_from_var(cls, datavar):
+
+    @staticmethod
+    def locate_time_var_from_var(datavar):
         if hasattr(datavar, 'time') and datavar.time in datavar._grp.dimensions.keys():
             varname = datavar.time
         else:
             varname = datavar.dimensions[0] if 'time' in datavar.dimensions[0] else None
-        
+
         return varname
-        
+
 
     @classmethod
     def from_netCDF(cls,
@@ -430,11 +431,16 @@ class Time(object):
         return not ((time < self.min_time) or (time > self.max_time))
 
     def valid_time(self, time):
-        if time < self.min_time or time > self.max_time:
-            raise OutOfTimeRangeError('time specified ({0}) is not within the bounds of '
-                                      'the time ({1} to {2})'.format(time.strftime('%c'),
-                                                                 self.min_time.strftime('%c'),
-                                                                 self.max_time.strftime('%c')))
+        """
+        Raises a OutOfTimeRangeError if time is not within the bounds of the timeseries
+
+        :param time: a datetime object that you want to check.
+        """
+        # if time < self.min_time or time > self.max_time:
+        if not self.time_in_bounds(time):
+            raise OutOfTimeRangeError(f'time specified: ({time.isoformat()}) is not within the bounds of '
+                                      f'({self.min_time.isoformat()} to {self.max_time.isoformat()})'
+                                      )
 
     def index_of(self, time, extrapolate=False):
         '''

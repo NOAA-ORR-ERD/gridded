@@ -16,6 +16,21 @@ start = datetime(2023, 11, 28, 12)
 dt = timedelta(minutes=15)
 SAMPLE_TIMESERIES = [(start + i * dt) for i in range(10)]
 STS = SAMPLE_TIMESERIES
+# import copy
+# from datetime import datetime, timedelta
+
+# import numpy as np
+
+# from gridded.time import Time
+
+import pytest
+
+SAMPLE_TIMESERIES = []
+start = datetime(2023, 11, 28, 12)
+dt = timedelta(minutes=15)
+for i in range(10):
+    SAMPLE_TIMESERIES.append(start + i * dt)
+STS = SAMPLE_TIMESERIES
 
 TEST_DATA = Path(__file__).parent / 'test_data'
 
@@ -250,7 +265,6 @@ def test_eq_constant_time():
 
     assert t1 == t2
 
-
 def test_eq_different_type():
     """
     A Time object is never equal to any other type
@@ -361,6 +375,10 @@ def test_interp_alpha_outside(dt, expected):
 def test_interp_alpha_constant_time(shift, expected):
     """
     What should the constant time Time object give for alphas?
+
+    I would expect always 1.0! It seems to be always 0.0
+
+    Maybe this isn't used anywhere?
     Jay: 0.0
     """
     t = Time.constant_time()
@@ -505,11 +523,9 @@ def test_parse_time_offset(offset, unit_str, name):
     assert tz_off == offset
     assert new_name == name
 
-
 ## this needs a big data file -- could use some refactoring
 ## It would be good to test the netcdf stuff.
 ## there must be a sample file with time in it somewhere??
-## However -- this is testing a lot that doesn't need a data file.
 
 # class TestTime:
 #     time_var = circular_3D['time']
