@@ -4,7 +4,6 @@ Created on Apr 20, 2015
 @author: ayan
 '''
 
-
 from netCDF4 import Dataset
 import numpy as np
 import hashlib
@@ -20,6 +19,7 @@ node_alternate_names = ['node','nodes', 'psi', 'vertex','vertices', 'point','poi
 center_alternate_names = ['center','centers','face','faces','cell','cells']
 edge1_alternate_names = ['edge1','u']
 edge2_alternate_names = ['edge2','v']
+
 
 class SGrid(object):
 
@@ -1001,10 +1001,10 @@ class SGrid(object):
         
         if mask_behavior is None:
             mask_behavior = self.masked_interpolant_behavior
-        
+
         if mask_behavior == 'mirror' and len(values) > 2:
             raise ValueError('Mirror behavior is not implemented for more than two values')
-        
+
         if mask_behavior == 'zero':
             filled_values = np.ma.filled(values, 0)
         elif mask_behavior == 'mirror':
@@ -1014,12 +1014,11 @@ class SGrid(object):
             filled_values.mask = np.tile(np.any(values.mask, axis=-1),2)
         else:
             raise ValueError('unrecognized mask_behavior: {0}'.format(mask_behavior))
-        
+
         #np sum never returns a masked array. This is desired, because final masking is determined by alpha mask
         result = np.sum(filled_values * alphas, axis=-1)
-        print(result)
         if mask_behavior == 'mask':
-                if len(filled_values.shape) == 1 and filled_values.mask.any():  
+                if len(filled_values.shape) == 1 and filled_values.mask.any():
                     result = np.ma.masked
                 else:
                     result = np.ma.masked_array(result, mask=np.any(filled_values.mask, axis=-1))
