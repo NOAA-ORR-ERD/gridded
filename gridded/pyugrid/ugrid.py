@@ -20,6 +20,7 @@ import hashlib
 from collections import OrderedDict
 import warnings
 
+from datetime import datetime
 import numpy as np
 
 import gridded.pyugrid.read_netcdf as read_netcdf
@@ -1010,6 +1011,14 @@ class UGrid():
                        are the only options at this point.
         """
         self.save(filename, format='netcdf4')
+    
+
+    def check_time_dimension(self, variables):
+        '''
+        Ensure that all variables span the same amount of timesteps
+        '''
+        pass 
+        return self
 
 
     def save(self, filepath, format='netcdf4', variables={}):
@@ -1049,6 +1058,35 @@ class UGrid():
             nclocal.createDimension(mesh_name + "_num_vertices",
                                     self._faces.shape[1])
         nclocal.createDimension("two", 2)
+        
+        # Add a time dimension
+        # TODO: Check that the time dimension of each variables all 
+        # cover the same period and feature the same number of snaps
+        #self._check_time_dimension(variables)
+        # grab the first variable 
+        for _, value in variables.items():
+            var1 = value
+            break 
+        time_axis = var1.time.data
+        self.number_of_timesteps = len(time_axis)
+        
+        nclocal.createDimension('time',
+                                        self.number_of_timesteps,
+                                        )
+        # Add in the datetime steps
+        rd = datetime(1970,1,1,0,0,0)
+        _time = [(t-rd).total_seconds() for t in time_axis] 
+        time  = nclocal.createVariable('time',
+                                        np.float64,
+                                        ('time',),
+                                        chunksizes=(self.number_of_timesteps,),
+                                        )
+        time[:] = _time
+        time.standard_name = "time"
+        time.long_name = "time since reference datetime"
+        time.units = "seconds since 1970-01-01 00:00:00"
+        time.calendar = 'gregorian'
+        time.cf_role = 'time'
 
         # mesh topology
         mesh = nclocal.createVariable(mesh_name, IND_DT, (),)
@@ -1174,9 +1212,9 @@ class UGrid():
         mesh_name = self.mesh_name
         for name, var in variables.items():
             if var.location == 'node':
-                shape = (mesh_name + '_num_node',)
+                shape = ('time', mesh_name + '_num_node')
                 coordinates = "{0}_node_lon {0}_node_lat".format(mesh_name)
-                chunksizes = (len(self.nodes),)
+                chunksizes = (1, len(self.nodes))
             elif var.location == 'face':
                 shape = (mesh_name + '_num_face',)
                 coord = "{0}_face_lon {0}_face_lat".format
