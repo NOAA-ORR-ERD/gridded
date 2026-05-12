@@ -355,8 +355,13 @@ class S_Depth(DepthBase):
         :param zeta: variable object representing free-surface
         :type zeta: gridded.variable.Variable or derivative
 
-        :param terms: remaining terms in dictionary layout
-        :type terms: dictionary of string key to numeric value
+        :param terms: remaining terms in dictionary layout.
+            e.g. ROMS: {'Cs_r': nc4.Dataset['Cs_r'][:],
+                        'Cs_w': nc4.Dataset['Cs_w'][:],
+                        's_rho': nc4.Dataset['s_rho'][:],
+                        's_w': nc4.Dataset['s_w'][:],
+                        'hc': nc4.Dataset['hc'][:],
+        :type terms: dictionary of string key to numeric value. 
                      See ``S_Depth.default_names``, sans bathymetry and zeta
 
         :param vtransform: S-coordinate transform type. 1 = Old, 2 = New
@@ -391,7 +396,6 @@ class S_Depth(DepthBase):
     @classmethod
     def from_netCDF(cls,
                     filename=None,
-                    varnames=None,
                     grid_topology=None,
                     name=None,
                     time=None,
@@ -413,18 +417,18 @@ class S_Depth(DepthBase):
         :param filename: A string or ordered list of string of netCDF filename(s)
         :type filename: str or list[str]
 
-        :param varnames: Direct mapping of component name to netCDF variable name. Use
+        :param terms: Direct mapping of component name to netCDF variable name. Use
                          this if auto detection fails. Partial definition is allowable.
                          Unspecified terms will use the value in `.default_names`. ::
                              {'Cs_r': 'Cs_r',
-                              'Cs_w': Cs_w',
+                              'Cs_w': 'Cs_w',
                               's_rho': 's_rho'),
                               's_w': 's_w',
                               'bathymetry': 'h',
                               'hc': 'hc'),
                               'zeta': 'zeta')
                               }
-        :type varnames: dict
+        :type terms: dict
 
         :param name: Human-readable name for this object
         :type name: str
@@ -445,6 +449,9 @@ class S_Depth(DepthBase):
         :param grid: X-Y dmension (for bathymetry & zeta)
         :type grid: subclass of gridded.grids.GridBase
         '''
+        if cls == S_Depth:
+            raise NotImplementedError('S_Depth is not meant to be instantiated. Please use a subclass like ROMS_Depth or FVCOM_Depth')
+        
         Grid = cls._default_component_types['grid']
         Time = cls._default_component_types['time']
         Variable = cls._default_component_types['variable']
@@ -467,22 +474,27 @@ class S_Depth(DepthBase):
         nc_vars = search_netcdf_vars(cls, ds, dg)
         
         if time is None:
-            zeta_var = nc_vars.get('zeta', None)
-            if zeta_var is None:
-                warn = 'Unable to locate zeta in data file'
-                if dg:
-                    warnings.warn(warn + ' or grid file.')
-                warn += ' Generating constant (0) zeta.'
-                warnings.warn(warn)
-                time = Time.constant_time()
+            if zeta is None:
+                zeta_var = nc_vars.get('zeta', None)
+                if zeta_var is None:
+                    warn = 'Unable to locate zeta in data file'
+                    if dg:
+                        warnings.warn(warn + ' or grid file.')
+                    warn += ' Generating constant (0) zeta.'
+                    warnings.warn(warn)
+                    time = Time.constant_time()
+                else:
+                    time = Time.from_netCDF(
+                        dataset=zeta_var._grp, #zeta_var should be a netCDF4.Variable, so its _grp attribute should be the dataset it belongs to
+                        datavar=zeta_var,
+                        origin=time_origin,
+                        displacement=displacement,
+                        tz_offset=tz_offset
+                    )
+            elif isinstance(zeta, Variable) and zeta.time is not None:
+                time = zeta.time
             else:
-                time = Time.from_netCDF(
-                    datavar=zeta_var,
-                    filename=data_file,
-                    origin=time_origin,
-                    displacement=displacement,
-                    tz_offset=tz_offset
-                )
+                time = Time.from_netCDF(dataset=ds, origin=time_origin, displacement=displacement, tz_offset=tz_offset)
                                         
         if bathymetry is None:
             bathy_var = nc_vars.get('bathymetry', None)
