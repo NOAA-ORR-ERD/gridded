@@ -418,16 +418,17 @@ class S_Depth(DepthBase):
         :type filename: str or list[str]
 
         :param terms: Direct mapping of component name to netCDF variable name. Use
-                         this if auto detection fails. Partial definition is allowable.
-                         Unspecified terms will use the value in `.default_names`. ::
-                             {'Cs_r': 'Cs_r',
-                              'Cs_w': 'Cs_w',
-                              's_rho': 's_rho'),
-                              's_w': 's_w',
-                              'bathymetry': 'h',
-                              'hc': 'hc'),
-                              'zeta': 'zeta')
-                              }
+                      this if auto detection fails. Partial definition is allowable.
+                      Unspecified terms will use the value in `.default_names`.
+                      ::
+                        {'Cs_r': 'Cs_r',
+                         'Cs_w': 'Cs_w',
+                         's_rho': 's_rho'),
+                         's_w': 's_w',
+                         'bathymetry': 'h',
+                         'hc': 'hc'),
+                         'zeta': 'zeta')
+                         }
         :type terms: dict
 
         :param name: Human-readable name for this object
@@ -445,13 +446,13 @@ class S_Depth(DepthBase):
         :param displacement: displacement to apply to the time data.
                              Allows shifting entire time interval into future or past
         :type displacement: `datetime.timedelta`
-        
+
         :param grid: X-Y dmension (for bathymetry & zeta)
         :type grid: subclass of gridded.grids.GridBase
         '''
         if cls == S_Depth:
             raise NotImplementedError('S_Depth is not meant to be instantiated. Please use a subclass like ROMS_Depth or FVCOM_Depth')
-        
+
         Grid = cls._default_component_types['grid']
         Time = cls._default_component_types['time']
         Variable = cls._default_component_types['variable']
@@ -731,8 +732,6 @@ class S_Depth(DepthBase):
 
 
         return indices, alphas, oob_mask
-
-
 
 
 class ROMS_Depth(S_Depth):

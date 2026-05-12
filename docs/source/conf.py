@@ -97,14 +97,15 @@ html_theme = "sphinx_rtd_theme"
 html_theme_options = {
 #    'analytics_id': 'G-XXXXXXXXXX',  #  Provided by Google in your dashboard
 #    'analytics_anonymize_ip': False,
+#    'display_version': True, # no longer supported
     'logo_only': False,
     'prev_next_buttons_location': 'bottom',
     'style_external_links': False,
 #    'vcs_pageview_mode': '',
     'style_nav_header_background': 'white',
     'flyout_display': 'hidden',
-    'version_selector': False,  # only good when hosted on RTD
-    'language_selector': True,
+    'version_selector': True,  # only good when hosted on RTD
+    # 'language_selector': True,
     # Toc options
     'collapse_navigation': True,
     'sticky_navigation': True,
