@@ -1,21 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>gridded.utilities &mdash; gridded 0.5.9 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>gridded.utilities &mdash; gridded 0.7.2dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=46001abd"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -25,16 +24,13 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+        <div class="wy-side-nav-search"  style="background: white" >
 
           
           
           <a href="../../index.html" class="icon icon-home">
             gridded
           </a>
-              <div class="version">
-                0.5.9
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -44,73 +40,20 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#goals">Goals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#why-gridded">Why gridded?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#data-standards">Data standards</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../installing.html#pip">pip</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../installing.html#from-source">From source</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../installing.html#conda">conda</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../installing.html#conda-forge">conda-forge</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../installing.html#environments">Environments</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../non_conforming_data.html">Loading Non Conforming Data</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../non_conforming_data.html#if-your-files-conform-to-the-underlying-data-model">If your files conform to the underlying data model</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../non_conforming_data.html#unstructured-grids">Unstructured Grids</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../non_conforming_data.html#the-grid">The Grid</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#gridded-dataset"><code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#grid-objects">Grid objects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#variable-objects">Variable objects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#time-object">Time object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#depth-object">Depth object</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html#design-principles">Design Principles</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#grid-independence">Grid Independence</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#duck-typing">Duck Typing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#lazy-loading-data-arrays">Lazy loading / data arrays</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html#reference">Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../gridded.html">gridded package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#subpackages">Subpackages</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.depth">gridded.depth module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.gridded">gridded.gridded module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.grids">gridded.grids module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.time">gridded.time module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.utilities">gridded.utilities module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.variable">gridded.variable module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../non_conforming_data.html">Loading Non Conforming Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html#design-principles">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html#reference">Reference</a></li>
 </ul>
 
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">gridded</a>
       </nav>
@@ -144,14 +87,20 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">netCDF4</span> <span class="k">as</span> <span class="nn">nc4</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 
 <span class="n">must_have</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dtype&#39;</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="s1">&#39;ndim&#39;</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getitem__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattribute__&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="convert_numpy_datetime64_to_datetime"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.convert_numpy_datetime64_to_datetime">[docs]</a><span class="k">def</span> <span class="nf">convert_numpy_datetime64_to_datetime</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
+<div class="viewcode-block" id="convert_numpy_datetime64_to_datetime">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.convert_numpy_datetime64_to_datetime">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_numpy_datetime64_to_datetime</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="convert_mask_to_numpy_mask"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.convert_mask_to_numpy_mask">[docs]</a><span class="k">def</span> <span class="nf">convert_mask_to_numpy_mask</span><span class="p">(</span><span class="n">mask_var</span><span class="p">):</span>
+
+<div class="viewcode-block" id="convert_mask_to_numpy_mask">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.convert_mask_to_numpy_mask">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_mask_to_numpy_mask</span><span class="p">(</span><span class="n">mask_var</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Converts a netCDF4.Variable representing a mask into a numpy array mask</span>
 <span class="sd">    &#39;Water&#39; Values are converted to False (including &#39;lake&#39;, &#39;river&#39; etc)</span>
@@ -166,12 +115,17 @@
              <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mask_var</span><span class="p">,</span> <span class="s1">&#39;option_0&#39;</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">type1</span><span class="p">:</span>
         <span class="n">fm</span> <span class="o">=</span> <span class="n">mask_var</span><span class="o">.</span><span class="n">flag_meanings</span>
+        <span class="n">fv</span> <span class="o">=</span> <span class="n">mask_var</span><span class="o">.</span><span class="n">flag_values</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">fm</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">pass</span>  <span class="c1"># must not be a string -- we assume it&#39;s a sequence already</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fv</span> <span class="o">=</span> <span class="n">fv</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
         <span class="n">meaning_mask</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span> <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;water&#39;</span> <span class="ow">in</span> <span class="n">s</span> <span class="ow">or</span> <span class="s1">&#39;lake&#39;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span> <span class="k">else</span> <span class="kc">True</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">fm</span><span class="p">]</span>
-        <span class="n">tfmap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">mask_var</span><span class="o">.</span><span class="n">flag_values</span><span class="p">,</span> <span class="n">meaning_mask</span><span class="p">))</span>
+        <span class="n">tfmap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">fv</span><span class="p">,</span> <span class="n">meaning_mask</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">tfmap</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">ret_mask</span><span class="p">[</span><span class="n">mask_data</span> <span class="o">==</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
     <span class="k">elif</span> <span class="n">type2</span><span class="p">:</span>  <span class="c1"># special case where option_0 == land,</span>
@@ -187,7 +141,10 @@
     <span class="k">return</span> <span class="n">ret_mask</span></div>
 
 
-<div class="viewcode-block" id="gen_celltree_mask_from_center_mask"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.gen_celltree_mask_from_center_mask">[docs]</a><span class="k">def</span> <span class="nf">gen_celltree_mask_from_center_mask</span><span class="p">(</span><span class="n">center_mask</span><span class="p">,</span> <span class="n">sl</span><span class="p">):</span>
+
+<div class="viewcode-block" id="gen_celltree_mask_from_center_mask">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.gen_celltree_mask_from_center_mask">[docs]</a>
+<span class="k">def</span> <span class="nf">gen_celltree_mask_from_center_mask</span><span class="p">(</span><span class="n">center_mask</span><span class="p">,</span> <span class="n">sl</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates celltree face mask from the center mask</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -195,10 +152,15 @@
     <span class="n">input_mask</span> <span class="o">=</span> <span class="n">convert_mask_to_numpy_mask</span><span class="p">(</span><span class="n">center_mask</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">input_mask</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="regrid_variable"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.regrid_variable">[docs]</a><span class="k">def</span> <span class="nf">regrid_variable</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_var</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s1">&#39;node&#39;</span><span class="p">):</span>
+
+<span class="c1">#1/16/2024 Jay Hennen: I&#39;m &#39;privating&#39; this function pending a review and likely rewrite. </span>
+<span class="c1">#</span>
+<div class="viewcode-block" id="regrid_variable">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.regrid_variable">[docs]</a>
+<span class="k">def</span> <span class="nf">regrid_variable</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_var</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s1">&#39;node&#39;</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">gridded.variable</span> <span class="kn">import</span> <span class="n">Variable</span>
     <span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="kn">import</span> <span class="n">Grid_S</span><span class="p">,</span> <span class="n">Grid_U</span>
-    <span class="kn">from</span> <span class="nn">gridded.depth</span> <span class="kn">import</span> <span class="n">S_Depth</span><span class="p">,</span> <span class="n">Depth</span>
+    <span class="kn">from</span> <span class="nn">gridded.depth</span> <span class="kn">import</span> <span class="n">S_Depth</span><span class="p">,</span> <span class="n">L_Depth</span><span class="p">,</span> <span class="n">DepthBase</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Takes a Variable or VectorVariable and interpolates the data onto grid.</span>
 <span class="sd">    You may pass a location (&#39;nodes&#39;, &#39;faces&#39;, &#39;edge1&#39;, &#39;edge2) and the</span>
@@ -235,9 +197,9 @@
 <span class="s2">        the grid of the source variable </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_var</span><span class="p">))</span>
     <span class="n">n_depth</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">o_var</span><span class="o">.</span><span class="n">depth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">depth</span><span class="p">,</span> <span class="n">S_Depth</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">depth</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">S_Depth</span><span class="p">):</span>
             <span class="n">n_depth</span> <span class="o">=</span> <span class="n">_regrid_s_depth</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_var</span><span class="o">.</span><span class="n">depth</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">depth</span><span class="p">,</span> <span class="n">Depth</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">depth</span><span class="p">,</span> <span class="n">DepthBase</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">depth</span><span class="p">,</span> <span class="n">L_Depth</span><span class="p">):</span>
             <span class="n">n_depth</span> <span class="o">=</span> <span class="n">o_var</span><span class="o">.</span><span class="n">depth</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Can only regrid sigma depths for now&quot;</span><span class="p">)</span>
@@ -258,10 +220,11 @@
     <span class="n">pts</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dest_points</span>
     <span class="k">if</span> <span class="n">o_var</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">t_idx</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">n_depth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_depth</span><span class="p">,</span> <span class="n">S_Depth</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">lev_idx</span><span class="p">,</span> <span class="n">lev_data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">depth</span><span class="o">.</span><span class="n">get_section</span><span class="p">(</span><span class="n">t</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">n_depth</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">n_depth</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">S_Depth</span><span class="p">):</span>
+                <span class="n">transect</span> <span class="o">=</span> <span class="n">o_var</span><span class="o">.</span><span class="n">depth</span><span class="o">.</span><span class="n">get_transect</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">t</span><span class="p">,</span> <span class="n">data_shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">n_depth</span><span class="p">),))</span><span class="o">.</span><span class="n">T</span>
+                <span class="k">for</span> <span class="n">lev_idx</span><span class="p">,</span> <span class="n">lev_data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">transect</span><span class="p">):</span>
                     <span class="n">lev</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;level</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lev_idx</span><span class="p">),</span>
-                                   <span class="n">data</span><span class="o">=</span><span class="n">lev_data</span><span class="p">,</span>
+                                   <span class="n">data</span><span class="o">=</span><span class="n">lev_data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">o_var</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">node_lon</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
                                    <span class="n">grid</span><span class="o">=</span><span class="n">o_var</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
                     <span class="n">zs</span> <span class="o">=</span> <span class="n">lev</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
                     <span class="n">pts</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">zs</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
@@ -280,17 +243,16 @@
     <span class="k">return</span> <span class="n">n_var</span></div>
 
 
+
 <span class="k">def</span> <span class="nf">_regrid_s_depth</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_depth</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a new S_Depth object from an existing one that works on a new grid.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="kn">import</span> <span class="n">Grid_S</span><span class="p">,</span> <span class="n">Grid_U</span>
-    <span class="kn">from</span> <span class="nn">gridded.depth</span> <span class="kn">import</span> <span class="n">S_Depth</span>
     <span class="n">o_bathy</span> <span class="o">=</span> <span class="n">o_depth</span><span class="o">.</span><span class="n">bathymetry</span>
     <span class="n">o_zeta</span> <span class="o">=</span> <span class="n">o_depth</span><span class="o">.</span><span class="n">zeta</span>
     <span class="n">n_bathy</span> <span class="o">=</span> <span class="n">regrid_variable</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_bathy</span><span class="p">)</span>
     <span class="n">n_zeta</span> <span class="o">=</span> <span class="n">regrid_variable</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">o_zeta</span><span class="p">)</span>
-    <span class="n">n_depth</span> <span class="o">=</span> <span class="n">S_Depth</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">o_depth</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+    <span class="n">n_depth</span> <span class="o">=</span> <span class="n">o_depth</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">o_depth</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
                       <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
                       <span class="n">bathymetry</span><span class="o">=</span><span class="n">n_bathy</span><span class="p">,</span>
                       <span class="n">zeta</span><span class="o">=</span><span class="n">n_zeta</span><span class="p">,</span>
@@ -342,10 +304,10 @@
     <span class="k">if</span> <span class="n">points</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="n">points_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">points</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">points_arr</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">object_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">string_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">points_arr</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">object_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;points data does not convert to a numeric array type&#39;</span><span class="p">)</span>
     <span class="n">shp</span> <span class="o">=</span> <span class="n">points_arr</span><span class="o">.</span><span class="n">shape</span>
-    <span class="c1">#special cases</span>
+    <span class="c1"># special cases</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="c1">#two valid cases: [lon, lat] and [lon, lat, depth]. all others = error</span>
         <span class="k">if</span> <span class="n">shp</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,)</span> <span class="ow">or</span> <span class="n">shp</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
@@ -438,7 +400,9 @@
                 <span class="k">return</span> <span class="n">result</span>
 
 
-<div class="viewcode-block" id="isarraylike"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.isarraylike">[docs]</a><span class="k">def</span> <span class="nf">isarraylike</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="isarraylike">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.isarraylike">[docs]</a>
+<span class="k">def</span> <span class="nf">isarraylike</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    tests if obj acts enough like an array to be used in gridded.</span>
 
@@ -452,7 +416,10 @@
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="asarraylike"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.asarraylike">[docs]</a><span class="k">def</span> <span class="nf">asarraylike</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+
+<div class="viewcode-block" id="asarraylike">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.asarraylike">[docs]</a>
+<span class="k">def</span> <span class="nf">asarraylike</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    If it satisfies the requirements of pyugrid the object is returned as is.</span>
 <span class="sd">    If not, then numpy&#39;s array() will be called on it.</span>
@@ -464,9 +431,12 @@
     <span class="k">return</span> <span class="n">obj</span> <span class="k">if</span> <span class="n">isarraylike</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="isstring"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.isstring">[docs]</a><span class="k">def</span> <span class="nf">isstring</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+
+<div class="viewcode-block" id="isstring">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.isstring">[docs]</a>
+<span class="k">def</span> <span class="nf">isstring</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    py2/3 compaitlbie way to test for a string</span>
+<span class="sd">    py2/3 compatble way to test for a string</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">basestring</span><span class="p">)</span>
@@ -474,19 +444,29 @@
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_dataset"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.get_dataset">[docs]</a><span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_dataset">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.get_dataset">[docs]</a>
+<span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Utility to create a netCDF4 Dataset from a filename, list of filenames,</span>
 <span class="sd">    or just pass it through if it&#39;s already a netCDF4.Dataset</span>
 
 <span class="sd">    if dataset is not None, it should be a valid netCDF4 Dataset object,</span>
 <span class="sd">    and it will simply be returned</span>
+
+<span class="sd">    fixme: why can you pass in a dataset specifically ???</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">dataset</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="p">(</span><span class="n">nc4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span> <span class="n">nc4</span><span class="o">.</span><span class="n">MFDataset</span><span class="p">)):</span>
         <span class="k">return</span> <span class="n">ncfile</span>
-    <span class="k">elif</span> <span class="n">isstring</span><span class="p">(</span><span class="n">ncfile</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ncfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fspath</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">pass</span>  <span class="c1"># not a string of PathLike -- could be a list or invalid ...</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>  <span class="c1"># single path</span>
         <span class="k">return</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -494,7 +474,49 @@
         <span class="k">return</span> <span class="n">nc4</span><span class="o">.</span><span class="n">MFDataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_writable_dataset"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.get_writable_dataset">[docs]</a><span class="k">def</span> <span class="nf">get_writable_dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;netcdf4&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="parse_filename_dataset_args">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.parse_filename_dataset_args">[docs]</a>
+<span class="k">def</span> <span class="nf">parse_filename_dataset_args</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                <span class="n">data_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                <span class="n">grid_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A perinnial problem is that we need to be able to accept a variety of</span>
+<span class="sd">    filename/dataset arguments. This function will return a tuple of &#39;ds&#39; and &#39;dg&#39;</span>
+<span class="sd">    where ds is the netCDF4.Dataset for the data and dg is the netCDF4.Dataset for the grid. If such</span>
+<span class="sd">    datasets are from the same file, it will return the same object for both.</span>
+<span class="sd">    </span>
+<span class="sd">    :param filename: str or pathlike</span>
+<span class="sd">    :param dataset: netCDF4.Dataset</span>
+<span class="sd">    :param data_file: str, pathlike, or netCDF4.Dataset</span>
+<span class="sd">    :param grid_file: str, pathlike, or netCDF4.Dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ds</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">dg</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fspath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="n">data_file</span> <span class="o">=</span> <span class="n">grid_file</span> <span class="o">=</span> <span class="n">filename</span>
+    <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">grid_file</span> <span class="o">==</span> <span class="n">data_file</span><span class="p">:</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">dg</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">grid_file</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ds</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
+            <span class="n">dg</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">grid_file</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">grid_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dg</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">grid_file</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dg</span> <span class="o">=</span> <span class="n">dataset</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="n">dataset</span>
+    
+    <span class="k">return</span> <span class="n">ds</span><span class="p">,</span> <span class="n">dg</span></div>
+
+
+<div class="viewcode-block" id="get_writable_dataset">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.get_writable_dataset">[docs]</a>
+<span class="k">def</span> <span class="nf">get_writable_dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;netcdf4&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Utility to create a writable netCDF4 Dataset from a filename, list of filenames,</span>
 <span class="sd">    or just pass it through if it&#39;s already a netCDF4.Dataset</span>
@@ -515,7 +537,10 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must be a string path or a netcdf4 Dataset&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_dataset_attrs"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.get_dataset_attrs">[docs]</a><span class="k">def</span> <span class="nf">get_dataset_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_dataset_attrs">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.get_dataset_attrs">[docs]</a>
+<span class="k">def</span> <span class="nf">get_dataset_attrs</span><span class="p">(</span><span class="n">ds</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    get all the attributes of the dataset as a single dict</span>
 
@@ -523,7 +548,37 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">ds</span><span class="o">.</span><span class="n">getncattr</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">ncattrs</span><span class="p">()}</span></div>
 
-<div class="viewcode-block" id="varnames_merge"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.varnames_merge">[docs]</a><span class="k">def</span> <span class="nf">varnames_merge</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">inc_varnames</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="search_netcdf_vars">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.search_netcdf_vars">[docs]</a>
+<span class="k">def</span> <span class="nf">search_netcdf_vars</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a class with a .default_names and .cf_names attributes, search a datafile </span>
+<span class="sd">    netCDF4.Dataset and a possible grid netCDF4.Dataset for variables that are sought by</span>
+<span class="sd">    the class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vn_search</span> <span class="o">=</span> <span class="n">search_dataset_for_variables_by_varname</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">default_names</span><span class="p">)</span>
+    <span class="n">ds_search</span> <span class="o">=</span> <span class="n">search_dataset_for_variables_by_longname</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">cf_names</span><span class="p">)</span>
+    <span class="n">found_vars</span> <span class="o">=</span> <span class="n">merge_var_search_dicts</span><span class="p">(</span><span class="n">ds_search</span><span class="p">,</span> <span class="n">vn_search</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ds</span> <span class="o">!=</span> <span class="n">dg</span><span class="p">:</span>
+        <span class="n">dg_vn_search</span> <span class="o">=</span> <span class="n">search_dataset_for_variables_by_varname</span><span class="p">(</span><span class="n">dg</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">default_names</span><span class="p">)</span>
+        <span class="n">dg_ln_search</span> <span class="o">=</span> <span class="n">search_dataset_for_variables_by_longname</span><span class="p">(</span><span class="n">dg</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">cf_names</span><span class="p">)</span>
+        <span class="n">dg_search</span> <span class="o">=</span> <span class="n">merge_var_search_dicts</span><span class="p">(</span><span class="n">dg_ln_search</span><span class="p">,</span> <span class="n">dg_vn_search</span><span class="p">)</span>
+        <span class="n">found_vars</span> <span class="o">=</span> <span class="n">merge_var_search_dicts</span><span class="p">(</span><span class="n">found_vars</span><span class="p">,</span> <span class="n">dg_search</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">found_vars</span></div>
+
+    
+<div class="viewcode-block" id="can_create_class">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.can_create_class">[docs]</a>
+<span class="k">def</span> <span class="nf">can_create_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">found_vars</span> <span class="o">=</span> <span class="n">search_netcdf_vars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">dg</span><span class="p">)</span>
+    <span class="c1"># all variables must be found (no None values)</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="kc">None</span> <span class="ow">in</span> <span class="n">found_vars</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="varnames_merge">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.varnames_merge">[docs]</a>
+<span class="k">def</span> <span class="nf">varnames_merge</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">inc_varnames</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Helper function to support the `varnames` argument pattern.</span>
 
@@ -532,7 +587,10 @@
 <span class="sd">    custom digestion of a file can be specified.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
-<div class="viewcode-block" id="search_dataset_for_any_long_name"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.search_dataset_for_any_long_name">[docs]</a><span class="k">def</span> <span class="nf">search_dataset_for_any_long_name</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+
+<div class="viewcode-block" id="search_dataset_for_any_long_name">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.search_dataset_for_any_long_name">[docs]</a>
+<span class="k">def</span> <span class="nf">search_dataset_for_any_long_name</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Searches a netCDF4.Dataset for any netCDF4.Variable that satisfies one of the search terms.</span>
 <span class="sd">    :param name: list of strings or str -&gt; list dictionary</span>
@@ -548,7 +606,10 @@
         <span class="k">if</span> <span class="n">t1</span> <span class="ow">or</span> <span class="n">t2</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">t1</span><span class="o">+</span><span class="n">t2</span></div>
 
-<div class="viewcode-block" id="search_dataset_for_variables_by_longname"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.search_dataset_for_variables_by_longname">[docs]</a><span class="k">def</span> <span class="nf">search_dataset_for_variables_by_longname</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">possible_names</span><span class="p">):</span>
+
+<div class="viewcode-block" id="search_dataset_for_variables_by_longname">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.search_dataset_for_variables_by_longname">[docs]</a>
+<span class="k">def</span> <span class="nf">search_dataset_for_variables_by_longname</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">possible_names</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    For each longname list in possible_names, search the Dataset</span>
 
@@ -571,7 +632,10 @@
             <span class="n">rtv</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="n">rtv</span></div>
 
-<div class="viewcode-block" id="search_dataset_for_variables_by_varname"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.search_dataset_for_variables_by_varname">[docs]</a><span class="k">def</span> <span class="nf">search_dataset_for_variables_by_varname</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">possible_names</span><span class="p">):</span>
+
+<div class="viewcode-block" id="search_dataset_for_variables_by_varname">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.search_dataset_for_variables_by_varname">[docs]</a>
+<span class="k">def</span> <span class="nf">search_dataset_for_variables_by_varname</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">possible_names</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    For each varname list in possible_names, search the Dataset</span>
 
@@ -592,7 +656,10 @@
             <span class="n">rtv</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="n">rtv</span></div>
 
-<div class="viewcode-block" id="merge_var_search_dicts"><a class="viewcode-back" href="../../gridded.html#gridded.utilities.merge_var_search_dicts">[docs]</a><span class="k">def</span> <span class="nf">merge_var_search_dicts</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">):</span>
+
+<div class="viewcode-block" id="merge_var_search_dicts">
+<a class="viewcode-back" href="../../gridded.html#gridded.utilities.merge_var_search_dicts">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_var_search_dicts</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Values in D1 take precedence over D2 if they are not None</span>
 <span class="sd">    :param d1: str -&gt; netCDF4.Variable dict</span>
@@ -610,6 +677,7 @@
             <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">result</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
     <span class="k">return</span> <span class="n">result</span></div>
+
 </pre></div>
 
            </div>

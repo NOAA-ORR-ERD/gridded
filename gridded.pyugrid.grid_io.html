@@ -1,22 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>gridded.pyugrid.grid_io package &mdash; gridded 0.5.9 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>gridded.pyugrid.grid_io package &mdash; gridded 0.7.2dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=46001abd"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -27,16 +26,13 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+        <div class="wy-side-nav-search"  style="background: white" >
 
           
           
           <a href="index.html" class="icon icon-home">
             gridded
           </a>
-              <div class="version">
-                0.5.9
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -46,51 +42,12 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#goals">Goals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#why-gridded">Why gridded?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#data-standards">Data standards</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installing.html#pip">pip</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="installing.html#from-source">From source</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="installing.html#conda">conda</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="installing.html#conda-forge">conda-forge</a></li>
-<li class="toctree-l3"><a class="reference internal" href="installing.html#environments">Environments</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="non_conforming_data.html">Loading Non Conforming Data</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-conform-to-the-underlying-data-model">If your files conform to the underlying data model</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#unstructured-grids">Unstructured Grids</a></li>
-<li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="non_conforming_data.html#the-grid">The Grid</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#gridded-dataset"><code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#grid-objects">Grid objects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#variable-objects">Variable objects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#time-object">Time object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#depth-object">Depth object</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api_reference.html#design-principles">Design Principles</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#grid-independence">Grid Independence</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#duck-typing">Duck Typing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#lazy-loading-data-arrays">Lazy loading / data arrays</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="non_conforming_data.html">Loading Non Conforming Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html#design-principles">Design Principles</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="api_reference.html#reference">Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="gridded.html">gridded package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="gridded.html#subpackages">Subpackages</a></li>
@@ -112,7 +69,7 @@
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">gridded</a>
       </nav>
@@ -136,23 +93,23 @@
            <div itemprop="articleBody">
              
   <section id="gridded-pyugrid-grid-io-package">
-<h1>gridded.pyugrid.grid_io package<a class="headerlink" href="#gridded-pyugrid-grid-io-package" title="Permalink to this heading"></a></h1>
+<h1>gridded.pyugrid.grid_io package<a class="headerlink" href="#gridded-pyugrid-grid-io-package" title="Link to this heading"></a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
 <section id="module-gridded.pyugrid.grid_io.utils">
-<span id="gridded-pyugrid-grid-io-utils-module"></span><h2>gridded.pyugrid.grid_io.utils module<a class="headerlink" href="#module-gridded.pyugrid.grid_io.utils" title="Permalink to this heading"></a></h2>
+<span id="gridded-pyugrid-grid-io-utils-module"></span><h2>gridded.pyugrid.grid_io.utils module<a class="headerlink" href="#module-gridded.pyugrid.grid_io.utils" title="Link to this heading"></a></h2>
 <p>Utilities to help with grid io</p>
 <p>NOTE: this isn’t used yet, but should be useful for loading non
 UGRID-compliant files.</p>
 <p>Ideally, we’ll add loading from shape files or what have you in the future</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="gridded.pyugrid.grid_io.utils.load_from_varnames">
-<span class="sig-prename descclassname"><span class="pre">gridded.pyugrid.grid_io.utils.</span></span><span class="sig-name descname"><span class="pre">load_from_varnames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names_mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_process</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/grid_io/utils.html#load_from_varnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gridded.pyugrid.grid_io.utils.load_from_varnames" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">gridded.pyugrid.grid_io.utils.</span></span><span class="sig-name descname"><span class="pre">load_from_varnames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names_mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_process</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/grid_io/utils.html#load_from_varnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gridded.pyugrid.grid_io.utils.load_from_varnames" title="Link to this definition"></a></dt>
 <dd><p>Load a UGrid from a netcdf file where the roles are defined by the
 names of the variables.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> – names of the file to load (or OPeNDAP URL).</p></li>
 <li><p><strong>names_mapping</strong> – dict that maps the variable names to UGrid components</p></li>
@@ -169,14 +126,14 @@ it should be a callable that takes (Dataset, UGrid)</p></li>
 
 </section>
 <section id="module-gridded.pyugrid.grid_io">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gridded.pyugrid.grid_io" title="Permalink to this heading"></a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gridded.pyugrid.grid_io" title="Link to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="gridded.pyugrid.grid_io.load_from_varnames">
-<span class="sig-prename descclassname"><span class="pre">gridded.pyugrid.grid_io.</span></span><span class="sig-name descname"><span class="pre">load_from_varnames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names_mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_process</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/grid_io/utils.html#load_from_varnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gridded.pyugrid.grid_io.load_from_varnames" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">gridded.pyugrid.grid_io.</span></span><span class="sig-name descname"><span class="pre">load_from_varnames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names_mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">post_process</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gridded/pyugrid/grid_io/utils.html#load_from_varnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#gridded.pyugrid.grid_io.load_from_varnames" title="Link to this definition"></a></dt>
 <dd><p>Load a UGrid from a netcdf file where the roles are defined by the
 names of the variables.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> – names of the file to load (or OPeNDAP URL).</p></li>
 <li><p><strong>names_mapping</strong> – dict that maps the variable names to UGrid components</p></li>

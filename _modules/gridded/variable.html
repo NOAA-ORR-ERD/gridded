@@ -1,21 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>gridded.variable &mdash; gridded 0.5.9 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <title>gridded.variable &mdash; gridded 0.7.2dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=46001abd"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -25,16 +24,13 @@
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+        <div class="wy-side-nav-search"  style="background: white" >
 
           
           
           <a href="../../index.html" class="icon icon-home">
             gridded
           </a>
-              <div class="version">
-                0.5.9
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -44,73 +40,20 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#goals">Goals</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#why-gridded">Why gridded?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#data-standards">Data standards</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../installing.html#pip">pip</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../installing.html#from-source">From source</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../installing.html#conda">conda</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../installing.html#conda-forge">conda-forge</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../installing.html#environments">Environments</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../non_conforming_data.html">Loading Non Conforming Data</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../non_conforming_data.html#if-your-files-conform-to-the-underlying-data-model">If your files conform to the underlying data model</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../non_conforming_data.html#unstructured-grids">Unstructured Grids</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../non_conforming_data.html#curvilinear-grids">Curvilinear Grids</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../non_conforming_data.html#if-your-files-do-not-conform-to-the-underlying-data-model">If your files do not conform to the underlying data model</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../non_conforming_data.html#the-grid">The Grid</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#gridded-dataset"><code class="docutils literal notranslate"><span class="pre">gridded.Dataset</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#grid-objects">Grid objects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#variable-objects">Variable objects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#time-object">Time object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#depth-object">Depth object</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html#design-principles">Design Principles</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#grid-independence">Grid Independence</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#duck-typing">Duck Typing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../api_reference.html#lazy-loading-data-arrays">Lazy loading / data arrays</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html#reference">Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../gridded.html">gridded package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#subpackages">Subpackages</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.depth">gridded.depth module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.gridded">gridded.gridded module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.grids">gridded.grids module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.time">gridded.time module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.utilities">gridded.utilities module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded.variable">gridded.variable module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../gridded.html#module-gridded">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../non_conforming_data.html">Loading Non Conforming Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html"><code class="docutils literal notranslate"><span class="pre">gridded</span> <span class="pre">API</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html#design-principles">Design Principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html#reference">Reference</a></li>
 </ul>
 
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">gridded</a>
       </nav>
@@ -143,10 +86,11 @@
                                <span class="n">_reorganize_spatial_data</span><span class="p">,</span>
                                <span class="n">_align_results_to_spatial_data</span><span class="p">,</span>
                                <span class="n">asarraylike</span><span class="p">,</span>
-                               <span class="n">search_dataset_for_variables_by_varname</span><span class="p">)</span>
+                               <span class="n">search_dataset_for_variables_by_varname</span><span class="p">,</span>
+                               <span class="n">parse_filename_dataset_args</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">gridded</span> <span class="kn">import</span> <span class="n">VALID_LOCATIONS</span>
 <span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="kn">import</span> <span class="n">Grid</span><span class="p">,</span> <span class="n">Grid_U</span><span class="p">,</span> <span class="n">Grid_S</span><span class="p">,</span> <span class="n">Grid_R</span>
-<span class="kn">from</span> <span class="nn">gridded.depth</span> <span class="kn">import</span> <span class="n">Depth</span>
+<span class="kn">from</span> <span class="nn">gridded.depth</span> <span class="kn">import</span> <span class="n">Depth</span><span class="p">,</span> <span class="n">DepthBase</span>
 <span class="kn">from</span> <span class="nn">gridded.time</span> <span class="kn">import</span> <span class="n">Time</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -154,7 +98,9 @@
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Variable"><a class="viewcode-back" href="../../gridded.html#gridded.variable.Variable">[docs]</a><span class="k">class</span> <span class="nc">Variable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Variable">
+<a class="viewcode-back" href="../../gridded.html#gridded.variable.Variable">[docs]</a>
+<span class="k">class</span> <span class="nc">Variable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Variable object: represents a field of values associated with the grid.</span>
 
@@ -169,7 +115,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">default_names</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">cf_names</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">_def_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">_instance_count</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="n">_default_component_types</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">Time</span><span class="p">,</span>
                                 <span class="s1">&#39;grid&#39;</span><span class="p">:</span> <span class="n">Grid</span><span class="p">,</span>
@@ -243,8 +189,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">location</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span> <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span>
-                     <span class="bp">self</span><span class="o">.</span><span class="n">_default_component_types</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">constant_time</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_file</span> <span class="o">=</span> <span class="n">data_file</span>
         <span class="c1"># the &quot;main&quot; filename for a Varibale should be the grid data.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">data_file</span>
@@ -262,11 +207,14 @@
             <span class="k">pass</span>                <span class="c1"># so just use what was passed in.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">surface_boundary_condition</span> <span class="o">=</span> <span class="n">surface_boundary_condition</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bottom_boundary_condition</span> <span class="o">=</span> <span class="n">bottom_boundary_condition</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Variable</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <span class="c1">#         for k in kwargs:</span>
 <span class="c1">#             setattr(self, k, kwargs[k])</span>
 
-<div class="viewcode-block" id="Variable.from_netCDF"><a class="viewcode-back" href="../../gridded.html#gridded.variable.Variable.from_netCDF">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Variable.from_netCDF">
+<a class="viewcode-back" href="../../gridded.html#gridded.variable.Variable.from_netCDF">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_netCDF</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
                     <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">varname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -275,6 +223,8 @@
                     <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">time_origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">displacement</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">tz_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -333,6 +283,16 @@
 
 <span class="sd">        :param grid_file: Name of grid source file, if data and grid files are separate</span>
 <span class="sd">        :type grid_file: string</span>
+<span class="sd">        </span>
+<span class="sd">        :param tz_offset: offset to compensate for time zone shifts</span>
+<span class="sd">        :type tz_offset: `datetime.timedelta` or float or integer hours</span>
+
+<span class="sd">        :param origin: shifts the time interval to begin at the time specified</span>
+<span class="sd">        :type origin: `datetime.datetime`</span>
+
+<span class="sd">        :param displacement: displacement to apply to the time data.</span>
+<span class="sd">               Allows shifting entire time interval into future or past</span>
+<span class="sd">        :type displacement: `datetime.timedelta`</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="n">Grid</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_default_component_types</span><span class="p">[</span><span class="s1">&#39;grid&#39;</span><span class="p">]</span>
@@ -341,23 +301,11 @@
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">data_file</span> <span class="o">=</span> <span class="n">filename</span>
             <span class="n">grid_file</span> <span class="o">=</span> <span class="n">filename</span>
-
-        <span class="n">ds</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">dg</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">grid_file</span> <span class="o">==</span> <span class="n">data_file</span><span class="p">:</span>
-                <span class="n">ds</span> <span class="o">=</span> <span class="n">dg</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">grid_file</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">ds</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
-                <span class="n">dg</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">grid_file</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">grid_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">dg</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">grid_file</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">dg</span> <span class="o">=</span> <span class="n">dataset</span>
-            <span class="n">ds</span> <span class="o">=</span> <span class="n">dataset</span>
-        <span class="k">if</span> <span class="n">data_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">data_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">filepath</span><span class="p">())[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            
+        <span class="n">ds</span><span class="p">,</span> <span class="n">dg</span> <span class="o">=</span> <span class="n">parse_filename_dataset_args</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+                                             <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
+                                             <span class="n">grid_file</span><span class="o">=</span><span class="n">grid_file</span><span class="p">,</span>
+                                             <span class="n">data_file</span><span class="o">=</span><span class="n">data_file</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">grid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">grid_file</span><span class="p">,</span>
@@ -371,27 +319,41 @@
                                 <span class="s1">&#39;must supply variable name&#39;</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_def_count</span><span class="p">)</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">_def_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_instance_count</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_instance_count</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">units</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">units</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="n">units</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">data_file</span><span class="p">,</span>
-                                    <span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span>
-                                    <span class="n">datavar</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">time_origin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                            <span class="n">filename</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-                            <span class="n">varname</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">varname</span><span class="p">,</span>
-                            <span class="n">origin</span><span class="o">=</span><span class="n">time_origin</span><span class="p">)</span>
+            <span class="n">timevarname</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">locate_time_var_from_var</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">timevarname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span>
+                        <span class="n">filename</span><span class="o">=</span><span class="n">data_file</span><span class="p">,</span>
+                        <span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span>
+                        <span class="n">varname</span><span class="o">=</span><span class="n">timevarname</span><span class="p">,</span>
+                        <span class="c1"># datavar=None,</span>
+                        <span class="n">tz_offset</span><span class="o">=</span><span class="n">tz_offset</span><span class="p">,</span>
+                        <span class="n">new_tz_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">origin</span><span class="o">=</span><span class="n">time_origin</span><span class="p">,</span>
+                        <span class="n">displacement</span><span class="o">=</span><span class="n">displacement</span>
+                        <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">timevarname</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
+
         <span class="k">if</span> <span class="n">depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="p">(</span><span class="n">Grid_S</span><span class="p">,</span> <span class="n">Grid_R</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">or</span>
-                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">Grid_U</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">istimevar</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">timevarname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">1</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="p">(</span><span class="n">Grid_S</span><span class="p">,</span> <span class="n">Grid_R</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="o">+</span> <span class="n">istimevar</span> <span class="ow">or</span>
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">Grid_U</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">istimevar</span><span class="p">):</span>
                 <span class="n">depth</span> <span class="o">=</span> <span class="n">Depth</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">grid_file</span><span class="o">=</span><span class="n">dg</span><span class="p">,</span>
                                           <span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span>
+                                          <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
+                                          <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
                                           <span class="o">**</span><span class="n">kwargs</span>
                                           <span class="p">)</span>
         <span class="k">if</span> <span class="n">location</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -419,6 +381,7 @@
                    <span class="n">varname</span><span class="o">=</span><span class="n">varname</span><span class="p">,</span>
                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
+
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
 
@@ -430,18 +393,19 @@
                 <span class="s1">&#39;data=&quot;</span><span class="si">{0.data}</span><span class="s1">&quot;, &#39;</span>
                 <span class="s1">&#39;)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Variable.constant"><a class="viewcode-back" href="../../gridded.html#gridded.variable.Variable.constant">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Variable.constant">
+<a class="viewcode-back" href="../../gridded.html#gridded.variable.Variable.constant">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">constant</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="c1">#Sets a Variable up to represent a constant scalar field. The result</span>
         <span class="c1">#will return a constant value for all times and places.</span>
         <span class="n">Grid</span> <span class="o">=</span> <span class="n">Grid_S</span>
-        <span class="n">Time</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_default_component_types</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
         <span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
         <span class="n">_node_lon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(([</span><span class="o">-</span><span class="mi">360</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">360</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">360</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">]))</span>
         <span class="n">_node_lat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(([</span><span class="o">-</span><span class="mf">89.95</span><span class="p">,</span> <span class="o">-</span><span class="mf">89.95</span><span class="p">,</span> <span class="o">-</span><span class="mf">89.95</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mf">89.95</span><span class="p">,</span> <span class="mf">89.95</span><span class="p">,</span> <span class="mf">89.95</span><span class="p">]))</span>
         <span class="n">_grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">node_lon</span><span class="o">=</span><span class="n">_node_lon</span><span class="p">,</span> <span class="n">node_lat</span><span class="o">=</span><span class="n">_node_lat</span><span class="p">)</span>
-        <span class="n">_time</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">constant_time</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">_grid</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">_time</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">_data</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">_grid</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">_data</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -493,7 +457,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Data/time interval mismatch&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Time_class</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">=</span> <span class="n">t</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Variable</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">nc4</span><span class="o">.</span><span class="n">Variable</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">=</span> <span class="n">Time_class</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Time must be set with an iterable container or netCDF variable&quot;</span><span class="p">)</span>
@@ -577,7 +541,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Variable.center_values"><a class="viewcode-back" href="../../gridded.html#gridded.variable.Variable.center_values">[docs]</a>    <span class="k">def</span> <span class="nf">center_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extrapolate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Variable.center_values">
+<a class="viewcode-back" href="../../gridded.html#gridded.variable.Variable.center_values">[docs]</a>
+    <span class="k">def</span> <span class="nf">center_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extrapolate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        interpolate data to the center of the cells</span>
 
@@ -602,6 +568,7 @@
             <span class="n">centers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">get_center_points</span><span class="p">()</span>
             <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">centers</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">units</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dimension_ordering</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -651,8 +618,9 @@
     <span class="k">def</span> <span class="nf">dimension_ordering</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="n">order</span>
 
-<span class="c1">#     @profile</span>
-<div class="viewcode-block" id="Variable.at"><a class="viewcode-back" href="../../gridded.html#gridded.variable.Variable.at">[docs]</a>    <span class="k">def</span> <span class="nf">at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="Variable.at">
+<a class="viewcode-back" href="../../gridded.html#gridded.variable.Variable.at">[docs]</a>
+    <span class="k">def</span> <span class="nf">at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
            <span class="n">points</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
            <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
            <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -666,18 +634,23 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find the value of the property at positions P at time T</span>
 
-<span class="sd">        :param points: Cartesian coordinates to be queried (P). Lon, Lat required, Depth (Z) is optional</span>
-<span class="sd">            Coordinates must be organized as a 2D array or list, one coordinate per row or list element.</span>
-<span class="sd">            ``[[Lon1, Lat1, Z1],``</span>
-<span class="sd">            ``[Lon2, Lat2, Z2],``</span>
-<span class="sd">            ``[Lon3, Lat3, Z3],``</span>
-<span class="sd">            ``...]``</span>
-<span class="sd">            Failure to provide point data in this format may cause unexpected behavior</span>
-<span class="sd">            If you wish to provide point data using separate longitude and latitude arrays,</span>
-<span class="sd">            use the `lons=` and `lats=` kwargs. </span>
-<span class="sd">            Note that if your Z is positive-up, self.depth.positive_down should be</span>
-<span class="sd">            set to False</span>
+<span class="sd">        :param points: Cartesian coordinates to be queried (P).</span>
+<span class="sd">                       Lon, Lat required, Depth (Z) is optional</span>
+<span class="sd">                       Coordinates must be organized as a 2D array or list,</span>
+<span class="sd">                       one coordinate per row.</span>
+
+<span class="sd">                       Failure to provide point data in this format may cause</span>
+<span class="sd">                       unexpected behavior.  If you wish to provide point data</span>
+<span class="sd">                       using separate longitude and latitude arrays,</span>
+<span class="sd">                       use the ``lons=`` and ``lats=`` kwargs. ::</span>
+
+<span class="sd">                          [[Lon1, Lat1, Z1],</span>
+<span class="sd">                           [Lon2, Lat2, Z2],</span>
+<span class="sd">                           [Lon3, Lat3, Z3],</span>
+<span class="sd">                           ...]</span>
+
 <span class="sd">        :type points: Nx3 array of double</span>
+
 
 <span class="sd">        :param time: The time at which to query these points (T)</span>
 <span class="sd">        :type time: datetime.datetime object</span>
@@ -688,24 +661,35 @@
 <span class="sd">        :param extrapolate: if True, extrapolation will be supported</span>
 <span class="sd">        :type extrapolate: boolean (default False)</span>
 
-<span class="sd">        :param unmask: if True and return array is a masked array, returns filled array</span>
+<span class="sd">        :param unmask: If True and return array is a masked array, returns</span>
+<span class="sd">                       filled array.</span>
 <span class="sd">        :type unmask: boolean (default False)</span>
-<span class="sd">        </span>
-<span class="sd">        :param surface_boundary_condition: specifies how to evaluate points above the depth interval</span>
-<span class="sd">        :type surface_boundary_condition: string (&#39;extrapolate&#39; or &#39;mask&#39;, default &#39;extrapolate&#39;)</span>
-<span class="sd">        </span>
-<span class="sd">        :param bottom_boundary_condition: specifies how to evaluate points below the depth interval</span>
-<span class="sd">        :type bottom_boundary_condition: string (&#39;extrapolate&#39; or &#39;mask&#39;, default &#39;extrapolate&#39;)</span>
 
-<span class="sd">        :param lons: 1D iterable of longitude values. This is ignored if points is provided</span>
+<span class="sd">        :param surface_boundary_condition: Specifies how to evaluate points</span>
+<span class="sd">                                           above the depth interval.</span>
+<span class="sd">        :type surface_boundary_condition: string (&#39;extrapolate&#39; or &#39;mask&#39;,</span>
+<span class="sd">                                          default &#39;extrapolate&#39;)</span>
+
+<span class="sd">        :param bottom_boundary_condition: Specifies how to evaluate points</span>
+<span class="sd">                                          below the depth interval.</span>
+<span class="sd">        :type bottom_boundary_condition: string (&#39;extrapolate&#39; or &#39;mask&#39;,</span>
+<span class="sd">                                         default &#39;extrapolate&#39;)</span>
+
+<span class="sd">        :param lons: 1D iterable of longitude values. This is ignored</span>
+<span class="sd">                     if points is provided.</span>
 <span class="sd">        :type lons: iterable</span>
 
-<span class="sd">        :param lats 1D iterable of latitude values. This is ignored if points is provided</span>
+<span class="sd">        :param lats: 1D iterable of latitude values. This is ignored</span>
+<span class="sd">                     if points is provided</span>
 <span class="sd">        :type lons: iterable</span>
 
 <span class="sd">        :return: returns a Nx1 array of interpolated values</span>
 <span class="sd">        :rtype: double</span>
+
+<span class="sd">        If time is out of bounds of the time series, and extrapolate is False,</span>
+<span class="sd">        a gridded.time.OutOfTimeRangeError is raised.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">if</span> <span class="n">points</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">lons</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">lats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must provide either points or separate lons and lats&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">points</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -738,6 +722,7 @@
         <span class="k">if</span> <span class="n">_mem</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_memoize_result</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result_memo</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="n">_hash</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span></div>
+
 
     <span class="n">interpolate</span> <span class="o">=</span> <span class="n">at</span> <span class="c1">#common request</span>
 
@@ -831,6 +816,7 @@
             <span class="n">val_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xy_interp</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">val_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_interp</span>
+        
         <span class="n">d_indices</span><span class="p">,</span> <span class="n">d_alphas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span><span class="o">.</span><span class="n">interpolation_alphas</span><span class="p">(</span><span class="n">points</span><span class="p">,</span>
                                                               <span class="n">time</span><span class="p">,</span>
                                                               <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
@@ -852,7 +838,10 @@
         
         <span class="c1">#the two cases may be optimizations that are not worth the trouble</span>
         <span class="c1">#if problems continue to arise, get rid of them</span>
-        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">d_indices</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">d_indices</span><span class="o">.</span><span class="n">mask</span><span class="p">):</span>
+        <span class="c1">#they are *meant* to handle cases where the particles are &#39;off grid&#39;</span>
+        <span class="c1">#</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">d_indices</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">d_indices</span><span class="o">.</span><span class="n">mask</span><span class="p">):</span>
+            <span class="c1">#all particles are </span>
             <span class="k">return</span> <span class="n">val_func</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">extrapolate</span><span class="p">,</span> <span class="n">slices</span><span class="o">=</span><span class="n">slices</span> <span class="o">+</span> <span class="p">(</span><span class="mi">0</span><span class="p">,),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">d_indices</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim_idx</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">d_indices</span><span class="o">.</span><span class="n">mask</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">val_func</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">extrapolate</span><span class="p">,</span> <span class="n">slices</span><span class="o">=</span><span class="n">slices</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim_idx</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -932,13 +921,29 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Default names not found.&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="VectorVariable"><a class="viewcode-back" href="../../gridded.html#gridded.variable.VectorVariable">[docs]</a><span class="k">class</span> <span class="nc">VectorVariable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
+<div class="viewcode-block" id="VectorVariable">
+<a class="viewcode-back" href="../../gridded.html#gridded.variable.VectorVariable">[docs]</a>
+<span class="k">class</span> <span class="nc">VectorVariable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="c1"># Fixme: a lot of code duplication in here</span>
+
+    <span class="c1"># Keys are component names (&#39;u&#39;, &#39;v&#39;, etc) and values are the netCDF4 names.</span>
+    <span class="c1"># eg {&#39;u&#39;: [&#39;u&#39;, &#39;U&#39;, &#39;eastward_sea_water_velocity&#39;]}</span>
     <span class="n">default_names</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="c1"># Keys are component names (&#39;u&#39;, &#39;v&#39;, etc) and values are the CF names.</span>
+    <span class="c1"># eg {&#39;u&#39;: [&#39;u&#39;, &#39;U&#39;, &#39;eastward_sea_water_velocity&#39;]}</span>
     <span class="n">cf_names</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="c1"># This list of strings specify names for each component of the vector variable.</span>
+    <span class="c1"># The names should be the same as keys in default_names and cf_names</span>
+    <span class="c1"># for example, [&#39;u&#39;, &#39;v&#39;] will allow vv.u and vv.v to be used to access the components</span>
+    <span class="c1"># instead of vv.variables[0] and vv.variables[1]</span>
+    <span class="c1"># An error will raise if comp_order is longer than the number of components (vv.variables)</span>
+    <span class="c1"># upon object initialization</span>
     <span class="n">comp_order</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="n">_def_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">_instance_count</span> <span class="o">=</span> <span class="mi">0</span>
 
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;&#39;</span>
 <span class="sd">    These are the classes which are used when internal components are created</span>
@@ -973,13 +978,13 @@
                 <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
             <span class="n">units</span> <span class="o">=</span> <span class="n">variables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">units</span> <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">units</span>
             <span class="n">time</span> <span class="o">=</span> <span class="n">variables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">time</span> <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">=</span> <span class="n">time</span>
         <span class="k">if</span> <span class="n">units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">units</span> <span class="o">=</span> <span class="n">variables</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">units</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_units</span> <span class="o">=</span> <span class="n">units</span>
         <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Variables must be an array-like of 2 or more Variable objects&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">=</span> <span class="n">time</span>
         <span class="n">unused_args</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unused_args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -993,7 +998,9 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">comp_order</span><span class="p">):</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
-<div class="viewcode-block" id="VectorVariable.from_netCDF"><a class="viewcode-back" href="../../gridded.html#gridded.variable.VectorVariable.from_netCDF">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="VectorVariable.from_netCDF">
+<a class="viewcode-back" href="../../gridded.html#gridded.variable.VectorVariable.from_netCDF">[docs]</a>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_netCDF</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
                     <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">varnames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1002,6 +1009,8 @@
                     <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">time_origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">displacement</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">tz_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">data_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1032,6 +1041,16 @@
 <span class="sd">        :param time: Time axis of the data</span>
 <span class="sd">        :type time: [] of datetime.datetime, netCDF4 Variable, or Time object</span>
 
+<span class="sd">        :param tz_offset: offset to compensate for time zone shifts</span>
+<span class="sd">        :type tz_offset: `datetime.timedelta` or float or integer hours</span>
+
+<span class="sd">        :param origin: shifts the time interval to begin at the time specified</span>
+<span class="sd">        :type origin: `datetime.datetime`</span>
+
+<span class="sd">        :param displacement: displacement to apply to the time data.</span>
+<span class="sd">               Allows shifting entire time interval into future or past</span>
+<span class="sd">        :type displacement: `datetime.timedelta`</span>
+<span class="sd">        </span>
 <span class="sd">        :param data: Underlying data source</span>
 <span class="sd">        :type data: netCDF4.Variable or numpy.array</span>
 
@@ -1054,22 +1073,12 @@
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">data_file</span> <span class="o">=</span> <span class="n">filename</span>
             <span class="n">grid_file</span> <span class="o">=</span> <span class="n">filename</span>
-
-        <span class="n">ds</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">dg</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">dataset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">grid_file</span> <span class="o">==</span> <span class="n">data_file</span><span class="p">:</span>
-                <span class="n">ds</span> <span class="o">=</span> <span class="n">dg</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">grid_file</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">ds</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
-                <span class="n">dg</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">grid_file</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">grid_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">dg</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">grid_file</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">dg</span> <span class="o">=</span> <span class="n">dataset</span>
-            <span class="n">ds</span> <span class="o">=</span> <span class="n">dataset</span>
-
+            
+        <span class="n">ds</span><span class="p">,</span> <span class="n">dg</span> <span class="o">=</span> <span class="n">parse_filename_dataset_args</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+                                                <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
+                                                <span class="n">grid_file</span><span class="o">=</span><span class="n">grid_file</span><span class="p">,</span>
+                                                <span class="n">data_file</span><span class="o">=</span><span class="n">data_file</span><span class="p">)</span>
+        
         <span class="k">if</span> <span class="n">grid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">grid_file</span><span class="p">,</span>
                                     <span class="n">dataset</span><span class="o">=</span><span class="n">dg</span><span class="p">,</span>
@@ -1080,39 +1089,44 @@
             <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">varnames</span><span class="p">]):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No compatible variable names found!&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_def_count</span><span class="p">)</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">_def_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_instance_count</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_instance_count</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">ds</span><span class="p">[</span><span class="n">varnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
         <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">data_file</span><span class="p">,</span>
-                                    <span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span>
-                                    <span class="n">datavar</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">time_origin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">data_file</span><span class="p">,</span> <span class="n">varname</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">varname</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">time_origin</span><span class="p">)</span>
+            <span class="n">timevarname</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">locate_time_var_from_var</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">timevarname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span>
+                        <span class="n">filename</span><span class="o">=</span><span class="n">data_file</span><span class="p">,</span>
+                        <span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span>
+                        <span class="n">varname</span><span class="o">=</span><span class="n">timevarname</span><span class="p">,</span>
+                        <span class="c1"># datavar=None,</span>
+                        <span class="n">tz_offset</span><span class="o">=</span><span class="n">tz_offset</span><span class="p">,</span>
+                        <span class="n">new_tz_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">origin</span><span class="o">=</span><span class="n">time_origin</span><span class="p">,</span>
+                        <span class="n">displacement</span><span class="o">=</span><span class="n">displacement</span>
+                        <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">timevarname</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
+
         <span class="k">if</span> <span class="n">depth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="p">(</span><span class="n">Grid_S</span><span class="p">,</span> <span class="n">Grid_R</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">or</span>
-                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">Grid_U</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
-                <span class="n">depth</span> <span class="o">=</span> <span class="n">Depth</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">grid_file</span><span class="p">,</span>
-                                          <span class="n">dataset</span><span class="o">=</span><span class="n">dg</span><span class="p">,</span>
+            <span class="n">istimevar</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">timevarname</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">1</span>
+            
+            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="p">(</span><span class="n">Grid_S</span><span class="p">,</span> <span class="n">Grid_R</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="o">+</span> <span class="n">istimevar</span> <span class="ow">or</span>
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">Grid_U</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">istimevar</span><span class="p">):</span>
+                <span class="n">depth</span> <span class="o">=</span> <span class="n">Depth</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">grid_file</span><span class="o">=</span><span class="n">dg</span><span class="p">,</span>
+                                          <span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span>
+                                          <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
+                                          <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
                                           <span class="o">**</span><span class="n">kwargs</span>
                                           <span class="p">)</span>
-
-<span class="c1">#         if depth is None:</span>
-<span class="c1">#             if (isinstance(grid, Grid_S) and len(data.shape) == 4 or</span>
-<span class="c1">#                         (len(data.shape) == 3 and time is None) or</span>
-<span class="c1">#                     (isinstance(grid, Grid_U) and len(data.shape) == 3 or</span>
-<span class="c1">#                         (len(data.shape) == 2 and time is None))):</span>
-<span class="c1">#                 from gnome.environment.environment_objects import S_Depth</span>
-<span class="c1">#                 depth = S_Depth.from_netCDF(grid=grid,</span>
-<span class="c1">#                                             depth=1,</span>
-<span class="c1">#                                             data_file=data_file,</span>
-<span class="c1">#                                             grid_file=grid_file,</span>
-<span class="c1">#                                             **kwargs)</span>
+        
         <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">variables</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">vn</span> <span class="ow">in</span> <span class="n">varnames</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">vn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="c1"># Fixme: We&#39;re calling from_netCDF from itself ?!?!?</span>
                     <span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Variable</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
                                                           <span class="n">varname</span><span class="o">=</span><span class="n">vn</span><span class="p">,</span>
                                                           <span class="n">grid_topology</span><span class="o">=</span><span class="n">grid_topology</span><span class="p">,</span>
@@ -1145,6 +1159,7 @@
                    <span class="n">load_all</span><span class="o">=</span><span class="n">load_all</span><span class="p">,</span>
                    <span class="n">location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_gen_varnames</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
@@ -1299,7 +1314,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="VectorVariable.at"><a class="viewcode-back" href="../../gridded.html#gridded.variable.VectorVariable.at">[docs]</a>    <span class="k">def</span> <span class="nf">at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="VectorVariable.at">
+<a class="viewcode-back" href="../../gridded.html#gridded.variable.VectorVariable.at">[docs]</a>
+    <span class="k">def</span> <span class="nf">at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
            <span class="n">points</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
            <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
            <span class="n">units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1315,7 +1332,9 @@
 
 <span class="sd">        :param points: Cartesian coordinates to be queried (P). Lon, Lat required, Depth (Z) is optional</span>
 <span class="sd">                       Coordinates must be organized as a 2D array or list, one coordinate per row or list element.</span>
+
 <span class="sd">                       ::</span>
+
 <span class="sd">                          [[Lon1, Lat1, Z1],</span>
 <span class="sd">                           [Lon2, Lat2, Z2],</span>
 <span class="sd">                           [Lon3, Lat3, Z3],</span>
@@ -1325,8 +1344,6 @@
 <span class="sd">                       If you wish to provide point data using separate longitude and latitude arrays,</span>
 <span class="sd">                       use the `lons=` and `lats=` kwargs.</span>
 
-<span class="sd">                       Note that if your Z is positive-up, self.depth.positive_down should be</span>
-<span class="sd">                       set to False</span>
 
 <span class="sd">        :type points: Nx3 array of double</span>
 
@@ -1354,6 +1371,10 @@
 
 <span class="sd">        :return: NxM array of interpolated values N = len(points) M = len(self.variables)</span>
 <span class="sd">        :rtype: np.array or np.ma.MaskedArray</span>
+
+<span class="sd">        If time is out of bounds of the time series, and extrapolate is False, a</span>
+<span class="sd">        gridded.time.OutOfTimeRangeError is raised.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">points</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="n">lons</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">lats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must provide either points or separate lons and lats&quot;</span><span class="p">)</span>
@@ -1381,6 +1402,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_memoize_result</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result_memo</span><span class="p">,</span> <span class="n">_hash</span><span class="o">=</span><span class="n">_hash</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">value</span></div>
+
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_get_shared_vars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">sh_args</span><span class="p">):</span>
@@ -1430,7 +1452,9 @@
             <span class="k">return</span> <span class="n">wrapper</span>
         <span class="k">return</span> <span class="n">getvars</span>
 
-<div class="viewcode-block" id="VectorVariable.save"><a class="viewcode-back" href="../../gridded.html#gridded.variable.VectorVariable.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;netcdf4&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="VectorVariable.save">
+<a class="viewcode-back" href="../../gridded.html#gridded.variable.VectorVariable.save">[docs]</a>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;netcdf4&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the variable object to a netcdf file.</span>
 
@@ -1446,7 +1470,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">format_options</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;netcdf3&#39;</span><span class="p">,</span> <span class="s1">&#39;netcdf4&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">format_options</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;format: </span><span class="si">{}</span><span class="s2"> not supported. Options are: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="n">format_options</span><span class="p">))</span></div></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;format: </span><span class="si">{}</span><span class="s2"> not supported. Options are: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="n">format_options</span><span class="p">))</span></div>
+</div>
+
 
 </pre></div>
 
