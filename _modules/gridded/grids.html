@@ -1,20 +1,22 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>gridded.grids &mdash; gridded 0.7.2dev documentation</title>
+  <title>gridded.grids &mdash; gridded 0.7.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
   
-      <script src="../../_static/jquery.js?v=5d32c60e"></script>
-      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=46001abd"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=a674670e"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -31,6 +33,9 @@
           <a href="../../index.html" class="icon icon-home">
             gridded
           </a>
+              <div class="version">
+                0.7.5
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -665,14 +670,19 @@
             <span class="bp">cls</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">_get_grid_type</span><span class="p">(</span><span class="n">dg</span><span class="p">,</span> <span class="n">grid_type</span><span class="p">,</span> <span class="n">grid_topology</span><span class="p">,</span> <span class="n">_default_types</span><span class="p">)</span>
 
         <span class="c1"># if grid_topology is passed in, don&#39;t look for the variable</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">grid_topology</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">grid_topology</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">compliant</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">_find_topology_var</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">dg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s1">&#39;cf_role&#39;</span> <span class="ow">in</span> <span class="n">grid_topology</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="s1">&#39;topology&#39;</span> <span class="ow">in</span> <span class="n">grid_topology</span><span class="p">[</span><span class="s1">&#39;cf_role&#39;</span><span class="p">]:</span>
+            <span class="n">compliant</span> <span class="o">=</span> <span class="n">grid_topology</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">compliant</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="n">compliant</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">c</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">_load_grid</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">dg</span><span class="p">)</span>
-            <span class="n">c</span><span class="o">.</span><span class="n">grid_topology</span> <span class="o">=</span> <span class="n">compliant</span><span class="o">.</span><span class="vm">__dict__</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">compliant</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">):</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">grid_topology</span> <span class="o">=</span> <span class="n">compliant</span><span class="o">.</span><span class="vm">__dict__</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">grid_topology</span> <span class="o">=</span> <span class="n">compliant</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">init_args</span><span class="p">,</span> <span class="n">gt</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_find_required_grid_attrs</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
                                                           <span class="n">dataset</span><span class="o">=</span><span class="n">dg</span><span class="p">,</span>

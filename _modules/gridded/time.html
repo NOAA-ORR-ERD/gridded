@@ -1,20 +1,22 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>gridded.time &mdash; gridded 0.7.2dev documentation</title>
+  <title>gridded.time &mdash; gridded 0.7.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
   
-      <script src="../../_static/jquery.js?v=5d32c60e"></script>
-      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=46001abd"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=a674670e"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -31,6 +33,9 @@
           <a href="../../index.html" class="icon icon-home">
             gridded
           </a>
+              <div class="version">
+                0.7.5
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -258,18 +263,19 @@
             <span class="k">raise</span> <span class="n">TimeSeriesError</span><span class="p">(</span><span class="s2">&quot;Time sequence has duplicate entries&quot;</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Time</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+
 <div class="viewcode-block" id="Time.locate_time_var_from_var">
 <a class="viewcode-back" href="../../gridded.html#gridded.time.Time.locate_time_var_from_var">[docs]</a>
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">locate_time_var_from_var</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">datavar</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">locate_time_var_from_var</span><span class="p">(</span><span class="n">datavar</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">datavar</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">datavar</span><span class="o">.</span><span class="n">time</span> <span class="ow">in</span> <span class="n">datavar</span><span class="o">.</span><span class="n">_grp</span><span class="o">.</span><span class="n">dimensions</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">varname</span> <span class="o">=</span> <span class="n">datavar</span><span class="o">.</span><span class="n">time</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">varname</span> <span class="o">=</span> <span class="n">datavar</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">datavar</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span>
-        
+
         <span class="k">return</span> <span class="n">varname</span></div>
 
-        
+
 
 <div class="viewcode-block" id="Time.from_netCDF">
 <a class="viewcode-back" href="../../gridded.html#gridded.time.Time.from_netCDF">[docs]</a>
@@ -537,11 +543,16 @@
 <div class="viewcode-block" id="Time.valid_time">
 <a class="viewcode-back" href="../../gridded.html#gridded.time.Time.valid_time">[docs]</a>
     <span class="k">def</span> <span class="nf">valid_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">time</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_time</span> <span class="ow">or</span> <span class="n">time</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_time</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">OutOfTimeRangeError</span><span class="p">(</span><span class="s1">&#39;time specified (</span><span class="si">{0}</span><span class="s1">) is not within the bounds of &#39;</span>
-                                      <span class="s1">&#39;the time (</span><span class="si">{1}</span><span class="s1"> to </span><span class="si">{2}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%c</span><span class="s1">&#39;</span><span class="p">),</span>
-                                                                 <span class="bp">self</span><span class="o">.</span><span class="n">min_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%c</span><span class="s1">&#39;</span><span class="p">),</span>
-                                                                 <span class="bp">self</span><span class="o">.</span><span class="n">max_time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%c</span><span class="s1">&#39;</span><span class="p">)))</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Raises a OutOfTimeRangeError if time is not within the bounds of the timeseries</span>
+
+<span class="sd">        :param time: a datetime object that you want to check.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if time &lt; self.min_time or time &gt; self.max_time:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_in_bounds</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">OutOfTimeRangeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;time specified: (</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s1">) is not within the bounds of &#39;</span>
+                                      <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">min_time</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_time</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="si">}</span><span class="s1">)&#39;</span>
+                                      <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Time.index_of">

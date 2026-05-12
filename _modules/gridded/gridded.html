@@ -1,20 +1,22 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>gridded.gridded &mdash; gridded 0.7.2dev documentation</title>
+  <title>gridded.gridded &mdash; gridded 0.7.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
   
-      <script src="../../_static/jquery.js?v=5d32c60e"></script>
-      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=46001abd"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=a674670e"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -31,6 +33,9 @@
           <a href="../../index.html" class="icon icon-home">
             gridded
           </a>
+              <div class="version">
+                0.7.5
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -83,10 +88,7 @@
 <span class="sd">The core class that encapsulates the gridded data model</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-
-
-
-<span class="c1"># py2/3 compatibility</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">gridded.grids</span> <span class="kn">import</span> <span class="n">Grid</span>
 <span class="kn">from</span> <span class="nn">gridded.variable</span> <span class="kn">import</span> <span class="n">Variable</span>
@@ -97,19 +99,14 @@
                                <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">VALID_LOCATIONS</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The main gridded.Dataset code</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
 
 <div class="viewcode-block" id="Dataset">
 <a class="viewcode-back" href="../../gridded.html#gridded.gridded.Dataset">[docs]</a>
-<span class="k">class</span> <span class="nc">Dataset</span><span class="p">():</span>
+<span class="k">class</span> <span class="nc">Dataset</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    An object that represent an entire complete dataset --</span>
 <span class="sd">    a collection of Variables and the Grid that they are stored on.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">ncfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -150,23 +147,89 @@
 <span class="sd">        the input ones ignored.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ncfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># raise ValueError(&quot;don&#39;t create from a file&quot;)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Creating a Dataset from a netcdfile directly is deprecated. &quot;</span>
+                          <span class="s2">&quot;Please use Dataset.from_netCDF() instead. &quot;</span>
+                          <span class="s2">&quot;Or use one of the utilities in gridded.io&quot;</span><span class="p">,</span>
+                          <span class="ne">DeprecationWarning</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ncfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">grid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span>
                   <span class="n">variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span>
                   <span class="n">attributes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;You can create a Dataset from a file, or from raw data&quot;</span>
                                  <span class="s2">&quot;but not both.&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span><span class="o">.</span><span class="n">filepath</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-                                         <span class="n">dataset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span><span class="p">,</span>
-                                         <span class="n">grid_topology</span><span class="o">=</span><span class="n">grid_topology</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="n">get_dataset_attrs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># no file passed in -- create from grid and variables</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_from_netCDF</span><span class="p">(</span><span class="n">ncfile</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Create from grid and variables -- this is what should usually happen.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">variables</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">attributes</span>
+
+
+    <span class="k">def</span> <span class="nf">_init_from_netCDF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                          <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">grid_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">variable_files</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">grid_topology</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        internal implementation -- users should call the .from_netCDF()</span>
+<span class="sd">        classmethod -- see its docstring for usage.</span>
+
+<span class="sd">        This is used to initialize a dataset from a netCDF file --</span>
+<span class="sd">        done this way, so it can be called from more than one place.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">grid_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">variable_files</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Loading from separate netcdf files is not yet supported&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span> <span class="o">=</span> <span class="n">get_dataset</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span><span class="o">.</span><span class="n">filepath</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                                     <span class="n">dataset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span><span class="p">,</span>
+                                     <span class="n">grid_topology</span><span class="o">=</span><span class="n">grid_topology</span><span class="p">)</span>
+        <span class="c1"># fixme: this should load the depth and time, and then the variables.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variables_from_netCDF</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="n">get_dataset_attrs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nc_dataset</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Dataset.from_netCDF">
+<a class="viewcode-back" href="../../gridded.html#gridded.gridded.Dataset.from_netCDF">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_netCDF</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                    <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">grid_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">variable_files</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">grid_topology</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        NOTE: only loading from a single file is currently implemented.</span>
+<span class="sd">              you can create a DATaset by hand, by loading the grid and</span>
+<span class="sd">              variables separately, and then adding them</span>
+
+<span class="sd">        load a gridded.Dataset from a netCDF file</span>
+
+<span class="sd">        :param filename: filename or netCDF4 compatible OpeNDAP url.</span>
+<span class="sd">                         It is assumed to contain the grid and variables.</span>
+<span class="sd">        :param grid_file: filename of the file that contains the grid, if separate.</span>
+
+<span class="sd">        :param variable_files: filename of filenames that contain the variables.</span>
+
+<span class="sd">        NOTE: Either the filename or the grid_file and variable_files should be specified.</span>
+<span class="sd">              not all three.</span>
+
+<span class="sd">        :param grid_topology: mapping of grid topology components to netcdf variable names.</span>
+<span class="sd">                              used to load non-confirming files.</span>
+<span class="sd">        :type grid_topology: mapping with keys of topology components and values are</span>
+<span class="sd">                             variable names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># create an empty Dataset:</span>
+        <span class="n">ds</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="c1"># initialize it</span>
+        <span class="n">ds</span><span class="o">.</span><span class="n">_init_from_netCDF</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
+                             <span class="n">grid_file</span><span class="p">,</span>
+                             <span class="n">variable_files</span><span class="p">,</span>
+                             <span class="n">grid_topology</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ds</span></div>
+
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -174,10 +237,23 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_load_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">descp</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;gridded.Dataset with:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                 <span class="sa">f</span><span class="s2">&quot;grid: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                 <span class="sa">f</span><span class="s2">&quot;variables: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+                 <span class="p">)</span>
+        <span class="k">return</span> <span class="n">descp</span>
+
+
+    <span class="k">def</span> <span class="nf">_variables_from_netCDF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ds</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        load up the variables in the nc file</span>
+
+<span class="sd">        :param ds: initialized netCDF dataset</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># fixme: this needs work</span>
+        <span class="c1">#        It *should* have already gotten the grid and depth and time,</span>
+        <span class="c1">#        and then the variables can be loaded directly.</span>
         <span class="n">variables</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ds</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="c1"># find which netcdf variables are used to define the grid</span>

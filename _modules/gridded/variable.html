@@ -1,20 +1,22 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>gridded.variable &mdash; gridded 0.7.2dev documentation</title>
+  <title>gridded.variable &mdash; gridded 0.7.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
   
-      <script src="../../_static/jquery.js?v=5d32c60e"></script>
-      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=46001abd"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=a674670e"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -31,6 +33,9 @@
           <a href="../../index.html" class="icon icon-home">
             gridded
           </a>
+              <div class="version">
+                0.7.5
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -387,11 +392,12 @@
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">{0.__class__.__module__}</span><span class="s1">.</span><span class="si">{0.__class__.__name__}</span><span class="s1">(&#39;</span>
-                <span class="s1">&#39;name=&quot;</span><span class="si">{0.name}</span><span class="s1">&quot;, &#39;</span>
-                <span class="s1">&#39;time=&quot;</span><span class="si">{0.time}</span><span class="s1">&quot;, &#39;</span>
-                <span class="s1">&#39;units=&quot;</span><span class="si">{0.units}</span><span class="s1">&quot;, &#39;</span>
-                <span class="s1">&#39;data=&quot;</span><span class="si">{0.data}</span><span class="s1">&quot;, &#39;</span>
-                <span class="s1">&#39;)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+                <span class="s1">&#39;name=&quot;</span><span class="si">{0.name}</span><span class="s1">&quot;, </span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;time=&quot;</span><span class="si">{0.time}</span><span class="s1">&quot;, </span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;units=&quot;</span><span class="si">{0.units}</span><span class="s1">&quot;, </span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;location=&quot;</span><span class="si">{0.location}</span><span class="s1">&quot; </span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;data=Type:</span><span class="si">{1}</span><span class="s1">, shape:</span><span class="si">{0.data.shape}</span><span class="s1">&quot;, &#39;</span>
+                <span class="s1">&#39;)&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Variable.constant">
 <a class="viewcode-back" href="../../gridded.html#gridded.variable.Variable.constant">[docs]</a>

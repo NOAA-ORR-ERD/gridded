@@ -1,20 +1,22 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>gridded.depth &mdash; gridded 0.7.2dev documentation</title>
+  <title>gridded.depth &mdash; gridded 0.7.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
   
-      <script src="../../_static/jquery.js?v=5d32c60e"></script>
-      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=46001abd"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=a674670e"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -31,6 +33,9 @@
           <a href="../../index.html" class="icon icon-home">
             gridded
           </a>
+              <div class="version">
+                0.7.5
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -451,8 +456,13 @@
 <span class="sd">        :param zeta: variable object representing free-surface</span>
 <span class="sd">        :type zeta: gridded.variable.Variable or derivative</span>
 
-<span class="sd">        :param terms: remaining terms in dictionary layout</span>
-<span class="sd">        :type terms: dictionary of string key to numeric value</span>
+<span class="sd">        :param terms: remaining terms in dictionary layout.</span>
+<span class="sd">            e.g. ROMS: {&#39;Cs_r&#39;: nc4.Dataset[&#39;Cs_r&#39;][:],</span>
+<span class="sd">                        &#39;Cs_w&#39;: nc4.Dataset[&#39;Cs_w&#39;][:],</span>
+<span class="sd">                        &#39;s_rho&#39;: nc4.Dataset[&#39;s_rho&#39;][:],</span>
+<span class="sd">                        &#39;s_w&#39;: nc4.Dataset[&#39;s_w&#39;][:],</span>
+<span class="sd">                        &#39;hc&#39;: nc4.Dataset[&#39;hc&#39;][:],</span>
+<span class="sd">        :type terms: dictionary of string key to numeric value. </span>
 <span class="sd">                     See ``S_Depth.default_names``, sans bathymetry and zeta</span>
 
 <span class="sd">        :param vtransform: S-coordinate transform type. 1 = Old, 2 = New</span>
@@ -489,7 +499,6 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_netCDF</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
                     <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">varnames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">grid_topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -511,18 +520,19 @@
 <span class="sd">        :param filename: A string or ordered list of string of netCDF filename(s)</span>
 <span class="sd">        :type filename: str or list[str]</span>
 
-<span class="sd">        :param varnames: Direct mapping of component name to netCDF variable name. Use</span>
-<span class="sd">                         this if auto detection fails. Partial definition is allowable.</span>
-<span class="sd">                         Unspecified terms will use the value in `.default_names`. ::</span>
-<span class="sd">                             {&#39;Cs_r&#39;: &#39;Cs_r&#39;,</span>
-<span class="sd">                              &#39;Cs_w&#39;: Cs_w&#39;,</span>
-<span class="sd">                              &#39;s_rho&#39;: &#39;s_rho&#39;),</span>
-<span class="sd">                              &#39;s_w&#39;: &#39;s_w&#39;,</span>
-<span class="sd">                              &#39;bathymetry&#39;: &#39;h&#39;,</span>
-<span class="sd">                              &#39;hc&#39;: &#39;hc&#39;),</span>
-<span class="sd">                              &#39;zeta&#39;: &#39;zeta&#39;)</span>
-<span class="sd">                              }</span>
-<span class="sd">        :type varnames: dict</span>
+<span class="sd">        :param terms: Direct mapping of component name to netCDF variable name. Use</span>
+<span class="sd">                      this if auto detection fails. Partial definition is allowable.</span>
+<span class="sd">                      Unspecified terms will use the value in `.default_names`.</span>
+<span class="sd">                      ::</span>
+<span class="sd">                        {&#39;Cs_r&#39;: &#39;Cs_r&#39;,</span>
+<span class="sd">                         &#39;Cs_w&#39;: &#39;Cs_w&#39;,</span>
+<span class="sd">                         &#39;s_rho&#39;: &#39;s_rho&#39;),</span>
+<span class="sd">                         &#39;s_w&#39;: &#39;s_w&#39;,</span>
+<span class="sd">                         &#39;bathymetry&#39;: &#39;h&#39;,</span>
+<span class="sd">                         &#39;hc&#39;: &#39;hc&#39;),</span>
+<span class="sd">                         &#39;zeta&#39;: &#39;zeta&#39;)</span>
+<span class="sd">                         }</span>
+<span class="sd">        :type terms: dict</span>
 
 <span class="sd">        :param name: Human-readable name for this object</span>
 <span class="sd">        :type name: str</span>
@@ -539,10 +549,13 @@
 <span class="sd">        :param displacement: displacement to apply to the time data.</span>
 <span class="sd">                             Allows shifting entire time interval into future or past</span>
 <span class="sd">        :type displacement: `datetime.timedelta`</span>
-<span class="sd">        </span>
+
 <span class="sd">        :param grid: X-Y dmension (for bathymetry &amp; zeta)</span>
 <span class="sd">        :type grid: subclass of gridded.grids.GridBase</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">cls</span> <span class="o">==</span> <span class="n">S_Depth</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;S_Depth is not meant to be instantiated. Please use a subclass like ROMS_Depth or FVCOM_Depth&#39;</span><span class="p">)</span>
+
         <span class="n">Grid</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_default_component_types</span><span class="p">[</span><span class="s1">&#39;grid&#39;</span><span class="p">]</span>
         <span class="n">Time</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_default_component_types</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
         <span class="n">Variable</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_default_component_types</span><span class="p">[</span><span class="s1">&#39;variable&#39;</span><span class="p">]</span>
@@ -565,22 +578,27 @@
         <span class="n">nc_vars</span> <span class="o">=</span> <span class="n">search_netcdf_vars</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ds</span><span class="p">,</span> <span class="n">dg</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">zeta_var</span> <span class="o">=</span> <span class="n">nc_vars</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;zeta&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">zeta_var</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">warn</span> <span class="o">=</span> <span class="s1">&#39;Unable to locate zeta in data file&#39;</span>
-                <span class="k">if</span> <span class="n">dg</span><span class="p">:</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn</span> <span class="o">+</span> <span class="s1">&#39; or grid file.&#39;</span><span class="p">)</span>
-                <span class="n">warn</span> <span class="o">+=</span> <span class="s1">&#39; Generating constant (0) zeta.&#39;</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
-                <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">constant_time</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">zeta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">zeta_var</span> <span class="o">=</span> <span class="n">nc_vars</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;zeta&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">zeta_var</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">warn</span> <span class="o">=</span> <span class="s1">&#39;Unable to locate zeta in data file&#39;</span>
+                    <span class="k">if</span> <span class="n">dg</span><span class="p">:</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn</span> <span class="o">+</span> <span class="s1">&#39; or grid file.&#39;</span><span class="p">)</span>
+                    <span class="n">warn</span> <span class="o">+=</span> <span class="s1">&#39; Generating constant (0) zeta.&#39;</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">warn</span><span class="p">)</span>
+                    <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">constant_time</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span>
+                        <span class="n">dataset</span><span class="o">=</span><span class="n">zeta_var</span><span class="o">.</span><span class="n">_grp</span><span class="p">,</span> <span class="c1">#zeta_var should be a netCDF4.Variable, so its _grp attribute should be the dataset it belongs to</span>
+                        <span class="n">datavar</span><span class="o">=</span><span class="n">zeta_var</span><span class="p">,</span>
+                        <span class="n">origin</span><span class="o">=</span><span class="n">time_origin</span><span class="p">,</span>
+                        <span class="n">displacement</span><span class="o">=</span><span class="n">displacement</span><span class="p">,</span>
+                        <span class="n">tz_offset</span><span class="o">=</span><span class="n">tz_offset</span>
+                    <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">zeta</span><span class="p">,</span> <span class="n">Variable</span><span class="p">)</span> <span class="ow">and</span> <span class="n">zeta</span><span class="o">.</span><span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">time</span> <span class="o">=</span> <span class="n">zeta</span><span class="o">.</span><span class="n">time</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span>
-                    <span class="n">datavar</span><span class="o">=</span><span class="n">zeta_var</span><span class="p">,</span>
-                    <span class="n">filename</span><span class="o">=</span><span class="n">data_file</span><span class="p">,</span>
-                    <span class="n">origin</span><span class="o">=</span><span class="n">time_origin</span><span class="p">,</span>
-                    <span class="n">displacement</span><span class="o">=</span><span class="n">displacement</span><span class="p">,</span>
-                    <span class="n">tz_offset</span><span class="o">=</span><span class="n">tz_offset</span>
-                <span class="p">)</span>
+                <span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">time_origin</span><span class="p">,</span> <span class="n">displacement</span><span class="o">=</span><span class="n">displacement</span><span class="p">,</span> <span class="n">tz_offset</span><span class="o">=</span><span class="n">tz_offset</span><span class="p">)</span>
                                         
         <span class="k">if</span> <span class="n">bathymetry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">bathy_var</span> <span class="o">=</span> <span class="n">nc_vars</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bathymetry&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -830,8 +848,6 @@
 
 
 
-
-
 <div class="viewcode-block" id="ROMS_Depth">
 <a class="viewcode-back" href="../../gridded.html#gridded.depth.ROMS_Depth">[docs]</a>
 <span class="k">class</span> <span class="nc">ROMS_Depth</span><span class="p">(</span><span class="n">S_Depth</span><span class="p">):</span>
@@ -1054,15 +1070,17 @@
         <span class="n">typs</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">sd_types</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ld_types</span>
         <span class="n">available_to_create</span> <span class="o">=</span> <span class="p">[</span><span class="n">typ</span><span class="o">.</span><span class="n">_can_create_from_netCDF</span><span class="p">(</span><span class="n">grid_file</span><span class="o">=</span><span class="n">dg</span><span class="p">,</span> <span class="n">data_file</span><span class="o">=</span><span class="n">ds</span><span class="p">)</span> <span class="k">for</span> <span class="n">typ</span> <span class="ow">in</span> <span class="n">typs</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">available_to_create</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;Unable to automatically determine depth system so</span>
-<span class="s1">                            reverting to surface-only mode. Manually check the</span>
-<span class="s1">                            (depth_object).surface_index attribute and set it</span>
-<span class="s1">                            to the appropriate array index for your model data&#39;&#39;&#39;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unable to automatically determine depth system so &quot;</span>
+                          <span class="s2">&quot;reverting to surface-only mode. Manually check the &quot;</span>
+                          <span class="s2">&quot;(depth_object).surface_index attribute and set it &quot;</span>
+                          <span class="s2">&quot;to the appropriate array index for your model data&quot;</span><span class="p">,</span>
+                          <span class="ne">RuntimeWarning</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">surf_types</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">data_file</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span> <span class="n">grid_file</span><span class="o">=</span><span class="n">dg</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">typ</span> <span class="o">=</span> <span class="n">typs</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">available_to_create</span><span class="p">)]</span>
             <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">available_to_create</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;Multiple depth systems detected. Using the first one found: </span><span class="si">{0}</span><span class="s1">&#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">typ</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">),</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Multiple depth systems detected. Using the first one found: &quot;</span>
+                              <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">typ</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">typ</span><span class="o">.</span><span class="n">from_netCDF</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
                                    <span class="n">dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">,</span>
                                    <span class="n">data_file</span><span class="o">=</span><span class="n">data_file</span><span class="p">,</span>
