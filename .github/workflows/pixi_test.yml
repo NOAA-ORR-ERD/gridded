@@ -8,11 +8,12 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
     strategy:
       # Test against multiple environments (e.g., different Python versions)
       matrix:
-        environment: [py311, py312, py313]
+        environment: [py312, py313, py314]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
