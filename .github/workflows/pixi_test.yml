@@ -1,0 +1,55 @@
+name: Test Gridded with Pixi
+
+on:
+  push:
+#    branches: [main]
+  pull_request:
+#    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      # Test against multiple environments (e.g., different Python versions)
+      matrix:
+        environment: [py311, py312, py313]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Pixi
+        uses: prefix-dev/setup-pixi@v0.8.3
+        with:
+          # Specify which environment from your pixi.toml to install
+          environments: ${{ matrix.environment }}
+          # Automatically caches the environment based on pixi.lock
+          cache: true
+          # cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+
+      - name: Run Tests
+        run: pixi run -e ${{ matrix.environment }} test
+
+
+
+# test:
+#   runs-on: ubuntu-latest
+#   strategy:
+#     matrix:
+#       environment: [py311, py312, py313]
+#   steps:
+#     - uses: actions/checkout@v4
+#     - uses: prefix-dev/setup-pixi@v0.9.6
+#       with:
+#         environments: ${{ matrix.environment }}
+
+# - uses: prefix-dev/setup-pixi@v0.9.6
+#   with:
+#     pixi-version: v0.66.0
+
+#     cache: true
+#     cache-write: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+#     auth-host: prefix.dev
+#     auth-token: ${{ secrets.PREFIX_DEV_TOKEN }}
+# - run: pixi run test
+
