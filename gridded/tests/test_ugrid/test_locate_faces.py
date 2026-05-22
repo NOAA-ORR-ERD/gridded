@@ -1,15 +1,16 @@
 import numpy as np
 import pytest
-from .utilities import twenty_one_triangles
 
+from .utilities import twenty_one_triangles
 
 # used to parametrize tests for both methods
 try:
     import cell_tree2d  # noqa: ignore=F401
-    methods = ['simple', 'celltree']
+
+    methods = ["simple", "celltree"]
 except ImportError:
     # no cell tree -- only test simple
-    methods = ['simple']
+    methods = ["simple"]
 
 
 @pytest.mark.parametrize("method", methods)
@@ -33,4 +34,4 @@ def test_oob(method, twenty_one_triangles):
     assert face == -1
     face = 0
     face = ugrid.locate_faces(np.array(((0, 0),)), method)
-    assert np.array_equal(face, np.array((-1, )))
+    assert np.array_equal(face, np.array((-1,)))

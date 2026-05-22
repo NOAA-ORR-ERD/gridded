@@ -5,21 +5,19 @@ Tests for writing and reading UGRID compliant netCDF.
 
 """
 
-
 import os
-import numpy as np
 
+import numpy as np
 import pytest
 
 from gridded.pyugrid.ugrid import UGrid
 from gridded.pyugrid.uvar import UVar
-
-from .utilities import chdir, two_triangles
+from gridded.tests.utilities import chdir
 
 pytestmark = pytest.mark.skipif(True, reason="gridded does not support UVars anymore")
 
 
-test_files = os.path.join(os.path.dirname(__file__), 'files')
+test_files = os.path.join(os.path.dirname(__file__), "files")
 
 
 def test_with_faces(two_triangles):
@@ -30,7 +28,7 @@ def test_with_faces(two_triangles):
 
     expected = two_triangles
 
-    fname = '2_triangles.nc'
+    fname = "2_triangles.nc"
     with chdir(test_files):
         expected.save_as_netcdf(fname)
         grid = UGrid.from_ncfile(fname)
@@ -46,7 +44,7 @@ def test_without_faces(two_triangles):
     del expected.faces
     assert expected.faces is None
 
-    fname = '2_triangles.nc'
+    fname = "2_triangles.nc"
     with chdir(test_files):
         expected.save_as_netcdf(fname)
         grid = UGrid.from_ncfile(fname)
@@ -62,15 +60,15 @@ def test_with_just_nodes_and_depths(two_triangles):
     del expected.faces
     del expected.edges
 
-    depth = UVar('depth',
-                 'node',
-                 np.array([1.0, 2.0, 3.0, 4.0]),
-                 {'units': 'm',
-                  'positive': 'down',
-                  'standard_name': 'sea_floor_depth_below_geoid'})
+    depth = UVar(
+        "depth",
+        "node",
+        np.array([1.0, 2.0, 3.0, 4.0]),
+        {"units": "m", "positive": "down", "standard_name": "sea_floor_depth_below_geoid"},
+    )
     expected.add_data(depth)
 
-    fname = '2_triangles_depth.nc'
+    fname = "2_triangles_depth.nc"
     with chdir(test_files):
         expected.save_as_netcdf(fname)
         grid = UGrid.from_ncfile(fname, load_data=True)
@@ -80,8 +78,8 @@ def test_with_just_nodes_and_depths(two_triangles):
     assert grid.edges is None
     assert np.array_equal(expected.nodes, grid.nodes)
 
-    assert np.array_equal(expected.data['depth'].data, grid.data['depth'].data)
-    assert expected.data['depth'].attributes == grid.data['depth'].attributes
+    assert np.array_equal(expected.data["depth"].data, grid.data["depth"].data)
+    assert expected.data["depth"].attributes == grid.data["depth"].attributes
 
 
 if __name__ == "__main__":

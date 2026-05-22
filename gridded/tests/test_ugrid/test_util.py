@@ -3,12 +3,12 @@ Tests for the utilities module.
 
 """
 
-
 import numpy as np
+
 from gridded.pyugrid import util
 
 
-class DummyArrayLike(object):
+class DummyArrayLike:
     """
     Class that will look like an array to this function, even
     though it won't work!
@@ -18,7 +18,8 @@ class DummyArrayLike(object):
     This will need to be updated when the function is changed.
 
     """
-    must_have = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute__']
+
+    must_have = ["dtype", "shape", "ndim", "__len__", "__getitem__", "__getattribute__"]
 
     # pretty kludgy way to do this..
     def __new__(cls):

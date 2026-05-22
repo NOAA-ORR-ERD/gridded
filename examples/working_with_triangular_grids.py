@@ -8,18 +8,15 @@ triangulation
 Available on conda-forge:  with conda-forge enabled
 """
 
+import matplotlib.pyplot as plt
 import numpy as np
+import triangle
+from matplotlib.collections import LineCollection
+from matplotlib.tri import Triangulation
 
 import gridded
 from gridded.grids import UGrid
 from gridded.plotting.mpl_plotting import plot_ugrid
-
-from matplotlib.tri import Triangulation
-from matplotlib.collections import  LineCollection
-import matplotlib.pyplot as plt
-
-import triangle
-
 
 # if the built in one doesn't work for you.
 # requires a recent version of gridded
@@ -79,54 +76,57 @@ import triangle
 #         axes.add_collection(lc)
 
 
-
 # Sample Grid
 # (This is the same as what's in gridded.tests.utilities,
 #  but is explicitly here, so that the data structures required are clear
 
 # the nodes are an Nx2 array of (x, y) (lon, lat) points
-nodes = [(5, 1),
-         (10, 1),
-         (3, 3),
-         (7, 3),
-         (9, 4),
-         (12, 4),
-         (5, 5),
-         (3, 7),
-         (5, 7),
-         (7, 7),
-         (9, 7),
-         (11, 7),
-         (5, 9),
-         (8, 9),
-         (11, 9),
-         (9, 11),
-         (11, 11),
-         (7, 13),
-         (9, 13),
-         (7, 15), ]
+nodes = [
+    (5, 1),
+    (10, 1),
+    (3, 3),
+    (7, 3),
+    (9, 4),
+    (12, 4),
+    (5, 5),
+    (3, 7),
+    (5, 7),
+    (7, 7),
+    (9, 7),
+    (11, 7),
+    (5, 9),
+    (8, 9),
+    (11, 9),
+    (9, 11),
+    (11, 11),
+    (7, 13),
+    (9, 13),
+    (7, 15),
+]
 
 
 # This defines the outer boundary -- needed for constrained delaunay
-boundaries = [(0, 1),
-              (1, 5),
-              (5, 11),
-              (11, 14),
-              (14, 16),
-              (16, 18),
-              (18, 19),
-              (19, 17),
-              (17, 15),
-              (15, 13),
-              (13, 12),
-              (12, 7),
-              (7, 2),
-              (2, 0),
-              (3, 4),
-              (4, 10),
-              (10, 9),
-              (9, 6),
-              (6, 3), ]
+boundaries = [
+    (0, 1),
+    (1, 5),
+    (5, 11),
+    (11, 14),
+    (14, 16),
+    (16, 18),
+    (18, 19),
+    (19, 17),
+    (17, 15),
+    (15, 13),
+    (13, 12),
+    (12, 7),
+    (7, 2),
+    (2, 0),
+    (3, 4),
+    (4, 10),
+    (10, 9),
+    (9, 6),
+    (6, 3),
+]
 
 # triangulate the nodes with py-triangle
 
@@ -135,19 +135,18 @@ boundaries = [(0, 1),
 # in this case, there is one hole
 
 holes = [[8, 6]]
-tris = triangle.triangulate({'vertices': nodes,
-                             'segments': boundaries,
-                             'holes': holes
-                             }, opts='p')
+tris = triangle.triangulate({"vertices": nodes, "segments": boundaries, "holes": holes}, opts="p")
 
 
 # Create a UGRID with the nodes and faces (triangles)
-grid = UGrid(nodes=nodes, faces=tris['triangles'])
+grid = UGrid(nodes=nodes, faces=tris["triangles"])
 
 # find the boundaries (could have specified from above)
 grid.build_boundaries()
 
-fig, axes = plt.subplots(1,)
+fig, axes = plt.subplots(
+    1,
+)
 fig.set_size_inches((6, 6))
 
 plot_ugrid(axes, grid, node_numbers=True, face_numbers=True)
@@ -160,15 +159,16 @@ min_x, min_y = grid.nodes.min(axis=0)
 max_x, max_y = grid.nodes.max(axis=0)
 
 
-node_data = np.cos(grid.nodes[:,0] / 3 - min_x) + np.cos(grid.nodes[:,1] / 5 - min_y)
+node_data = np.cos(grid.nodes[:, 0] / 3 - min_x) + np.cos(grid.nodes[:, 1] / 5 - min_y)
 
 
-node_var = gridded.Variable(name='sample data on nodes',
-                            units=None,
-                            data=node_data,
-                            grid=grid,
-                            location='node',
-                            )
+node_var = gridded.Variable(
+    name="sample data on nodes",
+    units=None,
+    data=node_data,
+    grid=grid,
+    location="node",
+)
 
 # Interpolate to a cross section
 x = np.linspace(min_x, max_x, 100)
@@ -177,9 +177,11 @@ y = np.linspace(min_y, max_y, 100)
 points = np.c_[x, y]
 
 # at() always returns a N,m array
-val = node_var.at(points)[:,0]
+val = node_var.at(points)[:, 0]
 
-fig, axes = plt.subplots(1,)
+fig, axes = plt.subplots(
+    1,
+)
 fig.set_size_inches((6, 6))
 
 axes.plot(x, val)
@@ -199,33 +201,24 @@ node_var.data[node_num]
 grid.build_face_coordinates()
 
 # make some fake data
-face_data = (np.cos(grid.face_coordinates[:, 0] / 3 - min_x)
-             + np.cos(grid.face_coordinates[:, 1] / 5 - min_y))
+face_data = np.cos(grid.face_coordinates[:, 0] / 3 - min_x) + np.cos(grid.face_coordinates[:, 1] / 5 - min_y)
 
 
 # create a variable for that data
-node_var = gridded.Variable(name="sample data on faces",
-                            units=None,
-                            data=face_data,
-                            grid=grid,
-                            location='face'
-                            )
+node_var = gridded.Variable(name="sample data on faces", units=None, data=face_data, grid=grid, location="face")
 
 
 # locating what cell you want:
-face_num = grid.locate_faces((5,8))
+face_num = grid.locate_faces((5, 8))
 
 # at() always returns a N,m array
-val = node_var.at(points)[:,0]
+val = node_var.at(points)[:, 0]
 
-fig, axes = plt.subplots(1,)
+fig, axes = plt.subplots(
+    1,
+)
 fig.set_size_inches((6, 6))
 
 axes.plot(x, val)
 
 fig.show()
-
-
-
-
-

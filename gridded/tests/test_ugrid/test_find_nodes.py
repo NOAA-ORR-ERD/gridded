@@ -7,7 +7,6 @@ Currently only nearest neighbor.
 
 """
 
-
 import numpy as np
 
 from .utilities import twenty_one_triangles
@@ -24,12 +23,18 @@ def test_locate_nodes(twenty_one_triangles):
     """Test finding multiple nodes at once."""
 
     ugrid = twenty_one_triangles
-    assert np.array_equal(ugrid.locate_nodes(((4.58, 5.08),
-                                              (4.81, 0.89),
-                                              (6.43, 12.9),
-                                              (8.74, 6.86),
-                                              (5.12, 7.31),
-                                              )), (6, 0, 17, 10, 8))
+    assert np.array_equal(
+        ugrid.locate_nodes(
+            (
+                (4.58, 5.08),
+                (4.81, 0.89),
+                (6.43, 12.9),
+                (8.74, 6.86),
+                (5.12, 7.31),
+            )
+        ),
+        (6, 0, 17, 10, 8),
+    )
 
 
 def test_locate_exact(twenty_one_triangles):
@@ -39,8 +44,7 @@ def test_locate_exact(twenty_one_triangles):
 
     """
     ugrid = twenty_one_triangles
-    assert np.array_equal(ugrid.locate_nodes(ugrid.nodes),
-                          list(range(len(ugrid.nodes))))
+    assert np.array_equal(ugrid.locate_nodes(ugrid.nodes), list(range(len(ugrid.nodes))))
 
 
 def test_locate_middle(twenty_one_triangles):
@@ -57,5 +61,5 @@ def test_locate_middle(twenty_one_triangles):
     assert ugrid.locate_nodes((3, 4.99999999999)) == 2
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_locate_nodes()

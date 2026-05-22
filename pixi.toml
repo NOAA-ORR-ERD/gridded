@@ -1,0 +1,66 @@
+[workspace]
+authors = ["Chris Barker <Chris.Barker@noaa.gov>"]
+channels = ["conda-forge"]
+name = "gridded"
+platforms = ["win-64", "linux-64", "osx-arm64", "osx-64"]
+
+[dependencies]
+python = ">=3.12,<3.15"
+netCDF4 = ">=1.4"
+numpy = "*"
+scipy = "*"
+cell_tree2d = ">=0.3"
+cftime = "*"
+python-dateutil = "*"
+pooch = ">=1.9.0,<2"
+
+
+[feature.dev.dependencies]
+ipython = "*"
+matplotlib = "*"
+ruff = "*"
+
+[feature.dev.pypi-dependencies]
+gridded = { path = ".", editable = true }
+
+[feature.build.dependencies]
+git = "*" # git may not be there on the CI -- needed for setuptools_scm
+pip = "*"
+python-build = "*"
+setuptools = ">=80"
+setuptools-scm = ">=8"
+
+[feature.test.dependencies]
+pytest = "*"
+pytest-cov = "*"
+
+[feature.py312.dependencies]
+python = "~=3.12.0"
+
+[feature.py313.dependencies]
+python = "~=3.13.0"
+
+[feature.py314.dependencies]
+python = "~=3.14.0"
+
+[environments]
+default = { features = ["py312", "dev", "test", "build"], solve-group = "default" }
+# using the oldest supported version for development
+dev312 = ["py312", "dev", "test", "build"]
+dev313 = ["py313", "dev", "test", "build"]
+dev314 = ["py314", "dev", "test", "build"]
+build = ["py312", "build"]
+test312 = [ "py312", "test", "build"]
+test313 = [ "py313", "test", "build"]
+test314 = [ "py314", "test", "build"]
+
+[tasks]
+install = { cmd = "pip install -v --no-deps --root-user-action=ignore ./", default-environment = "build"}
+build_wheel = {cmd = "python -m build ./", default-environment = "build"}
+
+test = { cmd = "pytest --pyargs gridded", depends-on = ["install"] }
+
+lint = { cmd = "ruff check src/libgoods", default-environment = "dev"}
+
+ops_tests = { cmd = "operational_tests/run_all.py", depends-on = ["install"]}
+

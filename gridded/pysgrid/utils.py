@@ -1,20 +1,22 @@
-'''
+"""
 Created on Mar 23, 2015
 
 @author: ayan
-'''
-
+"""
 
 from collections import namedtuple
 
 import numpy as np
 
-
-GridPadding = namedtuple('GridPadding',
-                         ['mesh_topology_var',  # Padding information.
-                          'face_dim',  # The topology attribute.
-                          'node_dim',  # Node dimension.
-                          'padding'])  # Padding type for the node dimension.
+GridPadding = namedtuple(
+    "GridPadding",
+    [
+        "mesh_topology_var",  # Padding information.
+        "face_dim",  # The topology attribute.
+        "node_dim",  # Node dimension.
+        "padding",
+    ],
+)  # Padding type for the node dimension.
 
 
 def pair_arrays(x_array, y_array):
@@ -69,7 +71,7 @@ def does_intersection_exist(a, b):
     return intersect_exists
 
 
-def determine_variable_slicing(sgrid_obj, nc_variable, method='center'):
+def determine_variable_slicing(sgrid_obj, nc_variable, method="center"):
     """
     Figure out how to slice a variable. This function
     only knows who to figure out slices that would be
@@ -93,18 +95,17 @@ def determine_variable_slicing(sgrid_obj, nc_variable, method='center'):
     if grid_variables is None:
         grid_variables = []
     var_dims = nc_variable.dimensions
-    node_dims = tuple(sgrid_obj.node_dimensions.split(' '))
+    node_dims = tuple(sgrid_obj.node_dimensions.split(" "))
     separate_edge_dim_exists = does_intersection_exist(var_dims, node_dims)
     slice_indices = tuple()
     if separate_edge_dim_exists:
         padding = sgrid_obj.face_padding
     else:
         padding = sgrid_obj.all_padding()
-    if method == 'center':
+    if method == "center":
         for var_dim in var_dims:
             try:
-                padding_info = next((info for info in padding if
-                                     info.face_dim == var_dim))
+                padding_info = next(info for info in padding if info.face_dim == var_dim)
             except StopIteration:
                 slice_index = np.s_[:]
                 slice_indices += (slice_index,)
@@ -127,7 +128,7 @@ def infer_avg_axes(sgrid_obj, nc_var_obj):
 
     """
     var_dims = nc_var_obj.dimensions
-    node_dimensions = tuple(sgrid_obj.node_dimensions.split(' '))
+    node_dimensions = tuple(sgrid_obj.node_dimensions.split(" "))
     separate_edge_dim_exists = does_intersection_exist(node_dimensions, var_dims)  # noqa
     if separate_edge_dim_exists:
         padding = sgrid_obj.get_all_face_padding()
@@ -136,8 +137,7 @@ def infer_avg_axes(sgrid_obj, nc_var_obj):
     # Define center averaging axis for a variable.
     for var_dim in var_dims:
         try:
-            padding_info = next((info for info in padding if
-                                 info.face_dim == var_dim))
+            padding_info = next(info for info in padding if info.face_dim == var_dim)
         except StopIteration:
             padding_info = None
             avg_dim = None
@@ -161,7 +161,7 @@ def infer_avg_axes(sgrid_obj, nc_var_obj):
 
 
 def infer_variable_location(sgrid, variable):
-    node_dims_val = sgrid.node_dimensions.split(' ')
+    node_dims_val = sgrid.node_dimensions.split(" ")
     node_dims = tuple(node_dims_val)
     face_dims = tuple([f.face_dim for f in sgrid.get_all_face_padding()])
     try:
@@ -169,13 +169,12 @@ def infer_variable_location(sgrid, variable):
     except TypeError:
         edge_dims = []
     var_dims = variable.dimensions
-    if (does_intersection_exist(var_dims, face_dims) and not
-            does_intersection_exist(var_dims, node_dims)):
-        inferred_location = 'face'
-    elif ((does_intersection_exist(var_dims, face_dims) and
-           does_intersection_exist(var_dims, node_dims)) or
-          (does_intersection_exist(var_dims, edge_dims))):
-        inferred_location = 'edge'
+    if does_intersection_exist(var_dims, face_dims) and not does_intersection_exist(var_dims, node_dims):
+        inferred_location = "face"
+    elif (does_intersection_exist(var_dims, face_dims) and does_intersection_exist(var_dims, node_dims)) or (
+        does_intersection_exist(var_dims, edge_dims)
+    ):
+        inferred_location = "edge"
     else:
         inferred_location = None
     return inferred_location
@@ -209,9 +208,7 @@ def calculate_angle_from_true_east(lon_lat_1, lon_lat_2):
     bearing_from_true_east_radians = bearing_from_true_east * np.pi / 180
     # not sure if this is the most appropriate thing to do for the last grid
     # cell
-    angles = np.append(bearing_from_true_east_radians,
-                       bearing_from_true_east_radians[..., -1:],
-                       axis=-1)
+    angles = np.append(bearing_from_true_east_radians, bearing_from_true_east_radians[..., -1:], axis=-1)
     return angles
 
 
@@ -248,9 +245,7 @@ def points_in_polys(points, polys, polyy=None):
         test1 = (v2y > pointsy) != (v1y > pointsy)
         test2 = np.zeros(points.shape[0], dtype=bool)
         m = np.where(test1 == 1)[0]
-        test2[m] = pointsx[m] < \
-            (v1x[m] - v2x[m]) * (pointsy[m] - v2y[m]) / \
-            (v1y[m] - v2y[m]) + v2x[m]
+        test2[m] = pointsx[m] < (v1x[m] - v2x[m]) * (pointsy[m] - v2y[m]) / (v1y[m] - v2y[m]) + v2x[m]
         np.logical_and(test1, test2, test1)
         np.logical_xor(result, test1, result)
     return result

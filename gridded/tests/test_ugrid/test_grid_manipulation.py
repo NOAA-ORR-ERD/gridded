@@ -5,12 +5,9 @@ Testing of various utilities to manipulate the grid.
 
 """
 
-
 import numpy as np
 
-import pytest
-
-from .utilities import two_triangles, twenty_one_triangles
+from .utilities import twenty_one_triangles, two_triangles
 
 
 def test_build_face_face_connectivity_small(two_triangles):
@@ -49,8 +46,7 @@ def test_build_face_coordinates(two_triangles):
     coords = grid.face_coordinates
 
     assert coords.shape == (2, 2)
-    assert np.allclose(coords, [(1.1, 0.76666667),
-                                (2.1, 1.43333333)])
+    assert np.allclose(coords, [(1.1, 0.76666667), (2.1, 1.43333333)])
 
 
 def test_build_edge_coordinates(two_triangles):
@@ -59,11 +55,7 @@ def test_build_edge_coordinates(two_triangles):
     coords = grid.edge_coordinates
 
     assert coords.shape == (5, 2)
-    assert np.allclose(coords, [[1.1, 0.1],
-                                [2.6, 1.1],
-                                [2.1, 2.1],
-                                [0.6, 1.1],
-                                [1.6, 1.1]])
+    assert np.allclose(coords, [[1.1, 0.1], [2.6, 1.1], [2.1, 2.1], [0.6, 1.1], [1.6, 1.1]])
 
 
 def test_build_boundary_coordinates(two_triangles):
@@ -73,10 +65,7 @@ def test_build_boundary_coordinates(two_triangles):
     coords = grid.boundary_coordinates
 
     assert coords.shape == (4, 2)
-    assert np.allclose(coords, [[1.1, 0.1],
-                                [0.6, 1.1],
-                                [2.1, 2.1],
-                                [2.6, 1.1]])
+    assert np.allclose(coords, [[1.1, 0.1], [0.6, 1.1], [2.1, 2.1], [2.6, 1.1]])
 
 
 def test_build_boundaries_small(two_triangles):
@@ -95,8 +84,25 @@ def test_build_boundaries_big(twenty_one_triangles):
     ugrid.build_boundaries()
 
     boundaries = sorted(ugrid.boundaries.tolist())
-    expected_boundaries = [[0, 1], [1, 5], [2, 0], [3, 6], [4, 3], [5, 11],
-                           [6, 9], [7, 2], [9, 10], [10, 4], [11, 14], [12, 7],
-                           [13, 12], [14, 16], [15, 13], [16, 18], [17, 15],
-                           [18, 19], [19, 17]]
+    expected_boundaries = [
+        [0, 1],
+        [1, 5],
+        [2, 0],
+        [3, 6],
+        [4, 3],
+        [5, 11],
+        [6, 9],
+        [7, 2],
+        [9, 10],
+        [10, 4],
+        [11, 14],
+        [12, 7],
+        [13, 12],
+        [14, 16],
+        [15, 13],
+        [16, 18],
+        [17, 15],
+        [18, 19],
+        [19, 17],
+    ]
     assert boundaries == expected_boundaries

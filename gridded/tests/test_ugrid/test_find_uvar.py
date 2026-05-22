@@ -8,30 +8,28 @@ No need for all this reading and writing; that is tested elsewhere.
 
 """
 
-
 import os
 
-import pytest
 import numpy as np
+import pytest
 
 from gridded.pyugrid.ugrid import UGrid
 from gridded.pyugrid.uvar import UVar
-
-from .utilities import chdir, two_triangles, twenty_one_triangles
+from gridded.tests.utilities import chdir
 
 pytestmark = pytest.mark.skipif(True, reason="add_data not yet suported")
 
-test_files = os.path.join(os.path.dirname(__file__), 'files')
+test_files = os.path.join(os.path.dirname(__file__), "files")
 
 
 @pytest.fixture
 def two_triangles_with_depths(two_triangles):
     grid = two_triangles
 
-    depths = UVar('depth', location='node', data=[1.0, 2.0, 3.0, 4.0])
-    depths.attributes['units'] = 'unknown'
-    depths.attributes['standard_name'] = 'sea_floor_depth_below_geoid'
-    depths.attributes['positive'] = 'down'
+    depths = UVar("depth", location="node", data=[1.0, 2.0, 3.0, 4.0])
+    depths.attributes["units"] = "unknown"
+    depths.attributes["standard_name"] = "sea_floor_depth_below_geoid"
+    depths.attributes["positive"] = "down"
     grid.add_data(depths)
 
     return grid
@@ -42,17 +40,17 @@ def twenty_one_triangles_with_depths(twenty_one_triangles):
     """Returns a basic triangle grid with 21 triangles, a hole and a tail."""
     grid = twenty_one_triangles
 
-    depths = UVar('depth', location='node', data=list(range(1, 21)))
-    depths.attributes['units'] = 'unknown'
-    depths.attributes['standard_name'] = 'sea_floor_depth_below_geoid'
-    depths.attributes['positive'] = 'down'
+    depths = UVar("depth", location="node", data=list(range(1, 21)))
+    depths.attributes["units"] = "unknown"
+    depths.attributes["standard_name"] = "sea_floor_depth_below_geoid"
+    depths.attributes["positive"] = "down"
     grid.add_data(depths)
 
     return grid
 
 
 def find_depths(grid):
-    found = grid.find_uvars('sea_floor_depth_below_geoid')
+    found = grid.find_uvars("sea_floor_depth_below_geoid")
     if found:
         return found.pop()
     return None
@@ -66,19 +64,19 @@ def test_no_std_name(two_triangles_with_depths):
     """
     grid = two_triangles_with_depths
 
-    junk = UVar('junk', location='node', data=[1.0, 2.0, 3.0, 4.0])
-    junk.attributes['units'] = 'unknown'
+    junk = UVar("junk", location="node", data=[1.0, 2.0, 3.0, 4.0])
+    junk.attributes["units"] = "unknown"
     grid.add_data(junk)
 
     depths = find_depths(grid)
 
-    assert depths.name == 'depth'
+    assert depths.name == "depth"
 
 
 def test_two_triangles(two_triangles_with_depths):
     grid = two_triangles_with_depths
 
-    fname = '2_triangles.nc'
+    fname = "2_triangles.nc"
     with chdir(test_files):
         grid.save_as_netcdf(fname)
         ug = UGrid.from_ncfile(fname, load_data=True)
@@ -95,13 +93,13 @@ def test_two_triangles(two_triangles_with_depths):
     depths = find_depths(ug)
     assert depths.data.shape == (4,)
     assert depths.data[0] == 1
-    assert depths.attributes['units'] == 'unknown'
+    assert depths.attributes["units"] == "unknown"
 
 
 def test_21_triangles(twenty_one_triangles_with_depths):
     grid = twenty_one_triangles_with_depths
 
-    fname = '21_triangles.nc'
+    fname = "21_triangles.nc"
     with chdir(test_files):
         grid.save_as_netcdf(fname)
         ug = UGrid.from_ncfile(fname, load_data=True)
@@ -115,14 +113,14 @@ def test_21_triangles(twenty_one_triangles_with_depths):
     depths = find_depths(ug)
     assert depths.data.shape == (20,)
     assert depths.data[0] == 1
-    assert depths.attributes['units'] == 'unknown'
+    assert depths.attributes["units"] == "unknown"
 
 
 def test_two_triangles_without_faces(two_triangles_with_depths):
     grid = two_triangles_with_depths
     grid.faces = None
 
-    fname = '2_triangles_without_faces.nc'
+    fname = "2_triangles_without_faces.nc"
     with chdir(test_files):
         grid.save_as_netcdf(fname)
         ug = UGrid.from_ncfile(fname, load_data=True)
@@ -145,7 +143,7 @@ def test_two_triangles_without_faces(two_triangles_with_depths):
     depths = find_depths(ug)
     assert depths.data.shape == (4,)
     assert depths.data[0] == 1
-    assert depths.attributes['units'] == 'unknown'
+    assert depths.attributes["units"] == "unknown"
 
 
 def test_two_triangles_without_edges(two_triangles_with_depths):
@@ -153,7 +151,7 @@ def test_two_triangles_without_edges(two_triangles_with_depths):
     # This will set the _edges to None, but it will be rebuild
     grid.edges = None
 
-    fname = '2_triangles_without_edges.nc'
+    fname = "2_triangles_without_edges.nc"
     with chdir(test_files):
         grid.save_as_netcdf(fname)
         ug = UGrid.from_ncfile(fname, load_data=True)
@@ -177,10 +175,10 @@ def test_two_triangles_without_edges(two_triangles_with_depths):
     depths = find_depths(ug)
     assert depths.data.shape == (4,)
     assert depths.data[0] == 1
-    assert depths.attributes['units'] == 'unknown'
+    assert depths.attributes["units"] == "unknown"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_two_triangles()
     test_21_triangles()
     test_two_triangles_without_faces()

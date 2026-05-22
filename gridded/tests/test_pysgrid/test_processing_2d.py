@@ -5,9 +5,8 @@ Created on Apr 3, 2015
 
 """
 
-
-import pytest
 import numpy as np
+import pytest
 
 from gridded.pysgrid.processing_2d import avg_to_cell_center, rotate_vectors, vector_sum
 
@@ -25,8 +24,7 @@ def rotate_vectors_data():
     x = np.array([3, 5, 9, 11])
     y = np.array([4, 12, 40, 60])
     angles_simple = np.array([0, np.pi / 2, 0, np.pi / 2])
-    angles_complex = np.array([np.pi / 6, np.pi / 5,
-                               np.pi / 4, np.pi / 3])
+    angles_complex = np.array([np.pi / 6, np.pi / 5, np.pi / 4, np.pi / 3])
     return x, y, angles_simple, angles_complex
 
 
@@ -58,9 +56,7 @@ def avg_center_data():
 def test_no_transpose(avg_center_data):
     data = avg_center_data
     avg_result = avg_to_cell_center(data, 1)
-    expected = np.array([[4.5, 7, 9.5],
-                         [23.5, 40, 30.5],
-                         [17, 23.5, 44.5]])
+    expected = np.array([[4.5, 7, 9.5], [23.5, 40, 30.5], [17, 23.5, 44.5]])
     np.testing.assert_almost_equal(avg_result, expected, decimal=3)
 
 

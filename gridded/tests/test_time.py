@@ -4,12 +4,11 @@ import copy
 from datetime import datetime, timedelta
 from pathlib import Path
 
-import numpy as np
 import netCDF4
-
-from gridded.time import Time, TimeSeriesError, OutOfTimeRangeError, parse_time_offset
-
+import numpy as np
 import pytest
+
+from gridded.time import OutOfTimeRangeError, Time, TimeSeriesError, parse_time_offset
 
 SAMPLE_TIMESERIES = []
 start = datetime(2023, 11, 28, 12)
@@ -32,7 +31,7 @@ for i in range(10):
     SAMPLE_TIMESERIES.append(start + i * dt)
 STS = SAMPLE_TIMESERIES
 
-TEST_DATA = Path(__file__).parent / 'test_data'
+TEST_DATA = Path(__file__).parent / "test_data"
 
 
 def test_init():
@@ -40,6 +39,7 @@ def test_init():
     can one even be initialized with no data?
     """
     t = Time()
+
 
 def test_init_with_data_None():
     t1 = Time()
@@ -64,8 +64,8 @@ def test_init_with_Time_object():
 
 
 def test_invalid_timeseries():
-    with pytest.raises(TypeError, match='not compatible with datetime'):
-        t = Time(data = ["2012-02-03T12:00"])
+    with pytest.raises(TypeError, match="not compatible with datetime"):
+        t = Time(data=["2012-02-03T12:00"])
 
 
 def test_from_netcdf_filename_no_var():
@@ -82,7 +82,7 @@ def test_from_netcdf_filename_specify_time_var_name():
     """
     # note: not the best example, as the time
     #       variable is using float seconds, so loses precision.
-    t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc", varname='time')
+    t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc", varname="time")
 
     assert len(t.data) == 10
     assert t.data[0] == datetime(2024, 5, 23, 0, 0)
@@ -93,7 +93,7 @@ def test_from_netcdf_filename_specify_var_name():
     initialize from a netcdf filename and specifying a variable
     that you want the time for.
     """
-    t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc", datavar='v')
+    t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc", datavar="v")
 
     assert len(t.data) == 10
     assert t.data[0] == datetime(2024, 5, 23, 0, 0)
@@ -105,7 +105,7 @@ def test_from_netcdf_filename_specify_var():
     that you want the time for.
     """
     ncds = netCDF4.Dataset(filename=TEST_DATA / "tri_grid_example-FVCOM.nc")
-    datavar = ncds.variables['v']
+    datavar = ncds.variables["v"]
     t = Time.from_netCDF(dataset=ncds, datavar=datavar)
 
     assert len(t.data) == 10
@@ -117,10 +117,10 @@ def test_from_netcdf_filename_bad():
     initialize from a bad netcdf filename
     """
     with pytest.raises(OSError):
-        t = Time.from_netCDF(filename="http://this.that.com", varname='time')
+        t = Time.from_netCDF(filename="http://this.that.com", varname="time")
 
     with pytest.raises(OSError):
-        t = Time.from_netCDF(filename="non_existant_file.nc", varname='time')
+        t = Time.from_netCDF(filename="non_existant_file.nc", varname="time")
 
 
 def test_origin():
@@ -139,18 +139,18 @@ def test_displacement():
     assert t.data[-1] == SAMPLE_TIMESERIES[-1] + disp
 
     assert t.displacement == disp
-    #displacement cannot be re-assigned
+    # displacement cannot be re-assigned
     with pytest.raises(AttributeError):
         t.displacement = timedelta(days=1)
 
     t2 = Time(SAMPLE_TIMESERIES)
-    #displacement can be assigned once, after object creation
+    # displacement can be assigned once, after object creation
     t2.displacement = disp
     assert t2.data[0] == SAMPLE_TIMESERIES[0] + disp
     assert t2.data[-1] == SAMPLE_TIMESERIES[-1] + disp
     assert t2.displacement == disp
 
-    #displacement cannot be re-assigned
+    # displacement cannot be re-assigned
     with pytest.raises(AttributeError):
         t2.displacement = timedelta(days=1)
 
@@ -265,13 +265,14 @@ def test_eq_constant_time():
 
     assert t1 == t2
 
+
 def test_eq_different_type():
     """
     A Time object is never equal to any other type
     """
     t = Time(SAMPLE_TIMESERIES)
 
-    assert not t == 'a string'
+    assert not t == "a string"
     assert not "a string" == t
 
 
@@ -337,7 +338,8 @@ def test_valid_time():
         (STS[4] + (STS[5] - STS[4]) / 4, 0.25),  # in the middle
         (STS[0], 0.0),  # at the beginning
         (STS[-1], 1.0),  # at the end
-    ])
+    ],
+)
 def test_interp_alpha(dt, expected):
     t = Time(SAMPLE_TIMESERIES)
 
@@ -352,7 +354,8 @@ def test_interp_alpha(dt, expected):
     [
         (STS[0] - timedelta(seconds=1), 0.0),  # a little before
         (STS[-1] + timedelta(seconds=1), 1.0),  # a little after
-    ])
+    ],
+)
 def test_interp_alpha_outside(dt, expected):
     t = Time(SAMPLE_TIMESERIES)
 
@@ -364,14 +367,15 @@ def test_interp_alpha_outside(dt, expected):
     assert alpha == expected
 
 
-#@pytest.mark.xfail
+# @pytest.mark.xfail
 @pytest.mark.parametrize(
     "shift, expected",
     [
         (-timedelta(days=365), 1.0),  # before
         (timedelta(days=365), 1.0),  # after
         (timedelta(0), 1.0),  # on the nose
-    ])
+    ],
+)
 def test_interp_alpha_constant_time(shift, expected):
     """
     What should the constant time Time object give for alphas?
@@ -388,6 +392,7 @@ def test_interp_alpha_constant_time(shift, expected):
     print(t.max_time)
     alpha = t.interp_alpha(t.data[0] + shift)
     assert alpha == 0.0
+
 
 # I think these are covered in the tests above.
 # def test_tz_offset():
@@ -415,12 +420,13 @@ def test_from_netcdf_tz_offset_Z():
     make sure you can load time from a netcdf file with Z specified
     """
     filename = TEST_DATA / "just_time_UTC.nc"
-    t = Time.from_netCDF(filename=filename, varname='time')
+    t = Time.from_netCDF(filename=filename, varname="time")
 
     print(t)
 
     assert t.tz_offset == 0
     assert t.tz_offset_name == "UTC"
+
 
 def test_from_netcdf_tz_offset_bad(caplog):
     """
@@ -429,7 +435,7 @@ def test_from_netcdf_tz_offset_bad(caplog):
     """
     filename = TEST_DATA / "just_time_bad_tzo.nc"
     caplog.clear()
-    t = Time.from_netCDF(filename=filename, varname='time')
+    t = Time.from_netCDF(filename=filename, varname="time")
 
     print(caplog.record_tuples)
     log_msgs = [True for rec in caplog.record_tuples if "Couldn't parse TZ offset" in rec[2]]
@@ -440,13 +446,16 @@ def test_from_netcdf_tz_offset_bad(caplog):
     assert t.tz_offset_name == "UTC"
 
 
-@pytest.mark.parametrize(('filename', 'offset', 'name'), [
-    ("just_time_UTC.nc", 0, 'UTC'),
-    ("just_time_UTC-0.nc", 0, 'UTC'),
-    ("just_time_UTC-UTC.nc", 0, 'UTC'),
-    ("just_time_naive.nc", 0, 'UTC'),
-    ("just_time_offset-7.nc", -7, '-07:00'),
-])
+@pytest.mark.parametrize(
+    ("filename", "offset", "name"),
+    [
+        ("just_time_UTC.nc", 0, "UTC"),
+        ("just_time_UTC-0.nc", 0, "UTC"),
+        ("just_time_UTC-UTC.nc", 0, "UTC"),
+        ("just_time_naive.nc", 0, "UTC"),
+        ("just_time_offset-7.nc", -7, "-07:00"),
+    ],
+)
 def test_from_netcdf_tz_offset_in_file(filename, offset, name):
     """
     make sure you can load time from a netcdf file with Z specified
@@ -454,9 +463,10 @@ def test_from_netcdf_tz_offset_in_file(filename, offset, name):
     NOTE: currently naive time in netcdf is assumed to be UTC -- correct??
     """
     filename = TEST_DATA / filename
-    t = Time.from_netCDF(filename=filename, varname='time')
+    t = Time.from_netCDF(filename=filename, varname="time")
     assert t.tz_offset == offset
     assert t.tz_offset_name == name
+
 
 def test_from_netcdf_tz_offset_in_file_provide_name():
     """
@@ -464,9 +474,9 @@ def test_from_netcdf_tz_offset_in_file_provide_name():
 
     NOTE: currently naive time in netcdf is assumed to be UTC -- correct??
     """
-    filename, offset, name = ("just_time_offset-7.nc", -7, 'PDT')
+    filename, offset, name = ("just_time_offset-7.nc", -7, "PDT")
     filename = TEST_DATA / filename
-    t = Time.from_netCDF(filename=filename, varname='time', tz_offset_name=name)
+    t = Time.from_netCDF(filename=filename, varname="time", tz_offset_name=name)
     assert t.tz_offset == offset
     assert t.tz_offset_name == name
 
@@ -476,7 +486,7 @@ def test_from_netcdf_tz_offset_set_UTC():
     Make sure you can load time from a netcdf file that's naive, specifying UTC (0 offset)
     """
     filename = TEST_DATA / "just_time_naive.nc"
-    t = Time.from_netCDF(filename=filename, varname='time', tz_offset=0)
+    t = Time.from_netCDF(filename=filename, varname="time", tz_offset=0)
 
     assert t.tz_offset == 0
 
@@ -486,7 +496,7 @@ def test_from_netcdf_tz_offset_set_Naive():
     Make sure you can load time from a netcdf file and tell it to keep it Naive.
     """
     filename = TEST_DATA / "just_time_naive.nc"
-    t = Time.from_netCDF(filename=filename, varname='time', tz_offset='Naive')
+    t = Time.from_netCDF(filename=filename, varname="time", tz_offset="Naive")
 
     assert t.tz_offset == None
     assert t.tz_offset_name == "No Timezone Specified"
@@ -497,23 +507,26 @@ def test_from_netcdf_tz_offset_set_new_offset():
     Make sure you can load time from a netcdf file and tell it to keep it Naive.
     """
     filename = TEST_DATA / "just_time_offset-7.nc"
-    t = Time.from_netCDF(filename=filename, varname='time', new_tz_offset=-3)
+    t = Time.from_netCDF(filename=filename, varname="time", new_tz_offset=-3)
 
     assert t.tz_offset == -3
 
     ds = netCDF4.Dataset(filename)
-    time_var = ds.variables['time']
+    time_var = ds.variables["time"]
     times = netCDF4.num2date(time_var, time_var.units)
     assert times[0] == t.data[0] - timedelta(hours=4)
 
 
-@pytest.mark.parametrize(('offset', 'unit_str', 'name'), [
-    (0, 'days since 2024-1-1T00:00:00Z', 'UTC'),
-    (0, 'days since 2024-1-1T00:00:00+00:00', 'UTC'),
-    (None, 'days since 2024-1-1T00:00:00', None),
-    (-7, 'days since 2024-1-1T00:00:00-7:00', '-07:00'),
-    (3.5, 'days since 2024-1-1T00:00:00+3:30', '+03:30'),
-])
+@pytest.mark.parametrize(
+    ("offset", "unit_str", "name"),
+    [
+        (0, "days since 2024-1-1T00:00:00Z", "UTC"),
+        (0, "days since 2024-1-1T00:00:00+00:00", "UTC"),
+        (None, "days since 2024-1-1T00:00:00", None),
+        (-7, "days since 2024-1-1T00:00:00-7:00", "-07:00"),
+        (3.5, "days since 2024-1-1T00:00:00+3:30", "+03:30"),
+    ],
+)
 def test_parse_time_offset(offset, unit_str, name):
     """
     Do we get the right offset from the units string?
@@ -522,6 +535,7 @@ def test_parse_time_offset(offset, unit_str, name):
     print(tz_off, name)
     assert tz_off == offset
     assert new_name == name
+
 
 ## this needs a big data file -- could use some refactoring
 ## It would be good to test the netcdf stuff.

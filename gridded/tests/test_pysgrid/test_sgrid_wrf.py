@@ -5,14 +5,10 @@ Created on Apr 7, 2015
 
 """
 
-
-import pytest
 import numpy as np
+import pytest
 
 from gridded.pysgrid.sgrid import SGrid, load_grid
-
-from .write_nc_test_files import wrf_sgrid
-
 
 pytestmark = pytest.mark.skipif(True, reason="Lots of issues with these -- needs revisiting")
 
@@ -58,7 +54,7 @@ def test_roundtrip(wrf_sgrid, tmpdir):
 
     Test SGrid Save No-Node Coordinates.
     """
-    fname = tmpdir.mkdir('files').join('wrf_roundtrip.nc')
+    fname = tmpdir.mkdir("files").join("wrf_roundtrip.nc")
     sg_obj = load_grid(wrf_sgrid)
     sg_obj.save_as_netcdf(fname)
 
@@ -81,5 +77,5 @@ def test_node_coordinates(sgrid):
 
 def test_node_dimensions(sgrid):
     node_dims = sgrid.node_dimensions
-    expected = 'west_east_stag south_north_stag'
+    expected = "west_east_stag south_north_stag"
     assert node_dims == expected

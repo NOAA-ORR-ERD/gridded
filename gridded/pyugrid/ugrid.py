@@ -17,14 +17,13 @@ NOTE: only tested for triangular and quad mesh grids at the moment.
 """
 
 import hashlib
-from collections import OrderedDict
 import warnings
+from collections import OrderedDict
 
 import numpy as np
 
 import gridded.pyugrid.read_netcdf as read_netcdf
 from gridded.pyugrid.util import point_in_tri
-
 from gridded.utilities import get_writable_dataset
 
 # from gridded.pyugrid.uvar import UVar
@@ -38,31 +37,32 @@ IND_DT = np.int32
 NODE_DT = np.float64  # datatype used for node coordinates.
 
 
-class UGrid():
+class UGrid:
     """
     A basic class to hold an unstructured grid as defined in the UGrid convention.
 
     The internal structure mirrors the netcdf data standard.
     """
 
-    def __init__(self,
-                 nodes=None,
-                 node_lon=None,
-                 node_lat=None,
-                 faces=None,
-                 edges=None,
-                 boundaries=None,
-                 face_face_connectivity=None,
-                 face_edge_connectivity=None,
-                 edge_coordinates=None,
-                 face_coordinates=None,
-                 boundary_coordinates=None,
-                 data=None,
-                 grid_topology=None,
-                 mesh_name="mesh",
-                 *args,
-                 **kwargs
-                 ):
+    def __init__(
+        self,
+        nodes=None,
+        node_lon=None,
+        node_lat=None,
+        faces=None,
+        edges=None,
+        boundaries=None,
+        face_face_connectivity=None,
+        face_edge_connectivity=None,
+        edge_coordinates=None,
+        face_coordinates=None,
+        boundary_coordinates=None,
+        data=None,
+        grid_topology=None,
+        mesh_name="mesh",
+        *args,
+        **kwargs,
+    ):
         """
         ugrid class -- holds, saves, etc. an unstructured grid
 
@@ -118,11 +118,8 @@ class UGrid():
         mesh section in the convention for further details.
         """
 
-        if ((nodes is not None) and
-            ((node_lon is not None) or
-             (node_lat is not None))):
-            raise TypeError("You need to provide a single nodes array "
-                            "or node_lon and node_lat")
+        if (nodes is not None) and ((node_lon is not None) or (node_lat is not None)):
+            raise TypeError("You need to provide a single nodes array or node_lon and node_lat")
         if nodes is None:
             if node_lon is not None and node_lat is not None:
                 nodes = np.ma.column_stack((node_lon, node_lat))
@@ -140,9 +137,9 @@ class UGrid():
 
         self.mesh_name = mesh_name
         self.grid_topology = grid_topology
-        if self.grid_topology is not None and self.grid_topology.get('topology_dimension', None):
-            #sometimes the topology dimension is an int32, which does not JSON serialize properly.
-            self.grid_topology['topology_dimension'] = int(self.grid_topology['topology_dimension'])
+        if self.grid_topology is not None and self.grid_topology.get("topology_dimension", None):
+            # sometimes the topology dimension is an int32, which does not JSON serialize properly.
+            self.grid_topology["topology_dimension"] = int(self.grid_topology["topology_dimension"])
 
         # # the data associated with the grid
         # # should be a dict of UVar objects
@@ -157,7 +154,7 @@ class UGrid():
         self._cell_tree = None
         self._ind_memo_dict = OrderedDict()
         self._alpha_memo_dict = OrderedDict()
-        super(UGrid, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_ncfile(klass, filename=None, dataset=None, mesh_name=None):  # , load_data=False):
@@ -213,8 +210,7 @@ class UGrid():
         """
         msg = [f"UGrid object: {self.mesh_name}"]
         msg.append("Number of nodes: %i" % len(self.nodes))
-        msg.append("Number of faces: %i with %i vertices per face" %
-                   (len(self.faces), self.num_vertices))
+        msg.append("Number of faces: %i with %i vertices per face" % (len(self.faces), self.num_vertices))
         if self.boundaries is not None:
             msg.append("Number of boundaries: %i" % len(self.boundaries))
 
@@ -228,25 +224,25 @@ class UGrid():
         # maybe too strict?
         if self.__class__ is not other.__class__:
             return False
-        if (np.array_equal(self.nodes, other.nodes)
-                and np.array_equal(self.faces, other.faces)
-                and np.array_equal(self.boundaries, other.boundaries)
-            ):
+        if (
+            np.array_equal(self.nodes, other.nodes)
+            and np.array_equal(self.faces, other.faces)
+            and np.array_equal(self.boundaries, other.boundaries)
+        ):
             return True
         return False
 
         # They should all be there!
         # for n in ('nodes', 'faces'):
-            # if (hasattr(self, n) and
-            #     hasattr(o, n) and
-            #     getattr(self, n) is not None and
-            #     getattr(o, n) is not None):
-            #     s = getattr(self, n)
-            #     s2 = getattr(o, n)
-            #     if s.shape != s2.shape or np.any(s != s2):
-            #         return False
+        # if (hasattr(self, n) and
+        #     hasattr(o, n) and
+        #     getattr(self, n) is not None and
+        #     getattr(o, n) is not None):
+        #     s = getattr(self, n)
+        #     s2 = getattr(o, n)
+        #     if s.shape != s2.shape or np.any(s != s2):
+        #         return False
         return True
-
 
     def check_consistent(self):
         """
@@ -308,19 +304,23 @@ class UGrid():
         if faces_indexes is not None:
             faces_indexes = np.asanyarray(faces_indexes, dtype=IND_DT)
             if faces_indexes.max() > len(self.nodes):
-                #faces index maximum greater than number of nodes
-                raise ValueError("faces index maximum out of range. max: {0}, nodes: {1}".format(faces_indexes.max(), len(self.nodes)))
+                # faces index maximum greater than number of nodes
+                raise ValueError(
+                    f"faces index maximum out of range. max: {faces_indexes.max()}, nodes: {len(self.nodes)}"
+                )
             if faces_indexes.max() == len(self.nodes):
-                #faces index maximum equal to number of nodes, so we need to decrement by 1
-                #but only if the minimum is also gte 1
+                # faces index maximum equal to number of nodes, so we need to decrement by 1
+                # but only if the minimum is also gte 1
                 if faces_indexes.min() >= 1:
                     faces_indexes[faces_indexes > 0] -= 1
                     warnings.warn("faces index maximum equal to number of nodes, automatic decrement by 1 applied")
                 else:
-                    raise ValueError("faces indices have an improper range. min: {0}, max: {1}".format(faces_indexes.min(), faces_indexes.max()))
+                    raise ValueError(
+                        f"faces indices have an improper range. min: {faces_indexes.min()}, max: {faces_indexes.max()}"
+                    )
             if faces_indexes.min() < -1:
-                #faces index minimum less than -1
-                raise ValueError("faces index minimum out of range. min: {0}".format(faces_indexes.min()))
+                # faces index minimum less than -1
+                raise ValueError(f"faces index minimum out of range. min: {faces_indexes.min()}")
             self._faces = faces_indexes
 
         else:
@@ -384,12 +384,9 @@ class UGrid():
     def face_face_connectivity(self, face_face_connectivity):
         # Add more checking?
         if face_face_connectivity is not None:
-            face_face_connectivity = np.asanyarray(face_face_connectivity,
-                                                   dtype=IND_DT)
-            if face_face_connectivity.shape != (len(self.faces),
-                                                self.num_vertices):
-                msg = ("face_face_connectivity must be size "
-                       "(num_faces, {})").format
+            face_face_connectivity = np.asanyarray(face_face_connectivity, dtype=IND_DT)
+            if face_face_connectivity.shape != (len(self.faces), self.num_vertices):
+                msg = ("face_face_connectivity must be size (num_faces, {})").format
                 raise ValueError(msg(self.num_vertices))
         self._face_face_connectivity = face_face_connectivity
 
@@ -405,12 +402,9 @@ class UGrid():
     def face_edge_connectivity(self, face_edge_connectivity):
         # Add more checking?
         if face_edge_connectivity is not None:
-            face_edge_connectivity = np.asanyarray(face_edge_connectivity,
-                                                   dtype=IND_DT)
-            if face_edge_connectivity.shape != (len(self.faces),
-                                                self.num_vertices):
-                msg = ("face_face_connectivity must be size "
-                       "(num_face, {})").format
+            face_edge_connectivity = np.asanyarray(face_edge_connectivity, dtype=IND_DT)
+            if face_edge_connectivity.shape != (len(self.faces), self.num_vertices):
+                msg = ("face_face_connectivity must be size (num_face, {})").format
                 raise ValueError(msg(self.num_vertices))
         self._face_edge_connectivity = face_edge_connectivity
 
@@ -452,11 +446,11 @@ class UGrid():
         except IndexError:
             return None  # Variable has a size-zero data array
         if size == self.nodes.shape[0]:
-            return 'node'
+            return "node"
         if self.faces is not None and size == self.faces.shape[0]:
-            return 'face'
+            return "face"
         if self.boundaries is not None and size == self.boundaries.shape[0]:
-            return 'boundary'
+            return "boundary"
         return None
 
     # def add_data(self, uvar):
@@ -551,9 +545,9 @@ class UGrid():
         try:
             from scipy.spatial import cKDTree
         except ImportError:
-            raise ImportError("The scipy package is required to use "
-                              "UGrid.locate_nodes\n"
-                              " -- nearest neighbor interpolation")
+            raise ImportError(
+                "The scipy package is required to use UGrid.locate_nodes\n -- nearest neighbor interpolation"
+            )
 
         self._kdtree = cKDTree(self.nodes)
 
@@ -585,12 +579,12 @@ class UGrid():
     def _get_memoed(self, points, D, _copy=False, _hash=None):
         if _hash is None:
             _hash = self._hash_of_pts(points)
-        if (D is not None and _hash in D):
+        if D is not None and _hash in D:
             return D[_hash].copy() if _copy else D[_hash]
         else:
             return None
 
-    def locate_faces(self, points, method='celltree', _memo=True, _copy=False, _hash=None):
+    def locate_faces(self, points, method="celltree", _memo=True, _copy=False, _hash=None):
         """
         Returns the face indices, one per point.
 
@@ -615,7 +609,7 @@ class UGrid():
 
         """
         points = np.asarray(points, dtype=np.float64)
-        just_one = (points.ndim == 1)
+        just_one = points.ndim == 1
         points.shape = (-1, 2)
 
         if _memo:
@@ -625,16 +619,18 @@ class UGrid():
             if result is not None:
                 return result
 
-        if method == 'celltree':
+        if method == "celltree":
             try:
                 import cell_tree2d
             except ImportError:
-                raise ImportError("the cell_tree2d package must be installed to use the celltree search:\n"
-                                  "https://github.com/NOAA-ORR-ERD/cell_tree2d/")
+                raise ImportError(
+                    "the cell_tree2d package must be installed to use the celltree search:\n"
+                    "https://github.com/NOAA-ORR-ERD/cell_tree2d/"
+                )
             if self._cell_tree is None:
                 self.build_celltree()
             indices = self._cell_tree.locate(points)
-        elif method == 'simple':
+        elif method == "simple":
             indices = np.zeros((points.shape[0]), dtype=IND_DT)
             for n, point in enumerate(points):
                 for i, face in enumerate(self._faces):
@@ -655,19 +651,8 @@ class UGrid():
         else:
             return indices
 
-    def index_of(self,
-                 points,
-                 method='celltree',
-                _memo=False,
-                _copy=False,
-                _hash=None,
-                use_mask=True):
-        return self.locate_faces(points=points,
-                                 method=method,
-                                 _memo=_memo,
-                                 _copy=_copy,
-                                 _hash=_hash,
-                                 use_mask=use_mask)
+    def index_of(self, points, method="celltree", _memo=False, _copy=False, _hash=None, use_mask=True):
+        return self.locate_faces(points=points, method=method, _memo=_memo, _copy=_copy, _hash=_hash, use_mask=use_mask)
 
     def build_celltree(self):
         """
@@ -675,9 +660,9 @@ class UGrid():
         or faces is not defined.
         """
         from cell_tree2d import CellTree
+
         if self.nodes is None or self.faces is None:
-            raise ValueError(
-                "Nodes and faces must be defined in order to create and use CellTree")
+            raise ValueError("Nodes and faces must be defined in order to create and use CellTree")
         self._cell_tree = CellTree(self.nodes, self.faces)
 
     def interpolation_alphas(self, points, indices=None, _copy=False, _memo=True, _hash=None):
@@ -703,7 +688,7 @@ class UGrid():
                 return result
 
         if indices is None:
-            indices = self.locate_faces(points, 'celltree', _copy, _memo, _hash)
+            indices = self.locate_faces(points, "celltree", _copy, _memo, _hash)
         node_positions = self.nodes[self.faces[indices]]
 
         (lon1, lon2, lon3) = node_positions[:, :, 0].T
@@ -712,17 +697,12 @@ class UGrid():
         reflats = points[:, 1]
         reflons = points[:, 0]
 
-        denoms = (
-            (lat3 - lat1) * (lon2 - lon1) - (lon3 - lon1) * (lat2 - lat1))
+        denoms = (lat3 - lat1) * (lon2 - lon1) - (lon3 - lon1) * (lat2 - lat1)
         # alphas should all add up to 1
-        alpha1s = (reflats - lat3) * (lon3 - lon2) - \
-            (reflons - lon3) * (lat3 - lat2)
-        alpha2s = (reflons - lon1) * (lat3 - lat1) - \
-            (reflats - lat1) * (lon3 - lon1)
-        alpha3s = (reflats - lat1) * (lon2 - lon1) - \
-            (reflons - lon1) * (lat2 - lat1)
-        alphas = np.column_stack(
-            (alpha1s / denoms, alpha2s / denoms, alpha3s / denoms))
+        alpha1s = (reflats - lat3) * (lon3 - lon2) - (reflons - lon3) * (lat3 - lat2)
+        alpha2s = (reflons - lon1) * (lat3 - lat1) - (reflats - lat1) * (lon3 - lon1)
+        alpha3s = (reflats - lat1) * (lon2 - lon1) - (reflons - lon1) * (lat2 - lat1)
+        alphas = np.column_stack((alpha1s / denoms, alpha2s / denoms, alpha3s / denoms))
         alphas[indices == -1] *= 0
 
         if _memo:
@@ -730,17 +710,19 @@ class UGrid():
 
         return alphas
 
-    def interpolate_var_to_points(self,
-                                  points,
-                                  variable,
-                                  location=None,
-                                  fill_value=0,
-                                  indices=None,
-                                  alphas=None,
-                                  slices=None,
-                                  _copy=False,
-                                  _memo=True,
-                                  _hash=None):
+    def interpolate_var_to_points(
+        self,
+        points,
+        variable,
+        location=None,
+        fill_value=0,
+        indices=None,
+        alphas=None,
+        slices=None,
+        _copy=False,
+        _memo=True,
+        _hash=None,
+    ):
         """
         Interpolates a variable on one of the grids to an array of points.
 
@@ -782,7 +764,7 @@ class UGrid():
         """
         points = np.asarray(points, dtype=np.float64).reshape(-1, 2)
         # location should be already known by the variable
-        if hasattr(variable, 'location'):
+        if hasattr(variable, "location"):
             location = variable.location
         # But if it's not, then it can be inferred
         # (for compatibility with old code)
@@ -799,18 +781,18 @@ class UGrid():
 
         _hash = self._hash_of_pts(points)
 
-        inds = self.locate_faces(points, 'celltree', _copy, _memo, _hash)
-        if location == 'face':
+        inds = self.locate_faces(points, "celltree", _copy, _memo, _hash)
+        if location == "face":
             vals = variable[inds]
             vals[inds == -1] = vals[inds == -1] * 0
             return vals
-#             raise NotImplementedError("Currently does not support interpolation of a "
-#                                       "variable defined on the faces")
-        if location == 'node':
+        #             raise NotImplementedError("Currently does not support interpolation of a "
+        #                                       "variable defined on the faces")
+        if location == "node":
             pos_alphas = self.interpolation_alphas(points, inds, _copy, _memo, _hash)
             vals = variable.take(self.faces[inds], axis=0)
             if len(vals.shape) == (len(pos_alphas.shape) + 1):
-                pos_alphas = pos_alphas[:,:,np.newaxis]
+                pos_alphas = pos_alphas[:, :, np.newaxis]
             vals[inds == -1] = vals[inds == -1] * 0
             return np.sum(vals * pos_alphas, axis=1)
         return None
@@ -921,16 +903,13 @@ class UGrid():
         try:
             from scipy.spatial import cKDTree
         except ImportError:
-            raise ImportError("The scipy package is required to use "
-                              "UGrid.locatbuild_face_edge_connectivity")
+            raise ImportError("The scipy package is required to use UGrid.locatbuild_face_edge_connectivity")
 
         faces = self.faces
         edges = self.edges.copy()
         face_edges = np.dstack([faces, np.roll(faces, 1, 1)])
         if np.ma.isMA(faces) and np.ndim(faces.mask):
-            face_edges.mask = np.dstack([
-                faces.mask, np.roll(faces.mask, 1, 1)
-            ])
+            face_edges.mask = np.dstack([faces.mask, np.roll(faces.mask, 1, 1)])
         face_edges.sort(axis=-1)
         edges.sort(axis=-1)
 
@@ -941,15 +920,14 @@ class UGrid():
         if np.ma.isMA(faces) and faces.mask.any():
             mask = face_edge_2d.mask.any(-1)
             connectivity = np.ma.ones(
-                len(face_edge_2d), dtype=face_edge_2d.dtype,
+                len(face_edge_2d),
+                dtype=face_edge_2d.dtype,
             )
             connectivity.mask = mask
             connectivity[~mask] = tree.query(face_edge_2d[~mask])[1]
         else:
             connectivity = tree.query(face_edge_2d)[1]
-        self.face_edge_connectivity = np.roll(
-            connectivity.reshape(faces.shape), -1, -1
-        )
+        self.face_edge_connectivity = np.roll(connectivity.reshape(faces.shape), -1, -1)
 
     def build_face_coordinates(self):
         """
@@ -1000,7 +978,7 @@ class UGrid():
         """
         self.boundary_coordinates = self.nodes[self.boundaries].mean(axis=1)
 
-    def save_as_netcdf(self, filename, format='netcdf4'):
+    def save_as_netcdf(self, filename, format="netcdf4"):
         """
         save the dataset to a file
 
@@ -1009,10 +987,9 @@ class UGrid():
         :param format: format to save -- 'netcdf3' or 'netcdf4'
                        are the only options at this point.
         """
-        self.save(filename, format='netcdf4')
+        self.save(filename, format="netcdf4")
 
-
-    def save(self, filepath, format='netcdf4', variables={}):
+    def save(self, filepath, format="netcdf4", variables={}):
         """
         Save the ugrid object as a netcdf file.
 
@@ -1028,9 +1005,9 @@ class UGrid():
         NOTE: Variables are saved here, because different conventions do it
               differently.
         """
-        format_options = ('netcdf3', 'netcdf4')
+        format_options = ("netcdf3", "netcdf4")
         if format not in format_options:
-            raise ValueError("format: {} not supported. Options are: {}".format(format, format_options))
+            raise ValueError(f"format: {format} not supported. Options are: {format_options}")
 
         mesh_name = self.mesh_name
 
@@ -1038,20 +1015,20 @@ class UGrid():
 
         nclocal.createDimension(mesh_name + "_num_node", len(self.nodes))
         if self._edges is not None:
-            nclocal.createDimension(
-                mesh_name + "_num_edge", len(self._edges))
+            nclocal.createDimension(mesh_name + "_num_edge", len(self._edges))
         if self._boundaries is not None:
-            nclocal.createDimension(mesh_name + "_num_boundary",
-                                    len(self._boundaries))
+            nclocal.createDimension(mesh_name + "_num_boundary", len(self._boundaries))
         if self._faces is not None:
-            nclocal.createDimension(
-                mesh_name + "_num_face", len(self._faces))
-            nclocal.createDimension(mesh_name + "_num_vertices",
-                                    self._faces.shape[1])
+            nclocal.createDimension(mesh_name + "_num_face", len(self._faces))
+            nclocal.createDimension(mesh_name + "_num_vertices", self._faces.shape[1])
         nclocal.createDimension("two", 2)
 
         # mesh topology
-        mesh = nclocal.createVariable(mesh_name, IND_DT, (),)
+        mesh = nclocal.createVariable(
+            mesh_name,
+            IND_DT,
+            (),
+        )
         mesh.cf_role = "mesh_topology"
         mesh.long_name = "Topology data of 2D unstructured mesh"
         mesh.topology_dimension = 2
@@ -1083,80 +1060,86 @@ class UGrid():
         # separate for each type of data see the coordinates example below.
         if self._faces is not None:
             nc_create_var = nclocal.createVariable
-            face_nodes = nc_create_var(mesh_name + "_face_nodes", IND_DT,
-                                       (mesh_name + '_num_face',
-                                        mesh_name + '_num_vertices'),)
+            face_nodes = nc_create_var(
+                mesh_name + "_face_nodes",
+                IND_DT,
+                (mesh_name + "_num_face", mesh_name + "_num_vertices"),
+            )
             face_nodes[:] = self.faces
 
             face_nodes.cf_role = "face_node_connectivity"
-            face_nodes.long_name = ("Maps every triangular face to "
-                                    "its three corner nodes.")
+            face_nodes.long_name = "Maps every triangular face to its three corner nodes."
             face_nodes.start_index = IND_DT(0)
 
         if self._edges is not None:
             nc_create_var = nclocal.createVariable
-            edge_nodes = nc_create_var(mesh_name + "_edge_nodes", IND_DT,
-                                       (mesh_name + '_num_edge', 'two'),)
+            edge_nodes = nc_create_var(
+                mesh_name + "_edge_nodes",
+                IND_DT,
+                (mesh_name + "_num_edge", "two"),
+            )
             edge_nodes[:] = self.edges
 
             edge_nodes.cf_role = "edge_node_connectivity"
-            edge_nodes.long_name = ("Maps every edge to the two "
-                                    "nodes that it connects.")
+            edge_nodes.long_name = "Maps every edge to the two nodes that it connects."
             edge_nodes.start_index = IND_DT(0)
 
         if self._boundaries is not None:
             nc_create_var = nclocal.createVariable
-            boundary_nodes = nc_create_var(mesh_name + "_boundary_nodes",
-                                           IND_DT,
-                                           (mesh_name + '_num_boundary',
-                                            'two'),)
+            boundary_nodes = nc_create_var(
+                mesh_name + "_boundary_nodes",
+                IND_DT,
+                (mesh_name + "_num_boundary", "two"),
+            )
             boundary_nodes[:] = self.boundaries
 
             boundary_nodes.cf_role = "boundary_node_connectivity"
-            boundary_nodes.long_name = ("Maps every boundary segment to "
-                                        "the two nodes that it connects.")
+            boundary_nodes.long_name = "Maps every boundary segment to the two nodes that it connects."
             boundary_nodes.start_index = IND_DT(0)
 
         # Optional "coordinate variables."
-        for location in ['face', 'edge', 'boundary']:
-            loc = "{0}_coordinates".format(location)
+        for location in ["face", "edge", "boundary"]:
+            loc = f"{location}_coordinates"
             if getattr(self, loc) is not None:
-                for axis, ind in [('lat', 1), ('lon', 0)]:
+                for axis, ind in [("lat", 1), ("lon", 0)]:
                     nc_create_var = nclocal.createVariable
-                    name = "{0}_{1}_{2}".format(mesh_name, location, axis)
-                    dimensions = "{0}_num_{1}".format(mesh_name, location)
-                    var = nc_create_var(name, NODE_DT,
-                                        dimensions=(dimensions),)
-                    loc = "{0}_coordinates".format(location)
+                    name = f"{mesh_name}_{location}_{axis}"
+                    dimensions = f"{mesh_name}_num_{location}"
+                    var = nc_create_var(
+                        name,
+                        NODE_DT,
+                        dimensions=(dimensions),
+                    )
+                    loc = f"{location}_coordinates"
                     var[:] = getattr(self, loc)[:, ind]
                     # Attributes of the variable.
-                    var.standard_name = ("longitude" if axis == 'lon'
-                                         else 'latitude')
-                    var.units = ("degrees_east" if axis == 'lon'
-                                 else 'degrees_north')
+                    var.standard_name = "longitude" if axis == "lon" else "latitude"
+                    var.units = "degrees_east" if axis == "lon" else "degrees_north"
                     name = "Characteristics {0} of 2D mesh {1}".format
                     var.long_name = name(var.standard_name, location)
 
         # The node data.
-        node_lon = nclocal.createVariable(mesh_name + '_node_lon',
-                                          self._nodes.dtype,
-                                          (mesh_name + '_num_node',),
-                                          chunksizes=(len(self.nodes),),
-                                          # zlib=False,
-                                          # complevel=0,
-                                          )
+        node_lon = nclocal.createVariable(
+            mesh_name + "_node_lon",
+            self._nodes.dtype,
+            (mesh_name + "_num_node",),
+            chunksizes=(len(self.nodes),),
+            # zlib=False,
+            # complevel=0,
+        )
         node_lon[:] = self.nodes[:, 0]
         node_lon.standard_name = "longitude"
         node_lon.long_name = "Longitude of 2D mesh nodes."
         node_lon.units = "degrees_east"
 
-        node_lat = nclocal.createVariable(mesh_name + '_node_lat',
-                                          self._nodes.dtype,
-                                          (mesh_name + '_num_node',),
-                                          chunksizes=(len(self.nodes),),
-                                          # zlib=False,
-                                          # complevel=0,
-                                          )
+        node_lat = nclocal.createVariable(
+            mesh_name + "_node_lat",
+            self._nodes.dtype,
+            (mesh_name + "_num_node",),
+            chunksizes=(len(self.nodes),),
+            # zlib=False,
+            # complevel=0,
+        )
         node_lat[:] = self.nodes[:, 1]
         node_lat.standard_name = "latitude"
         node_lat.long_name = "Latitude of 2D mesh nodes."
@@ -1173,42 +1156,40 @@ class UGrid():
         """
         mesh_name = self.mesh_name
         for name, var in variables.items():
-            if var.location == 'node':
-                shape = (mesh_name + '_num_node',)
-                coordinates = "{0}_node_lon {0}_node_lat".format(mesh_name)
+            if var.location == "node":
+                shape = (mesh_name + "_num_node",)
+                coordinates = f"{mesh_name}_node_lon {mesh_name}_node_lat"
                 chunksizes = (len(self.nodes),)
-            elif var.location == 'face':
-                shape = (mesh_name + '_num_face',)
+            elif var.location == "face":
+                shape = (mesh_name + "_num_face",)
                 coord = "{0}_face_lon {0}_face_lat".format
-                coordinates = (coord(mesh_name) if self.face_coordinates
-                               is not None else None)
+                coordinates = coord(mesh_name) if self.face_coordinates is not None else None
                 chunksizes = (len(self.faces),)
-            elif var.location == 'edge':
-                shape = (mesh_name + '_num_edge',)
+            elif var.location == "edge":
+                shape = (mesh_name + "_num_edge",)
                 coord = "{0}_edge_lon {0}_edge_lat".format
-                coordinates = (coord(mesh_name) if self.edge_coordinates
-                               is not None else None)
+                coordinates = coord(mesh_name) if self.edge_coordinates is not None else None
                 chunksizes = (len(self.edges),)
-            elif var.location == 'boundary':
-                shape = (mesh_name + '_num_boundary',)
+            elif var.location == "boundary":
+                shape = (mesh_name + "_num_boundary",)
                 coord = "{0}_boundary_lon {0}_boundary_lat".format
                 bcoord = self.boundary_coordinates
-                coordinates = (coord(mesh_name) if bcoord
-                               is not None else None)
+                coordinates = coord(mesh_name) if bcoord is not None else None
                 chunksizes = (len(self.boundaries),)
             else:
-                raise ValueError("I don't know how to save a variable located on: {}".format(var.location))
+                raise ValueError(f"I don't know how to save a variable located on: {var.location}")
             print("Saving:", var)
             print("name is:", var.name)
             print("var data is:", var.data)
             print("var data shape is:", var.data.shape)
-            data_var = nclocal.createVariable(var.name,
-                                              var.data.dtype,
-                                              shape,
-                                              chunksizes=chunksizes,
-                                              # zlib=False,
-                                              # complevel=0,
-                                              )
+            data_var = nclocal.createVariable(
+                var.name,
+                var.data.dtype,
+                shape,
+                chunksizes=chunksizes,
+                # zlib=False,
+                # complevel=0,
+            )
             print("new dat var shape:", shape)
             data_var[:] = var.data[:]
             # Add the standard attributes:

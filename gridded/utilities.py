@@ -5,33 +5,34 @@ assorted utility functions needed by gridded
 """
 
 try:
-    from collections.abc import Iterable, Collection, Mapping
+    from collections.abc import Collection, Iterable, Mapping
 except ImportError:  # py2
-    from collections import Iterable
+    from collections.abc import Iterable
 
-import numpy as np
-import netCDF4 as nc4
 import os
 
+import netCDF4 as nc4
+import numpy as np
 
-must_have = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute__']
+must_have = ["dtype", "shape", "ndim", "__len__", "__getitem__", "__getattribute__"]
+
 
 def convert_numpy_datetime64_to_datetime(dt):
     pass
 
+
 def convert_mask_to_numpy_mask(mask_var):
-    '''
+    """
     Converts a netCDF4.Variable representing a mask into a numpy array mask
     'Water' Values are converted to False (including 'lake', 'river' etc)
     'land' values are converted to True
-    '''
+    """
     ret_mask = np.ones(mask_var.shape, dtype=bool)
     mask_data = mask_var[:]
-    type1 = (isinstance(mask_var, nc4.Variable)
-             and hasattr(mask_var, 'flag_values')
-             and hasattr(mask_var, 'flag_meanings'))
-    type2 = (isinstance(mask_var, nc4.Variable)
-             and hasattr(mask_var, 'option_0'))
+    type1 = (
+        isinstance(mask_var, nc4.Variable) and hasattr(mask_var, "flag_values") and hasattr(mask_var, "flag_meanings")
+    )
+    type2 = isinstance(mask_var, nc4.Variable) and hasattr(mask_var, "option_0")
     if type1:
         fm = mask_var.flag_meanings
         fv = mask_var.flag_values
@@ -43,13 +44,13 @@ def convert_mask_to_numpy_mask(mask_var):
             fv = fv.split()
         except AttributeError:
             pass
-        meaning_mask = [False if ('water' in s or 'lake' in s) else True for s in fm]
+        meaning_mask = [False if ("water" in s or "lake" in s) else True for s in fm]
         tfmap = dict(zip(fv, meaning_mask))
         for k, v in tfmap.items():
             ret_mask[mask_data == k] = v
     elif type2:  # special case where option_0 == land,
-                 # option_1 == water, etc
-                 # TODO: generalize this properly
+        # option_1 == water, etc
+        # TODO: generalize this properly
         meaning_mask = [True, False]
         tfmap = dict(zip([0, 1], meaning_mask))
         for k, v in tfmap.items():
@@ -68,12 +69,14 @@ def gen_celltree_mask_from_center_mask(center_mask, sl):
     input_mask = convert_mask_to_numpy_mask(center_mask)
     return input_mask[sl]
 
-#1/16/2024 Jay Hennen: I'm 'privating' this function pending a review and likely rewrite. 
+
+# 1/16/2024 Jay Hennen: I'm 'privating' this function pending a review and likely rewrite.
 #
-def regrid_variable(grid, o_var, location='node'):
-    from gridded.variable import Variable
+def regrid_variable(grid, o_var, location="node"):
+    from gridded.depth import DepthBase, L_Depth, S_Depth
     from gridded.grids import Grid_S, Grid_U
-    from gridded.depth import S_Depth, L_Depth, DepthBase
+    from gridded.variable import Variable
+
     """
     Takes a Variable or VectorVariable and interpolates the data onto grid.
     You may pass a location ('nodes', 'faces', 'edge1', 'edge2) and the
@@ -93,21 +96,23 @@ def regrid_variable(grid, o_var, location='node'):
     """
 
     dest_points = None
-    if location == 'node':
+    if location == "node":
         dest_points = grid.nodes
-    if location == 'face' or location == 'center':
+    if location == "face" or location == "center":
         if grid.face_coordinates is None and isinstance(grid, Grid_U):
             grid.build_face_coordinates()
             dest_points = grid.face_coordinates
         else:
             dest_points = grid.centers
     dest_points = dest_points.reshape(-1, 2)
-    if 'edge' in location:
+    if "edge" in location:
         raise NotImplementedError("Cannot regrid variable to edges at this time")
-    dest_indices = o_var.grid.locate_faces(dest_points, 'node')
+    dest_indices = o_var.grid.locate_faces(dest_points, "node")
     if np.all(dest_indices == -1):
-        raise ValueError("Grid {0} has no destination points overlapping\
-        the grid of the source variable {1}".format(grid, o_var))
+        raise ValueError(
+            f"Grid {grid} has no destination points overlapping\
+        the grid of the source variable {o_var}"
+        )
     n_depth = None
     if o_var.depth is not None:
         if issubclass(o_var.depth.__class__, S_Depth):
@@ -134,25 +139,22 @@ def regrid_variable(grid, o_var, location='node'):
     if o_var.time is not None:
         for t_idx, t in enumerate(o_var.time.data):
             if n_depth is not None and issubclass(n_depth.__class__, S_Depth):
-                transect = o_var.depth.get_transect(o_var.grid.nodes.reshape(-1,2), t, data_shape=(len(n_depth),)).T
+                transect = o_var.depth.get_transect(o_var.grid.nodes.reshape(-1, 2), t, data_shape=(len(n_depth),)).T
                 for lev_idx, lev_data in enumerate(transect):
-                    lev = Variable(name='level{0}'.format(lev_idx),
-                                   data=lev_data.reshape(o_var.grid.node_lon.shape),
-                                   grid=o_var.grid)
+                    lev = Variable(
+                        name=f"level{lev_idx}", data=lev_data.reshape(o_var.grid.node_lon.shape), grid=o_var.grid
+                    )
                     zs = lev.at(pts, t)
-                    pts[:, 2] = zs[:,0]
+                    pts[:, 2] = zs[:, 0]
                     n_data[t_idx, lev_idx] = o_var.at(pts, t).reshape(location_shp)
             else:
                 n_data[t_idx] = o_var.at(pts, t).reshape(location_shp)
     else:
         n_data = o_var.at(pts, None).reshape(location_shp)
 
-    n_var = Variable(name='regridded {0}'.format(o_var.name),
-                     grid=grid,
-                     time=o_var.time,
-                     depth=n_depth,
-                     data=n_data,
-                     units=o_var.units)
+    n_var = Variable(
+        name=f"regridded {o_var.name}", grid=grid, time=o_var.time, depth=n_depth, data=n_data, units=o_var.units
+    )
     return n_var
 
 
@@ -164,15 +166,19 @@ def _regrid_s_depth(grid, o_depth):
     o_zeta = o_depth.zeta
     n_bathy = regrid_variable(grid, o_bathy)
     n_zeta = regrid_variable(grid, o_zeta)
-    n_depth = o_depth.__class__(time=o_depth.time,
-                      grid=grid,
-                      bathymetry=n_bathy,
-                      zeta=n_zeta,
-                      terms={'Cs_w': o_depth.Cs_w,
-                             'Cs_r': o_depth.Cs_r,
-                             's_w': o_depth.s_w,
-                             's_rho': o_depth.s_rho,
-                             'hc': o_depth.hc})
+    n_depth = o_depth.__class__(
+        time=o_depth.time,
+        grid=grid,
+        bathymetry=n_bathy,
+        zeta=n_zeta,
+        terms={
+            "Cs_w": o_depth.Cs_w,
+            "Cs_r": o_depth.Cs_r,
+            "s_w": o_depth.s_w,
+            "s_rho": o_depth.s_rho,
+            "hc": o_depth.hc,
+        },
+    )
     return n_depth
 
 
@@ -217,34 +223,35 @@ def _reorganize_spatial_data(points):
         return None
     points_arr = np.array(points).squeeze()
     if points_arr.dtype in (np.object_, np.bytes_, np.bool_):
-        raise TypeError('points data does not convert to a numeric array type')
+        raise TypeError("points data does not convert to a numeric array type")
     shp = points_arr.shape
     # special cases
     if len(shp) == 1:
-        #two valid cases: [lon, lat] and [lon, lat, depth]. all others = error
+        # two valid cases: [lon, lat] and [lon, lat, depth]. all others = error
         if shp == (2,) or shp == (3,):
-            return points_arr.reshape(1,shp[0])
+            return points_arr.reshape(1, shp[0])
         else:
-            raise ValueError('Only 2 or 3 elements (lon, lat) or\
-                             (lon, lat_depth) is allowed when using 1D data')
-    if shp in ((2,2),(2,3),(3,2),(3,3)):
-        #can't do anything here because it's 100% ambiguous.
+            raise ValueError(
+                "Only 2 or 3 elements (lon, lat) or\
+                             (lon, lat_depth) is allowed when using 1D data"
+            )
+    if shp in ((2, 2), (2, 3), (3, 2), (3, 3)):
+        # can't do anything here because it's 100% ambiguous.
         return points_arr
     else:
-        '''
+        """
         Make sure at least one of the dimensions is length 2 or 3. If it is
         dimension 0, then reshape, otherwise do nothing. If both dimensions are
         longer than 3, this is an error.
-        '''
+        """
         if shp[0] > 3 and shp[1] > 3:
-            raise ValueError('Too many coordinate dimensions in input array')
+            raise ValueError("Too many coordinate dimensions in input array")
         if shp[0] > shp[1]:
             #'correct' shape
             return points_arr
         else:
             return points_arr.T
         pass
-
 
 
 def _align_results_to_spatial_data(result, points):
@@ -286,28 +293,30 @@ def _align_results_to_spatial_data(result, points):
     that are expected to provide strictly vectorized results.
     (N results per N input points)
     """
-    if points is None :
+    if points is None:
         return result
     points_arr = np.array(points).squeeze()
     shp = points_arr.shape
-    #special cases
+    # special cases
     if len(shp) == 1:
-        #two valid cases: [lon, lat] and [lon, lat, depth]. all others = error
+        # two valid cases: [lon, lat] and [lon, lat, depth]. all others = error
         if shp == (2,) or shp == (3,):
             return result
         else:
-            raise ValueError('Only 2 or 3 elements (lon, lat) or\
-                             (lon, lat_depth) is allowed when using 1D data')
-    elif shp in ((2,2),(2,3),(3,2),(3,3)):
+            raise ValueError(
+                "Only 2 or 3 elements (lon, lat) or\
+                             (lon, lat_depth) is allowed when using 1D data"
+            )
+    elif shp in ((2, 2), (2, 3), (3, 2), (3, 3)):
         return result
     else:
         if shp[0] > 3 and shp[1] > 3:
-            raise ValueError('Too many coordinate dimensions in points array')
+            raise ValueError("Too many coordinate dimensions in points array")
         elif shp[0] < shp[1] and result.shape[0] == shp[1]:
             return result.T
         else:
             if shp[0] == result.shape[0] and len(result.shape) == 1:
-                return result[:, None] #enforce (N,1) shape
+                return result[:, None]  # enforce (N,1) shape
             else:
                 return result
 
@@ -374,15 +383,18 @@ def get_dataset(ncfile, dataset=None):
     else:
         return nc4.MFDataset(ncfile)
 
-def parse_filename_dataset_args(filename=None,
-                                dataset=None,
-                                data_file=None,
-                                grid_file=None,):
+
+def parse_filename_dataset_args(
+    filename=None,
+    dataset=None,
+    data_file=None,
+    grid_file=None,
+):
     """A perinnial problem is that we need to be able to accept a variety of
     filename/dataset arguments. This function will return a tuple of 'ds' and 'dg'
     where ds is the netCDF4.Dataset for the data and dg is the netCDF4.Dataset for the grid. If such
     datasets are from the same file, it will return the same object for both.
-    
+
     :param filename: str or pathlike
     :param dataset: netCDF4.Dataset
     :param data_file: str, pathlike, or netCDF4.Dataset
@@ -408,8 +420,9 @@ def parse_filename_dataset_args(filename=None,
         else:
             dg = dataset
         ds = dataset
-    
+
     return ds, dg
+
 
 def get_writable_dataset(ncfile, format="netcdf4"):
     """
@@ -424,10 +437,7 @@ def get_writable_dataset(ncfile, format="netcdf4"):
         return ncfile
     elif isstring(ncfile):  # Fixme: should be pathlike...
         print("filename is:", ncfile)
-        return nc4.Dataset(ncfile,
-                           mode="w",
-                           clobber=True,
-                           format="NETCDF4")
+        return nc4.Dataset(ncfile, mode="w", clobber=True, format="NETCDF4")
     else:
         raise ValueError("Must be a string path or a netcdf4 Dataset")
 
@@ -440,9 +450,10 @@ def get_dataset_attrs(ds):
     """
     return {name: ds.getncattr(name) for name in ds.ncattrs()}
 
+
 def search_netcdf_vars(cls=None, ds=None, dg=None):
     """
-    Given a class with a .default_names and .cf_names attributes, search a datafile 
+    Given a class with a .default_names and .cf_names attributes, search a datafile
     netCDF4.Dataset and a possible grid netCDF4.Dataset for variables that are sought by
     the class
     """
@@ -455,20 +466,23 @@ def search_netcdf_vars(cls=None, ds=None, dg=None):
         dg_search = merge_var_search_dicts(dg_ln_search, dg_vn_search)
         found_vars = merge_var_search_dicts(found_vars, dg_search)
     return found_vars
-    
+
+
 def can_create_class(cls, ds=None, dg=None):
     found_vars = search_netcdf_vars(cls, ds, dg)
     # all variables must be found (no None values)
-    return not (None in found_vars.values())
+    return None not in found_vars.values()
+
 
 def varnames_merge(cls, inc_varnames=None):
     """
     Helper function to support the `varnames` argument pattern.
 
     `varnames` is a keyword used to specify an association between a desired subcomponent
-    of an object and a desired data source name. It is meant to be a mechanism by which 
+    of an object and a desired data source name. It is meant to be a mechanism by which
     custom digestion of a file can be specified.
     """
+
 
 def search_dataset_for_any_long_name(ds, names):
     """
@@ -479,12 +493,13 @@ def search_dataset_for_any_long_name(ds, names):
     """
     if isinstance(names, Mapping):
         names = sum(list(names.values()), [])
-            
+
     for n in names:
         t1 = ds.get_variables_by_attributes(long_name=n)
         t2 = ds.get_variables_by_attributes(standard_name=n)
         if t1 or t2:
-            return t1+t2
+            return t1 + t2
+
 
 def search_dataset_for_variables_by_longname(ds, possible_names):
     """
@@ -503,11 +518,12 @@ def search_dataset_for_variables_by_longname(ds, possible_names):
             t1 = ds.get_variables_by_attributes(long_name=query)
             t2 = ds.get_variables_by_attributes(standard_name=query)
             if t1 or t2:
-                rtv[k] = (t1+t2)[0]
+                rtv[k] = (t1 + t2)[0]
                 break
         if k not in rtv:
             rtv[k] = None
     return rtv
+
 
 def search_dataset_for_variables_by_varname(ds, possible_names):
     """
@@ -529,6 +545,7 @@ def search_dataset_for_variables_by_varname(ds, possible_names):
         if k not in rtv:
             rtv[k] = None
     return rtv
+
 
 def merge_var_search_dicts(d1, d2):
     """

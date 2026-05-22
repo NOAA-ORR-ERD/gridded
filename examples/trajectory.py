@@ -1,38 +1,35 @@
-
-# coding: utf-8
-
 # # Trajectory Test
 
 # In[1]:
 
 
-get_ipython().magic('matplotlib inline')
+get_ipython().magic("matplotlib inline")
 import matplotlib.pyplot as plt
-import numpy.ma as ma
-import numpy as np
 import netCDF4
-import gridded
+import numpy as np
+import numpy.ma as ma
 
+import gridded
 
 # In[2]:
 
 
-url = 'http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc'
+url = "http://geoport.whoi.edu/thredds/dodsC/examples/bora_feb.nc"
 
 
 # In[3]:
 
 
 nc = netCDF4.Dataset(url)
-lon = nc['lon_rho'][:]
-lat = nc['lat_rho'][:]
-temp = nc['temp'][-1,-1,:,:]
+lon = nc["lon_rho"][:]
+lat = nc["lat_rho"][:]
+temp = nc["temp"][-1, -1, :, :]
 
 
 # In[4]:
 
 
-x = np.linspace(13., 15.)
+x = np.linspace(13.0, 15.0)
 y = np.linspace(45.3, 43.5)
 len(x)
 
@@ -40,18 +37,18 @@ len(x)
 # In[5]:
 
 
-plt.pcolormesh(lon,lat,ma.masked_invalid(temp),vmin=5,vmax=15,cmap='jet');
-plt.plot(x,y,'-')
+plt.pcolormesh(lon, lat, ma.masked_invalid(temp), vmin=5, vmax=15, cmap="jet")
+plt.plot(x, y, "-")
 plt.grid()
-plt.colorbar();
+plt.colorbar()
 
 
 # In[6]:
 
 
-temperature = gridded.Variable.from_netCDF(filename=url, name='Temperature', varname='temp')
-salinity = gridded.Variable.from_netCDF(filename=url, name='Salinity', varname='salt', grid=temperature.grid)
-points = np.column_stack((x,y))
+temperature = gridded.Variable.from_netCDF(filename=url, name="Temperature", varname="temp")
+salinity = gridded.Variable.from_netCDF(filename=url, name="Salinity", varname="salt", grid=temperature.grid)
+points = np.column_stack((x, y))
 
 t0 = temperature.time.max_time
 
@@ -87,11 +84,10 @@ times = temperature.time.data
 # In[11]:
 
 
-over_time = [temperature.at((x[i],y[i]), val)[0] for i,val in enumerate(times)]
+over_time = [temperature.at((x[i], y[i]), val)[0] for i, val in enumerate(times)]
 
 
 # In[12]:
 
 
 plt.plot(over_time)
-

@@ -5,14 +5,10 @@ Created on Apr 7, 2015
 
 """
 
-
-import pytest
 import numpy as np
+import pytest
 
 from gridded.pysgrid.sgrid import SGrid, load_grid
-
-from .write_nc_test_files import (deltares_sgrid,
-                                  deltares_sgrid_no_optional_attr)
 
 pytestmark = pytest.mark.skipif(True, reason="Lots of issues with these -- needs revisiting")
 
@@ -35,7 +31,7 @@ def sgrid(deltares_sgrid_no_optional_attr):
 
 def test_face_coordinate_inference(sgrid):
     face_coordinates = sgrid.face_coordinates
-    expected_face_coordinates = (u'XZ', u'YZ')
+    expected_face_coordinates = ("XZ", "YZ")
     assert face_coordinates == expected_face_coordinates
 
 
@@ -125,8 +121,8 @@ def test_grid_optional_attrs(sgrid_obj):
     node_coordinates = sgrid_obj.node_coordinates
     edge1_coordinates = sgrid_obj.edge1_coordinates
     edge2_coordinates = sgrid_obj.edge2_coordinates
-    fc_expected = ('XZ', 'YZ')
-    nc_expected = ('XCOR', 'YCOR')
+    fc_expected = ("XZ", "YZ")
+    nc_expected = ("XCOR", "YCOR")
     assert face_coordinates == fc_expected
     assert node_coordinates == nc_expected
     assert edge1_coordinates is None
@@ -135,7 +131,7 @@ def test_grid_optional_attrs(sgrid_obj):
 
 def test_grid_variables_deltares(sgrid_obj):
     grid_variables = sgrid_obj.grid_variables
-    expected_grid_variables = [u'U1', u'V1', u'FAKE_U1', u'W', u'FAKE_W']
+    expected_grid_variables = ["U1", "V1", "FAKE_U1", "W", "FAKE_W"]
     assert set(grid_variables) == set(expected_grid_variables)
 
 
@@ -146,28 +142,28 @@ def test_angles(sgrid_obj):
 
 
 def test_no_3d_attributes(sgrid_obj):
-    assert not hasattr(sgrid_obj, 'volume_padding')
-    assert not hasattr(sgrid_obj, 'volume_dimensions')
-    assert not hasattr(sgrid_obj, 'volume_coordinates')
-    assert not hasattr(sgrid_obj, 'face1_padding')
-    assert not hasattr(sgrid_obj, 'face1_coordinates')
-    assert not hasattr(sgrid_obj, 'face1_dimensions')
-    assert not hasattr(sgrid_obj, 'face2_padding')
-    assert not hasattr(sgrid_obj, 'face2_coordinates')
-    assert not hasattr(sgrid_obj, 'face2_dimensions')
-    assert not hasattr(sgrid_obj, 'face3_padding')
-    assert not hasattr(sgrid_obj, 'face3_coordinates')
-    assert not hasattr(sgrid_obj, 'edge3_padding')
-    assert not hasattr(sgrid_obj, 'edge3_coordinates')
-    assert not hasattr(sgrid_obj, 'edge3_dimensions')
+    assert not hasattr(sgrid_obj, "volume_padding")
+    assert not hasattr(sgrid_obj, "volume_dimensions")
+    assert not hasattr(sgrid_obj, "volume_coordinates")
+    assert not hasattr(sgrid_obj, "face1_padding")
+    assert not hasattr(sgrid_obj, "face1_coordinates")
+    assert not hasattr(sgrid_obj, "face1_dimensions")
+    assert not hasattr(sgrid_obj, "face2_padding")
+    assert not hasattr(sgrid_obj, "face2_coordinates")
+    assert not hasattr(sgrid_obj, "face2_dimensions")
+    assert not hasattr(sgrid_obj, "face3_padding")
+    assert not hasattr(sgrid_obj, "face3_coordinates")
+    assert not hasattr(sgrid_obj, "edge3_padding")
+    assert not hasattr(sgrid_obj, "edge3_coordinates")
+    assert not hasattr(sgrid_obj, "edge3_dimensions")
 
 
 def test_2d_attributes(sgrid_obj):
-    assert hasattr(sgrid_obj, 'face_padding')
-    assert hasattr(sgrid_obj, 'face_coordinates')
-    assert hasattr(sgrid_obj, 'face_dimensions')
-    assert hasattr(sgrid_obj, 'vertical_padding')
-    assert hasattr(sgrid_obj, 'vertical_dimensions')
+    assert hasattr(sgrid_obj, "face_padding")
+    assert hasattr(sgrid_obj, "face_coordinates")
+    assert hasattr(sgrid_obj, "face_dimensions")
+    assert hasattr(sgrid_obj, "vertical_padding")
+    assert hasattr(sgrid_obj, "vertical_dimensions")
 
 
 """
@@ -183,7 +179,7 @@ def test_round_trip(deltares_sgrid, tmpdir):
     TODO: add more "round-trip" tests.
 
     """
-    fname = tmpdir.mkdir('files').join('deltares_roundtrip.nc')
+    fname = tmpdir.mkdir("files").join("deltares_roundtrip.nc")
     sg_obj = load_grid(deltares_sgrid)
     sg_obj.save_as_netcdf(fname)
 
@@ -200,39 +196,37 @@ def test_save_as_netcdf(sgrid_no_node):
 
     """
     target_dims = sgrid_no_node.dimensions
-    expected_target_dims = [(u'MMAXZ', 4),
-                            (u'NMAXZ', 4),
-                            (u'MMAX', 4),
-                            (u'NMAX', 4),
-                            (u'KMAX', 2),
-                            (u'KMAX1', 3),
-                            (u'time', 2)
-                            ]
+    expected_target_dims = [
+        ("MMAXZ", 4),
+        ("NMAXZ", 4),
+        ("MMAX", 4),
+        ("NMAX", 4),
+        ("KMAX", 2),
+        ("KMAX1", 3),
+        ("time", 2),
+    ]
     target_vars = sgrid_no_node.variables
-    expected_target_vars = [u'XZ',
-                            u'YZ',
-                            u'XCOR',
-                            u'YCOR',
-                            u'grid',
-                            u'U1',
-                            u'FAKE_U1',
-                            u'V1',
-                            u'W',
-                            u'FAKE_W',
-                            u'time',
-                            u'latitude',
-                            u'longitude',
-                            u'grid_latitude',
-                            u'grid_longitude'
-                            ]
+    expected_target_vars = [
+        "XZ",
+        "YZ",
+        "XCOR",
+        "YCOR",
+        "grid",
+        "U1",
+        "FAKE_U1",
+        "V1",
+        "W",
+        "FAKE_W",
+        "time",
+        "latitude",
+        "longitude",
+        "grid_latitude",
+        "grid_longitude",
+    ]
     target_grid_vars = sgrid_no_node.grid_variables
-    expected_target_grid_vars = [u'U1',
-                                 u'FAKE_U1',
-                                 u'V1',
-                                 u'W',
-                                 u'FAKE_W']
+    expected_target_grid_vars = ["U1", "FAKE_U1", "V1", "W", "FAKE_W"]
     target_face_coordinates = sgrid_no_node.face_coordinates
-    expected_target_face_coordinates = (u'XZ', u'YZ')
+    expected_target_face_coordinates = ("XZ", "YZ")
     assert isinstance(sgrid_no_node, SGrid)
     assert len(target_dims) == len(expected_target_dims)
     assert set(target_dims) == set(expected_target_dims)
@@ -253,7 +247,7 @@ def test_saved_sgrid_attributes(sgrid_no_node):
     u1_var_center_avg_axis = u1_var.center_axis
     expected_u1_center_axis = 0
     u1_vector_axis = u1_var.vector_axis
-    expected_u1_vector_axis = 'X'
+    expected_u1_vector_axis = "X"
     original_angles = sgrid_no_node.angles
     saved_angles = sgrid_no_node.angles
     assert u1_var_center_avg_axis == expected_u1_center_axis

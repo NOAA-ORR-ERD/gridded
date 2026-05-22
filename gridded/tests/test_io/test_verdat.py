@@ -2,18 +2,13 @@
 testing verdat read/write capability
 """
 
-import os
 from pathlib import Path
-import random
 
 import numpy as np
 
-import pooch
-
 import gridded
 from gridded import io
-
-from ..utilities import data_file_cache
+from gridded.tests.utilities import data_file_cache
 
 DATA_URL = "https://gnome.orr.noaa.gov/py_gnome_testdata/gridded_test_files/"
 
@@ -23,8 +18,8 @@ OUTPUT = HERE / "output"
 OUTPUT.mkdir(exist_ok=True)
 
 test_filename = EXAMPLES / "example_verdat.verdat"
-test_filename_no_units = EXAMPLES /  "example_verdat_no_units.verdat"
-test_filename_tiny = EXAMPLES /  "tiny.verdat"
+test_filename_no_units = EXAMPLES / "example_verdat_no_units.verdat"
+test_filename_tiny = EXAMPLES / "tiny.verdat"
 
 
 def test_read():
@@ -39,7 +34,7 @@ def test_read():
 def test_read_no_units():
     ds = io.load_verdat(test_filename_no_units)
 
-    assert ds.variables['depth'].units == ""
+    assert ds.variables["depth"].units == ""
 
 
 def test_read_tiny():
@@ -52,14 +47,22 @@ def test_read_tiny():
 
     nodes = ds.grid.nodes
     assert len(nodes) == 11
-    assert np.array_equal(nodes[:3], [(-62.242001, 12.775000),
-                                      (-28.990000, 12.775000),
-                                      (-28.990000, 30.645000),
-                                      ])
+    assert np.array_equal(
+        nodes[:3],
+        [
+            (-62.242001, 12.775000),
+            (-28.990000, 12.775000),
+            (-28.990000, 30.645000),
+        ],
+    )
 
-    assert np.array_equal(nodes[-2:], [(-50.821999, 20.202999),
-                                       (-34.911236, 29.293791),
-                                       ])
+    assert np.array_equal(
+        nodes[-2:],
+        [
+            (-50.821999, 20.202999),
+            (-34.911236, 29.293791),
+        ],
+    )
 
     bounds = ds.grid.boundaries
     assert len(bounds) == 9
@@ -75,24 +78,28 @@ def test_read_tiny():
     assert tuple(bounds[7]) == (7, 8)
     assert tuple(bounds[8]) == (8, 5)
 
-    depths = ds['depth'].data
+    depths = ds["depth"].data
 
-    assert np.array_equal(depths, [1.0,
-                                   1.0,
-                                   1.0,
-                                   102.0,
-                                   1.0,
-                                   1.0,
-                                   60.0,
-                                   1.0,
-                                   1.0,
-                                   97.0,
-                                   1.0,
-                                    ])
+    assert np.array_equal(
+        depths,
+        [
+            1.0,
+            1.0,
+            1.0,
+            102.0,
+            1.0,
+            1.0,
+            60.0,
+            1.0,
+            1.0,
+            97.0,
+            1.0,
+        ],
+    )
 
 
 def test_save_verdat():
-    infilename = EXAMPLES /  "tiny.verdat"
+    infilename = EXAMPLES / "tiny.verdat"
     ds = io.load_verdat(infilename)
 
     outfilename = OUTPUT / "tiny_out.verdat"
@@ -186,14 +193,9 @@ def test_general_ugrid_to_verdat_no_depth():
 
     assert contents[0] == "DOGS \n"
 
-
     assert contents[-1] == "190\n"
     assert contents[-2] == "1\n"
 
 
 if __name__ == "__main__":
-  test_order_boundary_segments_open()
-
-
-
-
+    test_order_boundary_segments_open()

@@ -3,9 +3,8 @@ Some MPL based plotting utilities for gridded.
 """
 
 import numpy as np
+from matplotlib.collections import LineCollection
 from matplotlib.tri import Triangulation
-from matplotlib.collections import  LineCollection
-
 
 
 def plot_ugrid(axes, grid, nodes=False, node_numbers=False, face_numbers=False):
@@ -38,7 +37,7 @@ def plot_ugrid(axes, grid, nodes=False, node_numbers=False, face_numbers=False):
     if face_numbers:
         if grid.face_coordinates is None:
             grid.build_face_coordinates()
-        face_lon, face_lat = grid.face_coordinates[:,0], grid.face_coordinates[:,1]
+        face_lon, face_lat = grid.face_coordinates[:, 0], grid.face_coordinates[:, 1]
         for i, point in enumerate(zip(face_lon, face_lat)):
             axes.annotate(
                 f"{i}",
@@ -128,7 +127,6 @@ def plot_sgrid(axes, grid, nodes=False, rho_points=False, edge_points=False):
     if nodes:
         axes.plot(nodes_lon, nodes_lat, "ok")
 
-
     # from ugrid -- needs changes -- maybe (i, j)?
     # if face_numbers:
     #     try:
@@ -166,5 +164,3 @@ def plot_sgrid(axes, grid, nodes=False, rho_points=False, edge_points=False):
     #                 "ec": "white",
     #             },
     #         )
-
-

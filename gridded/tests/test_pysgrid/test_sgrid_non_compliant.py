@@ -5,7 +5,6 @@ Created on Apr 7, 2015
 
 """
 
-
 import pytest
 
 from gridded.pysgrid.sgrid import load_grid

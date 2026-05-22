@@ -99,3 +99,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+# pixi environments
+.pixi/*
+!.pixi/config.toml

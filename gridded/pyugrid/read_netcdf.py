@@ -11,12 +11,10 @@ This code is called by the UGrid class to load into a UGRID object.
 # NOTE: passing the UGrid object in to avoid circular references,
 # while keeping the netcdf reading code in its own file.
 
-
-
 import logging
 
-import numpy as np
 import netCDF4
+import numpy as np
 
 from .uvar import UVar
 
@@ -34,11 +32,11 @@ def find_mesh_names(nc):
     mesh_names = []
     for varname in nc.variables.keys():
         if is_valid_mesh(nc, varname):
-                    mesh_names.append(varname)
+            mesh_names.append(varname)
     return mesh_names
 
 
-def     is_valid_mesh(nc, varname):
+def is_valid_mesh(nc, varname):
     """
     determine if the given variable name is a valid mesh definition
 
@@ -50,57 +48,64 @@ def     is_valid_mesh(nc, varname):
     try:
         mesh_var = nc.variables[varname]
     except KeyError:
-        logger.info('Key error %s', varname)
+        logger.info("Key error %s", varname)
         return False
     try:
-        if (
-                mesh_var.cf_role.strip() == 'mesh_topology' and
-                int(mesh_var.topology_dimension) in {1, 2}
-        ):
+        if mesh_var.cf_role.strip() == "mesh_topology" and int(mesh_var.topology_dimension) in {1, 2}:
             return True
     except AttributeError:
-        logger.info('Attribute error {0}'.format(mesh_var.name))
+        logger.info(f"Attribute error {mesh_var.name}")
         # not a valid mesh variable
         return False
 
 
 # Defining properties of various connectivity arrays
 # so that the same code can load all of them.
-grid_defs = [{'grid_attr': 'faces',  # Name in UGrid object.
-              'role': 'face_node_connectivity',  # Name in mesh variable.
-              'num_ind': 3,  # Number of idx (3 for faces, 2 for segments).
-              },
-             {'grid_attr': 'face_face_connectivity',  # Name in UGrid object.
-              'role': 'face_face_connectivity',  # Name in mesh variable.
-              'num_ind': 3,  # Number of idx (3 for faces, 2 for segments).
-              },
-             {'grid_attr': 'boundaries',  # Name in UGrid object.
-              'role': 'boundary_node_connectivity',  # Name in mesh var.
-              'num_ind': 2,  # Number of idx (3 for faces, 2 for segments).
-              },
-             {'grid_attr': 'edges',  # Name in UGrid object.
-              'role': 'edge_node_connectivity',  # Name in mesh variable.
-              'num_ind': 2,  # Number of idx (3 for faces, 2 for segments).
-              },
-             ]
+grid_defs = [
+    {
+        "grid_attr": "faces",  # Name in UGrid object.
+        "role": "face_node_connectivity",  # Name in mesh variable.
+        "num_ind": 3,  # Number of idx (3 for faces, 2 for segments).
+    },
+    {
+        "grid_attr": "face_face_connectivity",  # Name in UGrid object.
+        "role": "face_face_connectivity",  # Name in mesh variable.
+        "num_ind": 3,  # Number of idx (3 for faces, 2 for segments).
+    },
+    {
+        "grid_attr": "boundaries",  # Name in UGrid object.
+        "role": "boundary_node_connectivity",  # Name in mesh var.
+        "num_ind": 2,  # Number of idx (3 for faces, 2 for segments).
+    },
+    {
+        "grid_attr": "edges",  # Name in UGrid object.
+        "role": "edge_node_connectivity",  # Name in mesh variable.
+        "num_ind": 2,  # Number of idx (3 for faces, 2 for segments).
+    },
+]
 # definitions for various coordinate arrays
-coord_defs = [{'grid_attr': 'nodes',  # Attribute name in UGrid object.
-               'role': 'node_coordinates',  # Attribute name in mesh variable.
-               'required': True,  # Is this required?
-               },
-              {'grid_attr': 'face_coordinates',  # Name in UGrid object.
-               'role': 'face_coordinates',  # Name in mesh variable.
-               'required': False,  # Is this required?
-               },
-              {'grid_attr': 'edge_coordinates',  # Name in UGrid object.
-               'role': 'edge_coordinates',  # Name in mesh variable.
-               'required': False,  # is this required?
-               },
-              {'grid_attr': 'boundary_coordinates',  # Name in UGrid object.
-               'role': 'boundary_coordinates',  # Name in mesh variable.
-               'required': False,  # Is this required?
-               },
-              ]
+coord_defs = [
+    {
+        "grid_attr": "nodes",  # Attribute name in UGrid object.
+        "role": "node_coordinates",  # Attribute name in mesh variable.
+        "required": True,  # Is this required?
+    },
+    {
+        "grid_attr": "face_coordinates",  # Name in UGrid object.
+        "role": "face_coordinates",  # Name in mesh variable.
+        "required": False,  # Is this required?
+    },
+    {
+        "grid_attr": "edge_coordinates",  # Name in UGrid object.
+        "role": "edge_coordinates",  # Name in mesh variable.
+        "required": False,  # is this required?
+    },
+    {
+        "grid_attr": "boundary_coordinates",  # Name in UGrid object.
+        "role": "boundary_coordinates",  # Name in mesh variable.
+        "required": False,  # Is this required?
+    },
+]
 
 
 def load_grid_from_nc_dataset(nc, grid, mesh_name=None):  # , load_data=True):
@@ -154,17 +159,16 @@ def load_grid_from_nc_dataset(nc, grid, mesh_name=None):  # , load_data=True):
     # Load the coordinate variables.
     for defs in coord_defs:
         try:
-            coord_names = mesh_var.getncattr(defs['role']).strip().split()
+            coord_names = mesh_var.getncattr(defs["role"]).strip().split()
             coord_vars = [nc.variables[name] for name in coord_names]
         except AttributeError:
-            if defs['required']:
+            if defs["required"]:
                 msg = "Mesh variable must include {} attribute.".format
-                raise ValueError(msg(defs['role']))
+                raise ValueError(msg(defs["role"]))
             continue
         except KeyError:
-            msg = ("File must include {} variables for {} "
-                   "named in mesh variable.").format
-            raise ValueError(msg(coord_names, defs['role']))
+            msg = ("File must include {} variables for {} named in mesh variable.").format
+            raise ValueError(msg(coord_names, defs["role"]))
 
         coord_vars = [nc.variables[name] for name in coord_names]
         num_node = len(coord_vars[0])
@@ -177,43 +181,41 @@ def load_grid_from_nc_dataset(nc, grid, mesh_name=None):  # , load_data=True):
                 try:
                     units = var.units
                 except AttributeError:
-                    msg = ("The {} variable doesn't contain units "
-                           "attribute: required by CF").format
+                    msg = ("The {} variable doesn't contain units attribute: required by CF").format
                     raise ValueError(msg(var))
                 # CF accepted units attributes for longitude.
-                if units in ('degrees_east', 'degree_east', 'degree_E',
-                             'degrees_E', 'degreeE', 'degreesE'):
-                        standard_name = 'longitude'
+                if units in ("degrees_east", "degree_east", "degree_E", "degrees_E", "degreeE", "degreesE"):
+                    standard_name = "longitude"
                 # CF accepted units attributes for longitude.
-                elif units in ('degrees_north', 'degree_north', 'degree_N',
-                               'degrees_N', 'degreeN', 'degreesN'):
-                        standard_name = 'latitude'
+                elif units in ("degrees_north", "degree_north", "degree_N", "degrees_N", "degreeN", "degreesN"):
+                    standard_name = "latitude"
                 else:
-                    msg = ("{} variable's units value ({}) doesn't look "
-                           "like latitude or longitude").format
+                    msg = ("{} variable's units value ({}) doesn't look like latitude or longitude").format
                     raise ValueError(msg(var, units))
-            if standard_name in {'latitude', 'projection_y_coordinate'}:
+            if standard_name in {"latitude", "projection_y_coordinate"}:
                 nodes[:, 1] = var[:]
-            elif standard_name in {'longitude', 'projection_x_coordinate'}:
+            elif standard_name in {"longitude", "projection_x_coordinate"}:
                 nodes[:, 0] = var[:]
             else:
-                raise ValueError('Node coordinates standard_name is neither'
-                                 ' "longitude" nor "latitude" nor '
-                                 '"projection_x_coordinate" nor '
-                                 ' "projection_y_coordinate"')
-        setattr(grid, defs['grid_attr'], nodes)
+                raise ValueError(
+                    "Node coordinates standard_name is neither"
+                    ' "longitude" nor "latitude" nor '
+                    '"projection_x_coordinate" nor '
+                    ' "projection_y_coordinate"'
+                )
+        setattr(grid, defs["grid_attr"], nodes)
 
     # Load assorted connectivity arrays.
     for defs in grid_defs:
         try:
             try:
-                var = nc.variables[mesh_var.getncattr(defs['role'])]
+                var = nc.variables[mesh_var.getncattr(defs["role"])]
             except AttributeError:  # This connectivity array isn't there.
                 continue
             array = var[:, :]
             # Fortran order, instead of C order, transpose the array
             # logic below will fail for 3 node or two edge grids.
-            if array.shape[0] == defs['num_ind']:
+            if array.shape[0] == defs["num_ind"]:
                 array = array.T
             try:
                 start_index = int(var.start_index)
@@ -231,7 +233,7 @@ def load_grid_from_nc_dataset(nc, grid, mesh_name=None):  # , load_data=True):
                     array[array == flag_value - start_index] = flag_value
                 except AttributeError:
                     pass
-            setattr(grid, defs['grid_attr'], array)
+            setattr(grid, defs["grid_attr"], array)
         except KeyError:
             pass  # OK not to have this...
 
@@ -286,6 +288,6 @@ def load_grid_from_ncfilename(filename, grid, mesh_name=None):  # , load_data=Tr
     # :type load_data: boolean
     """
 
-    with netCDF4.Dataset(filename, 'r') as nc:
+    with netCDF4.Dataset(filename, "r") as nc:
         load_grid_from_nc_dataset(nc, grid, mesh_name)  # , load_data)
     grid.filename = filename

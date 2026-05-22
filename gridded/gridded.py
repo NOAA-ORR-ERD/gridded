@@ -7,15 +7,17 @@ This module defines the gridded.Dataset --
 The core class that encapsulates the gridded data model
 
 """
+
 import warnings
 
 from gridded.grids import Grid
+from gridded.utilities import (
+    get_dataset,
+    get_dataset_attrs,
+    get_writable_dataset,
+)
 from gridded.variable import Variable
 
-from gridded.utilities import (get_dataset,
-                               get_writable_dataset,
-                               get_dataset_attrs,
-                               )
 from . import VALID_LOCATIONS
 
 
@@ -24,12 +26,8 @@ class Dataset:
     An object that represent an entire complete dataset --
     a collection of Variables and the Grid that they are stored on.
     """
-    def __init__(self,
-                 ncfile=None,
-                 grid=None,
-                 variables=None,
-                 grid_topology=None,
-                 attributes=None):
+
+    def __init__(self, ncfile=None, grid=None, variables=None, grid_topology=None, attributes=None):
         """
         Construct a gridded.Dataset object. Can be constructed from a data file,
         or also raw grid and variable objects.
@@ -65,17 +63,16 @@ class Dataset:
         """
         if ncfile is not None:
             # raise ValueError("don't create from a file")
-            warnings.warn("Creating a Dataset from a netcdfile directly is deprecated. "
-                          "Please use Dataset.from_netCDF() instead. "
-                          "Or use one of the utilities in gridded.io",
-                          DeprecationWarning)
+            warnings.warn(
+                "Creating a Dataset from a netcdfile directly is deprecated. "
+                "Please use Dataset.from_netCDF() instead. "
+                "Or use one of the utilities in gridded.io",
+                DeprecationWarning,
+            )
 
         if ncfile is not None:
-            if (grid is not None or
-                  variables is not None or
-                  attributes is not None):
-                raise ValueError("You can create a Dataset from a file, or from raw data"
-                                 "but not both.")
+            if grid is not None or variables is not None or attributes is not None:
+                raise ValueError("You can create a Dataset from a file, or from raw databut not both.")
             self._init_from_netCDF(ncfile)
         else:  # Create from grid and variables -- this is what should usually happen.
             self.filename = None
@@ -83,12 +80,7 @@ class Dataset:
             self.variables = {} if variables is None else variables
             self.attributes = {} if attributes is None else attributes
 
-
-    def _init_from_netCDF(self,
-                          filename=None,
-                          grid_file=None,
-                          variable_files=None,
-                          grid_topology=None):
+    def _init_from_netCDF(self, filename=None, grid_file=None, variable_files=None, grid_topology=None):
         """
         internal implementation -- users should call the .from_netCDF()
         classmethod -- see its docstring for usage.
@@ -101,20 +93,13 @@ class Dataset:
 
         self.nc_dataset = get_dataset(filename)
         self.filename = self.nc_dataset.filepath()
-        self.grid = Grid.from_netCDF(filename=self.filename,
-                                     dataset=self.nc_dataset,
-                                     grid_topology=grid_topology)
+        self.grid = Grid.from_netCDF(filename=self.filename, dataset=self.nc_dataset, grid_topology=grid_topology)
         # fixme: this should load the depth and time, and then the variables.
         self.variables = self._variables_from_netCDF(self.nc_dataset)
         self.attributes = get_dataset_attrs(self.nc_dataset)
 
-
     @classmethod
-    def from_netCDF(cls,
-                    filename=None,
-                    grid_file=None,
-                    variable_files=None,
-                    grid_topology=None):
+    def from_netCDF(cls, filename=None, grid_file=None, variable_files=None, grid_topology=None):
         """
         NOTE: only loading from a single file is currently implemented.
               you can create a DATaset by hand, by loading the grid and
@@ -139,10 +124,7 @@ class Dataset:
         # create an empty Dataset:
         ds = cls()
         # initialize it
-        ds._init_from_netCDF(filename,
-                             grid_file,
-                             variable_files,
-                             grid_topology)
+        ds._init_from_netCDF(filename, grid_file, variable_files, grid_topology)
         return ds
 
     def __getitem__(self, key):
@@ -152,12 +134,8 @@ class Dataset:
         return self.variables[key]
 
     def __str__(self):
-        descp = (f"gridded.Dataset with:\n"
-                 f"grid: {type(self.grid)}\n"
-                 f"variables: {list(self.variables.keys())}"
-                 )
+        descp = f"gridded.Dataset with:\ngrid: {type(self.grid)}\nvariables: {list(self.variables.keys())}"
         return descp
-
 
     def _variables_from_netCDF(self, ds):
         """
@@ -171,8 +149,7 @@ class Dataset:
         variables = {}
         for k in ds.variables.keys():
             # find which netcdf variables are used to define the grid
-            is_not_grid_attr = all([k not in str(v).split()
-                                    for v in self.grid.grid_topology.values()])
+            is_not_grid_attr = all([k not in str(v).split() for v in self.grid.grid_topology.values()])
             if is_not_grid_attr:
                 ncvar = ds[k]
                 # find the location of the variable
@@ -188,16 +165,17 @@ class Dataset:
                     try:
                         ln = ds[k].long_name
                     except AttributeError:  # no long_name attribute
-                        ln = ds[k].name # use the name attribute
+                        ln = ds[k].name  # use the name attribute
                     # fixme: Variable.from_netCDF should really be able to figure out the location itself
                     #        maybe we need multiple Variable subclasses for different grid types?
                     #        CHB: yes, we really should do that!
-                    variables[k] = Variable.from_netCDF(dataset=ds,
-                                                        name=ln,
-                                                        varname=k,
-                                                        grid=self.grid,
-                                                        location=location,
-                                                        )
+                    variables[k] = Variable.from_netCDF(
+                        dataset=ds,
+                        name=ln,
+                        varname=k,
+                        grid=self.grid,
+                        location=location,
+                    )
         return variables
 
     # This should be covered by Grid.from_netCDF
@@ -219,7 +197,7 @@ class Dataset:
 
     #     raise NotImplementedError
 
-    def save(self, filename, format='netcdf4'):
+    def save(self, filename, format="netcdf4"):
         """
         save the dataset to a file
 
@@ -228,15 +206,15 @@ class Dataset:
         :param format: format to save -- 'netcdf3' or 'netcdf4'
                        are the only options at this point.
         """
-        format_options = ('netcdf3', 'netcdf4')
+        format_options = ("netcdf3", "netcdf4")
         if format not in format_options:
-            raise ValueError("format: {} not supported. Options are: {}".format(format, format_options))
+            raise ValueError(f"format: {format} not supported. Options are: {format_options}")
 
         # create an ncdataset
         ncds = get_writable_dataset(filename)
 
         # Save the grid and variables
-        self.grid.save(ncds, format='netcdf4', variables=self.variables)
+        self.grid.save(ncds, format="netcdf4", variables=self.variables)
 
         ncds.close()
 
@@ -267,15 +245,13 @@ class Dataset:
         vars = [var.info for var in self.variables.values()]
         vars = "".join([" " * 8 + v for v in vars])
         vars = "\n".join([" " * 8 + line for line in vars.split("\n")])
-        attrs = "\n".join(["        {}: {}".format(k, v) for k, v in self.attributes.items()])
+        attrs = "\n".join([f"        {k}: {v}" for k, v in self.attributes.items()])
         grid = "\n".join([" " * 8 + line for line in self.grid.info.split("\n")])
-        msg = ("gridded.Dataset:\n"
-               "    filename: {0.filename}\n"
-               "    grid:\n{3}\n"
-               "    variables: {1}\n"
-               "    attributes:\n{2}".format(self,
-                                             vars,
-                                             attrs,
-                                             grid
-                                             ))
+        msg = (
+            "gridded.Dataset:\n"
+            f"    filename: {self.filename}\n"
+            f"    grid:\n{grid}\n"
+            f"    variables: {vars}\n"
+            f"    attributes:\n{attrs}"
+        )
         return msg

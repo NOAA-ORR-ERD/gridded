@@ -9,7 +9,9 @@ It is used by NOAA's Emergegency Response Division for its CATS model
 It is limited to storing points with associated depths, and grid boudnaries
 (including islands), but that's about it.
 """
+
 import numpy as np
+
 import gridded
 
 # verdat only supports FEET or METERS
@@ -17,7 +19,6 @@ FEET = ("foot", "ft", "feet")
 METER = ("meter", "m", "meters", "metre")
 UNITS_MAP = {u: "FEET" for u in FEET}
 UNITS_MAP.update({u: "METERS" for u in METER})
-
 
 
 def load_verdat(filename):
@@ -49,38 +50,38 @@ def load_verdat(filename):
             if line == "":
                 num_bounds = 0
             else:
-                raise ValueError("something wrong with file after the end of the points\n"
-                                 "(The line after the line with all zeros should be the\n"
-                                 "number of boundaries)")
+                raise ValueError(
+                    "something wrong with file after the end of the points\n"
+                    "(The line after the line with all zeros should be the\n"
+                    "number of boundaries)"
+                )
         bounds = []
         start_point = 0
         for _ in range(num_bounds):
             end_point = int(infile.readline().strip())
             bound = []
-            for i in range(start_point, end_point-1):
+            for i in range(start_point, end_point - 1):
                 bound.append((i, i + 1))
             bound.append(((i + 1), start_point))
             start_point = end_point
             bounds.extend(bound)
 
-
     nodes = np.c_[lons, lats]
 
-    grid = gridded.grids.Grid_U(nodes=nodes,
-                                boundaries=bounds)
+    grid = gridded.grids.Grid_U(nodes=nodes, boundaries=bounds)
 
-    depth_var = gridded.variable.Variable(name="depth",
-                                          units=units.lower(),
-                                          data=depths,
-                                          location='node',
-                                          )
-    ds = gridded.Dataset(grid=grid,
-                         variables={'depth': depth_var},
-                         )
+    depth_var = gridded.variable.Variable(
+        name="depth",
+        units=units.lower(),
+        data=depths,
+        location="node",
+    )
+    ds = gridded.Dataset(
+        grid=grid,
+        variables={"depth": depth_var},
+    )
 
     return ds
-
-
 
 
 def save_verdat(ds, filename, depth_var="depth"):
@@ -108,7 +109,7 @@ def save_verdat(ds, filename, depth_var="depth"):
         depth_units = UNITS_MAP[depth.units.strip().lower()]
     f_string = "{0:4d}, {1:10.6f}, {2:10.6f}, {3:8.3f}\n"
 
-    with open(filename, 'w') as outfile:
+    with open(filename, "w") as outfile:
         outfile.write("DOGS")
         outfile.write(f" {depth_units}\n")
 
@@ -124,27 +125,21 @@ def save_verdat(ds, filename, depth_var="depth"):
                 lon = nodes[p, 0]
                 lat = nodes[p, 1]
                 d = depth[p]
-                outfile.write(f_string.format(i,
-                                              lon,
-                                              lat,
-                                              d))
+                outfile.write(f_string.format(i, lon, lat, d))
                 points_written.append(p)
                 i += 1
         # write the field points.
         points_written.sort()
         for j in range(len(nodes)):
             if j not in points_written:
-                outfile.write(f_string.format(i,
-                                              nodes[j, 0],
-                                              nodes[j, 1],
-                                              depth[j]))
+                outfile.write(f_string.format(i, nodes[j, 0], nodes[j, 1], depth[j]))
                 i += 1
         outfile.write(f_string.format(0, 0, 0, 0))
-        outfile.write("{:d}\n".format(len(bounds)))
+        outfile.write(f"{len(bounds):d}\n")
         i = 0
         for bound in bounds:
             i += len(bound)
-            outfile.write("{:d}\n".format(i))
+            outfile.write(f"{i:d}\n")
 
 
 def order_boundary_segments(bound_segs):
@@ -212,10 +207,9 @@ def make_outer_first(bounds, nodes):
     try:
         import geometry_utils
     except ImportError:
-        print("writing verdat requires the geometry_utils module:\n"
-              "github.com/NOAA-ORR-ERD/geometry_utils")
+        print("writing verdat requires the geometry_utils module:\ngithub.com/NOAA-ORR-ERD/geometry_utils")
 
-    #Assume the first bound is the outer one to start
+    # Assume the first bound is the outer one to start
     outer = bounds[0]
     for bound in bounds[1:]:
         pass
@@ -223,15 +217,3 @@ def make_outer_first(bounds, nodes):
 
 def set_winding_order(bounds, nodes, order="clockwise"):
     raise NotImplementedError("This code needs to be written")
-
-
-
-
-
-
-
-
-
-
-
-

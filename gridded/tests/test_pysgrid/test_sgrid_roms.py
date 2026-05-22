@@ -5,13 +5,12 @@ Created on Apr 7, 2015
 
 """
 
-
-import pytest
 import numpy as np
+import pytest
 
 from gridded.pysgrid.sgrid import SGrid, load_grid
-from .write_nc_test_files import roms_sgrid
 
+from .write_nc_test_files import roms_sgrid
 
 """
 Test SGrid ROMS.
@@ -41,65 +40,69 @@ def test_center_lat(sgrid):
 
 def test_variables(sgrid):
     dataset_vars = sgrid.variables
-    expected_vars = [u's_rho',
-                     u's_w',
-                     u'time',
-                     u'xi_rho',
-                     u'eta_rho',
-                     u'xi_psi',
-                     u'eta_psi',
-                     u'xi_u',
-                     u'eta_u',
-                     u'xi_v',
-                     u'eta_v',
-                     u'grid',
-                     u'u',
-                     u'v',
-                     u'fake_u',
-                     u'lon_rho',
-                     u'lat_rho',
-                     u'lon_psi',
-                     u'lat_psi',
-                     u'lat_u',
-                     u'lon_u',
-                     u'lat_v',
-                     u'lon_v',
-                     u'salt',
-                     u'zeta']
+    expected_vars = [
+        "s_rho",
+        "s_w",
+        "time",
+        "xi_rho",
+        "eta_rho",
+        "xi_psi",
+        "eta_psi",
+        "xi_u",
+        "eta_u",
+        "xi_v",
+        "eta_v",
+        "grid",
+        "u",
+        "v",
+        "fake_u",
+        "lon_rho",
+        "lat_rho",
+        "lon_psi",
+        "lat_psi",
+        "lat_u",
+        "lon_u",
+        "lat_v",
+        "lon_v",
+        "salt",
+        "zeta",
+    ]
     assert len(dataset_vars) == len(expected_vars)
     assert dataset_vars == expected_vars
 
 
 def test_grid_variables(sgrid):
     dataset_grid_variables = sgrid.grid_variables
-    expected_grid_variables = [u'u', u'v', u'fake_u', u'salt']
+    expected_grid_variables = ["u", "v", "fake_u", "salt"]
     assert len(dataset_grid_variables) == len(expected_grid_variables)
     assert set(dataset_grid_variables) == set(expected_grid_variables)
 
 
 def test_non_grid_variables(sgrid):
     dataset_non_grid_variables = sgrid.non_grid_variables
-    expected_non_grid_variables = [u's_rho',
-                                   u's_w',
-                                   u'time',
-                                   u'xi_rho',
-                                   u'eta_rho',
-                                   u'xi_psi',
-                                   u'eta_psi',
-                                   u'xi_u',
-                                   u'eta_u',
-                                   u'xi_v',
-                                   u'eta_v',
-                                   u'grid',
-                                   u'lon_rho',
-                                   u'lat_rho',
-                                   u'lon_psi',
-                                   u'lat_psi',
-                                   u'lat_u',
-                                   u'lon_u',
-                                   u'lat_v',
-                                   u'lon_v',
-                                   u'zeta']
+    expected_non_grid_variables = [
+        "s_rho",
+        "s_w",
+        "time",
+        "xi_rho",
+        "eta_rho",
+        "xi_psi",
+        "eta_psi",
+        "xi_u",
+        "eta_u",
+        "xi_v",
+        "eta_v",
+        "grid",
+        "lon_rho",
+        "lat_rho",
+        "lon_psi",
+        "lat_psi",
+        "lat_u",
+        "lon_u",
+        "lat_v",
+        "lon_v",
+        "zeta",
+    ]
     assert len(dataset_non_grid_variables) == len(expected_non_grid_variables)
     assert set(dataset_non_grid_variables) == set(expected_non_grid_variables)
 
@@ -131,10 +134,10 @@ def test_optional_grid_attrs(sgrid):
     node_coordinates = sgrid.node_coordinates
     edge1_coordinates = sgrid.edge1_coordinates
     edge2_coordinates = sgrid.edge2_coordinates
-    fc_expected = ('lon_rho', 'lat_rho')
-    nc_expected = ('lon_psi', 'lat_psi')
-    e1c_expected = ('lon_u', 'lat_u')
-    e2c_expected = ('lon_v', 'lat_v')
+    fc_expected = ("lon_rho", "lat_rho")
+    nc_expected = ("lon_psi", "lat_psi")
+    e1c_expected = ("lon_u", "lat_u")
+    e2c_expected = ("lon_v", "lat_v")
     assert face_coordinates == fc_expected
     assert node_coordinates == nc_expected
     assert edge1_coordinates == e1c_expected
@@ -146,7 +149,7 @@ def test_round_trip(sgrid, tmpdir):
     TODO: add more "round-trip" tests.
 
     """
-    fname = tmpdir.mkdir('files').join('deltares_roundtrip.nc')
+    fname = tmpdir.mkdir("files").join("deltares_roundtrip.nc")
     sgrid.save_as_netcdf(fname)
     result = load_grid(fname)
     assert isinstance(result, SGrid)

@@ -11,9 +11,9 @@ FixMe: should we enable direct attribute acces via python's attribute access?
 
 """
 
+from collections import OrderedDict
 
 import numpy as np
-from collections import OrderedDict
 
 try:
     from .util import asarraylike, isarraylike
@@ -21,7 +21,7 @@ except ValueError:
     from util import asarraylike, isarraylike
 
 
-class UVar(object):
+class UVar:
     """
     A class to hold a variable associated with the UGrid. Data can be on the
     nodes, edges, etc. -- "UGrid Variable"
@@ -47,9 +47,8 @@ class UVar(object):
         """
         self.name = name
 
-        if location not in ['node', 'edge', 'face', 'boundary']:
-            raise ValueError("location must be one of: "
-                             "'node', 'edge', 'face', 'boundary'")
+        if location not in ["node", "edge", "face", "boundary"]:
+            raise ValueError("location must be one of: 'node', 'edge', 'face', 'boundary'")
 
         self.location = location
 
@@ -104,22 +103,22 @@ class UVar(object):
 
     @property
     def max(self):
-        """ maximum value of the variable """
+        """maximum value of the variable"""
         return np.max(self._data)
 
     @property
     def min(self):
-        """ minimum value of the variable """
+        """minimum value of the variable"""
         return np.min(self._data)
 
     @property
     def dtype(self):
-        """ data type of the variable """
+        """data type of the variable"""
         return self.data.dtype
 
     @property
     def ndim(self):
-        """ number of dimensions of the variable """
+        """number of dimensions of the variable"""
         return self.data.ndim
 
     def __getitem__(self, item):
@@ -138,15 +137,14 @@ class UVar(object):
 
     def __str__(self):
         print("in __str__, data is:", self.data)
-        msg = ("UVar object: {0:s}, on the {1:s}s, and {2:d} data "
-               "points\nAttributes: {3}").format
+        msg = ("UVar object: {0:s}, on the {1:s}s, and {2:d} data points\nAttributes: {3}").format
         return msg(self.name, self.location, len(self.data), self.attributes)
 
     def __len__(self):
         return len(self.data)
 
 
-class UMVar(object):
+class UMVar:
     """
     A class to group multiple UVars (or other data sources) and retrieve common information.
     All the variables grouped in this class must have the same shape, location, and unique
@@ -155,7 +153,7 @@ class UMVar(object):
     TODO: Add attribues that all grouped variables have in common to the UMVar?
     """
 
-    def __init__(self, name, location='none', data=None, attributes=None):
+    def __init__(self, name, location="none", data=None, attributes=None):
         """
         :param name: the name of the data (depth, u_velocity, etc.)
         :type name: string
@@ -171,23 +169,20 @@ class UMVar(object):
 
         self.name = name
 
-        if location not in ['node', 'edge', 'face', 'boundary', 'none']:
-            raise ValueError(
-                "location must be one of: 'node', 'edge', 'face', 'boundary', or 'none'")
+        if location not in ["node", "edge", "face", "boundary", "none"]:
+            raise ValueError("location must be one of: 'node', 'edge', 'face', 'boundary', or 'none'")
 
         self.location = location
 
         if len(data) == 1:
-            raise ValueError(
-                "UMVar need at least 2 data sources of the same size and shape")
+            raise ValueError("UMVar need at least 2 data sources of the same size and shape")
 
         if not all([isarraylike(d) for d in data]):
             raise ValueError("Data must satisfy isarraylike or be a UVar")
 
         self.shape = data[0].shape
         if not all([d.shape == self.shape for d in data]):
-            raise ValueError(
-                "All data sources must be the same size and shape")
+            raise ValueError("All data sources must be the same size and shape")
 
         for d in data:
             setattr(self, d.name, d)
@@ -197,11 +192,9 @@ class UMVar(object):
 
     def add_var(self, var):
         if var.shape != self.shape:
-            raise ValueError(
-                'Variable {0} has incorrect shape {1}'.format(var.name, var.shape))
+            raise ValueError(f"Variable {var.name} has incorrect shape {var.shape}")
         if var.name in self.variables:
-            raise ValueError(
-                'Variable {0} already exists in UMVar'.format(var.name))
+            raise ValueError(f"Variable {var.name} already exists in UMVar")
         self.variables.append(var.name)
         setattr(self, var.name, var)
 
@@ -209,8 +202,7 @@ class UMVar(object):
         if str(item) in self._cache:
             return self._cache[str(item)]
         else:
-            rv = np.ma.column_stack(
-                [self.__getattribute__(var).__getitem__(item) for var in self.variables])
+            rv = np.ma.column_stack([self.__getattribute__(var).__getitem__(item) for var in self.variables])
             self._cache[str(item)] = rv
             if len(self._cache) > 3:
                 self._cache.popitem(last=False)
@@ -219,9 +211,10 @@ class UMVar(object):
 
 if __name__ == "__main__":
     import netCDF4 as ncdf
-    df = ncdf.Dataset('../test/files/21_tri_mesh.nc')
-    u = UVar('EW_water_velocity', 'node', df['u'])
-    v = UVar('NS_water_velocity', 'node', df['v'])
-    vels = UMVar('velocity', 'node', [u, v])
+
+    df = ncdf.Dataset("../test/files/21_tri_mesh.nc")
+    u = UVar("EW_water_velocity", "node", df["u"])
+    v = UVar("NS_water_velocity", "node", df["v"])
+    vels = UMVar("velocity", "node", [u, v])
     vels.add_var(u)
     pass

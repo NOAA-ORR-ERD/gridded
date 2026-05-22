@@ -37,6 +37,7 @@ target-version = "py39"
 # Use a longer line length.
 line-length = 120
 
+
 [tool.ruff.lint]
 ignore = [
   "E402", # module level import not at top of file
@@ -53,3 +54,5 @@ select = [
 extend-safe-fixes = [
   "TID252", # absolute imports
 ]
+unfixable = ["F401",  # unused imports -- messes up pytest fixtures
+             "F811"]  # redefinition

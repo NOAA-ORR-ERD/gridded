@@ -8,14 +8,14 @@ But you can look at the results to see if it makes sense
 
 from pathlib import Path
 
-import gridded
-
 import pytest
+
+import gridded
 
 try:
     import matplotlib.pyplot as plt  # noqa
 
-    from gridded.plotting.mpl_plotting import plot_ugrid ,plot_sgrid
+    from gridded.plotting.mpl_plotting import plot_ugrid, plot_sgrid
 
 except ImportError:
     pytestmark = pytest.mark.skip(reason="matplotlib is not installed")
@@ -55,15 +55,17 @@ def test_plot_ugrid_node_numbers():
 
     fig.savefig(OUTPUT_DIR / "ugrid_plot_node_numbers")
 
+
 def test_plot_ugrid_FVCOM():
 
     grid = gridded.Dataset(EXAMPLE_DATA / "tri_grid_example-FVCOM.nc").grid
 
     fig, axis = plt.subplots()
 
-    plot_ugrid(axis, grid) #, nodes=True, node_numbers=True)
+    plot_ugrid(axis, grid)  # , nodes=True, node_numbers=True)
 
     fig.savefig(OUTPUT_DIR / "ugrid_plot_FVCOM")
+
 
 def test_plot_ugrid_bounds():
 
@@ -71,13 +73,15 @@ def test_plot_ugrid_bounds():
 
     fig, axis = plt.subplots()
 
-    plot_ugrid(axis, grid) #, nodes=True, node_numbers=True)
+    plot_ugrid(axis, grid)  # , nodes=True, node_numbers=True)
 
     fig.savefig(OUTPUT_DIR / "ugrid_plot_with_bounds.png")
+
 
 #############
 # SGRID tests
 #############
+
 
 def test_plot_sgrid_no_nodes():
     grid = gridded.Dataset(EXAMPLE_DATA / "WCOFS_subset.nc").grid
@@ -88,6 +92,7 @@ def test_plot_sgrid_no_nodes():
 
     fig.savefig(OUTPUT_DIR / "sgrid_no_nodes")
 
+
 def test_plot_sgrid_and_nodes():
     grid = gridded.Dataset(EXAMPLE_DATA / "staggered_sine_channel.nc").grid
 
@@ -96,4 +101,3 @@ def test_plot_sgrid_and_nodes():
     plot_sgrid(axis, grid, nodes=True)
 
     fig.savefig(OUTPUT_DIR / "sgrid_nodes")
-

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # gridded documentation build configuration file, created by
 # sphinx-quickstart on Sat Jul 15 15:21:24 2017.
@@ -30,33 +29,36 @@
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc',
-#    'sphinx.ext.intersphinx',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.githubpages']
+extensions = [
+    "sphinx.ext.autodoc",
+    #    'sphinx.ext.intersphinx',
+    "sphinx.ext.viewcode",
+    "sphinx.ext.githubpages",
+]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = u'gridded'
+project = "gridded"
 # copyright = u'2017, Assorted Contributers -- see the git logs'
-author = u'Assorted Contributors -- see the git logs'
+author = "Assorted Contributors -- see the git logs"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 import gridded
+
 version = gridded.__version__
 release = gridded.__version__
 # # The short X.Y version.
@@ -77,7 +79,7 @@ language = "en"
 exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
@@ -95,23 +97,23 @@ html_theme = "sphinx_rtd_theme"
 #                       'navigation_depth': 3,
 #                       }
 html_theme_options = {
-#    'analytics_id': 'G-XXXXXXXXXX',  #  Provided by Google in your dashboard
-#    'analytics_anonymize_ip': False,
-#    'display_version': True, # no longer supported
-    'logo_only': False,
-    'prev_next_buttons_location': 'bottom',
-    'style_external_links': False,
-#    'vcs_pageview_mode': '',
-    'style_nav_header_background': 'white',
-    'flyout_display': 'hidden',
-    'version_selector': True,  # only good when hosted on RTD
+    #    'analytics_id': 'G-XXXXXXXXXX',  #  Provided by Google in your dashboard
+    #    'analytics_anonymize_ip': False,
+    #    'display_version': True, # no longer supported
+    "logo_only": False,
+    "prev_next_buttons_location": "bottom",
+    "style_external_links": False,
+    #    'vcs_pageview_mode': '',
+    "style_nav_header_background": "white",
+    "flyout_display": "hidden",
+    "version_selector": True,  # only good when hosted on RTD
     # 'language_selector': True,
     # Toc options
-    'collapse_navigation': True,
-    'sticky_navigation': True,
-    'navigation_depth': 3,
-    'includehidden': True,
-    'titles_only': False
+    "collapse_navigation": True,
+    "sticky_navigation": True,
+    "navigation_depth": 3,
+    "includehidden": True,
+    "titles_only": False,
 }
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -123,7 +125,7 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -131,12 +133,12 @@ html_static_path = ['_static']
 # This is required for the alabaster theme
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
 html_sidebars = {
-    '**': [
-        'about.html',
-        'navigation.html',
-        'relations.html',  # needs 'show_related': True theme option to display
-        'searchbox.html',
-        'donate.html',
+    "**": [
+        "about.html",
+        "navigation.html",
+        "relations.html",  # needs 'show_related': True theme option to display
+        "searchbox.html",
+        "donate.html",
     ]
 }
 
@@ -144,7 +146,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'griddeddoc'
+htmlhelp_basename = "griddeddoc"
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -153,15 +155,12 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
-
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
@@ -171,8 +170,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'gridded.tex', u'gridded Documentation',
-     u'Chris Barker, Jay Hennen, Rich Signell', 'manual'),
+    (master_doc, "gridded.tex", "gridded Documentation", "Chris Barker, Jay Hennen, Rich Signell", "manual"),
 ]
 
 
@@ -180,10 +178,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'gridded', u'gridded Documentation',
-     [author], 1)
-]
+man_pages = [(master_doc, "gridded", "gridded Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -192,12 +187,16 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'gridded', u'gridded Documentation',
-     author, 'gridded', 'One line description of project.',
-     'Miscellaneous'),
+    (
+        master_doc,
+        "gridded",
+        "gridded Documentation",
+        author,
+        "gridded",
+        "One line description of project.",
+        "Miscellaneous",
+    ),
 ]
-
-
 
 
 # Example configuration for intersphinx: refer to the Python standard library.

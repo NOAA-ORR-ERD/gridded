@@ -55,10 +55,8 @@ This is detected as a face variable by gridded -- but should it be a grid parame
 
 import pytest
 
-from gridded import Dataset
+from gridded import VALID_UGRID_LOCATIONS, Dataset
 from gridded.grids import Grid_U
-
-from gridded import VALID_UGRID_LOCATIONS
 
 from .utilities import data_file_cache
 
@@ -71,6 +69,7 @@ from .utilities import data_file_cache
 #     pytestmark = pytest.mark.skip
 
 data_file = data_file_cache.fetch("projected_coords_ugrid.nc")
+
 
 def test_load():
     """
@@ -94,32 +93,34 @@ def test_find_variables():
 
     print(var_names)
 
-    all_vars =  ['mesh2d_Numlimdt',
-                 'mesh2d_czs',
-                 'mesh2d_diu',
-                 'mesh2d_edge_type',
-                 'mesh2d_edge_x_bnd',
-                 'mesh2d_edge_y_bnd',
-                 'mesh2d_face_x_bnd',
-                 'mesh2d_face_y_bnd',
-                 'mesh2d_flowelem_ba',
-                 'mesh2d_flowelem_bl',
-                 'mesh2d_hu',
-                 'mesh2d_node_z',
-                 'mesh2d_q1',
-                 'mesh2d_s0',
-                 'mesh2d_s1',
-                 'mesh2d_sa1',
-                 'mesh2d_taus',
-                 'mesh2d_u0',
-                 'mesh2d_u1',
-                 'mesh2d_ucmag',
-                 'mesh2d_ucx',
-                 'mesh2d_ucxq',
-                 'mesh2d_ucy',
-                 'mesh2d_ucyq',
-                 'mesh2d_viu',
-                 'mesh2d_waterdepth']
+    all_vars = [
+        "mesh2d_Numlimdt",
+        "mesh2d_czs",
+        "mesh2d_diu",
+        "mesh2d_edge_type",
+        "mesh2d_edge_x_bnd",
+        "mesh2d_edge_y_bnd",
+        "mesh2d_face_x_bnd",
+        "mesh2d_face_y_bnd",
+        "mesh2d_flowelem_ba",
+        "mesh2d_flowelem_bl",
+        "mesh2d_hu",
+        "mesh2d_node_z",
+        "mesh2d_q1",
+        "mesh2d_s0",
+        "mesh2d_s1",
+        "mesh2d_sa1",
+        "mesh2d_taus",
+        "mesh2d_u0",
+        "mesh2d_u1",
+        "mesh2d_ucmag",
+        "mesh2d_ucx",
+        "mesh2d_ucxq",
+        "mesh2d_ucy",
+        "mesh2d_ucyq",
+        "mesh2d_viu",
+        "mesh2d_waterdepth",
+    ]
 
     all_vars.sort()
     var_names.sort()
@@ -130,4 +131,3 @@ def test_find_variables():
     VALID_LOCATIONS = [loc for loc in VALID_UGRID_LOCATIONS if loc is not None]
     for varname in var_names:
         assert ds[varname].location in VALID_LOCATIONS
-

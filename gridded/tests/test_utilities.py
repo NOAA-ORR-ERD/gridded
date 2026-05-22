@@ -4,52 +4,54 @@
 
 import os
 
-import numpy as np
 import netCDF4 as nc
+import numpy as np
 
 from gridded import utilities
 from gridded.tests.test_depth import get_roms_depth
 
-
-data_dir = os.path.join(os.path.split(__file__)[0], 'test_data')
+data_dir = os.path.join(os.path.split(__file__)[0], "test_data")
 
 
 def test_gen_celltree_mask_from_center_mask():
-    center_mask = np.array(([True, True, True, True, True],
-                     [True, False, True, True, True],
-                     [True, False, False, False, True],
-                     [True, True, True, True, True]))
-    center_sl = np.s_[1:-1,1:-1] #'both' padding
+    center_mask = np.array(
+        (
+            [True, True, True, True, True],
+            [True, False, True, True, True],
+            [True, False, False, False, True],
+            [True, True, True, True, True],
+        )
+    )
+    center_sl = np.s_[1:-1, 1:-1]  #'both' padding
 
     m = utilities.gen_celltree_mask_from_center_mask(center_mask, center_sl)
 
-    expected_mask = np.array(([False, True, True],
-                              [False, False, False]))
+    expected_mask = np.array(([False, True, True], [False, False, False]))
 
     assert np.all(m == expected_mask)
 
-    testds = nc.Dataset('foo', mode='w', diskless=True)
-    testds.createDimension('x', 5)
-    testds.createDimension('y', 4)
-    testds.createVariable('mask', 'b', dimensions=('y', 'x'))
-    testds['mask'][:] = center_mask
+    testds = nc.Dataset("foo", mode="w", diskless=True)
+    testds.createDimension("x", 5)
+    testds.createDimension("y", 4)
+    testds.createVariable("mask", "b", dimensions=("y", "x"))
+    testds["mask"][:] = center_mask
 
     m3 = utilities.gen_celltree_mask_from_center_mask(center_mask, center_sl)
 
     assert np.all(m3 == expected_mask)
 
-    testds['mask'][:] = ~center_mask
-    testds['mask'].flag_values = [0, 1]
-    testds['mask'].flag_meanings = ['land', 'water']
+    testds["mask"][:] = ~center_mask
+    testds["mask"].flag_values = [0, 1]
+    testds["mask"].flag_meanings = ["land", "water"]
 
     m4 = utilities.gen_celltree_mask_from_center_mask(center_mask, center_sl)
 
     assert np.all(m4 == expected_mask)
 
-    testds['mask'][:] = ~center_mask
-    testds['mask'].flag_values = [0, 1]
+    testds["mask"][:] = ~center_mask
+    testds["mask"].flag_values = [0, 1]
     # because sometimes it's a damn string
-    testds['mask'].flag_meanings = 'land water'
+    testds["mask"].flag_meanings = "land water"
 
     m5 = utilities.gen_celltree_mask_from_center_mask(center_mask, center_sl)
 
@@ -61,12 +63,21 @@ def test_reorganize_spatial_data():
     # 1-dimensional data
     sample_1 = [1, 2, 3]
     sample_2 = [(1,), (2,), (3,)]
-    sample_3 = [(1, 2, 3), ]
+    sample_3 = [
+        (1, 2, 3),
+    ]
     a1 = utilities._reorganize_spatial_data(sample_1)
     a2 = utilities._reorganize_spatial_data(sample_2)
     a3 = utilities._reorganize_spatial_data(sample_3)
     assert np.all(a1 == a2)
-    assert np.all(a3 == np.array([(1, 2, 3), ]))
+    assert np.all(
+        a3
+        == np.array(
+            [
+                (1, 2, 3),
+            ]
+        )
+    )
     assert np.all(a2 == a3)
 
     # impossible cases
@@ -94,18 +105,36 @@ def test_spatial_data_metadata():
     pts_3 = np.array([[1, 2, 3], [4, 5, 6]])
     pts_4 = [[1, 4, 7, 10], [2, 5, 8, 11], [3, 6, 9, 12]]
 
-    res_1 = np.array([[1, ], ])
-    res_2 = np.array([[1, 2, 3, 4, 5, 6], ])
-    res_3 = np.array([[1, 2, 3, 4, 5, 6],
-                      [2, 3, 4, 5, 6, 7]])
-    res_4 = np.array([[1, 2, 3, 4, 5, 6],
-                      [7, 8, 9, 10, 11, 12],
-                      [13, 14, 15, 16, 17, 18],
-                      [19, 20, 21, 22, 23, 24]])
-    res_5 = np.array([[1, ],
-                      [2, ],
-                      [3, ],
-                      [4, ]])
+    res_1 = np.array(
+        [
+            [
+                1,
+            ],
+        ]
+    )
+    res_2 = np.array(
+        [
+            [1, 2, 3, 4, 5, 6],
+        ]
+    )
+    res_3 = np.array([[1, 2, 3, 4, 5, 6], [2, 3, 4, 5, 6, 7]])
+    res_4 = np.array([[1, 2, 3, 4, 5, 6], [7, 8, 9, 10, 11, 12], [13, 14, 15, 16, 17, 18], [19, 20, 21, 22, 23, 24]])
+    res_5 = np.array(
+        [
+            [
+                1,
+            ],
+            [
+                2,
+            ],
+            [
+                3,
+            ],
+            [
+                4,
+            ],
+        ]
+    )
 
     a1 = utilities._align_results_to_spatial_data(res_1, pts_1)
     assert np.all(a1 == res_1)
@@ -124,26 +153,23 @@ def test_regrid_variable_TDStoS(get_roms_depth):
     # Time is present
     # Depth is present
     # Grid_S to Grid_S
-    from gridded.variable import Variable
-    from gridded.time import Time
     from gridded.grids import Grid_S
+    from gridded.time import Time
+    from gridded.variable import Variable
+
     sd = get_roms_depth
     grid = sd.grid
     n_levels = sd.num_levels
-    data = np.ones((1,
-                    n_levels, grid.node_lon.shape[0],
-                    grid.node_lon.shape[1]))
+    data = np.ones((1, n_levels, grid.node_lon.shape[0], grid.node_lon.shape[1]))
     for l in range(0, n_levels):
         data[0, l] *= l
 
-    v1 = Variable(name='v1',
-                  grid=grid,
-                  data=data,
-                  depth=sd,
-                  time=Time.constant_time())
+    v1 = Variable(name="v1", grid=grid, data=data, depth=sd, time=Time.constant_time())
 
-    g2 = Grid_S(node_lon=(grid.node_lon[0:-1, 0:-1] + grid.node_lon[1:, 1:]) / 2,
-                node_lat=(grid.node_lat[0:-1, 0:-1] + grid.node_lat[1:, 1:]) / 2)
+    g2 = Grid_S(
+        node_lon=(grid.node_lon[0:-1, 0:-1] + grid.node_lon[1:, 1:]) / 2,
+        node_lat=(grid.node_lat[0:-1, 0:-1] + grid.node_lat[1:, 1:]) / 2,
+    )
 
     v2 = utilities.regrid_variable(g2, v1)
     # time should be unchanged
@@ -160,21 +186,20 @@ def test_regrid_variable_StoS(get_roms_depth):
     # Time is not present
     # Depth is not present
     # Grid_S to Grid_S
-    from gridded.variable import Variable
-    from gridded.time import Time
     from gridded.grids import Grid_S
+    from gridded.time import Time
+    from gridded.variable import Variable
+
     sd = get_roms_depth
     grid = sd.grid
     data = np.ones((grid.node_lon.shape[0], grid.node_lon.shape[1]))
 
-    v1 = Variable(name='v1',
-                  grid=grid,
-                  data=data,
-                  depth=None,
-                  time=None)
+    v1 = Variable(name="v1", grid=grid, data=data, depth=None, time=None)
 
-    g2 = Grid_S(node_lon=(grid.node_lon[0:-1, 0:-1] + grid.node_lon[1:, 1:]) / 2,
-                node_lat=(grid.node_lat[0:-1, 0:-1] + grid.node_lat[1:, 1:]) / 2)
+    g2 = Grid_S(
+        node_lon=(grid.node_lon[0:-1, 0:-1] + grid.node_lon[1:, 1:]) / 2,
+        node_lat=(grid.node_lat[0:-1, 0:-1] + grid.node_lat[1:, 1:]) / 2,
+    )
 
     v2 = utilities.regrid_variable(g2, v1)
     # time should be unchanged
@@ -187,7 +212,7 @@ def test_regrid_variable_StoS(get_roms_depth):
     assert v2.data.shape[-2::] == (sz - 1, sz - 1)
 
 
-class DummyArrayLike(object):
+class DummyArrayLike:
     """
     Class that will look like an array to this function, even
     though it won't work!
@@ -197,11 +222,12 @@ class DummyArrayLike(object):
     This will need to be updated when the function is changed.
 
     """
-    must_have = ['dtype', 'shape', 'ndim', '__len__', '__getitem__', '__getattribute__']
+
+    must_have = ["dtype", "shape", "ndim", "__len__", "__getitem__", "__getattribute__"]
 
     # pretty kludgy way to do this..
     def __new__(cls):
-        print ("in new"), cls
+        print("in new"), cls
         obj = object.__new__(cls)
         for attr in cls.must_have:
             setattr(obj, attr, None)
@@ -245,10 +271,10 @@ def test_as_test_asarraylike_dummy():
 
 
 def test_get_dataset_attrs():
-    filename = os.path.join(data_dir, 'UGRIDv0.9_eleven_points.nc')
+    filename = os.path.join(data_dir, "UGRIDv0.9_eleven_points.nc")
     ds = nc.Dataset(filename)
     attrs = utilities.get_dataset_attrs(ds)
 
     assert len(attrs) == 4
-    assert attrs['Conventions'] == "UGRID-0.9"
-    assert attrs['Title'] == "UGRID for GNOME"
+    assert attrs["Conventions"] == "UGRID-0.9"
+    assert attrs["Title"] == "UGRID for GNOME"
