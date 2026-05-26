@@ -27,8 +27,12 @@ gridded = { path = ".", editable = true }
 git = "*" # git may not be there on the CI -- needed for setuptools_scm
 pip = "*"
 python-build = "*"
-setuptools = ">=80"
-setuptools-scm = ">=8"
+hatch = ">=1.16.5"
+hatch-vcs = "*"
+
+[feature.docs.dependencies]
+sphinx = ">=8.2.3"
+sphinx-rtd-theme = "*"
 
 [feature.test.dependencies]
 pytest = "*"
@@ -44,23 +48,27 @@ python = "~=3.13.0"
 python = "~=3.14.0"
 
 [environments]
-default = { features = ["py312", "dev", "test", "build"], solve-group = "default" }
 # using the oldest supported version for development
-dev312 = ["py312", "dev", "test", "build"]
-dev313 = ["py313", "dev", "test", "build"]
-dev314 = ["py314", "dev", "test", "build"]
+default = { features = ["py312", "dev", "test", "build", "docs"], solve-group = "default" }
+
+dev312 = ["py312", "dev", "test", "build", "docs"]
+dev313 = ["py313", "dev", "test", "build", "docs"]
+dev314 = ["py314", "dev", "test", "build", "docs"]
 build = ["py312", "build"]
+docs = ["py312", "docs", "build"]
 test312 = [ "py312", "test", "build"]
 test313 = [ "py313", "test", "build"]
 test314 = [ "py314", "test", "build"]
 
 [tasks]
 install = { cmd = "pip install -v --no-deps --root-user-action=ignore ./", default-environment = "build"}
+
 build_wheel = {cmd = "python -m build ./", default-environment = "build"}
+
+build_docs = {cmd = "cd docs && make html", default-environment = "docs", depends-on = [{ task = "install", environment = "docs" }] }
 
 test = { cmd = "pytest --pyargs gridded", depends-on = ["install"] }
 
 lint = { cmd = "ruff check src/libgoods", default-environment = "dev"}
 
-ops_tests = { cmd = "operational_tests/run_all.py", depends-on = ["install"]}
 

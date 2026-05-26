@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
@@ -23,7 +23,11 @@ Download = "https://github.com/NOAA-ORR-ERD/gridded"
 Homepage = "https://github.com/NOAA-ORR-ERD/gridded"
 
 [tool.hatch.version]
-path = "gridded/__init__.py"
+# path = "gridded/__init__.py"
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "gridded/_version.py"
 
 [tool.hatch.build.targets.sdist]
 include = [

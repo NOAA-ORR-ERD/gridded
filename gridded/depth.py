@@ -422,16 +422,18 @@ class S_Depth(DepthBase):
 
         :param terms: Direct mapping of component name to netCDF variable name. Use
                       this if auto detection fails. Partial definition is allowable.
-                      Unspecified terms will use the value in `.default_names`.
-                      ::
-                        {'Cs_r': 'Cs_r',
-                         'Cs_w': 'Cs_w',
-                         's_rho': 's_rho'),
-                         's_w': 's_w',
-                         'bathymetry': 'h',
-                         'hc': 'hc'),
-                         'zeta': 'zeta')
-                         }
+                      Unspecified terms will use the value in `.default_names`. ::
+
+                        {
+                        'Cs_r': 'Cs_r',
+                        'Cs_w': 'Cs_w',
+                        's_rho': 's_rho'),
+                        's_w': 's_w',
+                        'bathymetry': 'h',
+                        'hc': 'hc'),
+                        'zeta': 'zeta')
+                        }
+
         :type terms: dict
 
         :param name: Human-readable name for this object
