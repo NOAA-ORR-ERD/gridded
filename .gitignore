@@ -6,6 +6,9 @@
 *sgrid_wrf.nc
 *sgrid_wrf_2.nc
 
+# version file (auto-generated)
+gridded/_version.py
+
 # OS-X stuff
 .DS_Store
 

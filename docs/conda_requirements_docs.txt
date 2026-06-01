@@ -1,0 +1,2 @@
+sphinx>=8.2.3
+sphinx-rtd-theme

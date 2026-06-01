@@ -16963,4 +16963,4 @@ packages:
   requires_dist:
   - netcdf4>=1.4
   - numpy>=2
-  requires_python: '>=3.9'
+  requires_python: '>=3.12'
