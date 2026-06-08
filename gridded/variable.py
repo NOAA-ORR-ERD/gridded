@@ -1298,7 +1298,7 @@ class VectorVariable:
         gridded.time.OutOfTimeRangeError is raised.
 
         """
-        pts, time, _hash, kwargs = self._prepare_at(
+        pts, time, _hash = self._prepare_at(
             points=points,
             time=time,
             units=units,
@@ -1312,8 +1312,9 @@ class VectorVariable:
         
         value = self._compute_at(
             pts, 
-            time,
-            extrapolate,
+            time=time,
+            units=units,
+            unmask=unmask,
             _hash=_hash,
             _mem=_mem,
             **kwargs
@@ -1350,7 +1351,7 @@ class VectorVariable:
         if _hash is None:
             _hash = self._get_hash(pts, time)
 
-        return pts, time, _hash, kwargs
+        return pts, time, _hash
     
     def _compute_at(self, points, time, extrapolate, _mem=True, _hash=None, **kwargs):
         if _mem:
