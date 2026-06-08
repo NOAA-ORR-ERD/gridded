@@ -603,7 +603,30 @@ class Variable:
         If time is out of bounds of the time series, and extrapolate is False,
         a gridded.time.OutOfTimeRangeError is raised.
         """
-
+        pts, time, _hash = self._prepare_at(
+            points=points,
+            time=time,
+            units=units,
+            lons=lons,
+            lats=lats,
+            unmask=unmask,
+            _hash=_hash,
+            _mem=_mem,
+            **kwargs,
+        )
+        value = self._compute_at(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
+        return self._post_compute_at(value, pts, time, unmask=unmask, _mem=_mem, _hash=_hash, **kwargs)
+    
+    def _prepare_at(
+        self,
+        points=None,
+        time=None,
+        units=None,
+        lons=None,
+        lats=None,
+        _hash=None,
+        **kwargs,
+    ):
         if points is None and (lons is None or lats is None):
             raise ValueError("Must provide either points or separate lons and lats")
         if points is None:
@@ -613,30 +636,33 @@ class Variable:
         if _hash is None:
             _hash = self._get_hash(pts, time)
 
+        return pts, time, _hash
+    
+    def _compute_at(self, points, time, extrapolate, _mem=True, _hash=None, **kwargs):
         if _mem:
-            res = self._get_memoed(pts, time, self._result_memo, _hash=_hash)
+            res = self._get_memoed(points, time, self._result_memo, _hash=_hash)
             if res is not None:
                 return res
-
         order = self.dimension_ordering
         if order[0] == "time":
-            value = self._time_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
+            value = self._time_interp(points, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
         elif order[0] == "depth":
-            value = self._depth_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
+            value = self._depth_interp(points, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
         else:
-            value = self._xy_interp(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
-
+            value = self._xy_interp(points, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
         value = value.reshape(-1, 1)
+        return value
 
+    def _post_compute_at(self, value, points, time, unmask=False, _mem=True, _hash=None, **kwargs):
         if isinstance(value, np.ma.MaskedArray):
             np.ma.set_fill_value(value, self.fill_value)
         if unmask:
             value = np.ma.filled(value)
 
         if _mem:
-            self._memoize_result(pts, time, value, self._result_memo, _hash=_hash)
+            self._memoize_result(points, time, value, self._result_memo, _hash=_hash)
         return value
-
+    
     interpolate = at  # common request
 
     def _xy_interp(self, points, time, extrapolate, slices=(), **kwargs):
