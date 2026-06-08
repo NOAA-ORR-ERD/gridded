@@ -603,7 +603,7 @@ class Variable:
         If time is out of bounds of the time series, and extrapolate is False,
         a gridded.time.OutOfTimeRangeError is raised.
         """
-        pts, time, _hash, kwargs = self._prepare_at(
+        pts, time, _hash = self._prepare_at(
             points=points,
             time=time,
             units=units,
@@ -614,24 +614,8 @@ class Variable:
             _mem=_mem,
             **kwargs,
         )
-        value = self._compute_at(
-            pts, 
-            time,
-            extrapolate,
-            _hash=_hash,
-            _mem=_mem,
-            **kwargs
-        )
-        return self._post_compute_at(
-            value,
-            pts,
-            time=time,
-            units=units,
-            unmask=unmask,
-            _hash=_hash,
-            _mem=_mem,
-            **kwargs
-        )
+        value = self._compute_at(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
+        return self._post_compute_at(value, pts, time, unmask=unmask, _mem=_mem, _hash=_hash, **kwargs)
     
     def _prepare_at(
         self,
@@ -669,7 +653,7 @@ class Variable:
         value = value.reshape(-1, 1)
         return value
 
-    def _post_compute_at(self, value, points, time, units=None, unmask=False, _mem=True, _hash=None, **kwargs):
+    def _post_compute_at(self, value, points, time, unmask=False, _mem=True, _hash=None, **kwargs):
         if isinstance(value, np.ma.MaskedArray):
             np.ma.set_fill_value(value, self.fill_value)
         if unmask:
