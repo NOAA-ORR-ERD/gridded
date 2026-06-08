@@ -603,7 +603,7 @@ class Variable:
         If time is out of bounds of the time series, and extrapolate is False,
         a gridded.time.OutOfTimeRangeError is raised.
         """
-        pts, time, _hash = self._prepare_at(
+        pts, time, _hash, kwargs = self._prepare_at(
             points=points,
             time=time,
             units=units,
@@ -614,8 +614,24 @@ class Variable:
             _mem=_mem,
             **kwargs,
         )
-        value = self._compute_at(pts, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
-        return self._post_compute_at(value, pts, time, unmask=unmask, _mem=_mem, _hash=_hash, **kwargs)
+        value = self._compute_at(
+            pts, 
+            time,
+            extrapolate,
+            _hash=_hash,
+            _mem=_mem,
+            **kwargs
+        )
+        return self._post_compute_at(
+            value,
+            pts,
+            time=time,
+            units=units,
+            unmask=unmask,
+            _hash=_hash,
+            _mem=_mem,
+            **kwargs
+        )
     
     def _prepare_at(
         self,
@@ -1298,7 +1314,7 @@ class VectorVariable:
         gridded.time.OutOfTimeRangeError is raised.
 
         """
-        pts, time, _hash = self._prepare_at(
+        pts, time, _hash, kwargs = self._prepare_at(
             points=points,
             time=time,
             units=units,
@@ -1312,9 +1328,8 @@ class VectorVariable:
         
         value = self._compute_at(
             pts, 
-            time=time,
-            units=units,
-            unmask=unmask,
+            time,
+            extrapolate,
             _hash=_hash,
             _mem=_mem,
             **kwargs
@@ -1351,7 +1366,7 @@ class VectorVariable:
         if _hash is None:
             _hash = self._get_hash(pts, time)
 
-        return pts, time, _hash
+        return pts, time, _hash, kwargs
     
     def _compute_at(self, points, time, extrapolate, _mem=True, _hash=None, **kwargs):
         if _mem:
