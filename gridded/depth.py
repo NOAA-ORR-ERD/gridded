@@ -859,13 +859,18 @@ class ROMS_Depth(S_Depth):
         return len(self.s_rho)
 
     def get_s_coordinate(self, points, time, data_shape=None, _hash=None, **kwargs):
+        """
+        :param points: array of points to interpolate to
+        :type points: numpy array of shape (n, 3)
+
+    def get_s_coordinate(self, points, time, data_shape=None, _hash=None, **kwargs):
         if data_shape is None:
             data_shape = (self.num_levels,)
 
         s_c = self.s_rho if data_shape[0] == self.num_layers else self.s_w
         C_s = self.Cs_r if data_shape[0] == self.num_layers else self.Cs_w
-        h = self.bathymetry.at(points, time, unmask=False, _hash=_hash, **kwargs)
-        zeta = self.zeta.at(points, time, unmask=False, _hash=_hash, **kwargs)
+        h = self.bathymetry.at(points, time, _hash=_hash, **kwargs)
+        zeta = self.zeta.at(points, time, _hash=_hash, **kwargs)
         hc = self.hc
         hCs = h * C_s[np.newaxis, :]
         if self.vtransform == 1:
@@ -875,6 +880,10 @@ class ROMS_Depth(S_Depth):
             S = ((hc * s_c) + hCs) / (hc + h)
             s_coord = -(zeta + (zeta + h) * S)
         return s_coord
+    
+    def get_transect(self, points, time, data_shape=None, _hash=None, **kwargs):
+        zeta = self.zeta.at(points, time, _hash=_hash, **kwargs)
+        return self.get_s_coordinate(points, time, data_shape=data_shape, _hash=_hash, **kwargs) + zeta
 
 class FVCOM_Depth(S_Depth):
     _instance_count = 0

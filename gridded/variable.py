@@ -669,7 +669,7 @@ class Variable:
         value = value.reshape(-1, 1)
         return value
 
-    def _post_compute_at(self, value, points, time, unmask=False, _mem=True, _hash=None, **kwargs):
+    def _post_compute_at(self, value, points, time, units=None, unmask=False, _mem=True, _hash=None, **kwargs):
         if isinstance(value, np.ma.MaskedArray):
             np.ma.set_fill_value(value, self.fill_value)
         if unmask:
