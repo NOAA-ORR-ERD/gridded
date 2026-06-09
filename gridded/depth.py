@@ -859,6 +859,10 @@ class ROMS_Depth(S_Depth):
             S = ((hc * s_c) + hCs) / (hc + h)
             s_coord = -(zeta + (zeta + h) * S)
         return s_coord
+    
+    def get_transect(self, points, time, data_shape=None, _hash=None, **kwargs):
+        zeta = self.zeta.at(points, time, _hash=_hash, **kwargs)
+        return self.get_s_coordinate(points, time, data_shape=data_shape, _hash=_hash, **kwargs) + zeta
 
 class FVCOM_Depth(S_Depth):
     _instance_count = 0
