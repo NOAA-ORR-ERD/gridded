@@ -693,13 +693,15 @@ class S_Depth(DepthBase):
         )
 
         # compute the remaining alphas, which should be for points within the depth interval
-        L0 = np.take(transects, indices)
-        L1 = np.take(transects, indices + 1)
+        L0 = np.take_along_axis(transects, indices[:, np.newaxis], axis=1).squeeze(axis=1)
+        L1 = np.take_along_axis(transects, np.clip(indices[:, np.newaxis] + 1, 0, transects.shape[1] - 1), axis=1).squeeze(axis=1)
         within_layer = np.isnan(alphas)  # remaining alphas would still have nan at this point
         alphas[within_layer] = (depths[within_layer] - L0[within_layer]) / (L1[within_layer] - L0[within_layer])
 
         if any(np.isnan(alphas)):
             raise ValueError("Some alphas are still unmasked and NaN. Please file a bug report")
+        if any(alphas < 0) or any(alphas > 1):
+            raise ValueError("Some alphas are outside the range [0, 1]. Please file a bug report")
         return indices, alphas
 
     def _apply_boundary_conditions(
