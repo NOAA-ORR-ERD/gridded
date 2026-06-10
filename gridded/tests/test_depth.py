@@ -506,6 +506,14 @@ class Test_FVCOM_Depth:
     def test_construction(self, get_fvcom_depth):
         assert get_fvcom_depth is not None
 
+    def test_default_names_siglay_center(self):
+        # each term should map to the netCDF variable of the same name;
+        # siglay_center pointed at siglev_center (the level-center variable),
+        # so auto-detection silently bound the wrong array to that term
+        assert FVCOM_Depth.default_names["siglay_center"] == ["siglay_center"]
+        # siglev_center keeps its own (correct) mapping
+        assert FVCOM_Depth.default_names["siglev_center"] == ["siglev_center"]
+
     def test_get_transect(self, get_fvcom_depth):
         dp = get_fvcom_depth
         tris = dp.grid.nodes.take(dp.grid.faces, axis=0)
