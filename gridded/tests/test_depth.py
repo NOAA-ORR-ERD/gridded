@@ -390,6 +390,57 @@ class Test_ROMS_Depth:
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
 
+    def test_interpolation_alphas_multiple_water_columns(self):
+        """
+        Points in DIFFERENT water columns must get their bracketing level depths
+        from their own transect row, not from the first point's water column.
+        interpolation_alphas used np.take without an axis, which indexes the
+        FLATTENED transect array, so every point read its levels out of row 0.
+
+        # query 3 in-bounds points in water columns of 100m / 10m / 40m.
+        # 1st point is 60m deep, between levels 100 and 50: index 0, alpha (60-100)/(50-100) = 0.8
+        # 2nd point is 4m deep, between levels 5 and 2: index 1, alpha (4-5)/(2-5) = 1/3
+        # 3rd point is 10m deep, between levels 20 and 8: index 1, alpha (10-20)/(8-20) = 5/6
+        # 4th point is off grid (fully masked transect), masked index and alpha expected.
+        """
+        nz = 4
+        sd = ROMS_Depth(
+            terms={
+                "s_w": np.linspace(-1, 0, nz),
+                "s_rho": np.linspace(-0.875, -0.125, nz - 1),
+            }
+        )
+        # per-point w-level depths (positive down), one water column per row
+        transects = np.ma.masked_array(
+            data=np.array(
+                [
+                    [100.0, 50.0, 20.0, 0.0],
+                    [10.0, 5.0, 2.0, 0.0],
+                    [40.0, 20.0, 8.0, 0.0],
+                    [50.0, 25.0, 10.0, 0.0],
+                ]
+            ),
+            mask=[[False] * nz, [False] * nz, [False] * nz, [True] * nz],
+        )
+        sd.get_transect = lambda points, time, **kwargs: transects
+
+        points = np.array([[0, 0, 60.0], [1, 1, 4.0], [2, 2, 10.0], [-1, -1, 5.0]])
+        idx, alphas = sd.interpolation_alphas(
+            points,
+            None,
+            [
+                sd.num_levels,
+            ],
+        )
+        expected_idx = np.ma.array(np.array([0, 1, 1, -1000]), mask=[False, False, False, True])
+        expected_alpha = np.ma.array(
+            np.array([0.8, 1.0 / 3.0, 5.0 / 6.0, -1000]), mask=[False, False, False, True]
+        )
+        assert np.all(idx == expected_idx)
+        assert np.all(idx.mask == expected_idx.mask)
+        assert np.all(np.isclose(alphas, expected_alpha, atol=1e-4))
+        assert np.all(alphas.mask == expected_alpha.mask)
+
     def test_interpolation_alphas_surface(self, get_roms_depth):
         sd = get_roms_depth
         points = np.array([[20, 20, -0.1], [20, 20, 0], [20, 20, 0.1]])
@@ -458,6 +509,14 @@ class Test_ROMS_Depth:
 class Test_FVCOM_Depth:
     def test_construction(self, get_fvcom_depth):
         assert get_fvcom_depth is not None
+
+    def test_default_names_siglay_center(self):
+        # each term should map to the netCDF variable of the same name;
+        # siglay_center pointed at siglev_center (the level-center variable),
+        # so auto-detection silently bound the wrong array to that term
+        assert FVCOM_Depth.default_names["siglay_center"] == ["siglay_center"]
+        # siglev_center keeps its own (correct) mapping
+        assert FVCOM_Depth.default_names["siglev_center"] == ["siglev_center"]
 
     def test_get_transect(self, get_fvcom_depth):
         dp = get_fvcom_depth
