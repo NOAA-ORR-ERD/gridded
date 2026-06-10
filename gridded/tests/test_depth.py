@@ -287,7 +287,8 @@ class Test_ROMS_Depth:
         """
         sd = get_roms_depth
         points = np.array(
-            [[20, 20, 9.9], [20, 20, 10.0], [20, 20, 10.1], [-1, -1, 5], [20, 20, -0.1], [20, 20, 0], [20, 20, 0.1]]
+            [[20, 20, 9.9], [20, 20, 10.0], [20, 20, 10.1], [-1, -1, 5], [20, 20, -0.1], [20, 20, 0], [20, 20, 0.1],
+             [0, 0, 9.9], [0, 0, 10], [0, 0, 10.1]]
         )
         ts = sd.time.data[1]
         assert sd.default_bottom_boundary_condition == "mask"
@@ -299,14 +300,17 @@ class Test_ROMS_Depth:
             ],
         )
         expected_idx = np.ma.array(
-            np.array([0, -1000, -1000, -1000, 10, 9, 9]), mask=[False, True, True, True, False, False, False]
+            np.array([0, -1000, -1000, -1000, 10, 9, 9, 5, 4, 4]), mask=[False, True, True, True, False, False, False, False, False, False]
         )
         expected_alpha = np.ma.array(
-            np.array([0.1, -1000, -1000, -1000, 0, 1, 0.9]), mask=[False, True, True, True, False, False, False]
+            np.array([0.1, -1000, -1000, -1000, 0, 1, 0.9, 0.05, 1, 0.95]), mask=[False, True, True, True, False, False, False, False, False, False]
         )
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
-
+        
+        points = np.array(
+            [[20, 20, 9.9], [20, 20, 10.0], [20, 20, 10.1], [-1, -1, 5], [20, 20, -0.1], [20, 20, 0], [20, 20, 0.1]]
+        )
         sd.default_bottom_boundary_condition == "extrapolate"
         idx, alphas = sd.interpolation_alphas(
             points,
@@ -430,8 +434,8 @@ class Test_ROMS_Depth:
                 sd.num_levels,
             ],
         )
-        expected_idx = np.ma.array(np.array([10, 10, 10]), mask=[False, False, False])
-        expected_alpha = np.ma.array(np.array([0, 0, 0]), mask=[False, False, False])
+        expected_idx = np.ma.array(np.array([10, 9, 9]), mask=[False, False, False])
+        expected_alpha = np.ma.array(np.array([0, 1, 0.8947368421052632]), mask=[False, False, False])
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
 
@@ -445,8 +449,8 @@ class Test_ROMS_Depth:
         )
         # only the element 0.1m deep should register with an index and alpha since
         # it is the only element below surface.
-        expected_idx = np.ma.array(np.array([-1, -1, -1]), mask=[True, True, True])
-        expected_alpha = np.ma.array(np.array([0, 0.9, 0]), mask=[True, True, True])
+        expected_idx = np.ma.array(np.array([-1, 9, 9]), mask=[True, False, False])
+        expected_alpha = np.ma.array(np.array([0, 1, 0.8947368421052632]), mask=[True, False, False])
         assert np.all(idx.mask == expected_idx.mask)
         assert np.all(alphas.mask == expected_alpha.mask)
 
