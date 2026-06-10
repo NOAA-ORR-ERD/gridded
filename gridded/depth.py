@@ -834,7 +834,7 @@ class FVCOM_Depth(S_Depth):
     _instance_count = 0
     default_names = {
         "siglay": ["siglay"],  # mid layer depth coordinate on nodes
-        "siglay_center": ["siglev_center"],  # mid layer depth coordinate on centers
+        "siglay_center": ["siglay_center"],  # mid layer depth coordinate on centers
         "siglev": ["siglev"],  # layer depth coordinate on nodes
         "siglev_center": ["siglev_center"],  # layer depth coordinate on centers
         "bathymetry": ["h"],  # bathymetry on nodes
