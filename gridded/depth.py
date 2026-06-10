@@ -693,8 +693,14 @@ class S_Depth(DepthBase):
         )
 
         # compute the remaining alphas, which should be for points within the depth interval
-        L0 = np.take(transects, indices)
-        L1 = np.take(transects, indices + 1)
+        # transects is (n_points, n_levels): one water column per point, so the bracketing
+        # level depths must be taken from each point's own row. np.take without an axis
+        # would index the flattened array, reading every point's levels out of row 0.
+        # masked or out-of-interval indices were already handled by the boundary conditions
+        # above and are never recomputed below, so fill/clip them to keep the take in bounds.
+        idx = np.clip(np.ma.filled(indices, 0), 0, transects.shape[1] - 2)[:, np.newaxis]
+        L0 = np.take_along_axis(transects, idx, axis=1).squeeze(axis=1)
+        L1 = np.take_along_axis(transects, idx + 1, axis=1).squeeze(axis=1)
         within_layer = np.isnan(alphas)  # remaining alphas would still have nan at this point
         alphas[within_layer] = (depths[within_layer] - L0[within_layer]) / (L1[within_layer] - L0[within_layer])
 
