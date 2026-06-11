@@ -595,7 +595,7 @@ class Variable:
 
         :param lats: 1D iterable of latitude values. This is ignored
                      if points is provided
-        :type lons: iterable
+        :type lats: iterable
 
         :return: returns a Nx1 array of interpolated values
         :rtype: double
@@ -603,7 +603,7 @@ class Variable:
         If time is out of bounds of the time series, and extrapolate is False,
         a gridded.time.OutOfTimeRangeError is raised.
         """
-        pts, time, _hash, kwargs = self._prepare_at(
+        pts, time, unmask, _hash, _mem, kwargs = self._prepare_at(
             points=points,
             time=time,
             units=units,
@@ -633,16 +633,12 @@ class Variable:
             **kwargs
         )
     
-    def _prepare_at(
-        self,
-        points=None,
-        time=None,
-        units=None,
-        lons=None,
-        lats=None,
-        _hash=None,
-        **kwargs,
-    ):
+    def _prepare_at(self, points=None, time=None, units=None, lons=None, lats=None, unmask=False, _hash=None, _mem=True, **kwargs):
+        """
+        First stage of the .at function. Handles argument manipulation, units setup if applicable
+        and hash generation for memoization.     
+        
+        """
         if points is None and (lons is None or lats is None):
             raise ValueError("Must provide either points or separate lons and lats")
         if points is None:
@@ -652,9 +648,18 @@ class Variable:
         if _hash is None:
             _hash = self._get_hash(pts, time)
 
-        return pts, time, _hash
+        return pts, time, unmask, _hash, _mem, kwargs
     
     def _compute_at(self, points, time, extrapolate, _mem=True, _hash=None, **kwargs):
+        """
+        Computation core of the .at function. All arguments should be prepared for internal use.
+        Note that unit conversions are not explicitly handled in this function 
+        (though may occur if subcomponent Variable are present)
+        
+        Returns the interpolated values at the points and time specified.
+        """
+        
+        
         if _mem:
             res = self._get_memoed(points, time, self._result_memo, _hash=_hash)
             if res is not None:
@@ -670,6 +675,12 @@ class Variable:
         return value
 
     def _post_compute_at(self, value, points, time, units=None, unmask=False, _mem=True, _hash=None, **kwargs):
+        """
+        Post computation step of the .at function.
+        Handles fill values, unmasking, and memoization of the result.
+        NOTE that unit conversion of computed results must happen *after* memoization
+        as the requested units for any given .at call are not part of the memoization hash.
+        """
         if isinstance(value, np.ma.MaskedArray):
             np.ma.set_fill_value(value, self.fill_value)
         if unmask:
@@ -1330,7 +1341,7 @@ class VectorVariable:
         gridded.time.OutOfTimeRangeError is raised.
 
         """
-        pts, time, _hash, kwargs = self._prepare_at(
+        pts, time, _hash, _mem, unmask, kwargs = self._prepare_at(
             points=points,
             time=time,
             units=units,
@@ -1362,17 +1373,12 @@ class VectorVariable:
         )
         
 
-    def _prepare_at(
-        self,
-        points=None,
-        time=None,
-        units=None,
-        lons=None,
-        lats=None,
-        unmask=False,
-        _hash=None,
-        **kwargs,
-    ):
+    def _prepare_at(self, points=None, time=None, units=None, lons=None, lats=None, unmask=False, _hash=None, _mem=True, **kwargs):
+        """
+        First stage of the .at function. Handles argument manipulation, units setup if applicable
+        and hash generation for memoization.     
+        
+        """
         if points is None and (lons is None or lats is None):
             raise ValueError("Must provide either points or separate lons and lats")
         if points is None:
@@ -1382,9 +1388,16 @@ class VectorVariable:
         if _hash is None:
             _hash = self._get_hash(pts, time)
 
-        return pts, time, _hash, kwargs
+        return pts, time, _hash, _mem, unmask, kwargs
     
     def _compute_at(self, points, time, extrapolate, _mem=True, _hash=None, **kwargs):
+        """
+        Computation core of the .at function. All arguments should be prepared for internal use.
+        Note that unit conversions are not explicitly handled in this function 
+        (though may occur if subcomponent Variable are present)
+        
+        Returns the interpolated values at the points and time specified.
+        """
         if _mem:
             res = self._get_memoed(points, time, self._result_memo, _hash=_hash)
             if res is not None:
@@ -1407,6 +1420,12 @@ class VectorVariable:
         return value
     
     def _post_compute_at(self, value, points, time, unmask=False, _mem=True, _hash=None, **kwargs):
+        """
+        Post computation step of the .at function.
+        Handles fill values, unmasking, and memoization of the result.
+        NOTE that unit conversion of computed results must happen *after* memoization
+        as the requested units for any given .at call are not part of the memoization hash.
+        """
         if isinstance(value, np.ma.MaskedArray):
             for v, i in zip(self.variables, range(value.shape[1])):
                 np.ma.set_fill_value(value[:, i], v.fill_value)
