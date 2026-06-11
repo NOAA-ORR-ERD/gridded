@@ -2,8 +2,10 @@ import collections
 import hashlib
 import logging
 import os
+from abc import ABC
 from functools import wraps
 from textwrap import dedent
+import time
 
 import netCDF4 as nc4
 import numpy as np
@@ -23,8 +25,100 @@ from gridded.utilities import (
 
 log = logging.getLogger(__name__)
 
+class VariableAPI(ABC):
+    def at(self, points, times, unmask=False, time_kwargs=None, depth_kwargs=None, grid_kwargs=None, _hash=None, _mem=True):
+        """
+        Find the value of the property at positions P at time T
 
-class Variable:
+        :param points: Cartesian coordinates to be queried (P).
+                       Lon, Lat required, Depth (Z) is optional
+                       Coordinates must be organized as a 2D array or list,
+                       one coordinate per row.
+
+                       Failure to provide point data in this format may cause
+                       unexpected behavior. Not providing a Z value when a depth
+                       dimension is present will cause an IndexError.
+                       
+                       Any iterable passed into numpy.array() that results in a ndarray
+                       of shape (N, 2) or (N, 3) should work. (eg list of tuples, list of list)
+
+                          [[Lon1, Lat1, Z1],
+                           [Lon2, Lat2, Z2],
+                           [Lon3, Lat3, Z3],
+                           ...]
+
+        :type points: Nx3 array of double
+
+
+        :param times: The times at which to query these points (T)
+        :type times: iterable of datetime.datetime objects
+        
+        :param unmask: If True and return array is a masked array, returns a filled array using self.fill_value
+        :type unmask: boolean (default False)
+        
+        :param time_kwargs: kwargs to be passed to the Time object for interpolation. See Time.interpolation_alphas for details.
+        :type time_kwargs: dict
+        
+        :param depth_kwargs: kwargs to be passed to the Depth object for interpolation. See Depth.interpolation_alphas for details.
+        :type depth_kwargs: dict
+        
+        :param grid_kwargs: kwargs to be passed to the Grid object for interpolation. See Grid.interpolation_alphas for details.
+        :type grid_kwargs: dict
+        
+        :param _hash: optional pre-computed hash for memoization. If not provided, it will be computed from the points and time.
+        :type _hash: str
+        
+        :param _mem: If True, memoization will be used to speed up repeated calls with the same points and time.
+        :type _mem: bool
+        
+        :return: returns a NxTxD array of interpolated values. N = Number of Points, T = Number of times, D = dimensionality of this Variable (eg 1 for scalar, 2+ for vector)
+        :rtype: numpy.ndarray
+        """
+        pts, times, _hash = self._prepare_at(points, times, _hash=_hash)
+        value = self._compute_at(pts, times, time_kwargs, depth_kwargs, grid_kwargs, _hash=_hash, _mem=_mem)
+        value = self._post_compute_at(value, pts, times, unmask=unmask, _hash=_hash, _mem=_mem)
+        return value
+    
+    def _prepare_at(self, points, times, _hash=None):
+        """
+        First stage of the .at function. Handles points and time normalization
+        and hash generation for memoization.     
+        
+        """
+        pts = _reorganize_spatial_data(points)
+        times = np.array(times)
+
+        if _hash is None:
+            _hash = self._get_hash(pts, times)
+
+        return pts, times, _hash
+    
+    def _compute_at(self, points, times, time_kwargs, depth_kwargs, grid_kwargs, _hash=None, _mem=True):
+        """
+        Computation core of the .at function. All arguments should already be prepared for internal use.
+        
+        Returns the interpolated values at the points and times specified.
+        """
+        raise NotImplementedError("VariableAPI is an abstract base class. Subclasses must implement the ._compute_at method")
+
+    def _post_compute_at(self, value, points, times, unmask=False, _hash=None, _mem=True):
+        """
+        Post computation step of the .at function.
+        Handles fill values, unmasking, and memoization of the result.
+        NOTE that unit conversion of computed results must happen *after* memoization
+        as the requested units for any given .at call are not part of the memoization hash.
+        """
+        value = value.squeeze()
+        if isinstance(value, np.ma.MaskedArray):
+            np.ma.set_fill_value(value, self.fill_value)
+        if unmask:
+            value = np.ma.filled(value)
+
+        if _mem:
+            self._memoize_result(points, times, value, self._result_memo, _hash=_hash)
+        return value
+
+class Variable(VariableAPI):
     """
     Variable object: represents a field of values associated with the grid.
 
@@ -58,8 +152,6 @@ class Variable:
         fill_value=0,
         location=None,
         attributes=None,
-        surface_boundary_condition="extrapolate",
-        bottom_boundary_condition="mask",
         **kwargs,
     ):
         """
@@ -130,8 +222,6 @@ class Variable:
                 self.attributes[attr] = data.getncattr(attr)
         except AttributeError:  # must not be a netcdf variable
             pass  # so just use what was passed in.
-        self.surface_boundary_condition = surface_boundary_condition
-        self.bottom_boundary_condition = bottom_boundary_condition
         super().__init__(**kwargs)
 
     #         for k in kwargs:
@@ -531,126 +621,8 @@ class Variable:
     @dimension_ordering.setter
     def dimension_ordering(self, order):
         self._order = order
-
-    def at(
-        self,
-        points=None,
-        time=None,
-        units=None,
-        extrapolate=False,
-        lons=None,
-        lats=None,
-        unmask=False,
-        _hash=None,
-        _mem=True,
-        **kwargs,
-    ):
-        """
-        Find the value of the property at positions P at time T
-
-        :param points: Cartesian coordinates to be queried (P).
-                       Lon, Lat required, Depth (Z) is optional
-                       Coordinates must be organized as a 2D array or list,
-                       one coordinate per row.
-
-                       Failure to provide point data in this format may cause
-                       unexpected behavior.  If you wish to provide point data
-                       using separate longitude and latitude arrays,
-                       use the ``lons=`` and ``lats=`` kwargs. ::
-
-                          [[Lon1, Lat1, Z1],
-                           [Lon2, Lat2, Z2],
-                           [Lon3, Lat3, Z3],
-                           ...]
-
-        :type points: Nx3 array of double
-
-
-        :param time: The time at which to query these points (T)
-        :type time: datetime.datetime object
-
-        :param units: units the values will be returned in (or converted to)
-        :type units: string such as ('m/s', 'knots', etc)
-
-        :param extrapolate: if True, extrapolation will be supported
-        :type extrapolate: boolean (default False)
-
-        :param unmask: If True and return array is a masked array, returns
-                       filled array.
-        :type unmask: boolean (default False)
-
-        :param surface_boundary_condition: Specifies how to evaluate points
-                                           above the depth interval.
-        :type surface_boundary_condition: string ('extrapolate' or 'mask',
-                                          default 'extrapolate')
-
-        :param bottom_boundary_condition: Specifies how to evaluate points
-                                          below the depth interval.
-        :type bottom_boundary_condition: string ('extrapolate' or 'mask',
-                                         default 'extrapolate')
-
-        :param lons: 1D iterable of longitude values. This is ignored
-                     if points is provided.
-        :type lons: iterable
-
-        :param lats: 1D iterable of latitude values. This is ignored
-                     if points is provided
-        :type lats: iterable
-
-        :return: returns a Nx1 array of interpolated values
-        :rtype: double
-
-        If time is out of bounds of the time series, and extrapolate is False,
-        a gridded.time.OutOfTimeRangeError is raised.
-        """
-        pts, time, unmask, _hash, _mem, kwargs = self._prepare_at(
-            points=points,
-            time=time,
-            units=units,
-            lons=lons,
-            lats=lats,
-            unmask=unmask,
-            _hash=_hash,
-            _mem=_mem,
-            **kwargs,
-        )
-        value = self._compute_at(
-            pts, 
-            time,
-            extrapolate,
-            _hash=_hash,
-            _mem=_mem,
-            **kwargs
-        )
-        return self._post_compute_at(
-            value,
-            pts,
-            time=time,
-            units=units,
-            unmask=unmask,
-            _hash=_hash,
-            _mem=_mem,
-            **kwargs
-        )
     
-    def _prepare_at(self, points=None, time=None, units=None, lons=None, lats=None, unmask=False, _hash=None, _mem=True, **kwargs):
-        """
-        First stage of the .at function. Handles argument manipulation, units setup if applicable
-        and hash generation for memoization.     
-        
-        """
-        if points is None and (lons is None or lats is None):
-            raise ValueError("Must provide either points or separate lons and lats")
-        if points is None:
-            points = np.column_stack((np.array(lons), np.array(lats)))
-        pts = _reorganize_spatial_data(points)
-
-        if _hash is None:
-            _hash = self._get_hash(pts, time)
-
-        return pts, time, unmask, _hash, _mem, kwargs
-    
-    def _compute_at(self, points, time, extrapolate, _mem=True, _hash=None, **kwargs):
+    def _compute_at(self, points, times, time_kwargs, depth_kwargs, grid_kwargs, _mem=True, _hash=None, **kwargs):
         """
         Computation core of the .at function. All arguments should be prepared for internal use.
         Note that unit conversions are not explicitly handled in this function 
@@ -661,38 +633,26 @@ class Variable:
         
         
         if _mem:
-            res = self._get_memoed(points, time, self._result_memo, _hash=_hash)
+            res = self._get_memoed(points, times, self._result_memo, _hash=_hash)
             if res is not None:
                 return res
         order = self.dimension_ordering
-        if order[0] == "time":
-            value = self._time_interp(points, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
-        elif order[0] == "depth":
-            value = self._depth_interp(points, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
-        else:
-            value = self._xy_interp(points, time, extrapolate, _mem=_mem, _hash=_hash, **kwargs)
-        value = value.reshape(-1, 1)
-        return value
-
-    def _post_compute_at(self, value, points, time, units=None, unmask=False, _mem=True, _hash=None, **kwargs):
-        """
-        Post computation step of the .at function.
-        Handles fill values, unmasking, and memoization of the result.
-        NOTE that unit conversion of computed results must happen *after* memoization
-        as the requested units for any given .at call are not part of the memoization hash.
-        """
-        if isinstance(value, np.ma.MaskedArray):
-            np.ma.set_fill_value(value, self.fill_value)
-        if unmask:
-            value = np.ma.filled(value)
-
-        if _mem:
-            self._memoize_result(points, time, value, self._result_memo, _hash=_hash)
-        return value
+        
+        retval = np.zeros((len(points), len(times), 1))
+        for i, time in enumerate(times):
+            if order[0] == "time":
+                value = self._time_interp(points, time, _mem=_mem, _hash=_hash, depth_kwargs=depth_kwargs, grid_kwargs=grid_kwargs, **time_kwargs)
+            elif order[0] == "depth":
+                value = self._depth_interp(points, time, _mem=_mem, _hash=_hash, time_kwargs=time_kwargs, grid_kwargs=grid_kwargs, **depth_kwargs)
+            else:
+                value = self._xy_interp(points, time, _mem=_mem, _hash=_hash, time_kwargs=time_kwargs, depth_kwargs=depth_kwargs, **grid_kwargs)
+            value = value.reshape(-1, 1)
+            retval[:, i, :] = value
+        return retval
     
     interpolate = at  # common request
 
-    def _xy_interp(self, points, time, extrapolate, slices=(), **kwargs):
+    def _xy_interp(self, points, time, slices=(), time_kwargs=None, depth_kwargs=None, **grid_kwargs):
         """
         Uses the py(s/u)grid interpolation to determine the values at the points, and returns it
         :param points: Coordinates to be queried (3D)
@@ -707,20 +667,19 @@ class Variable:
         :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type slices: tuple of integers or slice objects
         """
-        _hash = kwargs["_hash"] if "_hash" in kwargs else None
-        units = kwargs["units"] if "units" in kwargs else None
+        _memo = grid_kwargs["_memo"] if "_memo" in grid_kwargs else True
 
         value = self.grid.interpolate_var_to_points(
             points[:, 0:2],
             self.data,
             location=self.location,
-            _hash=self._get_hash(points[:, 0:2], time),
+            _hash=self._get_hash(points[:, 0:2], time), #grid uses only lon/lat + time for memoization (for now)
             slices=slices,
-            _memo=True,
+            _memo=_memo,
         )
         return value
 
-    def _time_interp(self, points, time, extrapolate, slices=(), **kwargs):
+    def _time_interp(self, points, time, slices=(), extrapolate=False, grid_kwargs=None, depth_kwargs=None, **time_kwargs):
         """
         Uses the Time object to interpolate the result of the next level of interpolation, as specified
         by the dimension_ordering attribute.
@@ -738,27 +697,30 @@ class Variable:
         """
         order = self.dimension_ordering
         idx = order.index("time")
+        vf_kwargs = None
         if order[idx + 1] != "depth":
             val_func = self._xy_interp
+            vf_kwargs = grid_kwargs
         else:
             val_func = self._depth_interp
+            vf_kwargs = depth_kwargs
 
         if time == self.time.min_time or (extrapolate and time < self.time.min_time):
             # min or before
-            return val_func(points, time, extrapolate, slices=(0,), **kwargs)
+            return val_func(points, time, slices=(0,), grid_kwargs=grid_kwargs, depth_kwargs=depth_kwargs, **vf_kwargs)
         elif time == self.time.max_time or (extrapolate and time > self.time.max_time):
-            return val_func(points, time, extrapolate, slices=(-1,), **kwargs)
+            return val_func(points, time, extrapolate, slices=(-1,), grid_kwargs=grid_kwargs, depth_kwargs=depth_kwargs, **vf_kwargs)
         else:
             ind = self.time.index_of(time)
             s1 = slices + (ind,)
             s0 = slices + (ind - 1,)
-            v0 = val_func(points, time, extrapolate, slices=s0, **kwargs)
-            v1 = val_func(points, time, extrapolate, slices=s1, **kwargs)
-            alphas = self.time.interp_alpha(time, extrapolate)
+            v0 = val_func(points, time, extrapolate, slices=s0, grid_kwargs=grid_kwargs, depth_kwargs=depth_kwargs, **vf_kwargs)
+            v1 = val_func(points, time, extrapolate, slices=s1, grid_kwargs=grid_kwargs, depth_kwargs=depth_kwargs, **vf_kwargs)
+            alphas = self.time.interp_alpha(time, extrapolate, **time_kwargs)
 
             return v0 + (v1 - v0) * alphas
 
-    def _depth_interp(self, points, time, extrapolate, slices=(), **kwargs):
+    def _depth_interp(self, points, time, slices=(), extrapolate=False, surface_boundary_condition=None, bottom_boundary_condition=None, grid_kwargs=None, time_kwargs=None, **depth_kwargs):
         """
         Uses the Depth object to interpolate the result of the next level of interpolation, as specified
         by the dimension_ordering attribute.
@@ -774,29 +736,27 @@ class Variable:
         :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type slices: tuple of integers or slice objects
         """
-        surface_boundary_condition = kwargs.pop("surface_boundary_condition", self.surface_boundary_condition)
-        bottom_boundary_condition = kwargs.pop("bottom_boundary_condition", self.bottom_boundary_condition)
         order = self.dimension_ordering
         dim_idx = order.index("depth")
         if order[dim_idx + 1] != "time":
             val_func = self._xy_interp
+            vf_kwargs = grid_kwargs
         else:
             val_func = self._time_interp
+            vf_kwargs = time_kwargs
 
         d_indices, d_alphas = self.depth.interpolation_alphas(
             points,
             time,
             self.data.shape[1:],
             extrapolate=extrapolate,
-            surface_boundary_condition=surface_boundary_condition,
-            bottom_boundary_condition=bottom_boundary_condition,
-            **kwargs,
+            **depth_kwargs,
         )
 
         # Check the surface index against the data shape to determine if we are using rho or w coordinates
         surface_index = self.depth.surface_index
-        if self.depth.surface_index == self.data.shape[dim_idx]:
-            surface_index -= 1
+        # if self.depth.surface_index == self.data.shape[dim_idx]:
+        #     surface_index -= 1
 
         if isinstance(d_indices, np.ma.MaskedArray) and np.all(d_indices.mask):
             # all particles ended up masked
@@ -808,11 +768,11 @@ class Variable:
         # if problems continue to arise, get rid of them
         # they are *meant* to handle cases where the particles are 'off grid'
         #
-        elif np.all(d_indices == 0) and not np.any(d_indices.mask):
-            # all particles are
-            return val_func(points, time, extrapolate, slices=slices + (0,), **kwargs)
-        elif np.all(d_indices == self.data.shape[dim_idx] - 1) and not np.any(d_indices.mask):
-            return val_func(points, time, extrapolate, slices=slices + (self.data.shape[dim_idx] - 1,), **kwargs)
+        elif np.all(d_indices == surface_index) and not np.any(d_indices.mask):
+            # all particles are on the surface
+            return val_func(points, time, extrapolate, slices=slices + (surface_index,), **kwargs)
+        # elif np.all(d_indices == self.data.shape[dim_idx] - 1) and not np.any(d_indices.mask):
+        #     return val_func(points, time, extrapolate, slices=slices + (self.data.shape[dim_idx] - 1,), **kwargs)
         else:
             msk = np.isnan(d_indices) if not np.ma.is_masked(d_indices) else d_indices.mask
             values = np.ma.MaskedArray(data=np.empty((points.shape[0],)) * np.nan, mask=msk)
@@ -1281,8 +1241,8 @@ class VectorVariable:
 
     def at(
         self,
-        points=None,
-        time=None,
+        points,
+        time,
         units=None,
         extrapolate=False,
         lons=None,
@@ -1324,10 +1284,6 @@ class VectorVariable:
         :param unmask: if True and return array is a masked array, returns filled array
         :type unmask: boolean (default False)
 
-        :param zero_ref: Specifies whether the zero datum moves with zeta or not. Only
-                         applicable if depth dimension is present with full sigma layers
-        :type zero_ref: string 'absolute' or 'relative'
-
         :param lons: 1D iterable of longitude values. This is ignored if points is provided
         :type lons: iterable
 
@@ -1345,9 +1301,9 @@ class VectorVariable:
             points=points,
             time=time,
             units=units,
+            unmask=unmask,
             lons=lons,
             lats=lats,
-            unmask=unmask,
             _hash=_hash,
             _mem=_mem,
             **kwargs
@@ -1356,7 +1312,9 @@ class VectorVariable:
         value = self._compute_at(
             pts, 
             time,
-            extrapolate,
+            units=units,
+            unmask=unmask,
+            extrapolate=extrapolate,
             _hash=_hash,
             _mem=_mem,
             **kwargs
@@ -1364,16 +1322,17 @@ class VectorVariable:
         return self._post_compute_at(
             value,
             pts,
-            time=time,
+            time,
             units=units,
             unmask=unmask,
+            extrapolate=extrapolate,
             _hash=_hash,
             _mem=_mem,
             **kwargs
         )
         
 
-    def _prepare_at(self, points=None, time=None, units=None, lons=None, lats=None, unmask=False, _hash=None, _mem=True, **kwargs):
+    def _prepare_at(self, points=None, time=None, units=None, unmask=False, extrapolate=False, lons=None, lats=None, _hash=None, _mem=True, **kwargs):
         """
         First stage of the .at function. Handles argument manipulation, units setup if applicable
         and hash generation for memoization.     
@@ -1390,7 +1349,7 @@ class VectorVariable:
 
         return pts, time, _hash, _mem, unmask, kwargs
     
-    def _compute_at(self, points, time, extrapolate, _mem=True, _hash=None, **kwargs):
+    def _compute_at(self, points, time, units=None, unmask=False, extrapolate=False, _mem=True, _hash=None, **kwargs):
         """
         Computation core of the .at function. All arguments should be prepared for internal use.
         Note that unit conversions are not explicitly handled in this function 
@@ -1405,7 +1364,7 @@ class VectorVariable:
         value = np.ma.column_stack(
             [
                 var.at(
-                    points=pts,
+                    points=points,
                     time=time,
                     units=units,
                     extrapolate=extrapolate,
