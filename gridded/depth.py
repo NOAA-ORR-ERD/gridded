@@ -695,13 +695,21 @@ class S_Depth(DepthBase):
         )
 
         # compute the remaining alphas, which should be for points within the depth interval
-        L0 = np.take(transects, indices)
-        L1 = np.take(transects, indices + 1)
+        # transects is (n_points, n_levels): one water column per point, so the bracketing
+        # level depths must be taken from each point's own row. np.take without an axis
+        # would index the flattened array, reading every point's levels out of row 0.
+        # masked or out-of-interval indices were already handled by the boundary conditions
+        # above and are never recomputed below, so fill/clip them to keep the take in bounds.
+        idx = np.clip(np.ma.filled(indices, 0), 0, transects.shape[1] - 2)[:, np.newaxis]
+        L0 = np.take_along_axis(transects, idx, axis=1).squeeze(axis=1)
+        L1 = np.take_along_axis(transects, idx + 1, axis=1).squeeze(axis=1)
         within_layer = np.isnan(alphas)  # remaining alphas would still have nan at this point
         alphas[within_layer] = (depths[within_layer] - L0[within_layer]) / (L1[within_layer] - L0[within_layer])
 
         if any(np.isnan(alphas)):
             raise ValueError("Some alphas are still unmasked and NaN. Please file a bug report")
+        if any(alphas < 0) or any(alphas > 1):
+            raise ValueError("Some alphas are outside the range [0, 1]. Please file a bug report")
         return indices, alphas
 
     def _apply_boundary_conditions(
@@ -756,6 +764,41 @@ class S_Depth(DepthBase):
 
         return indices, alphas, oob_mask
 
+    def get_s_coord(self, points, time, data_shape=None, _hash=None, **kwargs):
+        """
+        :param points: array of points to interpolate to
+        :type points: numpy array of shape (n, 3)
+
+        :param time: time to interpolate to
+        :type time: datetime.datetime
+
+        :param data_shape: shape of the variable to be interpolated.
+                           This param is used to determine whether to
+                           index on the sigma layers or levels.
+        :type data_shape: tuple of int
+
+        :return: numpy array of shape (n, num_w_levels) of n s-coordinate transects. 0 reference is mean sea surface.
+        """
+        raise NotImplementedError("get_s_coord not implemented for S_Depth, required in subclasses")
+
+    def get_transect(self, points, time, data_shape=None, _hash=None, **kwargs):
+        """
+        :param points: array of points to interpolate to
+        :type points: numpy array of shape (n, 3)
+
+        :param time: time to interpolate to
+        :type time: datetime.datetime
+
+        :param data_shape: shape of the variable to be interpolated.
+                           This param is used to determine whether to
+                           index on the sigma layers or levels.
+        :type data_shape: tuple of int
+
+        :return: numpy array of shape (n, num_w_levels) of n transects, referenced to the surface (i.e. surface is 0, seafloor is negative)
+        """
+        z = self.zeta.at(points, time, unmask=False, _hash=_hash, **kwargs)
+        return self.get_s_coord(points, time, data_shape=data_shape, _hash=_hash, **kwargs) + z
+
 
 class ROMS_Depth(S_Depth):
     """
@@ -798,8 +841,8 @@ class ROMS_Depth(S_Depth):
     @property
     def num_layers(self):
         return len(self.s_rho)
-
-    def get_transect(self, points, time, data_shape=None, _hash=None, **kwargs):
+    
+    def get_s_coord(self, points, time, data_shape=None, _hash=None, **kwargs):
         """
         :param points: array of points to interpolate to
         :type points: numpy array of shape (n, 3)
@@ -812,7 +855,7 @@ class ROMS_Depth(S_Depth):
                            index on the sigma layers or levels.
         :type data_shape: tuple of int
 
-        :return: numpy array of shape (n, num_w_levels) of n s-coordinate transects
+        :return: numpy array of shape (n, num_w_levels) of n s-coordinate transects. 0 reference is mean sea surface.
         """
         if data_shape is None:
             data_shape = (self.num_levels,)
@@ -836,7 +879,7 @@ class FVCOM_Depth(S_Depth):
     _instance_count = 0
     default_names = {
         "siglay": ["siglay"],  # mid layer depth coordinate on nodes
-        "siglay_center": ["siglev_center"],  # mid layer depth coordinate on centers
+        "siglay_center": ["siglay_center"],  # mid layer depth coordinate on centers
         "siglev": ["siglev"],  # layer depth coordinate on nodes
         "siglev_center": ["siglev_center"],  # layer depth coordinate on centers
         "bathymetry": ["h"],  # bathymetry on nodes
@@ -870,7 +913,7 @@ class FVCOM_Depth(S_Depth):
     def num_layers(self):
         return len(self.siglay)
 
-    def get_transect(self, points, time, data_shape=None, _hash=None, **kwargs):
+    def get_s_coord(self, points, time, data_shape=None, _hash=None, **kwargs):
         """
         :param points: array of points to interpolate to
         :type points: numpy array of shape (n, 3)
@@ -901,13 +944,8 @@ class FVCOM_Depth(S_Depth):
         bathy = self.bathymetry.at(points, time, unmask=False, _hash=_hash, **kwargs)
         zeta = self.zeta.at(points, time, unmask=False, _hash=_hash, **kwargs)
 
-        transects = -(zeta + (zeta + bathy) * sigma)
-        return transects
-
-        # elif self.vtransform == 2:
-        #     S = ((hc * s_c) + hCs) / (hc + h)
-        #     s_coord = -(zeta + (zeta + h) * S)
-        # if no stretching or crit depth (hc, Cs_r, Cs_w) then S = s_c
+        s_coord = -(zeta + (zeta + bathy) * sigma)
+        return s_coord
 
 
 class Depth:
