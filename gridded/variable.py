@@ -79,6 +79,8 @@ class VariableAPI(ABC):
         value = self._post_compute_at(value, pts, times, unmask=unmask, _hash=_hash, _mem=_mem)
         return value
     
+    interpolate = at  # common request
+    
     def _prepare_at(self, points, times, _hash=None):
         """
         First stage of the .at function. Handles points and time normalization
@@ -118,6 +120,30 @@ class VariableAPI(ABC):
             self._memoize_result(points, times, value, self._result_memo, _hash=_hash)
         return value
 
+    def _get_hash(self, points, time):
+        """
+        Returns a SHA1 hash of the array of points passed in
+        """
+        return (hashlib.sha1(points.tobytes()).hexdigest(), hashlib.sha1(str(time).encode("utf-8")).hexdigest())
+
+    def _memoize_result(self, points, time, result, D, _copy=False, _hash=None):
+        if _copy:
+            result = result.copy()
+        result.setflags(write=False)
+        if _hash is None:
+            _hash = self._get_hash(points, time)
+        if D is not None and len(D) > 4:
+            D.popitem(last=False)
+        D[_hash] = result
+        D[_hash].setflags(write=False)
+
+    def _get_memoed(self, points, time, D, _copy=False, _hash=None):
+        if _hash is None:
+            _hash = self._get_hash(points, time)
+        if D is not None and _hash in D:
+            return D[_hash].copy() if _copy else D[_hash]
+        else:
+            return None
 class Variable(VariableAPI):
     """
     Variable object: represents a field of values associated with the grid.
@@ -524,57 +550,6 @@ class Variable(VariableAPI):
     def is_data_on_nodes(self):
         return self.grid.infer_location(self._data) == "node"
 
-    def _get_hash(self, points, time):
-        """
-        Returns a SHA1 hash of the array of points passed in
-        """
-        return (hashlib.sha1(points.tobytes()).hexdigest(), hashlib.sha1(str(time).encode("utf-8")).hexdigest())
-
-    def _memoize_result(self, points, time, result, D, _copy=False, _hash=None):
-        if _copy:
-            result = result.copy()
-        result.setflags(write=False)
-        if _hash is None:
-            _hash = self._get_hash(points, time)
-        if D is not None and len(D) > 4:
-            D.popitem(last=False)
-        D[_hash] = result
-        D[_hash].setflags(write=False)
-
-    def _get_memoed(self, points, time, D, _copy=False, _hash=None):
-        if _hash is None:
-            _hash = self._get_hash(points, time)
-        if D is not None and _hash in D:
-            return D[_hash].copy() if _copy else D[_hash]
-        else:
-            return None
-
-    def center_values(self, time, units=None, extrapolate=False):
-        """
-        interpolate data to the center of the cells
-
-        :param time: the time to interpolate at
-
-        **Warning:** NOT COMPLETE
-
-        NOTE: what if this data is already on the cell centers?
-        """
-        raise NotImplementedError("center_values is not finished")
-
-        if not extrapolate:
-            self.time.valid_time(time)
-        if len(self.time) == 1:
-            if len(self.data.shape) == 2:
-                if isinstance(self.grid, Grid_S):
-                    # curv grid
-                    value = self.data[0:1:-2, 1:-2]
-                else:
-                    value = self.data
-        else:
-            centers = self.grid.get_center_points()
-            value = self.at(centers, time, units)
-        return value
-
     @property
     def dimension_ordering(self):
         """
@@ -649,8 +624,6 @@ class Variable(VariableAPI):
             value = value.reshape(-1, 1)
             retval[:, i, :] = value
         return retval
-    
-    interpolate = at  # common request
 
     def _xy_interp(self, points, time, slices=(), time_kwargs=None, depth_kwargs=None, **grid_kwargs):
         """
@@ -1198,30 +1171,6 @@ class VectorVariable:
     def data_shape(self):
         if self.variables is not None:
             return self.variables[0].data.shape
-        else:
-            return None
-
-    def _get_hash(self, points, time):
-        """
-        Returns a SHA1 hash of the array of points passed in
-        """
-        return (hashlib.sha1(points.tobytes()).hexdigest(), hashlib.sha1(str(time).encode("utf-8")).hexdigest())
-
-    def _memoize_result(self, points, time, result, D, _copy=True, _hash=None):
-        if _copy:
-            result = result.copy()
-        result.setflags(write=False)
-        if _hash is None:
-            _hash = self._get_hash(points, time)
-        if D is not None and len(D) > 8:
-            D.popitem(last=False)
-        D[_hash] = result
-
-    def _get_memoed(self, points, time, D, _copy=True, _hash=None):
-        if _hash is None:
-            _hash = self._get_hash(points, time)
-        if D is not None and _hash in D:
-            return D[_hash].copy() if _copy else D[_hash]
         else:
             return None
     
