@@ -860,7 +860,7 @@ class ROMS_Depth(S_Depth):
             s_coord = -(zeta + (zeta + h) * S)
         return s_coord
     
-    def get_transect(self, points, time, data_shape=None, _hash=None, **kwargs):
+    def get_depth_profile(self, points, time, data_shape=None, _hash=None, **kwargs):
         zeta = self.zeta.at(points, time, _hash=_hash, **kwargs)
         return self.get_s_coordinate(points, time, data_shape=data_shape, _hash=_hash, **kwargs) + zeta
 
