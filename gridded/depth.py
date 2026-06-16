@@ -609,21 +609,6 @@ class S_Depth(DepthBase):
     def __len__(self):
         return self.num_levels
 
-    def get_depth_profile(self, points, time, data_shape=None, _hash=None, **kwargs):
-        """
-        :param points: array of points to interpolate to
-        :type points: numpy array of shape (n, 3)
-
-        :param time: time to interpolate to
-        :type time: datetime.datetime
-
-        :param data_shape: Shape of the variable to be interpolated. The first dimension is expected to be depth
-        :type data_shape: tuple of int
-
-        :return: numpy array of shape (n, data_shape[0]) of n depth level depth_profiles
-        """
-        raise NotImplementedError("get_depth_profile not implemented for S_Depth, required in subclasses")
-
     def get_surface_depth(self, points, time, data_shape, _hash=None, **kwargs):
         """
         :param points: array of points to interpolate to
@@ -890,10 +875,6 @@ class ROMS_Depth(S_Depth):
             S = ((hc * s_c) + hCs) / (hc + h)
             s_coord = -(zeta + (zeta + h) * S)
         return s_coord
-    
-    def get_depth_profile(self, points, time, data_shape=None, _hash=None, **kwargs):
-        zeta = self.zeta.at(points, time, _hash=_hash, **kwargs)
-        return self.get_s_coordinate(points, time, data_shape=data_shape, _hash=_hash, **kwargs) + zeta
 
 class FVCOM_Depth(S_Depth):
     _instance_count = 0
@@ -934,7 +915,6 @@ class FVCOM_Depth(S_Depth):
         return len(self.siglay)
 
     def get_s_coordinate(self, points, time, data_shape=None, _hash=None, **kwargs):
-
         # because FVCOM sigma is defined for every node separately.
         sigvar = None
         if data_shape is None:
