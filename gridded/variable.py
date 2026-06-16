@@ -721,7 +721,7 @@ class Variable(VariableAPI):
         d_indices, d_alphas = self.depth.interpolation_alphas(
             points,
             time,
-            self.data.shape[1:],
+            self.data.shape[1:], #Needs to be fixed to be based off slices arg. This assumes a (t,d,x,y) dimension ordering.
             extrapolate=extrapolate,
             surface_boundary_condition=surface_boundary_condition,
             bottom_boundary_condition=bottom_boundary_condition,
