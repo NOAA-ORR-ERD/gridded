@@ -783,20 +783,6 @@ class Variable:
 
         return values
 
-    def _transect(self, times, depths, points):
-        """
-        returns a transect of the Variable at given values.
-        This function is not close to finished.
-        """
-        output_shape = (len(times), len(depths), len(points))
-        outarr = np.array(shape=output_shape)
-        for t in range(0, len(times)):
-            for d in range(0, len(depths)):
-                pts = np.array(shape=(len(points), 3))
-                pts[:, 0:2] = points
-                pts[:, 2] = depths[d]
-                layer = d
-
     @classmethod
     def _gen_varname(cls, filename=None, dataset=None, names_list=None, std_names_list=None):
         """
