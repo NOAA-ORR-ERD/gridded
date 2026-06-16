@@ -393,15 +393,15 @@ class Test_ROMS_Depth:
     def test_interpolation_alphas_multiple_water_columns(self):
         """
         Points in DIFFERENT water columns must get their bracketing level depths
-        from their own transect row, not from the first point's water column.
+        from their own depth_profile row, not from the first point's water column.
         interpolation_alphas used np.take without an axis, which indexes the
-        FLATTENED transect array, so every point read its levels out of row 0.
+        FLATTENED depth_profile array, so every point read its levels out of row 0.
 
         # query 3 in-bounds points in water columns of 100m / 10m / 40m.
         # 1st point is 60m deep, between levels 100 and 50: index 0, alpha (60-100)/(50-100) = 0.8
         # 2nd point is 4m deep, between levels 5 and 2: index 1, alpha (4-5)/(2-5) = 1/3
         # 3rd point is 10m deep, between levels 20 and 8: index 1, alpha (10-20)/(8-20) = 5/6
-        # 4th point is off grid (fully masked transect), masked index and alpha expected.
+        # 4th point is off grid (fully masked depth_profile), masked index and alpha expected.
         """
         nz = 4
         sd = ROMS_Depth(
@@ -411,7 +411,7 @@ class Test_ROMS_Depth:
             }
         )
         # per-point w-level depths (positive down), one water column per row
-        transects = np.ma.masked_array(
+        depth_profiles = np.ma.masked_array(
             data=np.array(
                 [
                     [100.0, 50.0, 20.0, 0.0],
@@ -422,7 +422,7 @@ class Test_ROMS_Depth:
             ),
             mask=[[False] * nz, [False] * nz, [False] * nz, [True] * nz],
         )
-        sd.get_transect = lambda points, time, **kwargs: transects
+        sd.get_depth_profile = lambda points, time, **kwargs: depth_profiles
 
         points = np.array([[0, 0, 60.0], [1, 1, 4.0], [2, 2, 10.0], [-1, -1, 5.0]])
         idx, alphas = sd.interpolation_alphas(
@@ -518,18 +518,18 @@ class Test_FVCOM_Depth:
         # siglev_center keeps its own (correct) mapping
         assert FVCOM_Depth.default_names["siglev_center"] == ["siglev_center"]
 
-    def test_get_transect(self, get_fvcom_depth):
+    def test_get_depth_profile(self, get_fvcom_depth):
         dp = get_fvcom_depth
         tris = dp.grid.nodes.take(dp.grid.faces, axis=0)
         centroids = np.mean(tris, axis=1)
-        transects = dp.get_transect(centroids, datetime.datetime.now())
+        depth_profiles = dp.get_depth_profile(centroids, datetime.datetime.now())
 
         # because we use the centroids, the values should the average of the 3 nodes
         # Not intending to test interpolation here there's a separate test for that
 
-        expected_transects = np.mean((dp.siglev * dp.bathymetry.data[:]).take(dp.grid.faces, axis=1), axis=2)
-        expected_transects = expected_transects.T * -1
-        assert np.all(np.isclose(transects, expected_transects))
+        expected_depth_profiles = np.mean((dp.siglev * dp.bathymetry.data[:]).take(dp.grid.faces, axis=1), axis=2)
+        expected_depth_profiles = expected_depth_profiles.T * -1
+        assert np.all(np.isclose(depth_profiles, expected_depth_profiles))
 
 
 @pytest.fixture(scope="module")
