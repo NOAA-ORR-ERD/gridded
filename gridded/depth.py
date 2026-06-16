@@ -606,21 +606,6 @@ class S_Depth(DepthBase):
     def __len__(self):
         return self.num_levels
 
-    def get_surface_depth(self, points, time, data_shape, _hash=None, **kwargs):
-        """
-        :param points: array of points to interpolate to
-        :type points: numpy array of shape (n, 3)
-
-        :param time: time to interpolate to
-        :type time: datetime.datetime
-
-        :param data_shape: Shape of the variable to be interpolated. The first dimension is expected to be depth
-        :type rho_or_w: tuple of int
-
-        :return: numpy array of shape (n, 1) of n surface level values
-        """
-        raise NotImplementedError("get_surface_depth not implemented for S_Depth, required in subclasses")
-
     def interpolation_alphas(
         self,
         points,
@@ -670,7 +655,7 @@ class S_Depth(DepthBase):
         # if data_shape[0] == self.num_layers:
         #    raise NotImplementedError('Interpolation of data on depth layers not supported yet')
 
-        depth_profiles = self.get_depth_profile(points, time, data_shape=data_shape, _hash=_hash, extrapolate=extrapolate)
+        depth_profiles = self.get_depth_profiles(points, time, data_shape=data_shape, _hash=_hash, extrapolate=extrapolate)
 
         indices = np.ma.MaskedArray(
             data=-np.ones((len(points)), dtype=np.int64) * 1000, mask=np.zeros((len(points)), dtype=bool)
@@ -793,7 +778,7 @@ class S_Depth(DepthBase):
         """
         raise NotImplementedError("get_s_coordinate not implemented for S_Depth, required in subclasses")
 
-    def get_depth_profile(self, points, time, data_shape=None, _hash=None, **kwargs):
+    def get_depth_profiles(self, points, time, data_shape=None, _hash=None, **kwargs):
         """
         Given an array of points and a time, returns depth profiles of the water column at those points and time.
         :param points: array of points to interpolate to
