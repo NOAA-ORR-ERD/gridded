@@ -25,10 +25,11 @@ from gridded.utilities import (
 
 log = logging.getLogger(__name__)
 
-class VariableAPI(ABC):
-    def at(self, points, times, unmask=False, time_kwargs=None, depth_kwargs=None, grid_kwargs=None, _hash=None, _mem=True):
+class VariableAPI(object):
+    
+    def at(self, points, times, extrapolate=False, unmask=False, time_kwargs=None, depth_kwargs=None, grid_kwargs=None, _hash=None, _mem=True):
         """
-        Find the value of the property at positions P at time T
+        Retrieve or interpolate the value of the data to positions P at times T
 
         :param points: Cartesian coordinates to be queried (P).
                        Lon, Lat required, Depth (Z) is optional
@@ -53,6 +54,11 @@ class VariableAPI(ABC):
         :param times: The times at which to query these points (T)
         :type times: iterable of datetime.datetime objects
         
+        :param extrapolate: Turns extrapolation on or off globally for this call. OR'd with any dimension-specific extrapolation settings.
+        (e.g. grid_kwargs={'extrapolate': False} + extrapolate=True = x/y dimension extrapolation enabled)
+        Note that extrapolation is implemented 'nearest valid value' *at best* and may not be available for certain dimensions.
+        :type extrapolate: boolean (default False)
+        
         :param unmask: If True and return array is a masked array, returns a filled array using self.fill_value
         :type unmask: boolean (default False)
         
@@ -72,25 +78,27 @@ class VariableAPI(ABC):
         :type _mem: bool
         
         :return: returns a NxTxD array of interpolated values. N = Number of Points, T = Number of times, D = dimensionality of this Variable (eg 1 for scalar, 2+ for vector)
+        Dimensions of size 1 will be squeezed out of the return value, so a single point and single time will return a scalar, a single point and multiple times will return a 1D array, etc.
+        If bounded dimensions are present, the return value may be a masked array if queried points or times are out of bounds.
         :rtype: numpy.ndarray
         """
-        pts, times, _hash = self._prepare_at(points, times, _hash=_hash)
+        pts, times, _hash = self._prepare_at(points, times, _hash=_hash, _mem=_mem)
         value = self._compute_at(pts, times, time_kwargs, depth_kwargs, grid_kwargs, _hash=_hash, _mem=_mem)
         value = self._post_compute_at(value, pts, times, unmask=unmask, _hash=_hash, _mem=_mem)
         return value
     
     interpolate = at  # common request
     
-    def _prepare_at(self, points, times, _hash=None):
+    def _prepare_at(self, points, times, time_kwargs, depth_kwargs, grid_kwargs, _hash=None, _mem=True):
         """
         First stage of the .at function. Handles points and time normalization
         and hash generation for memoization.     
         
         """
         pts = _reorganize_spatial_data(points)
-        times = np.array(times)
+        times = np.asarray(times)
 
-        if _hash is None:
+        if _hash is None and _mem:
             _hash = self._get_hash(pts, times)
 
         return pts, times, _hash
@@ -100,6 +108,7 @@ class VariableAPI(ABC):
         Computation core of the .at function. All arguments should already be prepared for internal use.
         
         Returns the interpolated values at the points and times specified.
+        Return value should be a NxTxD array of interpolated values. N = Number of Points, T = Number of times, D = dimensionality of this Variable (eg 1 for scalar, 2+ for vector)
         """
         raise NotImplementedError("VariableAPI is an abstract base class. Subclasses must implement the ._compute_at method")
 
@@ -110,6 +119,8 @@ class VariableAPI(ABC):
         NOTE that unit conversion of computed results must happen *after* memoization
         as the requested units for any given .at call are not part of the memoization hash.
         """
+        
+        #shape of incoming value is expected to be (N, T, D) where N = number of points, T = number of times, D = dimensionality of the variable (eg 1 for scalar, 2+ for vector)
         value = value.squeeze()
         if isinstance(value, np.ma.MaskedArray):
             np.ma.set_fill_value(value, self.fill_value)
@@ -144,6 +155,11 @@ class VariableAPI(ABC):
             return D[_hash].copy() if _copy else D[_hash]
         else:
             return None
+
+    def _clear_memo(self):
+        if self._result_memo is not None:
+            self._result_memo.clear()
+
 class Variable(VariableAPI):
     """
     Variable object: represents a field of values associated with the grid.
@@ -234,7 +250,7 @@ class Variable(VariableAPI):
         self.data = data
         self.time = time
         self.data_file = data_file
-        # the "main" filename for a Varibale should be the grid data.
+        # the "main" filename for a Variable should be the grid data.
         self.filename = data_file
         self.grid_file = grid_file
         self.varname = varname
@@ -808,7 +824,7 @@ class Variable(VariableAPI):
         raise ValueError("Default names not found.")
 
 
-class VectorVariable:
+class VectorVariable(VariableAPI):
     # Fixme: a lot of code duplication in here
 
     # Keys are component names ('u', 'v', etc) and values are the netCDF4 names.
