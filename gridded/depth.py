@@ -2,6 +2,7 @@ import os
 import warnings
 
 import numpy as np
+import lru_cache
 
 from gridded.grids import Grid
 from gridded.time import Time
