@@ -368,9 +368,8 @@ class L_Depth(DepthBase):
         idxs = (
             np.digitize(
                 depths, self.depth_levels, right=False if ascending else True
-            )
-            - 1
-        )
+            ) 
+        ) - 1
         indices = np.ma.MaskedArray(data=idxs)
         alphas = np.ma.MaskedArray(
             data=np.full(len(points), np.nan, dtype=np.float64)
@@ -403,13 +402,14 @@ class L_Depth(DepthBase):
             alphas.mask = np.logical_or(alphas.mask, below_bottom)
             indices.mask[below_bottom] = True
 
-        # Standardize boundary index values
-        indices[above_surface] = (
-            0 if ascending else (len(self.depth_levels) - 2)
-        )
-        indices[below_bottom] = (
-            (len(self.depth_levels) - 2) if ascending else 0
-        )
+        # RDM: CHECK...this is no longer in the main branch code
+        # # Standardize boundary index values
+        # indices[above_surface] = (
+        #     0 if ascending else (len(self.depth_levels) - 2)
+        # )
+        # indices[below_bottom] = (
+        #     (len(self.depth_levels) - 2) if ascending else 0
+        # )
 
         # Interpolation within valid layers
         within_layer = np.isnan(alphas.data) & ~alphas.mask
@@ -418,6 +418,8 @@ class L_Depth(DepthBase):
 
         alphas[within_layer] = (depths[within_layer] - L0) / (L1 - L0)
 
+        # Check for NaN values only in un-masked regions by zero
+        # masked NaN values to zero
         if np.isnan(alphas.filled(0)).any():
             raise ValueError(
                 "Some alphas are still unmasked and NaN. "
@@ -912,10 +914,15 @@ class S_Depth(DepthBase):
             extrapolate=extrapolate,
         )
 
+        # use np.digitize to bin the depths into the layers.
+        # https://numpy.org/doc/stable/reference/generated/numpy.digitize.html
+        # bins[i-1] <= x < bins[i] for FVCOM (right=False, increasing order)
+        # bins[i-1] > x >= bins[i] for ROMS (right=False, decreasing order)
+        # surface level will be 'within bounds' and the seafloor level will 
+        # NOT be
         vf = np.vectorize(
             np.digitize, signature="(),(n)->()", excluded=["right"]
         )
-
         digitized_idxs = vf(depths, transects, right=False) - 1
 
         # Re-apply horizontal boundary tracking via transect mask
@@ -1090,12 +1097,14 @@ class ROMS_Depth(S_Depth):
         zeta = self.zeta.at(points, time, unmask=False, _hash=_hash, **kwargs)
         hc = self.hc
         hCs = h * C_s[np.newaxis, :]
+        # Fixed transect such that depth is from air-sea interface
+        # rather than geoid
         if self.vtransform == 1:
             S = (hc * s_c) + hCs - (hc * C_s)[np.newaxis, :]
-            s_coord = -(S + zeta * (1 + S / h))
+            s_coord = -(S + zeta * (1 + S / h)) # RDM -(S + zeta * (1 + S / h))
         elif self.vtransform == 2:
             S = ((hc * s_c) + hCs) / (hc + h)
-            s_coord = -(zeta + (zeta + h) * S)
+            s_coord = -(zeta + h) * S #RDM -(zeta + (zeta + h) * S)
         return s_coord
 
 
