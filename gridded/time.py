@@ -453,17 +453,15 @@ class Time:
                             i.e. will not raise if outside the bounds of the time data.
         :type extrapolate: bool
 
-        :return: index of first time before specified time
+        :return: index of first time before specified time, or len(self.data) if time is after the last time in the series.
         :rtype: integer
         """
         if not (extrapolate or len(self.data) == 1):
             self.valid_time(time)
         index = np.searchsorted(self.data, time)
-        if len(self.data) == 1:
-            index = 0
         return index
 
-    def interp_alpha(self, time, extrapolate=False):
+    def interpolation_alpha(self, time, extrapolate=False):
         """
         Returns interpolation alpha for the specified time
 
@@ -484,10 +482,11 @@ class Time:
         if (not extrapolate) and (not len(self.data) == 1):
             self.valid_time(time)
         i0 = self.index_of(time, extrapolate)
-        if i0 > len(self.data) - 1:
-            return 1.0
+        #if we reach the following two cases, extrapolation is on. Return what's necessary to not break the math.
+        if i0 == len(self.data):
+            return i0 - 1, 1.0
         if i0 == 0:
-            return 0.0
+            return i0 + 1, 0.0
         t0 = self.data[i0 - 1]
         t1 = self.data[i0]
-        return (time - t0).total_seconds() / (t1 - t0).total_seconds()
+        return i0, (time - t0).total_seconds() / (t1 - t0).total_seconds()
