@@ -78,7 +78,7 @@ class VariableAPI(object):
     
     interpolate = at  # common request
     
-    def _prepare_at(self, points, times, time_kwargs, depth_kwargs, grid_kwargs, _hash=None, _mem=True):
+    def _prepare_at(self, points, times, _hash=None, _mem=True):
         """
         First stage of the .at function. Handles points and time normalization
         and hash generation for memoization.     
