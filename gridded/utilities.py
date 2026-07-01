@@ -44,7 +44,19 @@ def convert_mask_to_numpy_mask(mask_var):
             fv = fv.split()
         except AttributeError:
             pass
-        meaning_mask = [False if ("water" in s or "lake" in s) else True for s in fm]
+        else:
+            # flag_values arrived as a string, so its tokens are strings too.
+            # Coerce them to the mask data's dtype so '0' compares equal to a
+            # numeric 0 below; otherwise nothing matches and ret_mask stays
+            # all-land.
+            try:
+                fv = np.asarray(fv, dtype=mask_data.dtype)
+            except (TypeError, ValueError):
+                pass
+        # CF Conventions 3.5 places no case requirement on flag_meanings, so
+        # "Land Water" is valid metadata. Lowercase before the substring test
+        # so capitalized words are recognized as water/lake.
+        meaning_mask = [False if ("water" in s.lower() or "lake" in s.lower()) else True for s in fm]
         tfmap = dict(zip(fv, meaning_mask))
         for k, v in tfmap.items():
             ret_mask[mask_data == k] = v
