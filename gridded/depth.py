@@ -1,5 +1,6 @@
 import os
 import warnings
+import pdb
 
 import numpy as np
 
@@ -675,6 +676,7 @@ class S_Depth(DepthBase):
         if vtransform is None:
             vtransform = 2  # default for ROMS
 
+        print('678 ', zeta) 
         return cls(
             name=name,
             time=time,
@@ -924,6 +926,7 @@ class S_Depth(DepthBase):
             np.digitize, signature="(),(n)->()", excluded=["right"]
         )
         digitized_idxs = vf(depths, transects, right=False) - 1
+        print('928 ', depths, transects)
 
         # Re-apply horizontal boundary tracking via transect mask
         indices = np.ma.MaskedArray(digitized_idxs, mask=transects.mask[:, 0])
@@ -953,6 +956,8 @@ class S_Depth(DepthBase):
         alphas[within_layer] = (depths[within_layer] - L0[within_layer]) / (
             L1[within_layer] - L0[within_layer]
         )
+        print('957 ', surface_boundary_condition)
+        print('958 ', indices, alphas.mask)
 
         # Final pass validation checking actual data fields
         if np.isnan(alphas.filled(0)).any():
@@ -1091,6 +1096,8 @@ class ROMS_Depth(S_Depth):
 
         s_c = self.s_rho if data_shape[0] == self.num_layers else self.s_w
         C_s = self.Cs_r if data_shape[0] == self.num_layers else self.Cs_w
+        #print(self.s_rho, self.s_w, self.Cs_r, self.Cs_w)
+        #pdb.set_trace()
         h = self.bathymetry.at(
             points, time, unmask=False, _hash=_hash, **kwargs
         )
@@ -1101,10 +1108,12 @@ class ROMS_Depth(S_Depth):
         # rather than geoid
         if self.vtransform == 1:
             S = (hc * s_c) + hCs - (hc * C_s)[np.newaxis, :]
-            s_coord = -(S + zeta * (1 + S / h)) # RDM -(S + zeta * (1 + S / h))
+            s_coord = -(S + zeta * (S / h)) # RDM -(S + zeta * (1 + S / h))
         elif self.vtransform == 2:
             S = ((hc * s_c) + hCs) / (hc + h)
             s_coord = -(zeta + h) * S #RDM -(zeta + (zeta + h) * S)
+            #print(S, s_coord)
+            #pdb.set_trace()
         return s_coord
 
 
