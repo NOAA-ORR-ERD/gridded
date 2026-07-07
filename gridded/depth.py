@@ -588,21 +588,6 @@ class S_Depth(DepthBase):
     def __len__(self):
         return self.num_levels
 
-    def get_depth_profile(self, points, time, data_shape=None, _hash=None, **kwargs):
-        """
-        :param points: array of points to interpolate to
-        :type points: numpy array of shape (n, 3)
-
-        :param time: time to interpolate to
-        :type time: datetime.datetime
-
-        :param data_shape: Shape of the variable to be interpolated. The first dimension is expected to be depth
-        :type data_shape: tuple of int
-
-        :return: numpy array of shape (n, data_shape[0]) of n depth level depth_profiles
-        """
-        raise NotImplementedError("get_depth_profile not implemented for S_Depth, required in subclasses")
-
     def get_surface_depth(self, points, time, data_shape, _hash=None, **kwargs):
         """
         :param points: array of points to interpolate to
@@ -764,6 +749,7 @@ class S_Depth(DepthBase):
 
     def get_s_coord(self, points, time, data_shape=None, _hash=None, **kwargs):
         """
+        Given an array of points and a time, returns the S-Coordinate values of the depth layers at those points and time.
         :param points: array of points to interpolate to
         :type points: numpy array of shape (n, 3)
 
@@ -781,6 +767,7 @@ class S_Depth(DepthBase):
 
     def get_depth_profile(self, points, time, data_shape=None, _hash=None, **kwargs):
         """
+        Given an array of points and a time, returns depth profiles of the water column at those points and time.
         :param points: array of points to interpolate to
         :type points: numpy array of shape (n, 3)
 
@@ -839,22 +826,8 @@ class ROMS_Depth(S_Depth):
     @property
     def num_layers(self):
         return len(self.s_rho)
-    
-    def get_s_coord(self, points, time, data_shape=None, _hash=None, **kwargs):
-        """
-        :param points: array of points to interpolate to
-        :type points: numpy array of shape (n, 3)
 
-        :param time: time to interpolate to
-        :type time: datetime.datetime
-
-        :param data_shape: shape of the variable to be interpolated.
-                           This param is used to determine whether to
-                           index on the sigma layers or levels.
-        :type data_shape: tuple of int
-
-        :return: numpy array of shape (n, num_w_levels) of n s-coordinate depth_profiles. 0 reference is mean sea surface.
-        """
+    def get_s_coordinate(self, points, time, data_shape=None, _hash=None, **kwargs):
         if data_shape is None:
             data_shape = (self.num_levels,)
 
@@ -871,10 +844,6 @@ class ROMS_Depth(S_Depth):
             S = ((hc * s_c) + hCs) / (hc + h)
             s_coord = -(zeta + (zeta + h) * S)
         return s_coord
-    
-    def get_depth_profile(self, points, time, data_shape=None, _hash=None, **kwargs):
-        zeta = self.zeta.at(points, time, _hash=_hash, **kwargs)
-        return self.get_s_coordinate(points, time, data_shape=data_shape, _hash=_hash, **kwargs) + zeta
 
 
 class FVCOM_Depth(S_Depth):
@@ -916,22 +885,6 @@ class FVCOM_Depth(S_Depth):
         return len(self.siglay)
 
     def get_s_coord(self, points, time, data_shape=None, _hash=None, **kwargs):
-        """
-        :param points: array of points to interpolate to
-        :type points: numpy array of shape (n, 3)
-
-        :param time: time to interpolate to
-        :type time: datetime.datetime
-
-        :param data_shape:  Describes the shape of the data to be interpolated.
-                            If the first dimension is the number of layers or
-                            if None, then siglay is used.
-                            If the first dimension is the number of levels, then
-                            siglev is used.
-        :type data_shape: tuple of int or None
-
-        :return: numpy array of shape (n, num_w_levels) of n s-coordinate depth_profiles
-        """
 
         # because FVCOM sigma is defined for every node separately.
         sigvar = None
