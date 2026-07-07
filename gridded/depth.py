@@ -539,8 +539,8 @@ class S_Depth(DepthBase):
                 else:
                     #zeta data is on cell centers, but needs to be averaged to the nodes in order
                     #to properly define the terrain following coordinate.
-                    z = (zeta_var[0:-1,:] + zeta_var[1:,:]) / 2
-                    psi_z = (z[:,0:-1] + z[:,1:]) /2
+                    z = (zeta_var[:,0:-1,:] + zeta_var[:,1:,:]) / 2
+                    psi_z = (z[:,:,0:-1] + z[:,:,1:]) /2
                     zeta = Zeta(data=psi_z, grid=grid, time=time, name="zeta")
 
         if terms is None:
