@@ -1017,6 +1017,7 @@ class SGrid:
         padding=None,
         slices=None,
         unmask=False,
+        extrapolate=False,
         _memo=False,
         _hash=None,
         _copy=False,

@@ -2,7 +2,6 @@ import os
 import warnings
 
 import numpy as np
-import lru_cache
 
 from gridded.grids import Grid
 from gridded.time import Time
@@ -759,7 +758,6 @@ class S_Depth(DepthBase):
         indices.mask = np.logical_or(indices.mask, exclusion_mask)
         alphas.mask = np.logical_or(alphas.mask, exclusion_mask)
         return indices, alphas, oob_mask
-
 
     def get_s_coordinate(self, points, time, data_shape=None, _hash=None, **kwargs):
         """
