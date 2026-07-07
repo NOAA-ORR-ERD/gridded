@@ -747,7 +747,7 @@ class S_Depth(DepthBase):
 
         return indices, alphas, oob_mask
 
-    def get_s_coord(self, points, time, data_shape=None, _hash=None, **kwargs):
+    def get_s_coordinate(self, points, time, data_shape=None, _hash=None, **kwargs):
         """
         Given an array of points and a time, returns the S-Coordinate values of the depth layers at those points and time.
         :param points: array of points to interpolate to
@@ -763,7 +763,7 @@ class S_Depth(DepthBase):
 
         :return: numpy array of shape (n, num_w_levels) of n s-coordinate depth_profiles. 0 reference is mean sea surface.
         """
-        raise NotImplementedError("get_s_coord not implemented for S_Depth, required in subclasses")
+        raise NotImplementedError("get_s_coordinate not implemented for S_Depth, required in subclasses")
 
     def get_depth_profile(self, points, time, data_shape=None, _hash=None, **kwargs):
         """
@@ -782,7 +782,7 @@ class S_Depth(DepthBase):
         :return: numpy array of shape (n, num_w_levels) of n depth_profiles, referenced to the surface (i.e. surface is 0, seafloor is negative)
         """
         z = self.zeta.at(points, time, unmask=False, _hash=_hash, **kwargs)
-        return self.get_s_coord(points, time, data_shape=data_shape, _hash=_hash, **kwargs) + z
+        return self.get_s_coordinate(points, time, data_shape=data_shape, _hash=_hash, **kwargs) + z
 
 
 class ROMS_Depth(S_Depth):
@@ -884,7 +884,7 @@ class FVCOM_Depth(S_Depth):
     def num_layers(self):
         return len(self.siglay)
 
-    def get_s_coord(self, points, time, data_shape=None, _hash=None, **kwargs):
+    def get_s_coordinate(self, points, time, data_shape=None, _hash=None, **kwargs):
 
         # because FVCOM sigma is defined for every node separately.
         sigvar = None
