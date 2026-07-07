@@ -509,12 +509,19 @@ class S_Depth(DepthBase):
                 raise ValueError(err)
             #bathymetry data is on cell centers, but needs to be averaged to the nodes in order
             #to properly define the terrain following coordinate.
-            k = (bathy_var[0:-1,:] + bathy_var[1:,:]) / 2
-            psi_h = (k[:,0:-1] + k[:,1:]) /2
-            bathymetry = Bathymetry(
-                data=psi_h,
-                grid=grid,
-                name="bathymetry",
+            if 'node' in grid.infer_location(bathy_var):
+                bathymetry = Bathymetry(
+                    data=bathy_var,
+                    grid=grid,
+                    name="bathymetry",
+                )
+            else:    
+                h = (bathy_var[0:-1,:] + bathy_var[1:,:]) / 2
+                psi_h = (h[:,0:-1] + h[:,1:]) /2
+                bathymetry = Bathymetry(
+                    data=psi_h,
+                    grid=grid,
+                    name="bathymetry",
             )
 
         if zeta is None:
@@ -527,11 +534,14 @@ class S_Depth(DepthBase):
                 warnings.warn(warn)
                 zeta = Zeta.constant(0)
             else:
-                #zeta data is on cell centers, but needs to be averaged to the nodes in order
-                #to properly define the terrain following coordinate.
-                z = (zeta_var[0:-1,:] + zeta_var[1:,:]) / 2
-                psi_z = (z[:,0:-1] + z[:,1:]) /2
-                zeta = Zeta(data=psi_z, grid=grid, time=time, name="zeta")
+                if 'node' in grid.infer_location(bathy_var):
+                    zeta = Zeta(data=zeta_var, grid=grid, time=time, name="zeta")
+                else:
+                    #zeta data is on cell centers, but needs to be averaged to the nodes in order
+                    #to properly define the terrain following coordinate.
+                    z = (zeta_var[0:-1,:] + zeta_var[1:,:]) / 2
+                    psi_z = (z[:,0:-1] + z[:,1:]) /2
+                    zeta = Zeta(data=psi_z, grid=grid, time=time, name="zeta")
 
         if terms is None:
             terms = {}
