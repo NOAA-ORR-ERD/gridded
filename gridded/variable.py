@@ -110,7 +110,7 @@ class VariableAPI(object):
         """
         
         #shape of incoming value is expected to be (N, T, D) where N = number of points, T = number of times, D = dimensionality of the variable (eg 1 for scalar, 2+ for vector)
-        value = value.squeeze()
+        #value = value.squeeze()
         if isinstance(value, np.ma.MaskedArray):
             np.ma.set_fill_value(value, self.fill_value)
         if unmask:
@@ -647,7 +647,6 @@ class Variable(VariableAPI):
         :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type slices: tuple of integers or slice objects
         """
-        _memo = grid_kwargs["_memo"] if "_memo" in grid_kwargs else True
 
         value = self.grid.interpolate_var_to_points(
             points[:, 0:2],
