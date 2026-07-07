@@ -725,7 +725,7 @@ class S_Depth(DepthBase):
         """
         Applies the boundary conditions to the indices and alphas
         indices is expected to be fresh from the np.digitize step, meaning values
-        from 0 to num_levels are expected.
+        from -1 to num_levels-1 are expected.
         alphas is expected to still contain nans, but this function can still work by
         masking and setting values to 0 or 1 depending on the boundary condition
         """
@@ -764,6 +764,7 @@ class S_Depth(DepthBase):
             alphas.mask[below_bottom_mask] = False
 
         return indices, alphas, oob_mask
+
 
     def get_s_coordinate(self, points, time, data_shape=None, _hash=None, **kwargs):
         """
@@ -862,7 +863,6 @@ class ROMS_Depth(S_Depth):
             S = ((hc * s_c) + hCs) / (hc + h)
             s_coord = -(zeta + (zeta + h) * S)
         return s_coord
-
 
 class FVCOM_Depth(S_Depth):
     _instance_count = 0

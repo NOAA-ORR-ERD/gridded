@@ -733,7 +733,7 @@ class Variable:
         d_indices, d_alphas = self.depth.interpolation_alphas(
             points,
             time,
-            self.data.shape[1:],
+            (self.depth.num_levels,), #level interpolation only
             extrapolate=extrapolate,
             surface_boundary_condition=surface_boundary_condition,
             bottom_boundary_condition=bottom_boundary_condition,
@@ -751,36 +751,34 @@ class Variable:
             rtv = np.ma.MaskedArray(data=rtv, mask=np.isnan(rtv))
             return rtv
 
-        # the two cases may be optimizations that are not worth the trouble
-        # if problems continue to arise, get rid of them
-        # they are *meant* to handle cases where the particles are 'off grid'
-        #
-        elif np.all(d_indices == 0) and not np.any(d_indices.mask):
-            # all particles are
-            return val_func(points, time, extrapolate, slices=slices + (0,), **kwargs)
-        elif np.all(d_indices == self.data.shape[dim_idx] - 1) and not np.any(d_indices.mask):
-            return val_func(points, time, extrapolate, slices=slices + (self.data.shape[dim_idx] - 1,), **kwargs)
-        else:
-            msk = np.isnan(d_indices) if not np.ma.is_masked(d_indices) else d_indices.mask
-            values = np.ma.MaskedArray(data=np.empty((points.shape[0],)) * np.nan, mask=msk)
-            # Points are mixed within the grid. Some may be above the surface or under the ground
-            uniq_idx = np.unique(d_indices)
-            if np.ma.masked in uniq_idx:  # the [0:-1] is required to skip all masked indices
-                uniq_idx = uniq_idx[0:-1]
+        msk = np.isnan(d_indices) if not np.ma.is_masked(d_indices) else d_indices.mask
+        values = np.ma.MaskedArray(data=np.empty((points.shape[0],)) * np.nan, mask=msk)
+        # Points are mixed within the grid. Some may be above the surface or under the ground
+        uniq_idx = np.unique(d_indices)
+        if np.ma.masked in uniq_idx:  # the [0:-1] is required to skip all masked indices
+            uniq_idx = uniq_idx[0:-1]
+        if self.data.shape[dim_idx] == self.depth.num_layers:
+            #data is located on cell centers, so value is held constant across cell.
             for idx in uniq_idx:
+                if idx == -1:
+                    #special case for out of bounds and extrapolation.
+                    idx = 0
                 lay_idxs = np.where(d_indices == idx)[0]
+                values.put(lay_idxs, val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs))
+        else:
+            #data is on cell edge, or on nodes, so we need to interpolate between the two levels.
+            for idx in uniq_idx:
                 if idx == self.data.shape[dim_idx] - 1:
                     # special case, index == depth dim length, so only v0 is valid
                     v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs)
                     values.put(lay_idxs, v0)
                     continue
-
+                lay_idxs = np.where(d_indices == idx)[0]
                 v1 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx + 1,), **kwargs)
                 v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs)
                 sub_vals = v0 + (v1 - v0) * d_alphas[lay_idxs]
                 # partially fill the values array for this layer
                 values.put(lay_idxs, sub_vals)
-
         return values
 
     @classmethod
