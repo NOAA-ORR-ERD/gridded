@@ -689,8 +689,8 @@ class S_Depth(DepthBase):
 
         # depth_profile mask is True where the point is outside the grid horizontally
         # so it must be reapplied
-        indices = np.ma.array(indices, mask=depth_profiles.mask[:, 0])
-        alphas.mask = depth_profiles.mask[:, 0]
+        indices = np.ma.array(indices, mask=depth_profiles.mask[:, 0].copy())
+        alphas.mask = depth_profiles.mask[:, 0].copy()
         indices, alphas, oob_mask = self._apply_boundary_conditions(
             indices, alphas, surface_index, bottom_index, surface_boundary_condition, bottom_boundary_condition
         )
