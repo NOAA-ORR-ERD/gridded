@@ -729,6 +729,7 @@ class S_Depth(DepthBase):
         alphas is expected to still contain nans, but this function can still work by
         masking and setting values to 0 or 1 depending on the boundary condition
         """
+        exclusion_mask = indices.mask.copy()
         surface_index = self.surface_index if surface_index is None else surface_index
         bottom_index = self.bottom_index if bottom_index is None else bottom_index
         surface_boundary_condition = (
@@ -759,10 +760,18 @@ class S_Depth(DepthBase):
         if surface_boundary_condition == "extrapolate":
             indices.mask[above_surf_mask] = False
             alphas.mask[above_surf_mask] = False
+        if surface_boundary_condition == "mask":
+            indices.mask[above_surf_mask] = True
+            alphas.mask[above_surf_mask] = True
         if bottom_boundary_condition == "extrapolate":
             indices.mask[below_bottom_mask] = False
             alphas.mask[below_bottom_mask] = False
-
+        if bottom_boundary_condition == "mask":
+            indices.mask[below_bottom_mask] = True
+            alphas.mask[below_bottom_mask] = True
+            
+        indices.mask = np.logical_or(indices.mask, exclusion_mask)
+        alphas.mask = np.logical_or(alphas.mask, exclusion_mask)
         return indices, alphas, oob_mask
 
 
