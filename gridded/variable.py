@@ -677,10 +677,13 @@ class Variable(VariableAPI):
         """
         order = self.dimension_ordering
         idx = order.index("time")
+        vf_kwargs = None
         if order[idx + 1] != "depth":
             val_func = self._xy_interp
+            vf_kwargs = grid_kwargs
         else:
             val_func = self._depth_interp
+            vf_kwargs = depth_kwargs
 
         if time == self.time.min_time or (extrapolate and time < self.time.min_time):
             # min or before
@@ -716,8 +719,10 @@ class Variable(VariableAPI):
         dim_idx = order.index("depth")
         if order[dim_idx + 1] != "time":
             val_func = self._xy_interp
+            vf_kwargs = grid_kwargs
         else:
             val_func = self._time_interp
+            vf_kwargs = time_kwargs
 
         d_indices, d_alphas = self.depth.interpolation_alphas(
             points,
