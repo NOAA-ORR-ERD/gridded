@@ -253,6 +253,21 @@ def _reorganize_spatial_data(points):
             return points_arr.T
         pass
 
+def _compute_expected_output_shape(points, times):
+    """
+    Computes the expected output shape of a calculation based on the input
+    points and times. This is useful for determining if the output of a
+    calculation is aligned with the input data.
+    """
+    pts = _reorganize_spatial_data(points)
+    n_points = pts.shape[0]
+    if isinstance(times, Iterable):
+        if isinstance(times, (str, bytes)):
+            raise TypeError("times cannot be a string or bytes")
+        n_times = len(times)
+    else:
+        n_times = 1
+    return (n_points, n_times)
 
 def _align_results_to_spatial_data(result, points):
     """

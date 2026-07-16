@@ -67,7 +67,6 @@ class VariableAPI(object):
         :type _hash: str
         
         :return: returns a NxTxD array of interpolated values. N = Number of Points, T = Number of times, D = dimensionality of this Variable (eg 1 for scalar, 2+ for vector)
-            Dimensions of size 1 will be squeezed out of the return value, so a single point and single time will return a scalar, a single point and multiple times will return a 1D array, etc.
             If bounded dimensions are present, the return value may be a masked array if queried points or times are out of bounds.
         :rtype: numpy.ndarray
         """
