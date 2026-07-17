@@ -422,7 +422,7 @@ class Test_ROMS_Depth:
             ),
             mask=[[False] * nz, [False] * nz, [False] * nz, [True] * nz],
         )
-        sd.get_depth_profile = lambda points, time, **kwargs: depth_profiles
+        sd.get_depth_profiles = lambda points, time, **kwargs: depth_profiles
 
         points = np.array([[0, 0, 60.0], [1, 1, 4.0], [2, 2, 10.0], [-1, -1, 5.0]])
         idx, alphas = sd.interpolation_alphas(
@@ -514,7 +514,7 @@ class Test_FVCOM_Depth:
         dp = get_fvcom_depth
         tris = dp.grid.nodes.take(dp.grid.faces, axis=0)
         centroids = np.mean(tris, axis=1)
-        depth_profiles = dp.get_depth_profile(centroids, datetime.datetime.now())
+        depth_profiles = dp.get_depth_profiles(centroids, datetime.datetime.now())
 
         # because we use the centroids, the values should the average of the 3 nodes
         # Not intending to test interpolation here there's a separate test for that
@@ -626,28 +626,28 @@ class Test_L_Depth:
     def test_vertical_interpolation_within_grid(self, index, get_database_nc):
         time, depth, ds = get_database_nc
         points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], depth.depth_levels[index]),)
-        rtv = ds.variables["u"].at(points=points, time=time.data[0])[0]
+        rtv = ds.variables["u"].at(points, time.data[0])[0]
 
         assert rtv == ds.variables["u"].data[0, index, 1, 1]
 
     def test_vertical_interpolation_onsurface(self, get_database_nc):
         time, depth, ds = get_database_nc
         points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], 0.0),)
-        rtv = ds.variables["u"].at(points=points, time=time.data[0])[0]
+        rtv = ds.variables["u"].at(points, time.data[0])[0]
 
         assert rtv == ds.variables["u"].data[0, 0, 1, 1]
 
     def test_vertical_interpolation_belowgrid(self, get_database_nc):
         time, depth, ds = get_database_nc
         points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], depth.depth_levels[-1] + 100.0),)
-        rtv = ds.variables["u"].at(points=points, time=time.data[0])[0]
+        rtv = ds.variables["u"].at(points, time.data[0])[0]
 
         assert np.isnan(rtv)
 
     def test_vertical_interpolation_abovesurface(self, get_database_nc):
         time, depth, ds = get_database_nc
         points = ((ds.grid.node_lon[1], ds.grid.node_lat[1], -10.0),)
-        rtv = ds.variables["u"].at(points=points, time=time.data[0])[0]
+        rtv = ds.variables["u"].at(points, time.data[0])[0]
 
         assert rtv == ds.variables["u"].data[0, 0, 1, 1]
 
@@ -658,7 +658,7 @@ class Test_L_Depth:
             (ds.grid.node_lon[1], ds.grid.node_lat[1], 0.0),
             (ds.grid.node_lon[1], ds.grid.node_lat[1], depth.depth_levels[3]),
         )
-        rtv = ds.variables["u"].at(points=points, time=time.data[0])
+        rtv = ds.variables["u"].at(points, time.data[0])
 
         assert rtv[0] == ds.variables["u"].data[0, 0, 1, 1]
         assert rtv[1] == ds.variables["u"].data[0, 0, 1, 1]

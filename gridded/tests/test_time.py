@@ -340,11 +340,11 @@ def test_valid_time():
         (STS[-1], 1.0),  # at the end
     ],
 )
-def test_interp_alpha(dt, expected):
+def test_interpolation_alpha(dt, expected):
     t = Time(SAMPLE_TIMESERIES)
 
     print(dt)
-    alpha = t.interp_alpha(dt)
+    idx, alpha = t.interpolation_alpha(dt)
 
     assert alpha == expected
 
@@ -356,14 +356,14 @@ def test_interp_alpha(dt, expected):
         (STS[-1] + timedelta(seconds=1), 1.0),  # a little after
     ],
 )
-def test_interp_alpha_outside(dt, expected):
+def test_interpolation_alpha_outside(dt, expected):
     t = Time(SAMPLE_TIMESERIES)
 
     print(dt)
     with pytest.raises(OutOfTimeRangeError):
-        alpha = t.interp_alpha(dt)
+        idx, alpha = t.interpolation_alpha(dt)
 
-    alpha = t.interp_alpha(dt, extrapolate=True)
+    idx, alpha = t.interpolation_alpha(dt, extrapolate=True)
     assert alpha == expected
 
 
@@ -376,21 +376,16 @@ def test_interp_alpha_outside(dt, expected):
         (timedelta(0), 1.0),  # on the nose
     ],
 )
-def test_interp_alpha_constant_time(shift, expected):
+def test_interpolation_alpha_constant_time(shift, expected):
     """
-    What should the constant time Time object give for alphas?
-
-    I would expect always 1.0! It seems to be always 0.0
-
-    Maybe this isn't used anywhere?
-    Jay: 0.0
+    constant time alpha should be 1.0
     """
     t = Time.constant_time()
 
     print(t.data)
     print(t.min_time)
     print(t.max_time)
-    alpha = t.interp_alpha(t.data[0] + shift)
+    idx, alpha = t.interpolation_alpha(t.data[0] + shift)
     assert alpha == 0.0
 
 

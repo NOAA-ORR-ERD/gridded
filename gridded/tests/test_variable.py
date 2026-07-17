@@ -47,9 +47,9 @@ def test_Variable_api_at_function():
 
     t = var.time.min_time
 
-    r1 = var.at(p1, t, _mem=False)
-    r2 = var.at(p2, t, _mem=False)
-    r3 = var.at(lons=p3[0], lats=p3[1], time=t, _mem=False)
+    r1 = var.at(p1, t)
+    r2 = var.at(p2, t)
+    r3 = var.at(p3, t)
 
     assert np.all(np.logical_and(r1 == r2, r2 == r3))
 
@@ -71,10 +71,10 @@ def test_Variable_api_at_function_edge_cases():
 
     t = var.time.min_time
 
-    r1 = var.at(p1, t, _mem=False)
-    r2 = var.at(p2, t, _mem=False)
-    r3 = var.at(p3, t, _mem=False)
-    r4 = var.at(lons=1.5, lats=35.5, time=t, _mem=False)
+    r1 = var.at(p1, t)
+    r2 = var.at(p2, t)
+    r3 = var.at(p3, t)
+    r4 = var.at([1.5, 35.5], t)
 
     assert np.all(
         r1
@@ -125,9 +125,9 @@ def test_VectorVariable_api_at_function():
 
     t = var.time.min_time
 
-    r1 = var.at(p1, t, _mem=False)
-    r2 = var.at(p2, t, _mem=False)
-    r3 = var.at(lons=p3[0], lats=p3[1], time=t, _mem=False)
+    r1 = var.at(p1, t)
+    r2 = var.at(p2, t)
+    r3 = var.at(p3, t)
 
     assert np.all(np.logical_and(r1 == r2, r2 == r3))
 
@@ -149,10 +149,10 @@ def test_VectorVariable_api_at_function_edge_cases():
 
     t = var.time.min_time
 
-    r1 = var.at(p1, t, _mem=False)
-    r2 = var.at(p2, t, _mem=False)
-    r3 = var.at(p3, t, _mem=False)
-    r4 = var.at(lons=1.5, lats=35.5, time=t, _mem=False)
+    r1 = var.at(p1, t)
+    r2 = var.at(p2, t)
+    r3 = var.at(p3, t)
+    r4 = var.at([1.5, 35.5], t)
 
     assert np.all(r1 == np.array([[1, 0], [1, 0]]))
     assert np.all(r3 == np.ma.MaskedArray([[1, 0], [0, -1]], mask=[[False, False], [True, True]]))

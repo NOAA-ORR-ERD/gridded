@@ -137,7 +137,10 @@ class VariableAPI(object):
         ps = _reorganize_spatial_data(p)
         if isinstance(t, (str, bytes)):
             raise TypeError("times cannot be a string or bytes")
-        ts = np.asarray(t)
+        if not isinstance(t, Iterable):
+            ts = [t]
+        else:
+            ts = t
 
         if _hash is None and self.memoization_enabled:
             _hash = self._get_hash(p, t)
@@ -238,7 +241,7 @@ class Variable(VariableAPI):
         data_file=None,
         grid_file=None,
         varname=None,
-        fill_value=0,
+        fill_value=np.nan,
         location=None,
         attributes=None,
         **kwargs,
@@ -560,7 +563,7 @@ class Variable(VariableAPI):
 
     @data.setter
     def data(self, d):
-        d = np.asarray(d)
+        d = asarraylike(d)
         self._data = d
 
     @property
@@ -600,7 +603,7 @@ class Variable(VariableAPI):
         
         _mem = self.memoization_enabled
         
-        retval = np.ma.full((len(ps), len(ts), 1), fill_value=np.nan)
+        retval = np.ma.empty((len(ps), len(ts), 1))
         for i, time in enumerate(ts):
             if order[0] == "time":
                 value = self._time_interp(ps, time, extrapolate=extrapolate, _mem=_mem, _hash=_hash)
@@ -720,17 +723,16 @@ class Variable(VariableAPI):
         uniq_idx = np.unique(d_indices)
         if np.ma.masked in uniq_idx:  # the [0:-1] is required to skip all masked indices
             uniq_idx = uniq_idx[0:-1]
-        if self.data.shape[dim_idx] == self.depth.num_layers:
-            #data is located on cell centers, so value is held constant across cell.
-            for idx in uniq_idx:
+        for idx in uniq_idx:
+            lay_idxs = np.where(d_indices == idx)[0]
+            if self.data.shape[dim_idx] == self.depth.num_layers:
+                #data is located on cell centers, so value is held constant across cell.
                 if idx == -1:
                     #special case for out of bounds and extrapolation.
                     idx = 0
-                lay_idxs = np.where(d_indices == idx)[0]
                 values.put(lay_idxs, val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs))
-        else:
-            #data is on cell edge, or on nodes, so we need to interpolate between the two levels.
-            for idx in uniq_idx:
+            else:
+                #data is on cell edge, or on nodes, so we need to interpolate between the two levels.
                 if idx == self.data.shape[dim_idx] - 1:
                     # special case, index == depth dim length, so only v0 is valid
                     v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), _mem=_mem, _hash=_hash)
@@ -822,6 +824,7 @@ class VectorVariable(VariableAPI):
         depth=None,
         grid_file=None,
         data_file=None,
+        fill_value=np.nan,
         **kwargs,
     ):
 
@@ -839,6 +842,7 @@ class VectorVariable(VariableAPI):
         if units is None:
             units = variables[0].units
         self._units = units
+        self.fill_value=fill_value
         if variables is None or len(variables) < 2:
             raise ValueError("Variables must be an array-like of 2 or more Variable objects")
         self.variables = variables
@@ -1155,11 +1159,11 @@ class VectorVariable(VariableAPI):
             res = self._get_memoed(ps, ts, self._result_memo, _hash=_hash)
             if res is not None:
                 return res
-        value = np.ma.column_stack(
+        value = np.ma.dstack(
             [
                 var.at(
-                    points=ps,
-                    times=ts,
+                    ps,
+                    ts,
                     extrapolate=extrapolate,
                     unmask=unmask,
                     _hash=_hash,

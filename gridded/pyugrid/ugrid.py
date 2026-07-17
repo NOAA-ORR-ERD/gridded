@@ -719,6 +719,7 @@ class UGrid:
         indices=None,
         alphas=None,
         slices=None,
+        extrapolate=False,
         _copy=False,
         _memo=True,
         _hash=None,
