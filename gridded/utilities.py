@@ -245,7 +245,7 @@ def _reorganize_spatial_data(points):
         longer than 3, this is an error.
         """
         if shp[0] > 3 and shp[1] > 3:
-            raise ValueError("Too many coordinate dimensions in input array")
+            raise ValueError("input array dimensions are too long. Must be 2 or 3 in at least one dimension")
         if shp[0] > shp[1]:
             #'correct' shape
             return points_arr
@@ -255,9 +255,8 @@ def _reorganize_spatial_data(points):
 
 def _compute_expected_output_shape(points, times):
     """
-    Computes the expected output shape of a calculation based on the input
-    points and times. This is useful for determining if the output of a
-    calculation is aligned with the input data.
+    Computes the expected output shape based on the input
+    points and times. 
     """
     pts = _reorganize_spatial_data(points)
     n_points = pts.shape[0]
@@ -265,9 +264,9 @@ def _compute_expected_output_shape(points, times):
         if isinstance(times, (str, bytes)):
             raise TypeError("times cannot be a string or bytes")
         n_times = len(times)
+        return (n_points, n_times)
     else:
-        n_times = 1
-    return (n_points, n_times)
+        return (n_points, )
 
 def _align_results_to_spatial_data(result, points):
     """
