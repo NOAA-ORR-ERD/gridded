@@ -498,11 +498,11 @@ class Variable(VariableAPI):
         )
 
     @classmethod
-    def constant(cls, value):
+    def constant(cls, value, **kwargs):
         # Sets a Variable up to represent a constant scalar field. The result
         # will return a constant value for all times and places.
         _data = np.asarray(value)
-        return cls(data=_data, fill_value=value)
+        return cls(data=_data,**kwargs)
 
     @property
     def location(self):
@@ -660,6 +660,15 @@ class Variable(VariableAPI):
         """
         order = self.dimension_ordering
         idx = order.index("time")
+        if idx == len(order) - 1:
+            # time is the last dimension, so directly interpolate the data
+            ind, alpha = self.time.interpolation_alpha(time, extrapolate=extrapolate)
+            s0 = slices + (ind - 1,)
+            s1 = slices + (ind,)
+            v0 = self.data[s0]
+            v1 = self.data[s1]
+            return v0 + (v1 - v0) * alpha
+        
         if order[idx + 1] != "depth":
             val_func = self._xy_interp
         else:
@@ -697,6 +706,15 @@ class Variable(VariableAPI):
         """
         order = self.dimension_ordering
         dim_idx = order.index("depth")
+        if idx == len(order) - 1:
+            # depth is the last dimension, so directly interpolate the data
+            ind, alpha = self.depth.interpolation_alpha(points, time, extrapolate=extrapolate)
+            s0 = slices + (ind - 1,)
+            s1 = slices + (ind,)
+            v0 = self.data[s0]
+            v1 = self.data[s1]
+            return v0 + (v1 - v0) * alpha
+        
         if order[dim_idx + 1] != "time":
             val_func = self._xy_interp
         else:
