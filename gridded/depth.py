@@ -549,7 +549,10 @@ class S_Depth(DepthBase):
                 if term in ["bathymetry", "zeta"]:
                     # skip these because they're done separately...
                     continue
-                terms[term] = tvar[:]
+                if tvar is not None:
+                    terms[term] = tvar[:]
+                else:
+                    warnings.warn('term not found in netCDF dataset: ' + term)
         if vtransform is None:
             vtransform = 2  # default for ROMS
             #  messing about trying to detect this.
