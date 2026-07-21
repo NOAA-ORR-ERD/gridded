@@ -459,9 +459,11 @@ class Time:
         if not (extrapolate or len(self.data) == 1):
             self.valid_time(time)
         index = np.searchsorted(self.data, time)
+        if len(self.data) == 1:
+            index = 0
         return index
 
-    def interpolation_alpha(self, time, extrapolate=False):
+    def interp_alpha(self, time, extrapolate=False):
         """
         Returns interpolation alpha for the specified time
 
@@ -482,11 +484,30 @@ class Time:
         if (not extrapolate) and (not len(self.data) == 1):
             self.valid_time(time)
         i0 = self.index_of(time, extrapolate)
-        #if we reach the following two cases, extrapolation is on. Return what's necessary to not break the math.
-        if i0 == len(self.data):
-            return i0 - 1, 1.0
+        if i0 > len(self.data) - 1:
+            return 1.0
         if i0 == 0:
-            return i0 + 1, 0.0
+            return 0.0
         t0 = self.data[i0 - 1]
         t1 = self.data[i0]
-        return i0, (time - t0).total_seconds() / (t1 - t0).total_seconds()
+        return (time - t0).total_seconds() / (t1 - t0).total_seconds()
+
+    def interpolation_alpha(self, time, extrapolate=False):
+        """
+        Returns interpolation alpha for the specified time
+
+        This is the weighting to give the index before
+        -- 1-alpha would be the weight to the index after.
+
+
+        :param time: Time to be queried
+        :type time: `datetime.datetime`
+
+        :param extrapolate: if True, 0.0 (before) or 1.0 (after) is returned.
+                            if False, a ValueError is raised if outside the time series.
+        :type extrapolate: bool
+
+        :return: interpolation alpha
+        :rtype: float (0 <= r <= 1)
+        """
+        return self.index_of(time, extrapolate), self.interp_alpha(time, extrapolate)

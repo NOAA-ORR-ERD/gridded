@@ -683,21 +683,21 @@ class S_Depth(DepthBase):
 
         # depth_profile mask is True where the point is outside the grid horizontally
         # so it must be reapplied
-        indices = np.ma.array(indices, mask=depth_profiles.mask[:, 0].copy())
-        alphas.mask = depth_profiles.mask[:, 0].copy()
+        indices = np.ma.array(indices, mask=depth_profile.mask[:, 0].copy())
+        alphas.mask = depth_profile.mask[:, 0].copy()
         indices, alphas, oob_mask = self._apply_boundary_conditions(
             indices, alphas, surface_index, bottom_index, surface_boundary_condition, bottom_boundary_condition
         )
 
         # compute the remaining alphas, which should be for points within the depth interval
-        # depth_profiles is (n_points, n_levels): one water column per point, so the bracketing
+        # depth_profile is (n_points, n_levels): one water column per point, so the bracketing
         # level depths must be taken from each point's own row. np.take without an axis
         # would index the flattened array, reading every point's levels out of row 0.
         # masked or out-of-interval indices were already handled by the boundary conditions
         # above and are never recomputed below, so fill/clip them to keep the take in bounds.
-        idx = np.clip(np.ma.filled(indices, 0), 0, depth_profiles.shape[1] - 2)[:, np.newaxis]
-        L0 = np.take_along_axis(depth_profiles, idx, axis=1).squeeze(axis=1)
-        L1 = np.take_along_axis(depth_profiles, idx + 1, axis=1).squeeze(axis=1)
+        idx = np.clip(np.ma.filled(indices, 0), 0, depth_profile.shape[1] - 2)[:, np.newaxis]
+        L0 = np.take_along_axis(depth_profile, idx, axis=1).squeeze(axis=1)
+        L1 = np.take_along_axis(depth_profile, idx + 1, axis=1).squeeze(axis=1)
         within_layer = np.isnan(alphas)  # remaining alphas would still have nan at this point
         alphas[within_layer] = (depths[within_layer] - L0[within_layer]) / (L1[within_layer] - L0[within_layer])
 
