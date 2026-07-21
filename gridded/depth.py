@@ -880,21 +880,21 @@ class FVCOM_Depth(S_Depth):
     _instance_count = 0
     default_names = {
         "siglay": ["siglay"],  # mid layer depth coordinate on nodes
-        "siglay_center": ["siglay_center"],  # mid layer depth coordinate on centers
+        #"siglay_center": ["siglay_center"],  # mid layer depth coordinate on centers
         "siglev": ["siglev"],  # layer depth coordinate on nodes
-        "siglev_center": ["siglev_center"],  # layer depth coordinate on centers
+        #"siglev_center": ["siglev_center"],  # layer depth coordinate on centers
         "bathymetry": ["h"],  # bathymetry on nodes
-        "h_center": ["h_center"],  # bathymetry on centers
+        #"h_center": ["h_center"],  # bathymetry on centers
         "zeta": ["zeta"],  # free surface
     }
 
     cf_names = {
         "siglay": ["ocean_sigma/general_coordinate"],
-        "siglay_center": ["ocean_sigma/general_coordinate"],
+        #"siglay_center": ["ocean_sigma/general_coordinate"],
         "siglev": ["ocean_sigma/general_coordinate"],
-        "siglev_center": ["ocean_sigma/general_coordinate"],
+        #"siglev_center": ["ocean_sigma/general_coordinate"],
         "bathymetry": ["sea_floor_depth_below_geoid"],
-        "h_center": ["sea_floor_depth_below_geoid"],
+        #"h_center": ["sea_floor_depth_below_geoid"],
         "zeta": ["sea_surface_height_above_geoid"],
     }
 
