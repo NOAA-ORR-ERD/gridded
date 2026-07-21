@@ -1,8 +1,10 @@
 import collections
 import logging
 import os
+from abc import ABC
 from functools import wraps
 from textwrap import dedent
+import time
 
 import netCDF4 as nc4
 import numpy as np
@@ -20,6 +22,129 @@ from gridded.utilities import (
 
 log = logging.getLogger(__name__)
 
+class VariableAPI(object):
+    
+    memoization_enabled = False # class-level flag to enable/disable memoization for all VariableAPI instances
+    
+    def at(self, points, times, extrapolate=False, unmask=False, _hash=None):
+        """
+        Retrieve or interpolate the value of the data to positions P at times T
+
+        :param points: Cartesian coordinates to be queried (P).
+            Lon, Lat required, Depth (Z) is optional
+            Coordinates must be organized as a 2D array or list,
+            one coordinate per row.
+
+            Failure to provide point data in this format may cause
+            unexpected behavior. Not providing a Z value when a depth
+            dimension is present will cause an IndexError.
+            
+            Any iterable passed into numpy.array() that results in a ndarray
+            of shape (N, 2) or (N, 3) should work. (eg list of tuples, list of list)
+
+                [[Lon1, Lat1, Z1],
+                [Lon2, Lat2, Z2],
+                [Lon3, Lat3, Z3],
+                ...]
+
+        :type points: Nx3 array of double
+
+
+        :param times: The times at which to query these points (T)
+        :type times: iterable of datetime.datetime objects
+        
+        :param extrapolate: Turns extrapolation on or off globally for this call. How extrapolation in any 
+            particular dimension is handled is determined by the subcomponent objects (Time, Depth, Grid)
+        :type extrapolate: boolean (default False)
+        
+        :param unmask: If True and return array is a masked array, returns a filled array using self.fill_value
+        :type unmask: boolean (default False)
+                
+        :param _hash: optional pre-computed hash for memoization. If not provided, it will be computed from the points and time.
+        :type _hash: str
+        
+        :return: returns a NxTxD array of interpolated values. N = Number of Points, T = Number of times, D = dimensionality of this Variable (eg 1 for scalar, 2+ for vector)
+            Dimensions of size 1 will be squeezed out of the return value, so a single point and single time will return a scalar, a single point and multiple times will return a 1D array, etc.
+            If bounded dimensions are present, the return value may be a masked array if queried points or times are out of bounds.
+        :rtype: numpy.ndarray
+        """
+        pts, times, _hash = self._prepare_at(points, times, _hash=_hash)
+        value = self._compute_at(pts, times, extrapolate=extrapolate, unmask=unmask, _hash=_hash)
+        value = self._post_compute_at(value, pts, times, unmask=unmask, _hash=_hash)
+        return value
+    
+    interpolate = at  # common request
+    
+    def _prepare_at(self, points, times, _hash=None, _mem=True):
+        """
+        First stage of the .at function. Handles points and time normalization
+        and hash generation for memoization.     
+        
+        """
+        pts = _reorganize_spatial_data(points)
+        times = np.asarray(times)
+
+        if _hash is None and self.memoization_enabled:
+            _hash = self._get_hash(pts, times)
+
+        return pts, times, _hash
+    
+    def _compute_at(self, points, times, extrapolate=None, unmask=False, _hash=None):
+        """
+        Computation core of the .at function. All arguments should already be prepared for internal use.
+        
+        Returns the interpolated values at the points and times specified.
+        Return value should be a NxTxD array of interpolated values. N = Number of Points, T = Number of times, D = dimensionality of this Variable (eg 1 for scalar, 2+ for vector)
+        """
+        raise NotImplementedError("VariableAPI is an abstract base class. Subclasses must implement the ._compute_at method")
+
+    def _post_compute_at(self, value, points, times, unmask=False, _hash=None):
+        """
+        Post computation step of the .at function.
+        Handles fill values, unmasking, and memoization of the result.
+        NOTE that unit conversion of computed results must happen *after* memoization
+        as the requested units for any given .at call are not part of the memoization hash.
+        """
+        
+        #shape of incoming value is expected to be (N, T, D) where N = number of points, T = number of times, D = dimensionality of the variable (eg 1 for scalar, 2+ for vector)
+        #value = value.squeeze()
+        if isinstance(value, np.ma.MaskedArray):
+            np.ma.set_fill_value(value, self.fill_value)
+        if unmask:
+            value = np.ma.filled(value)
+
+        if self.memoization_enabled:
+            self._memoize_result(points, times, value, self._result_memo, _hash=_hash)
+        return value
+
+    def _get_hash(self, points, time, extrapolate=False):
+        """
+        Returns a SHA1 hash of the array of points passed in
+        """
+        return (hashlib.sha1(points.tobytes()).hexdigest(), hashlib.sha1(str(time).encode("utf-8")).hexdigest(), extrapolate)
+
+    def _memoize_result(self, points, time, result, D, _copy=False, _hash=None, extrapolate=False):
+        if _copy:
+            result = result.copy()
+        result.setflags(write=False)
+        if _hash is None:
+            _hash = self._get_hash(points, time)
+        if D is not None and len(D) > 4:
+            D.popitem(last=False)
+        D[_hash] = result
+        D[_hash].setflags(write=False)
+
+    def _get_memoed(self, points, time, D, _copy=False, _hash=None):
+        if _hash is None:
+            _hash = self._get_hash(points, time)
+        if D is not None and _hash in D:
+            return D[_hash].copy() if _copy else D[_hash]
+        else:
+            return None
+
+    def _clear_memo(self):
+        if self._result_memo is not None:
+            self._result_memo.clear()
 
 class Variable(VariableAPI):
     """
@@ -482,8 +607,10 @@ class Variable(VariableAPI):
         
         if order[idx + 1] != "depth":
             val_func = self._xy_interp
+            vf_kwargs = grid_kwargs
         else:
             val_func = self._depth_interp
+            vf_kwargs = depth_kwargs
 
         if time == self.time.min_time or (extrapolate and time < self.time.min_time):
             # min or before
@@ -528,8 +655,10 @@ class Variable(VariableAPI):
         
         if order[dim_idx + 1] != "time":
             val_func = self._xy_interp
+            vf_kwargs = grid_kwargs
         else:
             val_func = self._time_interp
+            vf_kwargs = time_kwargs
 
         d_indices, d_alphas = self.depth.interpolation_alphas(
             points,
