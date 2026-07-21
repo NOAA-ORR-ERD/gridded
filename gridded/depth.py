@@ -664,7 +664,7 @@ class S_Depth(DepthBase):
         # if data_shape[0] == self.num_layers:
         #    raise NotImplementedError('Interpolation of data on depth layers not supported yet')
 
-        depth_profiles = self.get_depth_profiles(points, time, data_shape=data_shape, _hash=_hash, extrapolate=extrapolate)
+        depth_profile = self.get_depth_profile(points, time, data_shape=data_shape, _hash=_hash, extrapolate=extrapolate)
 
         indices = np.ma.MaskedArray(
             data=-np.ones((len(points)), dtype=np.int64) * 1000, mask=np.zeros((len(points)), dtype=bool)
@@ -679,7 +679,7 @@ class S_Depth(DepthBase):
         # bins[i-1] > x >= bins[i] should be satisfied for ROMS (right=False, decreasing order)
         # this means the surface level will be 'within bounds' and the seafloor level will NOT be
         vf = np.vectorize(np.digitize, signature="(),(n)->()", excluded=["right"])
-        indices = vf(depths, depth_profiles, right=False) - 1
+        indices = vf(depths, depth_profile, right=False) - 1
 
         # depth_profile mask is True where the point is outside the grid horizontally
         # so it must be reapplied
@@ -786,7 +786,7 @@ class S_Depth(DepthBase):
         """
         raise NotImplementedError("get_s_coordinate not implemented for S_Depth, required in subclasses")
 
-    def get_depth_profiles(self, points, time, data_shape=None, _hash=None, **kwargs):
+    def get_depth_profile(self, points, time, data_shape=None, _hash=None, **kwargs):
         """
         Given an array of points and a time, returns depth profiles of the water column at those points and time.
         :param points: array of points to interpolate to
