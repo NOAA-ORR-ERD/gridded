@@ -2,7 +2,7 @@ import os
 import warnings
 
 import numpy as np
-
+from gridded.variableapi import VariableAPI
 from gridded.grids import Grid
 from gridded.time import Time
 from gridded.utilities import (
@@ -17,7 +17,7 @@ from gridded.utilities import (
 )
 
 
-class DepthBase:
+class DepthBase(VariableAPI):
     _instance_count = 0
     _default_component_types = {"time": Time, "grid": Grid, "variable": None}
     #'variable' is None here to avoid import issues. It is set in the __init__.py
@@ -28,7 +28,7 @@ class DepthBase:
         surface_index=-1,
         bottom_index=0,
         default_surface_boundary_condition="extrapolate",
-        default_bottom_boundary_conditon="mask",
+        default_bottom_boundary_condition="mask",
         **kwargs,
     ):
         """
@@ -40,7 +40,7 @@ class DepthBase:
         self._surface_index = surface_index
         self._bottom_index = bottom_index
         self.default_surface_boundary_condition = default_surface_boundary_condition
-        self.default_bottom_boundary_condition = default_bottom_boundary_conditon
+        self.default_bottom_boundary_condition = default_bottom_boundary_condition
 
     @classmethod
     def _can_create_from_netCDF(
@@ -53,8 +53,8 @@ class DepthBase:
         return True
 
     @classmethod
-    def from_netCDF(cls, surface_index=-1, **kwargs):
-        return cls(surface_index, **kwargs)
+    def from_netCDF(cls, surface_index=-1, bottom_index=0, **kwargs):
+        return cls(surface_index=surface_index, bottom_index=bottom_index, **kwargs)
 
     @property
     def surface_index(self):
@@ -609,6 +609,12 @@ class S_Depth(DepthBase):
     def __len__(self):
         return self.num_levels
 
+    def _compute_at(self, ps, ts, extrapolate=False, unmask=False, _hash=None):
+        return (
+            self.bathymetry._compute_at(ps, ts, extrapolate=extrapolate, unmask=unmask, _hash=_hash)
+            + self.zeta._compute_at(ps, ts, extrapolate=extrapolate, unmask=unmask, _hash=_hash)
+        )
+
     def interpolation_alphas(
         self,
         points,
@@ -658,7 +664,7 @@ class S_Depth(DepthBase):
         # if data_shape[0] == self.num_layers:
         #    raise NotImplementedError('Interpolation of data on depth layers not supported yet')
 
-        depth_profiles = self.get_depth_profiles(points, time, data_shape=data_shape, _hash=_hash, extrapolate=extrapolate)
+        depth_profiles = self.get_depth_profile(points, time, data_shape=data_shape, _hash=_hash, extrapolate=extrapolate)
 
         indices = np.ma.MaskedArray(
             data=-np.ones((len(points)), dtype=np.int64) * 1000, mask=np.zeros((len(points)), dtype=bool)
@@ -780,7 +786,7 @@ class S_Depth(DepthBase):
         """
         raise NotImplementedError("get_s_coordinate not implemented for S_Depth, required in subclasses")
 
-    def get_depth_profiles(self, points, time, data_shape=None, _hash=None, **kwargs):
+    def get_depth_profile(self, points, time, data_shape=None, _hash=None, **kwargs):
         """
         Given an array of points and a time, returns depth profiles of the water column at those points and time.
         :param points: array of points to interpolate to
