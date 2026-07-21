@@ -517,7 +517,7 @@ class Variable(VariableAPI):
         """
         order = self.dimension_ordering
         dim_idx = order.index("depth")
-        if idx == len(order) - 1:
+        if dim_idx == len(order) - 1:
             # depth is the last dimension, so directly interpolate the data
             ind, alpha = self.depth.interpolation_alpha(points, time, extrapolate=extrapolate)
             s0 = slices + (ind - 1,)
