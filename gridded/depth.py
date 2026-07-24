@@ -28,7 +28,7 @@ class DepthBase:
         surface_index=-1,
         bottom_index=0,
         default_surface_boundary_condition="extrapolate",
-        default_bottom_boundary_conditon="mask",
+        default_bottom_boundary_condition="mask",
         **kwargs,
     ):
         """
@@ -40,7 +40,10 @@ class DepthBase:
         self._surface_index = surface_index
         self._bottom_index = bottom_index
         self.default_surface_boundary_condition = default_surface_boundary_condition
-        self.default_bottom_boundary_condition = default_bottom_boundary_conditon
+        legacy_bottom_boundary_condition = kwargs.pop("default_bottom_boundary_conditon", None)
+        if legacy_bottom_boundary_condition is not None:
+            default_bottom_boundary_condition = legacy_bottom_boundary_condition
+        self.default_bottom_boundary_condition = default_bottom_boundary_condition
 
     @classmethod
     def _can_create_from_netCDF(
@@ -54,7 +57,7 @@ class DepthBase:
 
     @classmethod
     def from_netCDF(cls, surface_index=-1, **kwargs):
-        return cls(surface_index, **kwargs)
+        return cls(surface_index=surface_index, **kwargs)
 
     @property
     def surface_index(self):
