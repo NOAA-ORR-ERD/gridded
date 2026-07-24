@@ -61,6 +61,8 @@ class Dataset:
         If a filename is passed in, the attributes will be pulled from the file, and
         the input ones ignored.
         """
+        self.nc_dataset = None
+
         if ncfile is not None:
             # raise ValueError("don't create from a file")
             warnings.warn(
@@ -136,6 +138,33 @@ class Dataset:
     def __str__(self):
         descp = f"gridded.Dataset with:\ngrid: {type(self.grid)}\nvariables: {list(self.variables.keys())}"
         return descp
+
+    def close(self):
+        """
+        Close the underlying netCDF handle if one is open.
+        """
+        nc_dataset = self.nc_dataset
+        if nc_dataset is None:
+            return
+
+        is_open = getattr(nc_dataset, "isopen", None)
+        if is_open is None or is_open():
+            nc_dataset.close()
+
+        self.nc_dataset = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+        return False
+
+    def __del__(self):
+        try:
+            self.close()
+        except Exception:
+            pass
 
     def _variables_from_netCDF(self, ds):
         """
