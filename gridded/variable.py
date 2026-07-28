@@ -403,7 +403,7 @@ class Variable(VariableAPI):
         Returns the interpolated values at the points and time specified.
         """
         
-        order = self.dimension_ordering
+        order = self._interp_order
         if len(order) == 0:
             #special case for a Variable with no dimensions (eg a constant value)
             return np.full((len(ps), len(ts), 1), self.data)
@@ -457,7 +457,7 @@ class Variable(VariableAPI):
     def _time_interp(self, points, time, slices=(), extrapolate=False, _mem=False, _hash=None):
         """
         Uses the Time object to interpolate the result of the next level of interpolation, as specified
-        by the dimension_ordering attribute.
+        by the _interp_order attribute.
         :param points: Coordinates to be queried (3D)
         :type points: Nx3 array of double
 
@@ -470,7 +470,7 @@ class Variable(VariableAPI):
         :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type slices: tuple of integers or slice objects
         """
-        order = self.dimension_ordering
+        order = self._interp_order
         idx = order.index("time")
         if idx == len(order) - 1:
             # time is the last dimension, so directly interpolate the data
@@ -503,7 +503,7 @@ class Variable(VariableAPI):
     def _depth_interp(self, points, time, slices=(), extrapolate=False, _mem=False, _hash=None):
         """
         Uses the Depth object to interpolate the result of the next level of interpolation, as specified
-        by the dimension_ordering attribute.
+        by the _interp_order attribute.
         :param points: Coordinates to be queried (3D)
         :type points: Nx3 array of double
 
@@ -516,7 +516,7 @@ class Variable(VariableAPI):
         :param slices: describes how the data needs to be sliced to reach the appropriate dimension
         :type slices: tuple of integers or slice objects
         """
-        order = self.dimension_ordering
+        order = self._interp_order
         dim_idx = order.index("depth")
         if dim_idx == len(order) - 1:
             # depth is the last dimension, so directly interpolate the data

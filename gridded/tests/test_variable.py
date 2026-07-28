@@ -57,19 +57,25 @@ def test_Variable_api_at_function():
 def test_Variable_constant():
     v = Variable.constant(5, name="test")
     assert v.data == 5
+    assert v.shape == ()
+    
     result = v.at((1, 2), 0)
     assert result.shape == (1, 1)
     assert result == 5
     result = v.at([(1, 2),(3, 4)], 0)
     assert result.shape == (2, 1)
     assert np.all(result == 5)
+    
+    
 
 def test_Variable_timeseries():
     v = Variable(data=np.array([1, 2, 3]), name="test", time=[datetime.datetime(2020, 1, 1), datetime.datetime(2020, 1, 2), datetime.datetime(2020, 1, 3)])
     assert v.data.shape == (3,)
+    assert v.shape == (3,)
+    
     assert v.time.min_time == datetime.datetime(2020, 1, 1)
-    assert len(v.dimension_ordering) == 1
-    assert v.dimension_ordering[0] == "time"
+    assert len(v._interp_order) == 1
+    assert v._interp_order[0] == "time"
     assert v.at((0,1), v.time.data[1]) == 2
     assert v.at((0,1), v.time.data[0] + datetime.timedelta(days=0.5)) == 1.5
 

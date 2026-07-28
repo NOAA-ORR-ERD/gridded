@@ -17,7 +17,7 @@ from gridded.utilities import (
 )
 
 
-class DepthBase(VariableAPI):
+class DepthBase(object):
     _instance_count = 0
     _default_component_types = {"time": Time, "grid": Grid, "variable": None}
     #'variable' is None here to avoid import issues. It is set in the __init__.py
@@ -568,6 +568,21 @@ class S_Depth(DepthBase):
             **kwargs,
         )
 
+    '''Functions to satisfy the VariableAPI interface'''
+
+    def _compute_at(self, ps, ts, extrapolate=False, unmask=False, _hash=None):
+        
+        return (
+            self.bathymetry._compute_at(ps, ts, extrapolate=extrapolate, unmask=unmask, _hash=_hash)
+            + self.zeta._compute_at(ps, ts, extrapolate=extrapolate, unmask=unmask, _hash=_hash)
+        )
+
+    @property
+    def data(self):
+        return self
+
+    '''Depth-specific functions'''
+
     @property
     def surface_index(self):
         raise NotImplementedError("surface_index not implemented for S_Depth, required in subclasses")
@@ -608,12 +623,6 @@ class S_Depth(DepthBase):
 
     def __len__(self):
         return self.num_levels
-
-    def _compute_at(self, ps, ts, extrapolate=False, unmask=False, _hash=None):
-        return (
-            self.bathymetry._compute_at(ps, ts, extrapolate=extrapolate, unmask=unmask, _hash=_hash)
-            + self.zeta._compute_at(ps, ts, extrapolate=extrapolate, unmask=unmask, _hash=_hash)
-        )
 
     def interpolation_alphas(
         self,

@@ -17,21 +17,36 @@ class VariableAPI(object):
     
     @property
     def data(self):
-        '''
-        Abstract property that must be implemented by subclasses.
+        """
+        OPTIONAL property for subclasses.
         
         The only requirement is that the data property returns something with a shape
         that is consistent with the underlying data being represented.
-        '''
+        """
+        if not hasattr(self, "_data"):
+            raise NotImplementedError(".data property for" + self.__class__.__name__ + " is not implemented.")
+        else:
+            return self._data
+    
+    @property
+    def shape(self):
+        """
+        REQUIRED property for subclasses.
         
-        raise NotImplementedError("VariableAPI is an abstract base class. Subclasses must implement the .data property")
+        Returns the shape of this Variable's represented data as a tuple of integers.
+        This shape
+        
+        It is by default the shape of the .data property
+        
+        """
+        return np.shape(self.data)
 
     @property
-    def dimension_ordering(self):
+    def _interp_order(self):
         """
         Returns a list that describes the dimensions of the property's data.
-        If a dimension_ordering is assigned, it will continue to use that.
-        If no dimension_ordering is set, then a default ordering will be generated
+        If a _interp_order is assigned, it will continue to use that.
+        If no _interp_order is set, then a default ordering will be generated
         based on the object properties and data shape.
 
         For example, if the data has 4 dimensions and is represented by a
@@ -49,19 +64,17 @@ class VariableAPI(object):
             return self._order
         else:
             order = []
-            if self.time is not None:
+            if hasattr(self, 'time') and self.time is not None:
                 order.append("time")
-            if self.depth is not None:
+            if hasattr(self, 'depth') and self.depth is not None:
                 order.append("depth")
-            if self.grid is not None:
-                if isinstance(self.grid, (Grid_S, Grid_R)):
-                    order.extend(["lon", "lat"])
-                else:
-                    order.append("ele")
+            if hasattr(self, 'grid') and self.grid is not None:
+                order.append('x')
+                order.append('y')
             return order
 
-    @dimension_ordering.setter
-    def dimension_ordering(self, order):
+    @_interp_order.setter
+    def _interp_order(self, order):
         self._order = order
     
     def at(self, p, t, extrapolate=False, unmask=False, _hash=None):
