@@ -394,7 +394,7 @@ class Variable(VariableAPI):
         #                 raise ValueError('Units of {0} are not supported'.format(unit))
         self._units = unit
     
-    def _compute_at(self, ps, ts, extrapolate=None, unmask=False, _hash=None):
+    def _compute_at(self, ps, ts, extrapolate=None, unmask=False, _hash=None, **kwargs):
         """
         Computation core of the .at function. All arguments should be prepared for internal use.
         Note that unit conversions are not explicitly handled in this function 
@@ -977,7 +977,7 @@ class VectorVariable(VariableAPI):
         else:
             return None
     
-    def _compute_at(self, ps, ts, extrapolate=False, unmask=False, _hash=None):
+    def _compute_at(self, ps, ts, extrapolate=False, unmask=False, _hash=None, **kwargs):
         """
         Computation core of the .at function. All arguments should be prepared for internal use.
         Note that unit conversions are not explicitly handled in this function 
@@ -997,6 +997,7 @@ class VectorVariable(VariableAPI):
                     extrapolate=extrapolate,
                     unmask=unmask,
                     _hash=_hash,
+                    **kwargs
                 )
                 for var in self.variables
             ]

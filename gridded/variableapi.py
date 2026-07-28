@@ -77,7 +77,7 @@ class VariableAPI(object):
     def _interp_order(self, order):
         self._order = order
     
-    def at(self, p, t, extrapolate=False, unmask=False, _hash=None):
+    def at(self, p, t, extrapolate=False, unmask=False, _hash=None, **kwargs):
         """
         Retrieve or interpolate the value of the data to positions P at times T
 
@@ -119,14 +119,14 @@ class VariableAPI(object):
         :return: returns a NxTxD array of interpolated values.
         :rtype: numpy.ma.MaskedArray or numpy.ndarray
         """
-        ps, ts, _hash = self._prepare_at(p, t, _hash=_hash)
-        out = self._compute_at(ps, ts, extrapolate=extrapolate, unmask=unmask, _hash=_hash)
-        retval = self._post_compute_at(out, p, t, unmask=unmask, _hash=_hash)
+        ps, ts, _hash = self._prepare_at(p, t, _hash=_hash, **kwargs)
+        out = self._compute_at(ps, ts, extrapolate=extrapolate, unmask=unmask, _hash=_hash, **kwargs)
+        retval = self._post_compute_at(out, p, t, unmask=unmask, _hash=_hash, **kwargs)
         return retval
     
     interpolate = at  # common request
     
-    def _prepare_at(self, p, t, _hash=None, _mem=True):
+    def _prepare_at(self, p, t, _hash=None, **kwargs):
         """
         First stage of the .at function. Handles points and time normalization
         and hash generation for memoization.     
@@ -145,7 +145,7 @@ class VariableAPI(object):
 
         return ps, ts, _hash
     
-    def _compute_at(self, ps, ts, extrapolate=False, unmask=False, _hash=None):
+    def _compute_at(self, ps, ts, extrapolate=False, unmask=False, _hash=None, **kwargs):
         """
         Computation core of the .at function. All arguments should already be prepared for internal use.
         
@@ -157,7 +157,7 @@ class VariableAPI(object):
         """
         raise NotImplementedError("VariableAPI is an abstract base class. Subclasses must implement the ._compute_at method")
 
-    def _post_compute_at(self, out, p, t, unmask=False, _hash=None):
+    def _post_compute_at(self, out, p, t, unmask=False, _hash=None, **kwargs):
         """
         Post computation step of the .at function.
         Handles fill values, unmasking, and memoization of the result.
