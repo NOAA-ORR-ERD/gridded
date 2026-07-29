@@ -16,6 +16,21 @@ import numpy as np
 
 must_have = ["dtype", "shape", "ndim", "__len__", "__getitem__", "__getattribute__"]
 
+def interpolate_rho_to_psi(var):
+    """
+    Interpolates a variable defined on rho points to psi points
+    This makes sense for certain variables like bathymetry, zeta, and angle.
+    """
+    if len(var.shape) == 2:
+        v =  (var[:][0:-1, :] + var[:][1:, :]) / 2.0
+        out = (v[:, 0:-1] + v[:, 1:]) / 2.0
+        return out
+    if len(var.shape) == 3:
+        v =  (var[:][:, 0:-1, :] + var[:][:, 1:, :]) / 2.0
+        out = (v[:, :, 0:-1] + v[:, :, 1:]) / 2.0
+        return out
+        
+    
 
 def convert_numpy_datetime64_to_datetime(dt):
     pass

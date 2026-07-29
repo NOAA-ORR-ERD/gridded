@@ -14,6 +14,7 @@ from gridded.utilities import (
     search_dataset_for_variables_by_longname,
     search_dataset_for_variables_by_varname,
     search_netcdf_vars,
+    interpolate_rho_to_psi,
 )
 
 
@@ -515,9 +516,8 @@ class S_Depth(DepthBase):
                     grid=grid,
                     name="bathymetry",
                 )
-            else:    
-                h = (bathy_var[0:-1,:] + bathy_var[1:,:]) / 2
-                psi_h = (h[:,0:-1] + h[:,1:]) /2
+            else:
+                psi_h = interpolate_rho_to_psi(bathy_var)
                 bathymetry = Bathymetry(
                     data=psi_h,
                     grid=grid,
@@ -539,8 +539,7 @@ class S_Depth(DepthBase):
                 else:
                     #zeta data is on cell centers, but needs to be averaged to the nodes in order
                     #to properly define the terrain following coordinate.
-                    z = (zeta_var[:,0:-1,:] + zeta_var[:,1:,:]) / 2
-                    psi_z = (z[:,:,0:-1] + z[:,:,1:]) /2
+                    psi_z = interpolate_rho_to_psi(zeta_var)
                     zeta = Zeta(data=psi_z, grid=grid, time=time, name="zeta")
 
         if terms is None:
