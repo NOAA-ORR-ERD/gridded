@@ -236,7 +236,7 @@ class SGrid:
             vertical_dimensions=vertical_dimensions,
             vertical_padding=vertical_padding,
         )
-        sa.get_variable_attributes(sgrid)
+        #sa.get_variable_attributes(sgrid)
         return sgrid
 
     @property
@@ -313,9 +313,12 @@ class SGrid:
         self._node_padding = val
 
     @property
-    def center_padding(self):
-        if hasattr(self, "_center_padding") and self._center_padding:
-            return self._center_padding
+    def face_padding(self):
+        if hasattr(self, "_face_padding") and self._face_padding:
+            if isinstance(self._face_padding[0], GridPadding):
+                return (self._face_padding[0].padding, self._face_padding[1].padding)
+            else:
+                return self._face_padding
         elif hasattr(self, "center_lon") and self.center_lon is not None:
             face_shape = self.center_lon.shape
             node_shape = self.node_lon.shape
@@ -329,9 +332,17 @@ class SGrid:
         else:
             return (None, None)
 
+    @face_padding.setter
+    def face_padding(self, val):
+        self._face_padding = val
+
+    @property
+    def center_padding(self):
+        return self.face_padding
+
     @center_padding.setter
     def center_padding(self, val):
-        self._center_padding = val
+        self._face_padding = val
 
     @property
     def edge1_padding(self):
