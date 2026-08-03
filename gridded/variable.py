@@ -1,7 +1,6 @@
 import collections
 import hashlib
 import logging
-import os
 from functools import wraps
 from textwrap import dedent
 
@@ -9,16 +8,14 @@ import netCDF4 as nc4
 import numpy as np
 
 from gridded import VALID_LOCATIONS
-from gridded.depth import Depth, DepthBase
+from gridded.depth import Depth
 from gridded.grids import Grid, Grid_R, Grid_S, Grid_U
 from gridded.time import Time
 from gridded.utilities import (
-    _align_results_to_spatial_data,
     _reorganize_spatial_data,
     asarraylike,
     get_dataset,
     parse_filename_dataset_args,
-    search_dataset_for_variables_by_varname,
 )
 
 log = logging.getLogger(__name__)
@@ -392,14 +389,13 @@ class Variable:
         if self.time is not None and len(d) != len(self.time):
             raise ValueError("Data/time interval mismatch")
         ## fixme: we should check Depth, too.
-        # if self.grid is not None and self.grid.infer_location(d) is None:
-        #     raise ValueError("Data/grid shape mismatch. Data shape is {0}, Grid shape is {1}".format(d.shape, self.grid.node_lon.shape))
         if self.grid is not None:  # if there is not a grid, we can't check this
             if self.location is None:  # not set, let's try to figure it out
                 self.location = self.grid.infer_location(d)
             if self.location is None:
                 raise ValueError(
-                    f"Data/grid shape mismatch: Data shape is {d.shape}, Grid shape is {self.grid.node_lon.shape}"
+                    f"Data/grid shape mismatch: Data shape is {d.shape}, "
+                    f"Grid shape is {self.grid.node_lon.shape}"
                 )
         self._data = d
 
@@ -655,7 +651,6 @@ class Variable:
         :type slices: tuple of integers or slice objects
         """
         _hash = kwargs["_hash"] if "_hash" in kwargs else None
-        units = kwargs["units"] if "units" in kwargs else None
 
         value = self.grid.interpolate_var_to_points(
             points[:, 0:2],
@@ -1342,8 +1337,8 @@ class VectorVariable:
                 if _mod("grid"):
                     gt = kws.get("grid_topology", None)
                     kws["grid"] = Grid.from_netCDF(kws["filename"], dataset=dg, grid_topology=gt)
-                if kws.get("varnames", None) is None:
-                    varnames = cls._gen_varnames(kws["data_file"], dataset=ds)
+                # if kws.get("varnames", None) is None:
+                #     varnames = cls._gen_varnames(kws["data_file"], dataset=ds)
                 #                 if _mod('time'):
                 #                     time = Time.from_netCDF(filename=kws['data_file'],
                 #                                             dataset=ds,

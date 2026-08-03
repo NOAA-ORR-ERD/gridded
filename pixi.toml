@@ -69,6 +69,6 @@ build_docs = {cmd = "cd docs && make html", default-environment = "docs", depend
 
 test = { cmd = "pytest --pyargs gridded", depends-on = ["install"] }
 
-lint = { cmd = "ruff check src/libgoods", default-environment = "dev"}
+lint = { cmd = "ruff check gridded", default-environment = "dev"}
 
 
