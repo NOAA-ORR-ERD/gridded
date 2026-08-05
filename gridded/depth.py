@@ -422,16 +422,18 @@ class S_Depth(DepthBase):
 
         :param terms: Direct mapping of component name to netCDF variable name. Use
                       this if auto detection fails. Partial definition is allowable.
-                      Unspecified terms will use the value in `.default_names`.
-                      ::
-                        {'Cs_r': 'Cs_r',
-                         'Cs_w': 'Cs_w',
-                         's_rho': 's_rho'),
-                         's_w': 's_w',
-                         'bathymetry': 'h',
-                         'hc': 'hc'),
-                         'zeta': 'zeta')
-                         }
+                      Unspecified terms will use the value in `.default_names`. ::
+
+                        {
+                        'Cs_r': 'Cs_r',
+                        'Cs_w': 'Cs_w',
+                        's_rho': 's_rho'),
+                        's_w': 's_w',
+                        'bathymetry': 'h',
+                        'hc': 'hc'),
+                        'zeta': 'zeta')
+                        }
+
         :type terms: dict
 
         :param name: Human-readable name for this object
@@ -515,7 +517,7 @@ class S_Depth(DepthBase):
                     grid=grid,
                     name="bathymetry",
                 )
-            else:    
+            else:
                 h = (bathy_var[0:-1,:] + bathy_var[1:,:]) / 2
                 psi_h = (h[:,0:-1] + h[:,1:]) /2
                 bathymetry = Bathymetry(
@@ -772,7 +774,7 @@ class S_Depth(DepthBase):
         if bottom_boundary_condition == "mask":
             indices.mask[below_bottom_mask] = True
             alphas.mask[below_bottom_mask] = True
-            
+
         indices.mask = np.logical_or(indices.mask, exclusion_mask)
         alphas.mask = np.logical_or(alphas.mask, exclusion_mask)
         return indices, alphas, oob_mask

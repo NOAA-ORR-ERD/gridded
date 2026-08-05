@@ -371,7 +371,7 @@ class SGrid:
     @edge2_padding.setter
     def edge2_padding(self, val):
         self._edge2_padding = val
-        
+
     @property
     def vertical_padding(self):
         if hasattr(self, "_vertical_padding") and self._vertical_padding:
@@ -385,7 +385,7 @@ class SGrid:
     @vertical_padding.setter
     def vertical_padding(self, val):
         self._vertical_padding = val
-        
+
     def infer_location(self, variable):
         """
         Assuming default is psi grid, check variable dimensions to determine which grid

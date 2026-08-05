@@ -307,7 +307,7 @@ class Test_ROMS_Depth:
         )
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
-        
+
         points = np.array(
             [[20, 20, 9.9], [20, 20, 10.0], [20, 20, 10.1], [-1, -1, 5], [20, 20, -0.1], [20, 20, 0], [20, 20, 0.1]]
         )

@@ -5,8 +5,6 @@ Variable objects are mostly tested implicitly in other tests,
 but good to have a few explicitly for the Variable object
 """
 
-import os
-
 import netCDF4
 import numpy as np
 
@@ -67,7 +65,7 @@ def test_Variable_api_at_function_edge_cases():
     p1 = (1.5, 35.5)
     p2 = (1.5, 35.5, 1)  # expected: r2 == r1
     p3 = [(1.5, 35.5), (35.5, 1.5)]  # expected: [[1],[masked]]
-    p4 = [(1.5, 35.5, 1), (35.5, 1.5, 1)]  # expected: [[1],[masked]]
+#    p4 = [(1.5, 35.5, 1), (35.5, 1.5, 1)]  # expected: [[1],[masked]]
 
     t = var.time.min_time
 
@@ -145,7 +143,7 @@ def test_VectorVariable_api_at_function_edge_cases():
     p1 = (1.5, 35.5)
     p2 = (1.5, 35.5, 1)  # expected: r2 == r1
     p3 = [(1.5, 35.5), (35.5, 1.5)]  # expected: [[1],[masked]]
-    p4 = [(1.5, 35.5, 1), (35.5, 1.5, 1)]  # expected: [[1],[masked]]
+    # p4 = [(1.5, 35.5, 1), (35.5, 1.5, 1)]  # expected: [[1],[masked]]
 
     t = var.time.min_time
 

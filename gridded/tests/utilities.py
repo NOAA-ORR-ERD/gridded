@@ -6,7 +6,6 @@ NOTE: the fixtures should be in conftest, so they can be found automatically
 """
 
 import contextlib
-import glob
 import os
 from pathlib import Path
 
