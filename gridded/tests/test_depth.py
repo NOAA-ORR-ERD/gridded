@@ -531,12 +531,18 @@ def get_database_nc():
     """
     L_depth_file = os.path.join(TEST_DATA, "test_L_Depth.nc")
 
-    ncfile = nc.Dataset(L_depth_file)
-    ds = gridded.Dataset(L_depth_file)
+    # ncfile = nc.Dataset(L_depth_file)
+#    ds = gridded.Dataset(L_depth_file)
+    ds = gridded.Dataset.from_netCDF(L_depth_file)
     depth = gridded.depth.Depth.from_netCDF(filename=L_depth_file)
-    time = gridded.time.Time.from_netCDF(filename=L_depth_file, datavar=ncfile["u"])
+    # what's going on here? We shouldn't have to separately get time?
+    # after a dataset is loaded?
+    # but even if so, why not let Time.from_netCDF load the variable?
+    # time = gridded.time.Time.from_netCDF(filename=L_depth_file, datavar=ncfile["u"])
+    time = gridded.time.Time.from_netCDF(filename=L_depth_file, varname="time")
 
     return time, depth, ds
+
 
 
 class Test_L_Depth:
