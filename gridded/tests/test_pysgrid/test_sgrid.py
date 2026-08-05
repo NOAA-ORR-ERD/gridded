@@ -7,7 +7,7 @@ now there are almost none
 from gridded.pysgrid.sgrid import load_grid
 
 # from gridded.pysgrid.sgrid import SGrid, load_grid
-from .write_nc_test_files import roms_sgrid
+# from .write_nc_test_files import roms_sgrid
 
 
 def test_eq_same(roms_sgrid):
