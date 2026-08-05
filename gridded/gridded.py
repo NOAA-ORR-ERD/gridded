@@ -77,6 +77,8 @@ class Dataset:
         else:  # Create from grid and variables -- this is what should usually happen.
             self.filename = None
             self.grid = grid
+            self.time = None
+            self.depth = None
             self.variables = {} if variables is None else variables
             self.attributes = {} if attributes is None else attributes
 
@@ -93,7 +95,9 @@ class Dataset:
 
         self.nc_dataset = get_dataset(filename)
         self.filename = self.nc_dataset.filepath()
-        self.grid = Grid.from_netCDF(filename=self.filename, dataset=self.nc_dataset, grid_topology=grid_topology)
+        self.grid = Grid.from_netCDF(filename=self.filename,
+                                     dataset=self.nc_dataset,
+                                     grid_topology=grid_topology)
         # fixme: this should load the depth and time, and then the variables.
         self.variables = self._variables_from_netCDF(self.nc_dataset)
         self.attributes = get_dataset_attrs(self.nc_dataset)
@@ -102,7 +106,7 @@ class Dataset:
     def from_netCDF(cls, filename=None, grid_file=None, variable_files=None, grid_topology=None):
         """
         NOTE: only loading from a single file is currently implemented.
-              you can create a DATaset by hand, by loading the grid and
+              you can create a Dataset by hand, by loading the grid and
               variables separately, and then adding them
 
         load a gridded.Dataset from a netCDF file
