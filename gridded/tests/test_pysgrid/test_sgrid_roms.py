@@ -24,7 +24,6 @@ def test_load_from_dataset(roms_sgrid):
 
 @pytest.fixture
 def sgrid(roms_sgrid):
-    breakpoint()
     return load_grid(roms_sgrid)
 
 

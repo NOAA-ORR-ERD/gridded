@@ -236,7 +236,7 @@ class SGrid:
             vertical_dimensions=vertical_dimensions,
             vertical_padding=vertical_padding,
         )
-        #sa.get_variable_attributes(sgrid)
+        sa.get_variable_attributes(sgrid)
         return sgrid
 
     @property
@@ -256,15 +256,16 @@ class SGrid:
         if self.face_padding is not None:
             all_face_padding = self.face_padding
         else:
-            all_face_padding = []
+            all_face_padding = ()
         return all_face_padding
 
     def get_all_edge_padding(self):
-        all_edge_padding = []
+        all_edge_padding = ()
+        breakpoint()
         if self._edge1_padding is not None:
-            all_edge_padding += self._edge1_padding
+            all_edge_padding += tuple(self._edge1_padding)
         if self._edge2_padding is not None:
-            all_edge_padding += self._edge2_padding
+            all_edge_padding += tuple(self._edge2_padding)
         return all_edge_padding
 
     def all_padding(self):
