@@ -1,0 +1,31 @@
+name: Upload sdist to Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on version tags like v1.0.0
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install build dependencies
+        run: pip install build
+
+      - name: Build sdist and wheel
+        run: python -m build --sdist --wheel -o dist/
+
+      - name: Create Release and Upload sdist
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
