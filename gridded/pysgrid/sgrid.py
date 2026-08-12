@@ -236,7 +236,7 @@ class SGrid:
             vertical_dimensions=vertical_dimensions,
             vertical_padding=vertical_padding,
         )
-        #sa.get_variable_attributes(sgrid)
+        sa.get_variable_attributes(sgrid)
         return sgrid
 
     @property
