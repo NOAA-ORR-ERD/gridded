@@ -254,7 +254,7 @@ class SGrid:
 
     def get_all_face_padding(self):
         if self.face_padding is not None:
-            all_face_padding = self.face_padding
+            all_face_padding = self._face_padding
         else:
             all_face_padding = []
         return all_face_padding
@@ -270,7 +270,7 @@ class SGrid:
     def all_padding(self):
         all_padding = self.get_all_face_padding() + self.get_all_edge_padding()
         if self.vertical_padding is not None:
-            all_padding += self.vertical_padding
+            all_padding += self._vertical_padding
         return all_padding
 
     def save_as_netcdf(self, filepath):

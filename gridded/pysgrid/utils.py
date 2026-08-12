@@ -99,7 +99,7 @@ def determine_variable_slicing(sgrid_obj, nc_variable, method="center"):
     separate_edge_dim_exists = does_intersection_exist(var_dims, node_dims)
     slice_indices = tuple()
     if separate_edge_dim_exists:
-        padding = sgrid_obj.face_padding
+        padding = sgrid_obj._face_padding
     else:
         padding = sgrid_obj.all_padding()
     if method == "center":
