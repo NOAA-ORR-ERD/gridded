@@ -9,7 +9,7 @@ import pytest
 
 from gridded.pysgrid.sgrid import load_grid
 
-from .write_nc_test_files import non_compliant_sgrid
+# from .write_nc_test_files import non_compliant_sgrid
 
 
 def test_exception_raised(non_compliant_sgrid):

@@ -254,7 +254,7 @@ class SGrid:
 
     def get_all_face_padding(self):
         if self.face_padding is not None:
-            all_face_padding = self.face_padding
+            all_face_padding = self._face_padding
         else:
             all_face_padding = []
         return all_face_padding
@@ -270,7 +270,7 @@ class SGrid:
     def all_padding(self):
         all_padding = self.get_all_face_padding() + self.get_all_edge_padding()
         if self.vertical_padding is not None:
-            all_padding += self.vertical_padding
+            all_padding += self._vertical_padding
         return all_padding
 
     def save_as_netcdf(self, filepath):
@@ -313,9 +313,12 @@ class SGrid:
         self._node_padding = val
 
     @property
-    def center_padding(self):
-        if hasattr(self, "_center_padding") and self._center_padding:
-            return self._center_padding
+    def face_padding(self):
+        if hasattr(self, "_face_padding") and self._face_padding:
+            if isinstance(self._face_padding[0], GridPadding):
+                return (self._face_padding[0].padding, self._face_padding[1].padding)
+            else:
+                return self._face_padding
         elif hasattr(self, "center_lon") and self.center_lon is not None:
             face_shape = self.center_lon.shape
             node_shape = self.node_lon.shape
@@ -329,9 +332,17 @@ class SGrid:
         else:
             return (None, None)
 
+    @face_padding.setter
+    def face_padding(self, val):
+        self._face_padding = val
+
+    @property
+    def center_padding(self):
+        return self.face_padding
+
     @center_padding.setter
     def center_padding(self, val):
-        self._center_padding = val
+        self._face_padding = val
 
     @property
     def edge1_padding(self):
@@ -360,6 +371,20 @@ class SGrid:
     @edge2_padding.setter
     def edge2_padding(self, val):
         self._edge2_padding = val
+
+    @property
+    def vertical_padding(self):
+        if hasattr(self, "_vertical_padding") and self._vertical_padding:
+            if isinstance(self._vertical_padding[0], GridPadding):
+                return (None, self._vertical_padding[0].padding)
+            else:
+                return self._vertical_padding
+        else:
+            return (None, self.center_padding[1])
+
+    @vertical_padding.setter
+    def vertical_padding(self, val):
+        self._vertical_padding = val
 
     def infer_location(self, variable):
         """

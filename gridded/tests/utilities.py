@@ -6,7 +6,6 @@ NOTE: the fixtures should be in conftest, so they can be found automatically
 """
 
 import contextlib
-import glob
 import os
 from pathlib import Path
 
@@ -14,6 +13,7 @@ import pooch
 
 HERE = Path(__file__).parent
 EXAMPLE_DATA = HERE / "example_data"
+TEMP_DATA = HERE / "temp_data"
 TEST_DATA = HERE / "test_data"
 
 TEST_CDL_FILES = list((TEST_DATA / "cdl").glob("*.cdl"))
@@ -23,7 +23,7 @@ TEST_CDL_FILES = list((TEST_DATA / "cdl").glob("*.cdl"))
 data_file_cache = pooch.create(
     # Use a local cache folder for the operating system
     # path=pooch.os_cache("plumbus"),
-    path=EXAMPLE_DATA,
+    path=TEMP_DATA,
     # The remote data is on the pygnome server
     base_url="https://gnome.orr.noaa.gov/py_gnome_testdata/gridded_test_files/",
     # version=version,
@@ -37,133 +37,6 @@ data_file_cache = pooch.create(
         "projected_coords_ugrid.nc": "sha256:019c1469c0583021268dbf1ea3eed97038364a0b7a361bc3f50b6be5f83b1ff2",
     },
 )
-
-
-# def get_temp_test_file(filename):
-#     """
-#     returns the path to a temporary test file.
-
-#     If it exists, it will return it directly.
-
-#     If not, it will attempt to download it.
-
-#     If it can't download, it will return None
-#     """
-#     print("getting temp test file")
-#     filepath = os.path.join(os.path.dirname(__file__),
-#                             'temp_data',
-#                             filename)
-#     if os.path.isfile(filepath):
-#         print("already there")
-#         return filepath
-#     else:
-#         # attempt to download it
-#         print("trying to download")
-#         try:
-#             get_datafile(filepath)
-#         except urllib_request.HTTPError:
-#             print("got an error trying to download {}:".format(filepath))
-#             return None
-#         return None
-
-
-# @pytest.fixture
-# def two_triangles():
-#     """
-#     Returns a simple triangular grid: 4 nodes, two triangles, five edges.
-
-#     """
-#     nodes = [(0.1, 0.1),
-#              (2.1, 0.1),
-#              (1.1, 2.1),
-#              (3.1, 2.1)]
-
-#     faces = [(0, 1, 2),
-#              (1, 3, 2), ]
-
-#     edges = [(0, 1),
-#              (1, 3),
-#              (3, 2),
-#              (2, 0),
-#              (1, 2)]
-
-#     return ugrid.UGrid(nodes, faces, edges)
-
-
-# @pytest.fixture
-# def twenty_one_triangles():
-#     """
-#     Returns a basic triangular grid:  21 triangles, a hole, and a tail.
-
-#     """
-#     nodes = [(5, 1),
-#              (10, 1),
-#              (3, 3),
-#              (7, 3),
-#              (9, 4),
-#              (12, 4),
-#              (5, 5),
-#              (3, 7),
-#              (5, 7),
-#              (7, 7),
-#              (9, 7),
-#              (11, 7),
-#              (5, 9),
-#              (8, 9),
-#              (11, 9),
-#              (9, 11),
-#              (11, 11),
-#              (7, 13),
-#              (9, 13),
-#              (7, 15), ]
-
-#     faces = [(0, 1, 3),
-#              (0, 6, 2),
-#              (0, 3, 6),
-#              (1, 4, 3),
-#              (1, 5, 4),
-#              (2, 6, 7),
-#              (6, 8, 7),
-#              (7, 8, 12),
-#              (6, 9, 8),
-#              (8, 9, 12),
-#              (9, 13, 12),
-#              (4, 5, 11),
-#              (4, 11, 10),
-#              (9, 10, 13),
-#              (10, 11, 14),
-#              (10, 14, 13),
-#              (13, 14, 15),
-#              (14, 16, 15),
-#              (15, 16, 18),
-#              (15, 18, 17),
-#              (17, 18, 19), ]
-
-#     # We may want to use this later to define just the outer boundary.
-#     boundaries = [(0, 1),
-#                   (1, 5),
-#                   (5, 11),
-#                   (11, 14),
-#                   (14, 16),
-#                   (16, 18),
-#                   (18, 19),
-#                   (19, 17),
-#                   (17, 15),
-#                   (15, 13),
-#                   (13, 12),
-#                   (12, 7),
-#                   (7, 2),
-#                   (2, 0),
-#                   (3, 4),
-#                   (4, 10),
-#                   (10, 9),
-#                   (9, 6),
-#                   (6, 3), ]
-
-#     grid = ugrid.UGrid(nodes, faces, boundaries=boundaries)
-#     grid.build_edges()
-#     return grid
-
 
 @contextlib.contextmanager
 def chdir(dirname=None):

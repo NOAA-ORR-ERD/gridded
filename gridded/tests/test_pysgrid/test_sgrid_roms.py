@@ -10,13 +10,12 @@ import pytest
 
 from gridded.pysgrid.sgrid import SGrid, load_grid
 
-from .write_nc_test_files import roms_sgrid
+# from .write_nc_test_files import roms_sgrid
 
 """
 Test SGrid ROMS.
 
 """
-
 
 def test_load_from_dataset(roms_sgrid):
     sg_obj = load_grid(roms_sgrid)

@@ -1,4 +1,4 @@
-import os
+
 import warnings
 
 import numpy as np
@@ -8,11 +8,7 @@ from gridded.time import Time
 from gridded.utilities import (
     can_create_class,
     get_dataset,
-    merge_var_search_dicts,
     parse_filename_dataset_args,
-    search_dataset_for_any_long_name,
-    search_dataset_for_variables_by_longname,
-    search_dataset_for_variables_by_varname,
     search_netcdf_vars,
     interpolate_rho_to_psi,
 )
@@ -259,7 +255,8 @@ class L_Depth(DepthBase):
         indices = np.ma.MaskedArray(data=idxs, mask=np.zeros((len(idxs)), dtype=bool))
 
         alphas = np.ma.MaskedArray(
-            data=np.empty((len(points)), dtype=np.float64) * np.nan, mask=np.zeros((len(points)), dtype=bool)
+            data=np.full((len(points),), np.nan, dtype=np.float64),
+            mask=np.zeros((len(points)), dtype=bool)
         )
 
         # set above surface and below seafloor alphas to allow future filtering
@@ -296,7 +293,7 @@ class L_Depth(DepthBase):
 
         alphas[within_layer] = (depths[within_layer] - L0) / (L1 - L0)
 
-        if any(np.isnan(alphas)):
+        if np.isnan(alphas).any():
             raise ValueError("Some alphas are still unmasked and NaN. Please file a bug report")
 
         return indices, alphas
@@ -423,16 +420,18 @@ class S_Depth(DepthBase):
 
         :param terms: Direct mapping of component name to netCDF variable name. Use
                       this if auto detection fails. Partial definition is allowable.
-                      Unspecified terms will use the value in `.default_names`.
-                      ::
-                        {'Cs_r': 'Cs_r',
-                         'Cs_w': 'Cs_w',
-                         's_rho': 's_rho'),
-                         's_w': 's_w',
-                         'bathymetry': 'h',
-                         'hc': 'hc'),
-                         'zeta': 'zeta')
-                         }
+                      Unspecified terms will use the value in `.default_names`. ::
+
+                        {
+                        'Cs_r': 'Cs_r',
+                        'Cs_w': 'Cs_w',
+                        's_rho': 's_rho'),
+                        's_w': 's_w',
+                        'bathymetry': 'h',
+                        'hc': 'hc'),
+                        'zeta': 'zeta')
+                        }
+
         :type terms: dict
 
         :param name: Human-readable name for this object
@@ -490,7 +489,9 @@ class S_Depth(DepthBase):
                     time = Time.constant_time()
                 else:
                     time = Time.from_netCDF(
-                        dataset=zeta_var._grp,  # zeta_var should be a netCDF4.Variable, so its _grp attribute should be the dataset it belongs to
+                        # zeta_var should be a netCDF4.Variable,
+                        # so its _grp attribute should be the dataset it belongs to
+                        dataset=zeta_var._grp,
                         datavar=zeta_var,
                         origin=time_origin,
                         displacement=displacement,
@@ -678,7 +679,8 @@ class S_Depth(DepthBase):
             data=-np.ones((len(points)), dtype=np.int64) * 1000, mask=np.zeros((len(points)), dtype=bool)
         )
         alphas = np.ma.MaskedArray(
-            data=np.empty((len(points)), dtype=np.float64) * np.nan, mask=np.zeros((len(points)), dtype=bool)
+            data=np.full((len(points)), np.nan, dtype=np.float64),
+            mask=np.zeros((len(points)), dtype=bool)
         )
 
         # use np.digitize to bin the depths into the layers.
@@ -771,14 +773,21 @@ class S_Depth(DepthBase):
         if bottom_boundary_condition == "mask":
             indices.mask[below_bottom_mask] = True
             alphas.mask[below_bottom_mask] = True
-            
+
         indices.mask = np.logical_or(indices.mask, exclusion_mask)
         alphas.mask = np.logical_or(alphas.mask, exclusion_mask)
         return indices, alphas, oob_mask
 
-    def get_s_coordinate(self, points, time, data_shape=None, _hash=None, **kwargs):
+    def get_s_coordinate(self,
+                         points,
+                         time,
+                         data_shape=None,
+                         _hash=None,
+                         **kwargs):
         """
-        Given an array of points and a time, returns the S-Coordinate values of the depth layers at those points and time.
+        Given an array of points and a time, returns the S-Coordinate values
+        of the depth layers at those points and time.
+
         :param points: array of points to interpolate to
         :type points: numpy array of shape (n, 3)
 
@@ -790,7 +799,8 @@ class S_Depth(DepthBase):
                            index on the sigma layers or levels.
         :type data_shape: tuple of int
 
-        :return: numpy array of shape (n, num_w_levels) of n s-coordinate depth_profiles. 0 reference is mean sea surface.
+        :return: numpy array of shape (n, num_w_levels) of n s-coordinate
+                 depth_profiles. 0 reference is mean sea surface.
         """
         raise NotImplementedError("get_s_coordinate not implemented for S_Depth, required in subclasses")
 
@@ -808,7 +818,8 @@ class S_Depth(DepthBase):
                            index on the sigma layers or levels.
         :type data_shape: tuple of int
 
-        :return: numpy array of shape (n, num_w_levels) of n depth_profiles, referenced to the surface (i.e. surface is 0, seafloor is negative)
+        :return: numpy array of shape (n, num_w_levels) of n depth_profiles,
+                 referenced to the surface (i.e. surface is 0, seafloor is negative)
         """
         z = self.zeta.at(points, time, unmask=False, _hash=_hash, **kwargs)
         return self.get_s_coordinate(points, time, data_shape=data_shape, _hash=_hash, **kwargs) + z

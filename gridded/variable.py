@@ -1,7 +1,5 @@
 import collections
 import logging
-import os
-from abc import ABC
 from functools import wraps
 from textwrap import dedent
 import time
@@ -1040,8 +1038,8 @@ class VectorVariable(VariableAPI):
                 if _mod("grid"):
                     gt = kws.get("grid_topology", None)
                     kws["grid"] = Grid.from_netCDF(kws["filename"], dataset=dg, grid_topology=gt)
-                if kws.get("varnames", None) is None:
-                    varnames = cls._gen_varnames(kws["data_file"], dataset=ds)
+                # if kws.get("varnames", None) is None:
+                #     varnames = cls._gen_varnames(kws["data_file"], dataset=ds)
                 #                 if _mod('time'):
                 #                     time = Time.from_netCDF(filename=kws['data_file'],
                 #                                             dataset=ds,

@@ -4,12 +4,8 @@
 assorted utility functions needed by gridded
 """
 
-try:
-    from collections.abc import Collection, Iterable, Mapping
-except ImportError:  # py2
-    from collections.abc import Iterable
-
 import os
+from collections.abc import Iterable, Mapping
 
 import netCDF4 as nc4
 import numpy as np
@@ -89,7 +85,7 @@ def gen_celltree_mask_from_center_mask(center_mask, sl):
 #
 def regrid_variable(grid, o_var, location="node"):
     from gridded.depth import DepthBase, L_Depth, S_Depth
-    from gridded.grids import Grid_S, Grid_U
+    from gridded.grids import Grid_U
     from gridded.variable import Variable
 
     """
@@ -154,7 +150,8 @@ def regrid_variable(grid, o_var, location="node"):
     if o_var.time is not None:
         for t_idx, t in enumerate(o_var.time.data):
             if n_depth is not None and issubclass(n_depth.__class__, S_Depth):
-                transect = o_var.depth.get_depth_profile(o_var.grid.nodes.reshape(-1, 2), t, data_shape=(len(n_depth),)).T
+                transect = o_var.depth.get_depth_profile(o_var.grid.nodes.reshape(-1, 2),
+                                                         t, data_shape=(len(n_depth),)).T
                 for lev_idx, lev_data in enumerate(transect):
                     lev = Variable(
                         name=f"level{lev_idx}", data=lev_data.reshape(o_var.grid.node_lon.shape), grid=o_var.grid

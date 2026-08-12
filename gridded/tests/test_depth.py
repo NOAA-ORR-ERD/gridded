@@ -307,7 +307,7 @@ class Test_ROMS_Depth:
         )
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
-        
+
         points = np.array(
             [[20, 20, 9.9], [20, 20, 10.0], [20, 20, 10.1], [-1, -1, 5], [20, 20, -0.1], [20, 20, 0], [20, 20, 0.1]]
         )
@@ -531,12 +531,18 @@ def get_database_nc():
     """
     L_depth_file = os.path.join(TEST_DATA, "test_L_Depth.nc")
 
-    ncfile = nc.Dataset(L_depth_file)
-    ds = gridded.Dataset(L_depth_file)
+    # ncfile = nc.Dataset(L_depth_file)
+#    ds = gridded.Dataset(L_depth_file)
+    ds = gridded.Dataset.from_netCDF(L_depth_file)
     depth = gridded.depth.Depth.from_netCDF(filename=L_depth_file)
-    time = gridded.time.Time.from_netCDF(filename=L_depth_file, datavar=ncfile["u"])
+    # what's going on here? We shouldn't have to separately get time?
+    # after a dataset is loaded?
+    # but even if so, why not let Time.from_netCDF load the variable?
+    # time = gridded.time.Time.from_netCDF(filename=L_depth_file, datavar=ncfile["u"])
+    time = gridded.time.Time.from_netCDF(filename=L_depth_file, varname="time")
 
     return time, depth, ds
+
 
 
 class Test_L_Depth:
