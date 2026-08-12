@@ -1,19 +1,22 @@
 name: Upload sdist to Release
 
 on:
-  push:
-    tags:
-      - 'v*' # Trigger on version tags like v1.0.0
+  # push:
+  #   tags:
+  #     - 'v*' # Trigger on version tags like v1.0.0
+on:
+  release:
+    types: [published] # Triggers when a release is officially published
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.13'
 
