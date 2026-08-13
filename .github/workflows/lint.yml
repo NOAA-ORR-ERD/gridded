@@ -15,7 +15,7 @@ jobs:
       uses: prefix-dev/setup-pixi@v0.10.0
       with:
         cache: true
-        manifest-path: py_gnome/pixi.toml
+        manifest-path: pixi.toml
         environments: dev312
 
     - name: Lint
