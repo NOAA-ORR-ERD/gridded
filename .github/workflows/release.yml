@@ -1,6 +1,6 @@
 name: Upload sdist to Release
 
-on:
+# on:
   # push:
   #   tags:
   #     - 'v*' # Trigger on version tags like v1.0.0
