@@ -19,6 +19,6 @@ jobs:
         environments: dev312
 
     - name: Lint
-      working-directory: py_gnome
+#      working-directory:
 #      continue-on-error: true
       run: pixi run lint
