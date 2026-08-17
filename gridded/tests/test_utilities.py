@@ -59,6 +59,48 @@ def test_gen_celltree_mask_from_center_mask():
     testds.close()
 
 
+def test_convert_mask_capitalized_flag_meanings():
+    # CF Conventions 3.5 does not require flag_meanings to be lowercase, so
+    # "Land Water" is valid. The capitalized "Water" used to fail the substring
+    # test and get mapped to land, silently producing an all-land mask (#111).
+    mask_data = np.array([[0, 1], [1, 0]])  # 0 = land, 1 = water
+    expected = np.array([[True, False], [False, True]])
+
+    testds = nc.Dataset("cap", mode="w", diskless=True)
+    testds.createDimension("x", 2)
+    testds.createDimension("y", 2)
+    testds.createVariable("mask", "b", dimensions=("y", "x"))
+    testds["mask"][:] = mask_data
+    testds["mask"].flag_values = [0, 1]
+    testds["mask"].flag_meanings = "Land Water"
+
+    m = utilities.convert_mask_to_numpy_mask(testds["mask"])
+
+    assert np.all(m == expected)
+    testds.close()
+
+
+def test_convert_mask_string_flag_values():
+    # flag_values can arrive as a whitespace string ("0 1"). Its tokens used to
+    # stay strings and never compared equal to the numeric mask data, so the
+    # mask stayed all-land (#111).
+    mask_data = np.array([[0, 1], [1, 0]])  # 0 = land, 1 = water
+    expected = np.array([[True, False], [False, True]])
+
+    testds = nc.Dataset("strfv", mode="w", diskless=True)
+    testds.createDimension("x", 2)
+    testds.createDimension("y", 2)
+    testds.createVariable("mask", "b", dimensions=("y", "x"))
+    testds["mask"][:] = mask_data
+    testds["mask"].flag_values = "0 1"
+    testds["mask"].flag_meanings = "land water"
+
+    m = utilities.convert_mask_to_numpy_mask(testds["mask"])
+
+    assert np.all(m == expected)
+    testds.close()
+
+
 def test_reorganize_spatial_data():
     # 1-dimensional data
     sample_1 = [1, 2, 3]
