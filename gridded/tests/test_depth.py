@@ -11,7 +11,7 @@ import numpy as np
 import pytest
 
 import gridded
-from gridded.depth import FVCOM_Depth, L_Depth, ROMS_Depth, S_Depth
+from gridded.depth import DepthBase, FVCOM_Depth, L_Depth, ROMS_Depth, S_Depth
 from gridded.grids import Grid_S
 from gridded.tests.utilities import TEST_CDL_FILES, TEST_DATA
 from gridded.time import Time
@@ -41,6 +41,22 @@ def test_from_netCDF():
         #     print("NOT DEPTH:", fn)
         #     continue
         d = S_Depth.from_netCDF(data_file=ds, grid_file=ds)
+
+
+def test_depthbase_from_netcdf_passes_surface_index_keyword():
+    depth = DepthBase.from_netCDF(surface_index=2)
+    assert depth.surface_index == 2
+    assert depth.name is None
+
+
+def test_depthbase_accepts_default_bottom_boundary_condition_spelling():
+    depth = DepthBase(default_bottom_boundary_condition="extrapolate")
+    assert depth.default_bottom_boundary_condition == "extrapolate"
+
+
+def test_depthbase_keeps_legacy_bottom_boundary_condition_spelling():
+    depth = DepthBase(default_bottom_boundary_conditon="extrapolate")
+    assert depth.default_bottom_boundary_condition == "extrapolate"
 
 
 @pytest.fixture(scope="module")
