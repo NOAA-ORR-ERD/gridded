@@ -64,7 +64,11 @@ def parse_time_offset(unit_str):
     """
     import dateutil
 
-    t_string = unit_str.split("since")[1]
+    parts = unit_str.split("since", 1)
+    if len(parts) != 2:
+        logging.warning(f"No 'since' in time units string: '{unit_str}'. Setting offset to default")
+        return None, None
+    t_string = parts[1]
     try:
         dt = dateutil.parser.parse(t_string)
     except dateutil.parser.ParserError:
@@ -131,11 +135,11 @@ class Time:
         :type displacement: `datetime.timedelta`
         """
         if isinstance(data, Time):
-            self.data = data.data
+            self.data = data.get_time_array()
         elif data is None:
             self.data = np.array([datetime.now().replace(second=0, microsecond=0)])
         else:
-            self.data = np.asarray(data)
+            self.data = np.array(data, copy=True)
 
         # Quick check to ensure data is 'datetime-like' enough
         try:
@@ -295,7 +299,7 @@ class Time:
         # in the class, and always returns the same one (a singleton)
         if cls._const_time is None:
             cls._const_time = cls(np.array([datetime.now()]))
-        return cls._const_time
+        return cls(cls._const_time)
 
     @property
     def data(self):
@@ -308,7 +312,7 @@ class Time:
         if isinstance(data, self.__class__) or data.__class__ in self.__class__.__mro__:
             data = data.data
         # add check for valid datetime list?
-        self._data = np.asarray(data)
+        self._data = np.array(data, copy=True)
 
     @property
     def info(self):
