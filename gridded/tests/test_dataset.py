@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
 
-import os
-
-import netCDF4 as nc
 import pytest
 
 from gridded import Dataset
@@ -91,3 +88,24 @@ def test_save_invalid_format():
 
     with pytest.raises(ValueError):
         ds.save("a_filename.txt", format="text")
+
+
+def test_close_closes_netcdf_handle():
+    gds = Dataset.from_netCDF(sample_sgrid_file)
+    nc_dataset = gds.nc_dataset
+
+    assert nc_dataset.isopen()
+
+    gds.close()
+
+    assert not nc_dataset.isopen()
+    assert gds.nc_dataset is None
+
+
+def test_dataset_context_manager_closes_netcdf_handle():
+    with Dataset.from_netCDF(sample_sgrid_file) as gds:
+        nc_dataset = gds.nc_dataset
+        assert nc_dataset.isopen()
+
+    assert not nc_dataset.isopen()
+    assert gds.nc_dataset is None
