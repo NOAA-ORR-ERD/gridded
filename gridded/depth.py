@@ -1003,6 +1003,9 @@ class Depth:
             )
             return cls.surf_types[0].from_netCDF(data_file=ds, grid_file=dg, **kwargs)
         else:
+            # Set depth class type from first class/type that evaluates
+            # as True from type list "available_to_create", throwing a 
+            # warning if more than one depth class is True.
             typ = typs[np.argmax(available_to_create)]
             if sum(available_to_create) > 1:
                 warnings.warn(f"Multiple depth systems detected. Using the first one found: {typ!r}", RuntimeWarning)

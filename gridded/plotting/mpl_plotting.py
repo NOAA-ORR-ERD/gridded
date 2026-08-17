@@ -1,5 +1,19 @@
 """
-Some MPL based plotting utilities for gridded.
+Matplotlib-based plotting utilities for gridded data.
+
+This module provides interactive plotting tools built on top of Matplotlib
+specifically tailored for gridded mesh visualisations.
+
+Functions
+---------
+fvcom_inspector(nc_file)
+    Launches an interactive graphical display of a horizontal FVCOM mesh,
+    displaying node and centroid indices of selected faces and saving selected
+    node details to a CSV file.
+
+Examples
+--------
+>>> fvcom_inspector("fvcom_input_file.nc")
 """
 
 import pathlib
@@ -11,7 +25,7 @@ from matplotlib.tri import Triangulation
 import matplotlib.pyplot as plt
 import shapely.geometry as sgeom
 
-from gnome.environment.environment_objects import GridCurrent
+from ..depth import FVCOM_Depth
 
 def plot_ugrid(axes, grid, nodes=False, node_numbers=False, face_numbers=False):
     """
@@ -184,15 +198,15 @@ class GridGeoGenerator:
 
     def __init__(self, filename, crs=None):
         """
-        Instantiate by loading a NetCDF file into a PyGNOME
-        GridCurrent object and initializing spatial indexing.
+        Instantiate by loading a FVCOM Grid Current object from 
+        NetCDF file and initializing spatial indexing.
 
         :param filename: Path to the FVCOM NetCDF file.
         :type filename: str or pathlib.Path
         """
         # Load Gridded Current Object
         self.filename = pathlib.Path(filename)
-        self.grid_current = GridCurrent.from_netCDF(str(self.filename))
+        self.grid_current = FVCOM_Depth.from_netCDF(str(self.filename))
         self.grid_obj = self.grid_current.grid
 
         if hasattr(self.grid_obj, 'build_spatial_tree'):
@@ -646,7 +660,12 @@ def fvcom_inspector(filename, spill_location=None, backend=None):
 
     :param filename: Path to FVCOM NetCDF grid file.
     :param spill_location: Optional (lon, lat) tuple.
-    :param backend: Optional explicit Matplotlib backend (e.g., 'TkAgg').
+    :param backend: Optional explicit Matplotlib backend for the 
+           underlying engine responsible for taking plot elements 
+           (lines, shapes, text) and rendering them onto an actual 
+           plot destination. 'TkAgg'(Tkinter) is Python's is Python's
+           built-in GUI library.  Other options include: QtAgg, WXAgg, 
+           and MacOSX. 
     """
     if backend:
         matplotlib.use(backend)

@@ -274,13 +274,6 @@ class Variable:
         if location is None:
             if hasattr(data, "location"):
                 location = data.location
-        #             if len(data.shape) == 4 or (len(data.shape) == 3 and time is None):
-        #                 from gnome.environment.environment_objects import S_Depth
-        #                 depth = S_Depth.from_netCDF(grid=grid,
-        #                                             depth=1,
-        #                                             data_file=data_file,
-        #                                             grid_file=grid_file,
-        #                                             **kwargs)
         if load_all:
             data = data[:]
         return cls(
