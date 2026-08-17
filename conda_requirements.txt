@@ -11,6 +11,5 @@ netcdf4>=1.4
 cell_tree2d>=0.3
 cftime
 python-dateutil
-pynucos>3.4.0
 hatchling
 hatch-vcs
