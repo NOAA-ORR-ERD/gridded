@@ -3,10 +3,13 @@
 
 # requires python, but if you leave it out, it will use python already in
 # the conda environment, rather than upgrading or downgrading
-python>=3.9
+python>=3.10,<3.14 # updated to match pygnome
 numpy
+pandas
 scipy
 netcdf4>=1.4
 cell_tree2d>=0.3
 cftime
 python-dateutil
+hatchling
+hatch-vcs
