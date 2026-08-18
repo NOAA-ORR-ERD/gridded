@@ -1008,7 +1008,15 @@ class Depth:
             # warning if more than one depth class is True.
             typ = typs[np.argmax(available_to_create)]
             if sum(available_to_create) > 1:
-                warnings.warn(f"Multiple depth systems detected. Using the first one found: {typ!r}", RuntimeWarning)
+                # Create list of depth class names from boolean available_to_create
+                detected_systems = [
+                    t.__name__ for t, matched in zip(typs, available_to_create) if matched
+                ]
+                raise ValueError(
+                    f"Ambiguous vertical grid structure: Multiple depth classes associated "
+                    f"with this NetCDF dataset: {detected_systems}. "
+                )
             return typ.from_netCDF(
-                filename=filename, dataset=dataset, data_file=data_file, grid_file=grid_file, **kwargs
+                filename=filename, dataset=dataset, data_file=data_file, 
+                grid_file=grid_file, **kwargs
             )
