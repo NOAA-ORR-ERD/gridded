@@ -368,6 +368,7 @@ class Variable(VariableAPI):
     def data(self, d):
         d = asarraylike(d)
         self._data = d
+        self._clear_memo()  # changing the data should clear the memoization cache
 
     @property
     def units(self):
@@ -392,19 +393,18 @@ class Variable(VariableAPI):
         (though may occur if subcomponent Variable are present)
         
         Returns the interpolated values at the points and time specified.
-        """
-        
-        order = self._interp_order
-        if len(order) == 0:
-            #special case for a Variable with no dimensions (eg a constant value)
-            return np.full((len(ps), len(ts), 1), self.data)
-        
+        """     
         if self.memoization_enabled:
             res = self._get_memoed(ps, ts, self._result_memo, _hash=_hash)
             if res is not None:
                 return res
         
         _mem = self.memoization_enabled
+        
+        order = self._interp_order
+        if len(order) == 0:
+            #special case for a Variable with no dimensions (eg a constant value)
+            return np.full((len(ps), len(ts), 1), self.data)
         
         retval = np.ma.empty((len(ps), len(ts), 1))
         for i, time in enumerate(ts):

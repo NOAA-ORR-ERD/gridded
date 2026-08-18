@@ -13,8 +13,6 @@ from gridded.utilities import (
 )
 class VariableAPI(object):
     
-    memoization_enabled = False # class-level flag to enable/disable memoization for all VariableAPI instances
-    
     @property
     def data(self):
         """
@@ -27,6 +25,9 @@ class VariableAPI(object):
             raise NotImplementedError(".data property for" + self.__class__.__name__ + " is not implemented.")
         else:
             return self._data
+    
+    #If a data setter is implemented, it is highly recommended that the function wipe
+    #self._result_memo to avoid returning stale results from memoization.
     
     @property
     def shape(self):
@@ -119,14 +120,17 @@ class VariableAPI(object):
         :return: returns a NxTxD array of interpolated values.
         :rtype: numpy.ma.MaskedArray or numpy.ndarray
         """
-        ps, ts, _hash = self._prepare_at(p, t, _hash=_hash, **kwargs)
+        ps, ts, _hash = self._prepare_at(p, t, _hash=_hash, extrapolate=extrapolate, **kwargs)
         out = self._compute_at(ps, ts, extrapolate=extrapolate, unmask=unmask, _hash=_hash, **kwargs)
+        if self.memoization_enabled and out and _hash in self._result_memo:
+            # If memoization is enabled and the result is already cached, return it directly.
+            return out
         retval = self._post_compute_at(out, p, t, unmask=unmask, _hash=_hash, **kwargs)
         return retval
     
     interpolate = at  # common request
     
-    def _prepare_at(self, p, t, _hash=None, **kwargs):
+    def _prepare_at(self, p, t, _hash=None, extrapolate=False, **kwargs):
         """
         First stage of the .at function. Handles points and time normalization
         and hash generation for memoization.     
@@ -141,7 +145,7 @@ class VariableAPI(object):
             ts = t
 
         if _hash is None and self.memoization_enabled:
-            _hash = self._get_hash(p, t)
+            _hash = self._get_hash(ps, ts, extrapolate=extrapolate)
 
         return ps, ts, _hash
     
@@ -205,5 +209,23 @@ class VariableAPI(object):
             return None
 
     def _clear_memo(self):
-        if self._result_memo is not None:
+        if hasattr(self, "_result_memo") and self._result_memo is not None:
             self._result_memo.clear()
+
+    @property 
+    def memoization_enabled(self):
+        """
+        Returns whether memoization is enabled for this VariableAPI instance.
+        """
+        if not hasattr(self, "_memoization_enabled"):
+            self._memoization_enabled = False
+        return self._memoization_enabled
+
+    @memoization_enabled.setter
+    def memoization_enabled(self, enabled):
+        """
+        Enable or disable memoization for this VariableAPI instance.
+        When enabled, results of .at calls will be cached and returned for repeated calls with the same points and times.
+        When disabled, results will not be cached and will be recomputed for each call.
+        """
+        self._memoization_enabled = bool(enabled)

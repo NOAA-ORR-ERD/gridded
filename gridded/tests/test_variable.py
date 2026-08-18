@@ -53,6 +53,36 @@ def test_Variable_api_at_function():
     r3 = var.at(p3, t)
 
     assert np.all(np.logical_and(r1 == r2, r2 == r3))
+def test_Variable_api_at_function_memoization():
+    
+    v = Variable.constant(5, name="test")
+    v.memoization_enabled = True
+    assert v.data == 5
+    assert v.shape == ()
+    
+    result = v.at((1, 2), 0)
+    assert list(v._result_memo.values())[0] is result
+    assert result.flags.writeable == False
+    assert result.shape == (1, 1)
+    assert result == 5
+    
+    #extrapolation is part of the memoization hash, so it should return a different result
+    result2 = v.at((1, 2), 0, extrapolate=True)
+    assert result2.shape == (1, 1)
+    assert result2 == 5
+    assert result2 is not result
+    
+    v.data = np.array(6) #changing the data while memoization is enabled should wipe the cache
+        
+    result2 = v.at((1, 2), 0)
+    assert result2.shape == (1, 1)
+    assert result2 == 6
+    assert result is not result2
+    
+    v.memoization_enabled = False
+    result3 = v.at((1, 2), 0)
+    assert result3.shape == (1, 1)
+    assert result3 == 6
 
 def test_Variable_constant():
     v = Variable.constant(5, name="test")
