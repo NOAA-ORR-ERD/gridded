@@ -23,7 +23,6 @@ Download = "https://github.com/NOAA-ORR-ERD/gridded"
 Homepage = "https://github.com/NOAA-ORR-ERD/gridded"
 
 [tool.hatch.version]
-# path = "gridded/__init__.py"
 source = "vcs"
 
 [tool.hatch.build.hooks.vcs]
