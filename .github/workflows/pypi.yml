@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/xarray_subset_grid/
+      url: https://pypi.org/p/gridded/
     permissions:
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
@@ -44,7 +44,7 @@ jobs:
 
     - name: Test wheels
       run: |
-        cd dist && python -m pip install xarray_subset_grid*.whl
+        cd dist && python -m pip install gridded*.whl
         python -m twine check *
 
     - name: Publish package distributions to PyPI
