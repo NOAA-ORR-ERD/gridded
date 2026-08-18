@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 
-# py2/3 compatibility
-
 import os
 
 import netCDF4 as nc
 import numpy as np
 
 from gridded import utilities
-from gridded.tests.test_depth import get_roms_depth
+
+# the get_roms_depth fixture should be in conftest.py
+# so it can be used everywhere
+from gridded.tests.test_depth import get_roms_depth  # noqa: F401
 
 data_dir = os.path.join(os.path.split(__file__)[0], "test_data")
 
@@ -203,8 +204,8 @@ def test_regrid_variable_TDStoS(get_roms_depth):
     grid = sd.grid
     n_levels = sd.num_levels
     data = np.ones((1, n_levels, grid.node_lon.shape[0], grid.node_lon.shape[1]))
-    for l in range(0, n_levels):
-        data[0, l] *= l
+    for lev in range(0, n_levels):
+        data[0, lev] *= lev
 
     v1 = Variable(name="v1", grid=grid, data=data, depth=sd, time=Time.constant_time())
 
@@ -229,7 +230,8 @@ def test_regrid_variable_StoS(get_roms_depth):
     # Depth is not present
     # Grid_S to Grid_S
     from gridded.grids import Grid_S
-    from gridded.time import Time
+
+    #     from gridded.time import Time
     from gridded.variable import Variable
 
     sd = get_roms_depth
