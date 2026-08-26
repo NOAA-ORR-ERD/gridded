@@ -394,7 +394,7 @@ class SGrid:
         shape = None
         try:
             shape = np.array(variable.shape)
-        except:
+        except AttributeError:
             return None  # Variable has no shape attribute!
         if len(variable.shape) < 2:
             return None
@@ -1448,7 +1448,7 @@ class SGridAttributes:
     def get_cell_edge1_lat_lon(self):
         try:
             edge1_lon_var, edge1_lat_var = self.get_attr_coordinates("edge1_coordinates")
-        except:
+        except TypeError:
             edge1_lon, edge1_lat = None, None
         else:
             edge1_lon = self.nc[edge1_lon_var][:]
