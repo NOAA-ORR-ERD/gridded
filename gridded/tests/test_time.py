@@ -72,8 +72,8 @@ def test_from_netcdf_filename_no_var():
     """
     initialize from a netcdf filename
     """
-    with pytest.raises(TypeError):
-        t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc")
+    t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc")
+    assert t.varname == "time"
 
 
 def test_from_netcdf_filename_specify_time_var_name():
@@ -110,6 +110,13 @@ def test_from_netcdf_filename_specify_var():
 
     assert len(t.data) == 10
     assert t.data[0] == datetime(2024, 5, 23, 0, 0)
+
+def test_from_netcdf_nonstandard_time_var():
+    """
+    init from a netcdf where the time var is found via long_name or standard_name, not the default names
+    """
+    t = Time.from_netCDF(filename=TEST_DATA / "non_standard_names.nc")
+    assert t.varname == "MT"
 
 
 def test_from_netcdf_filename_bad():

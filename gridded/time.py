@@ -3,11 +3,16 @@
 import logging
 from datetime import datetime, timedelta
 from textwrap import dedent
+import warnings
 
 import netCDF4 as nc4
 import numpy as np
 
-from gridded.utilities import get_dataset
+from gridded.utilities import (
+    get_dataset,
+    parse_filename_dataset_args,
+    search_netcdf_vars,
+)
 
 
 class OutOfTimeRangeError(ValueError):
@@ -87,6 +92,9 @@ class Time:
     # Used to make a singleton with the constant_time class method.
     #  question: why not a ContantTime Class?
     _const_time = None
+    _instance_count = 0
+    default_names = {'data': ['time', 'ocean_time', 't']}
+    cf_names = {'data': ['time', 'ocean_time']}
 
     def __init__(
         self,
@@ -98,6 +106,7 @@ class Time:
         tz_offset_name="",
         origin=None,
         displacement=None,
+        name=None,
         *args,
         **kwargs,
     ):
@@ -130,6 +139,7 @@ class Time:
                Allows shifting entire time interval into future or past
         :type displacement: `datetime.timedelta`
         """
+        self.name = name
         if isinstance(data, Time):
             self.data = data.data
         elif data is None:
@@ -195,6 +205,7 @@ class Time:
         tz_offset_name=None,
         origin=None,
         displacement=None,
+        name=None,
         **kwargs,
     ):
         """
@@ -238,20 +249,33 @@ class Time:
                                   you to have the tz_offset correct.
         :type tz_offset_name: str.
         """
-        if varname is None and datavar is None:
-            raise TypeError("you must pass in either a varname or a datavar")
-        if dataset is None:
-            dataset = get_dataset(filename)
 
-        if varname is None and datavar is not None:
-            if isinstance(datavar, str):
-                datavar = dataset.variables[datavar]
-            varname = cls.locate_time_var_from_var(datavar)
-            # fixme: This seems risky -- better to raise and deal with it elsewhere.
-            if varname is None:
-                return cls.constant_time()
-        if isinstance(varname, str):
-            tvar = dataset.variables[varname]
+        ds, dg = parse_filename_dataset_args(
+            filename=filename, dataset=dataset
+        )
+        if name is None:
+            name = cls.__name__ + "_" + str(cls._instance_count)
+            cls._instance_count += 1
+        if varname is None:
+            nc_vars = search_netcdf_vars(cls, ds, dg)
+            tvar = nc_vars[list(cls.default_names.keys())[0]]
+            if tvar is None:
+                warnings.warn(
+                    "No time variables found in the dataset. Returning a constant time object, but in future will raise an error."
+                )
+                return cls.constant_time() #this is necessary until the refactor where variable.time = None is supported
+                #raise ValueError("No time variables found in the dataset.")
+            varname = tvar.name
+            if datavar is not None:
+                if isinstance(datavar, str):
+                    datavar = ds.variables[datavar]
+                if datavar.dimensions[0] != varname:
+                    raise ValueError(
+                        f"Time variable '{varname}' does not match the first dimension of "
+                        f"the data variable '{datavar.name}'."
+                    )
+        elif isinstance(varname, str):
+            tvar = ds.variables[varname]
 
         # figure out the timezone_offset
         if isinstance(tz_offset, str) and tz_offset.lower() == "naive":
@@ -280,6 +304,7 @@ class Time:
             tz_offset_name=tz_offset_name,
             origin=origin,
             displacement=displacement,
+            name=name,
             **kwargs,
         )
         return time
