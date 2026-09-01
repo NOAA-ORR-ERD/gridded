@@ -120,10 +120,14 @@ class NetCDFDataset:
     def __init__(self, nc):
         self.nc = nc
         # in case a user as a version netcdf C library < 4.1.2
-        try:
-            self._filepath = nc.filepath()
-        except ValueError:
+        if hasattr(nc, '_filepath'):
+            self._filepath = nc.filepath() # Returns single string
+        elif hasattr(nc, '_files'):
+            self._filepath = nc._files # Returns a list of strings
+        else:
             self._filepath = None
+            # raise error?
+            
         self.sgrid_compliant_file()
 
     def find_node_coordinates(self, node_dimensions):
