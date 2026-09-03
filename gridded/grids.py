@@ -109,6 +109,32 @@ class GridBase:
         """
 
         raise NotImplementedError("GridBase cannot interpolate variables to itself")
+    
+    def _diff(self, other, fail_early=False):
+        """
+        Compares this grid with another grid and returns a dictionary of differences.
+        If fail_early is True, the comparison will stop at the first difference found.
+        Returns None if no differences are found.
+        """
+        diff = {}
+        if self.__class__ != other.__class__:
+            diff["class"] = f"self: {self.__class__}, other: {other.__class__}"
+            if fail_early:
+                return diff
+        if np.any(self.node_lon != other.node_lon):
+            diff["node_lon"] = f"self: {self.node_lon}, other: {other.node_lon}"
+            if fail_early:
+                return diff
+        if np.any(self.node_lat != other.node_lat):
+            diff["node_lat"] = f"self: {self.node_lat}, other: {other.node_lat}"
+            if fail_early:
+                return diff
+        if not any(diff.values()):
+            return None
+        return diff
+    
+    def __eq__(self, other):
+        return self._diff(other) is None
 
 
 class Grid_U(GridBase, UGrid):
