@@ -89,9 +89,6 @@ def parse_time_offset(unit_str):
 
 
 class Time:
-    # Used to make a singleton with the constant_time class method.
-    #  question: why not a ContantTime Class?
-    _const_time = None
     _instance_count = 0
     default_names = {'data': ['time', 'ocean_time', 't']}
     cf_names = {'data': ['time', 'ocean_time']}
@@ -312,15 +309,11 @@ class Time:
     @classmethod
     def constant_time(cls):
         """
-        Returns a Time object that represents no change in time
+        Returns a Time object that represents a single point in time.
 
         In practice, that's a Time object with a single datetime
         """
-        # this caches a single instance of a constant time object
-        # in the class, and always returns the same one (a singleton)
-        if cls._const_time is None:
-            cls._const_time = cls(np.array([datetime.now()]))
-        return cls._const_time
+        return cls(data=np.array([datetime.now()]))
 
     @property
     def data(self):
@@ -357,13 +350,27 @@ class Time:
 
     def __iter__(self):
         return iter(self.data)
+    
+    def _diff(self, other):
+        diff = {}
+        if not isinstance(other, self.__class__):
+            diff["class"] = (self.__class__, other.__class__)
+            return diff
+
+        if len(other.data) == 1 and len(self.data) == 1:
+            # if both are constant time, then we don't care about the values
+            pass
+        else:
+            if not np.array_equal(self.data, other.data):
+                # if the lengths are 1, then we don't care about the values, because they are constant time
+                diff["data"] = (self.data, other.data)
+        if self.tz_offset != other.tz_offset:
+            diff["tz_offset"] = (self.tz_offset, other.tz_offset)
+
+        return diff if diff else None
 
     def __eq__(self, other):
-        # r = self.data == other.data
-        # return all(r) if hasattr(r, '__len__') else r
-        if not isinstance(other, self.__class__):
-            return False
-        return np.array_equal(self.data, other.data) and self.tz_offset == other.tz_offset
+        return self._diff(other) is None
 
     def __ne__(self, other):
         return not self.__eq__(other)

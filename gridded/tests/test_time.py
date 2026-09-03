@@ -238,6 +238,8 @@ def test_eq():
     t2 = Time(data=copy.copy(SAMPLE_TIMESERIES))
 
     assert t1 == t2
+    
+    assert t1._diff(t2) is None
 
 
 def test_eq_diff_length():
@@ -247,6 +249,10 @@ def test_eq_diff_length():
     t2 = Time(data=data2)
 
     assert t1 != t2
+    
+    assert t1._diff(t2) is not None
+    assert "data" in t1._diff(t2)
+    
 
 
 def test_eq_diff_values():
@@ -269,6 +275,10 @@ def test_eq_diff_one_constant():
 def test_eq_constant_time():
     t1 = Time.constant_time()
     t2 = Time.constant_time()
+    t2.data += timedelta(minutes=5)
+    assert t1._diff(t2) is None
+    
+    assert t1.data[0] != t2.data[0]
 
     assert t1 == t2
 
