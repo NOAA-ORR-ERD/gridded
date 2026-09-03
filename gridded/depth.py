@@ -63,6 +63,32 @@ class DepthBase:
         # Subclasses are REQUIRED to implement this property in the manner appropriate
         # for the system being represented
         return self._bottom_index
+    
+    def _diff(self, other, fail_early=False):
+        diff = {}
+        if not isinstance(other, self.__class__):
+            diff["class"] = (self.__class__, other.__class__)
+            return diff
+
+        if self.surface_index != other.surface_index:
+            diff["surface_index"] = (self.surface_index, other.surface_index)
+            if fail_early and diff["surface_index"]:
+                return diff
+        if self.bottom_index != other.bottom_index:
+            diff["bottom_index"] = (self.bottom_index, other.bottom_index)
+            if fail_early and diff["bottom_index"]:
+                return diff
+            
+        if hasattr(self, 'grid') and hasattr(other, 'grid'):
+            if self.grid != other.grid:
+                diff["grid"] = (self.grid, other.grid)
+                if fail_early and diff["grid"]:
+                    return diff
+
+        return diff if diff else None
+
+    def __eq__(self, other):
+        return self._diff(other, fail_early=True) is None
 
     def interpolation_alphas(
         self,

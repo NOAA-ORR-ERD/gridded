@@ -351,7 +351,7 @@ class Time:
     def __iter__(self):
         return iter(self.data)
     
-    def _diff(self, other):
+    def _diff(self, other, fail_early=False):
         diff = {}
         if not isinstance(other, self.__class__):
             diff["class"] = (self.__class__, other.__class__)
@@ -364,13 +364,17 @@ class Time:
             if not np.array_equal(self.data, other.data):
                 # if the lengths are 1, then we don't care about the values, because they are constant time
                 diff["data"] = (self.data, other.data)
+                if fail_early:
+                    return diff
         if self.tz_offset != other.tz_offset:
             diff["tz_offset"] = (self.tz_offset, other.tz_offset)
+            if fail_early:
+                return diff
 
         return diff if diff else None
 
     def __eq__(self, other):
-        return self._diff(other) is None
+        return self._diff(other, fail_early=True) is None
 
     def __ne__(self, other):
         return not self.__eq__(other)

@@ -119,13 +119,12 @@ class GridBase:
         diff = {}
         if self.__class__ != other.__class__:
             diff["class"] = f"self: {self.__class__}, other: {other.__class__}"
-            if fail_early:
-                return diff
-        if np.any(self.node_lon != other.node_lon):
+            return diff
+        if not np.array_equal(self.node_lon, other.node_lon):
             diff["node_lon"] = f"self: {self.node_lon}, other: {other.node_lon}"
             if fail_early:
                 return diff
-        if np.any(self.node_lat != other.node_lat):
+        if not np.array_equal(self.node_lat, other.node_lat):
             diff["node_lat"] = f"self: {self.node_lat}, other: {other.node_lat}"
             if fail_early:
                 return diff
@@ -134,7 +133,7 @@ class GridBase:
         return diff
     
     def __eq__(self, other):
-        return self._diff(other) is None
+        return self._diff(other, fail_early=True) is None
 
 
 class Grid_U(GridBase, UGrid):
@@ -176,6 +175,31 @@ class Grid_U(GridBase, UGrid):
             init_args["faces"] -= 1
 
         return init_args, gt
+    
+    def _diff(self, other, fail_early=False):
+        """
+        Compares this grid with another grid and returns a dictionary of differences.
+        If fail_early is True, the comparison will stop at the first difference found.
+        Returns None if no differences are found.
+        """
+        diff = super()._diff(other, fail_early=fail_early) or {}
+        if diff and fail_early:
+            return diff
+        if not np.array_equal(self.nodes, other.nodes):
+            diff["nodes"] = f"self: {self.nodes}, other: {other.nodes}"
+            if fail_early and diff["nodes"]:
+                return diff
+        if not np.array_equal(self.faces, other.faces):
+            diff["faces"] = f"self: {self.faces}, other: {other.faces}"
+            if fail_early and diff["faces"]:
+                return diff
+        if not np.array_equal(self.boundaries, other.boundaries):
+            diff["boundaries"] = f"self: {self.boundaries}, other: {other.boundaries}"
+            if fail_early and diff["boundaries"]:
+                return diff
+        if not any(diff.values()):
+            return None
+        return diff
 
     # @classmethod
     # def gen_from_quads(cls, nodes):
