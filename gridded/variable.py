@@ -429,6 +429,11 @@ class Variable:
             diff["class"] = (self.__class__, other.__class__)
             return diff
 
+        if self.varname != other.varname:
+            diff["varname"] = (self.varname, other.varname)
+            if fail_early and diff["varname"]:
+                return diff
+
         if self.data_shape != other.data_shape:
             diff["data_shape"] = (self.data_shape, other.data_shape)
             if fail_early and diff["data_shape"]:

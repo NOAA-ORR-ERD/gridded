@@ -25,6 +25,31 @@ def test_create_from_netcdf_dataset():
     print(var.info)
 
     assert var.data.shape == (1, 12, 11)
+    
+
+def test_diff():
+    ds = netCDF4.Dataset(sample_sgrid_file)
+
+    var1 = Variable.from_netCDF(
+        dataset=ds,
+        varname="u",
+    )
+    var2 = Variable.from_netCDF(
+        dataset=ds,
+        varname="v",
+    )
+
+    diff = var1._diff(var2)
+    print(diff)
+    assert all([v in diff for v in ["varname", "data_shape"]])
+    
+    diff = var1._diff(var2, fail_early=True)
+    assert len(diff) == 1
+    
+    var2.grid = None
+    diff = var1._diff(var2)
+    print(diff)
+    assert "grid" in diff
 
 
 def test_Variable_api_at_function():
