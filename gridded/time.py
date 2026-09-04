@@ -266,7 +266,7 @@ class Time:
             if datavar is not None:
                 if isinstance(datavar, str):
                     datavar = ds.variables[datavar]
-                if datavar.dimensions[0] != tvar.dimensions[0]q:
+                if datavar.dimensions[0] != tvar.dimensions[0]:
                     raise ValueError(
                         f"Time variable '{varname}' does not match the first dimension of "
                         f"the data variable '{datavar.name}'."
