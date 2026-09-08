@@ -635,6 +635,25 @@ class S_Depth(DepthBase):
 
     def __len__(self):
         return self.num_levels
+    
+    def _diff(self, other, fail_early=False):
+        diff = super()._diff(other, fail_early=fail_early) or {}
+        if diff and fail_early:
+            return diff
+        
+        if self.bathymetry != other.bathymetry:
+            diff["bathymetry"] = (self.bathymetry, other.bathymetry)
+            if fail_early:
+                return diff
+        if self.zeta != other.zeta:
+            diff["zeta"] = (self.zeta, other.zeta)
+            if fail_early:
+                return diff
+        if self.terms != other.terms:
+            diff["terms"] = (self.terms, other.terms)
+            if fail_early:
+                return diff
+        return diff if diff else None
 
     def get_surface_depth(self, points, time, data_shape, _hash=None, **kwargs):
         """
