@@ -72,4 +72,3 @@ test = { cmd = "pytest --cov=gridded  --pyargs gridded", depends-on = ["install"
 
 lint = { cmd = "ruff check gridded", default-environment = "dev"}
 
-
