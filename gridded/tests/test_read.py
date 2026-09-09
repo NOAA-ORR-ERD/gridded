@@ -55,7 +55,7 @@ def test_read_variables():
 
 
 def test_read_variable_attributes():
-    ds = Dataset(test_data_dir / "UGRIDv0.9_eleven_points.nc")
+    ds = Dataset.from_netCDF(test_data_dir / "UGRIDv0.9_eleven_points.nc")
     print(ds.variables["Mesh2_depth"].attributes)
     assert ds.variables["Mesh2_depth"].attributes["standard_name"] == "sea_floor_depth_below_geoid"
     assert ds.variables["Mesh2_depth"].attributes["units"] == "m"

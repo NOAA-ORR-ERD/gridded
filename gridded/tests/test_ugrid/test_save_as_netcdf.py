@@ -439,7 +439,7 @@ def test_write_everything(twenty_one_triangles, ncds):
     ds.close()
 
     # And make sure pyugrid can reload it!
-    gds = Dataset(fname)
+    gds = Dataset.from_netCDF(fname)
     grid = gds.grid
     # And that some things are the same.
     # NOTE: more testing might be good here.

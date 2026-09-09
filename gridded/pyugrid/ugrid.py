@@ -610,7 +610,7 @@ class UGrid:
         """
         points = np.asarray(points, dtype=np.float64)
         just_one = points.ndim == 1
-        points.shape = (-1, 2)
+        points = points.reshape((-1, 2), copy=False)
 
         if _memo:
             if _hash is None:
