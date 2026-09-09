@@ -267,6 +267,16 @@ class Test_ROMS_Depth:
     def test_construction(self, get_roms_depth):
         assert get_roms_depth is not None
         assert get_roms_depth.num_levels == 11
+        
+    def test_diff(self, get_roms_depth, get_fvcom_depth):
+        sd = get_roms_depth
+        sd2 = get_fvcom_depth
+        diff = sd._diff(sd2)
+        assert "class" in diff
+        
+        sd2 = ROMS_Depth(grid=None, time=sd.time, bathymetry=sd.bathymetry, zeta=sd.zeta, terms=sd.terms)
+        diff = sd._diff(sd2)
+        assert "grid" in diff
 
     def test_interpolation_alphas(self, get_roms_depth):
         """

@@ -13,7 +13,7 @@ fvcom_inspector(nc_file)
 
 Examples
 --------
->>> fvcom_inspector("fvcom_input_file.nc")
+>>> csv_path = fvcom_inspector("fvcom_input_file.nc")
 """
 
 import pathlib
@@ -460,6 +460,7 @@ class PureMatplotlibFVCOMViewer:
         self.fig.canvas.mpl_connect('button_press_event', self.on_click)
         #self.fig.canvas.mpl_connect("close_event", self.on_window_close)
 
+
     def init_csv_file(self):
         """Creates or overwrites the CSV log with headers on start."""
         headers = pd.DataFrame(
@@ -668,6 +669,9 @@ def fvcom_inspector(filename, spill_location=None, backend=None):
            plot destination. 'TkAgg'(Tkinter) is Python's is Python's
            built-in GUI library.  Other options include: QtAgg, WXAgg, 
            and MacOSX. 
+
+    :returns: csv_path (Path) -- Path object to output CSV file
+    
     """
     if backend:
         matplotlib.use(backend)
@@ -682,3 +686,7 @@ def fvcom_inspector(filename, spill_location=None, backend=None):
         filename, spill_location=spill_location
     )
     viewer.show()
+
+    # pass back the path to the saved CSV file
+    return viewer.csv_path
+

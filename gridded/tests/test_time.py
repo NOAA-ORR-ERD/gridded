@@ -72,8 +72,8 @@ def test_from_netcdf_filename_no_var():
     """
     initialize from a netcdf filename
     """
-    with pytest.raises(TypeError):
-        t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc")
+    t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc")
+    assert t.varname == "time"
 
 
 def test_from_netcdf_filename_specify_time_var_name():
@@ -110,6 +110,13 @@ def test_from_netcdf_filename_specify_var():
 
     assert len(t.data) == 10
     assert t.data[0] == datetime(2024, 5, 23, 0, 0)
+
+def test_from_netcdf_nonstandard_time_var():
+    """
+    init from a netcdf where the time var is found via long_name or standard_name, not the default names
+    """
+    t = Time.from_netCDF(filename=TEST_DATA / "non_standard_names.nc")
+    assert t.varname == "MT"
 
 
 def test_from_netcdf_filename_bad():
@@ -231,6 +238,8 @@ def test_eq():
     t2 = Time(data=copy.copy(SAMPLE_TIMESERIES))
 
     assert t1 == t2
+    
+    assert t1._diff(t2) is None
 
 
 def test_eq_diff_length():
@@ -240,6 +249,10 @@ def test_eq_diff_length():
     t2 = Time(data=data2)
 
     assert t1 != t2
+    
+    assert t1._diff(t2) is not None
+    assert "data" in t1._diff(t2)
+    
 
 
 def test_eq_diff_values():
@@ -262,6 +275,10 @@ def test_eq_diff_one_constant():
 def test_eq_constant_time():
     t1 = Time.constant_time()
     t2 = Time.constant_time()
+    t2.data += timedelta(minutes=5)
+    assert t1._diff(t2) is None
+    
+    assert t1.data[0] != t2.data[0]
 
     assert t1 == t2
 

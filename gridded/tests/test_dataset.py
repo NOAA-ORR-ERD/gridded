@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
 
+import datetime
 import os
 
+from gridded.time import Time
 import netCDF4 as nc
 import pytest
 
@@ -86,8 +88,60 @@ def test_get_variable_by_attribute_not_there():
     assert var == []
 
 
+def test_diff_method():
+    ds1 = Dataset.from_netCDF(arakawa_c_file)
+    ds2 = Dataset.from_netCDF(arakawa_c_file)
+
+    diff = ds1._diff(ds2)
+    assert diff is None
+
+    # Modify ds2 to create a difference
+    ds2.attributes = {"name": "modified_name"}
+    diff = ds1._diff(ds2)
+    assert diff is not None
+    assert diff['self']['attributes'] == "self.attributes: {}, other.attributes: {'name': 'modified_name'}"
+
+def test_eq_method():
+    ds1 = Dataset.from_netCDF(arakawa_c_file)
+    ds2 = Dataset.from_netCDF(arakawa_c_file)
+
+    assert ds1 == ds2
+
+    ds2.attributes = {"name": "modified_name"}
+    assert ds1 != ds2
+
+
 def test_save_invalid_format():
     ds = Dataset()
 
     with pytest.raises(ValueError):
         ds.save("a_filename.txt", format="text")
+
+# def test_save_basic():
+#     ds = Dataset()
+#     ds.name = "a_test_dataset"
+
+#     filename = "a_test_dataset.nc"
+#     ds.save(filename)
+
+#     assert os.path.exists(filename)
+
+#     # Clean up
+#     os.remove(filename)
+
+# def test_save_with_time():
+#     ds = Dataset()
+#     ds.name = "a_test_dataset"
+#     ds.time = Time(data=[datetime.datetime.now()])
+
+#     filename = "a_test_dataset.nc"
+#     ds.save(filename)
+
+#     assert os.path.exists(filename)
+    
+#     ds2 = Dataset.load(filename)
+#     assert ds.name == "a_test_dataset"
+#     assert ds2 == ds
+
+#     # Clean up
+#     os.remove(filename)

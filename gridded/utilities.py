@@ -465,13 +465,15 @@ def search_netcdf_vars(cls=None, ds=None, dg=None):
     Given a class with a .default_names and .cf_names attributes, search a datafile
     netCDF4.Dataset and a possible grid netCDF4.Dataset for variables that are sought by
     the class
+    
+    These names attributes are a dictionary str -> list
     """
-    vn_search = search_dataset_for_variables_by_varname(ds, cls.default_names)
     ds_search = search_dataset_for_variables_by_longname(ds, cls.cf_names)
+    vn_search = search_dataset_for_variables_by_varname(ds, cls.default_names)
     found_vars = merge_var_search_dicts(ds_search, vn_search)
     if ds != dg:
-        dg_vn_search = search_dataset_for_variables_by_varname(dg, cls.default_names)
         dg_ln_search = search_dataset_for_variables_by_longname(dg, cls.cf_names)
+        dg_vn_search = search_dataset_for_variables_by_varname(dg, cls.default_names)
         dg_search = merge_var_search_dicts(dg_ln_search, dg_vn_search)
         found_vars = merge_var_search_dicts(found_vars, dg_search)
     return found_vars
@@ -528,7 +530,7 @@ def search_dataset_for_variables_by_longname(ds, possible_names):
             t2 = ds.get_variables_by_attributes(standard_name=query)
             if t1 or t2:
                 rtv[k] = (t1 + t2)[0]
-                break
+                break #only take the first match
         if k not in rtv:
             rtv[k] = None
     return rtv

@@ -140,6 +140,79 @@ class Dataset:
     def __str__(self):
         descp = f"gridded.Dataset with:\ngrid: {type(self.grid)}\nvariables: {list(self.variables.keys())}"
         return descp
+    
+    def _diff(self, other, fail_early=False):
+        diff = {'self': {},
+                'grid': {},
+                'variables': {},
+                'time': {},
+                'depth': {},
+                }
+        # diff for self items
+        if not isinstance(other, self.__class__):
+            diff['self']['type'] = f"self type: {type(self)}, other type: {type(other)}"
+            return diff
+        # if self.name != other.name:
+        #     diff['self']['name'] = f"self.name: {self.name}, other.name: {other.name}"
+        #     if fail_early:
+        #         return diff
+        if self.attributes != other.attributes:
+            diff['self']['attributes'] = f"self.attributes: {self.attributes}, other.attributes: {other.attributes}"
+            if fail_early:
+                return diff
+            
+        # diff for grid, variables, time, depth
+        if self.grid != other.grid:
+            if self.grid and hasattr(self.grid, "_diff"):
+                grid_diff = self.grid._diff(other.grid, fail_early=fail_early)
+                diff['grid'] = grid_diff
+            else:
+                diff['grid'] = f"self.grid: {self.grid}, other.grid: {other.grid}"
+            if fail_early and diff['grid']:
+                return diff
+        
+        if self.time != other.time:
+            if self.time and hasattr(self.time, "_diff"):
+                time_diff = self.time._diff(other.time, fail_early=fail_early)
+                diff['time'] = time_diff
+            else:
+                diff['time'] = f"self.time: {self.time}, other.time: {other.time}"
+            if fail_early and diff['time']:
+                return diff
+            
+        if self.depth != other.depth:
+            if self.depth and hasattr(self.depth, "_diff"):
+                depth_diff = self.depth._diff(other.depth, fail_early=fail_early)
+                diff['depth'] = depth_diff
+            else:
+                diff['depth'] = f"self.depth: {self.depth}, other.depth: {other.depth}"
+            if fail_early and diff['depth']:
+                return diff
+        
+        if self.variables is None:
+            if other.variables is not None:
+                diff['variables'] = f"self.variables: {self.variables}, other.variables: {other.variables}"
+                if fail_early and diff['variables']:
+                    return diff
+        else:
+            for var_name, var in self.variables.items():
+                if var_name not in other.variables:
+                    diff['variables'][var_name] = f"self.variables[{var_name}] exists, but not in other"
+                else:
+                    var_diff = var._diff(other.variables[var_name], fail_early=fail_early)
+                    if var_diff:
+                        diff['variables'][var_name] = var_diff
+                if fail_early and diff['variables']:
+                    return diff
+        
+        if not any(diff.values()):
+            return None
+        return diff 
+        
+
+    def __eq__(self, other):
+        diff = self._diff(other, fail_early=True)
+        return diff is None
 
     def _variables_from_netCDF(self, ds):
         """
