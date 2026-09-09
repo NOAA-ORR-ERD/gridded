@@ -1018,7 +1018,7 @@ class SGrid:
             filled_values = self.mirror_mask_values(values)
         elif mask_behavior == "mask":
             filled_values = values.copy()
-            filled_values.mask = np.tile(np.any(values.mask, axis=-1), 2)
+            np.broadcast_to(np.any(values.mask, axis=-1, keepdims=True), values.shape)
         else:
             raise ValueError(f"unrecognized mask_behavior: {mask_behavior}")
 
