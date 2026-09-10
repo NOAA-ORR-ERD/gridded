@@ -483,6 +483,22 @@ class Variable:
         """
         return (hashlib.sha1(points.tobytes()).hexdigest(), hashlib.sha1(str(time).encode("utf-8")).hexdigest())
 
+    def _result_key(self, _hash, extrapolate, unmask, kwargs):
+        """
+        Returns the key a result of ``at`` is memoized under.
+
+        ``_hash`` identifies the query points and time only, but the value
+        returned by ``at`` also depends on the options below, so they have to
+        take part in the key.
+        """
+        return (
+            _hash,
+            bool(extrapolate),
+            bool(unmask),
+            kwargs.get("surface_boundary_condition", self.surface_boundary_condition),
+            kwargs.get("bottom_boundary_condition", self.bottom_boundary_condition),
+        )
+
     def _memoize_result(self, points, time, result, D, _copy=False, _hash=None):
         if _copy:
             result = result.copy()
@@ -655,9 +671,10 @@ class Variable:
 
         if _hash is None:
             _hash = self._get_hash(pts, time)
+        _memo_key = self._result_key(_hash, extrapolate, unmask, kwargs)
 
         if _mem:
-            res = self._get_memoed(pts, time, self._result_memo, _hash=_hash)
+            res = self._get_memoed(pts, time, self._result_memo, _hash=_memo_key)
             if res is not None:
                 return res
 
@@ -677,7 +694,7 @@ class Variable:
             value = np.ma.filled(value)
 
         if _mem:
-            self._memoize_result(pts, time, value, self._result_memo, _hash=_hash)
+            self._memoize_result(pts, time, value, self._result_memo, _hash=_memo_key)
         return value
 
     interpolate = at  # common request
@@ -1234,6 +1251,22 @@ class VectorVariable:
         """
         return (hashlib.sha1(points.tobytes()).hexdigest(), hashlib.sha1(str(time).encode("utf-8")).hexdigest())
 
+    def _result_key(self, _hash, extrapolate, unmask, kwargs):
+        """
+        Returns the key a result of ``at`` is memoized under.
+
+        ``_hash`` identifies the query points and time only, but the value
+        returned by ``at`` also depends on the options below, so they have to
+        take part in the key.
+        """
+        return (
+            _hash,
+            bool(extrapolate),
+            bool(unmask),
+            kwargs.get("surface_boundary_condition"),
+            kwargs.get("bottom_boundary_condition"),
+        )
+
     def _memoize_result(self, points, time, result, D, _copy=True, _hash=None):
         if _copy:
             result = result.copy()
@@ -1321,9 +1354,10 @@ class VectorVariable:
         pts = _reorganize_spatial_data(points)
         if _hash is None:
             _hash = self._get_hash(pts, time)
+        _memo_key = self._result_key(_hash, extrapolate, unmask, kwargs)
 
         if _mem:
-            res = self._get_memoed(pts, time, self._result_memo, _hash=_hash)
+            res = self._get_memoed(pts, time, self._result_memo, _hash=_memo_key)
             if res is not None:
                 return res
 
@@ -1344,7 +1378,7 @@ class VectorVariable:
         )
 
         if _mem:
-            self._memoize_result(pts, time, value, self._result_memo, _hash=_hash)
+            self._memoize_result(pts, time, value, self._result_memo, _hash=_memo_key)
 
         return value
 
