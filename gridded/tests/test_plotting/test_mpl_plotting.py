@@ -15,10 +15,10 @@ import gridded
 try:
     import matplotlib.pyplot as plt  # noqa
 
-    from gridded.plotting.mpl_plotting import plot_ugrid, plot_sgrid
-
 except ImportError:
     pytestmark = pytest.mark.skip(reason="matplotlib is not installed")
+
+from gridded.plotting.mpl_plotting import plot_ugrid, plot_sgrid
 
 
 EXAMPLE_DATA = Path(__file__).parent.parent / "test_data"

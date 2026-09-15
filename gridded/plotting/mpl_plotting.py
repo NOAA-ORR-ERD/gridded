@@ -22,7 +22,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import shapely.geometry as sgeom
+# shapely only used in gen_grid_lines_U() which is not used anywhere
+# import shapely.geometry as sgeom
 from matplotlib.collections import LineCollection
 from matplotlib.tri import Triangulation
 
@@ -272,44 +273,45 @@ class GridGeoGenerator:
         style = appearance or self.DEFAULT_LINE_STYLE
         return ax.triplot(triangulation, **style)
 
-    def gen_grid_lines_U(self):
-        """
-        Generate Shapely geometries representing unique mesh wireframe
-        edges for unstructured triangular grids.
+    # This is not used -- and why would we want Shapely Geometries?
+    # def gen_grid_lines_U(self):
+    #     """
+    #     Generate Shapely geometries representing unique mesh wireframe
+    #     edges for unstructured triangular grids.
 
-        Extracts element node connectivity, normalizes longitudes to
-        the [-180, 180] degree display range, filters out duplicate
-        shared edges, and constructs a MultiLineString object.
+    #     Extracts element node connectivity, normalizes longitudes to
+    #     the [-180, 180] degree display range, filters out duplicate
+    #     shared edges, and constructs a MultiLineString object.
 
-        :return: MultiLineString object containing all unique mesh
-                 edges for plotting.
-        :rtype: shapely.geometry.MultiLineString
-        """
-        faces = self.get_triangle_faces()
+    #     :return: MultiLineString object containing all unique mesh
+    #              edges for plotting.
+    #     :rtype: shapely.geometry.MultiLineString
+    #     """
+    #     faces = self.get_triangle_faces()
 
-        # Enforce longitude display range (-180 to 180 degrees)
-        lons = np.asarray(self.grid_obj.node_lon)
-        lons = np.where(lons > 180, lons - 360, lons)
-        lats = np.asarray(self.grid_obj.node_lat)
+    #     # Enforce longitude display range (-180 to 180 degrees)
+    #     lons = np.asarray(self.grid_obj.node_lon)
+    #     lons = np.where(lons > 180, lons - 360, lons)
+    #     lats = np.asarray(self.grid_obj.node_lat)
 
-        # Extract 3 triangle edges: (0->1), (1->2), (2->0)
-        edge_pairs = np.vstack([
-            faces[:, [0, 1]],
-            faces[:, [1, 2]],
-            faces[:, [2, 0]]
-        ])
+    #     # Extract 3 triangle edges: (0->1), (1->2), (2->0)
+    #     edge_pairs = np.vstack([
+    #         faces[:, [0, 1]],
+    #         faces[:, [1, 2]],
+    #         faces[:, [2, 0]]
+    #     ])
 
-        # Filter unique edges to prevent double-drawing shared lines
-        edge_pairs.sort(axis=1)
-        unique_edges = np.unique(edge_pairs, axis=0)
+    #     # Filter unique edges to prevent double-drawing shared lines
+    #     edge_pairs.sort(axis=1)
+    #     unique_edges = np.unique(edge_pairs, axis=0)
 
-        lines = [
-            sgeom.LineString(
-                [(lons[p1], lats[p1]), (lons[p2], lats[p2])]
-            )
-            for p1, p2 in unique_edges
-        ]
-        return sgeom.MultiLineString(lines)
+    #     lines = [
+    #         sgeom.LineString(
+    #             [(lons[p1], lats[p1]), (lons[p2], lats[p2])]
+    #         )
+    #         for p1, p2 in unique_edges
+    #     ]
+    #     return sgeom.MultiLineString(lines)
 
     def get_max_extent(self, margin=0.05):
         """
