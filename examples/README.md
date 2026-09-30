@@ -41,9 +41,8 @@ Below are links to some examples for working with or plotting commonly used  mod
 * **Requires:** [ROMS_wcofs_May2026_3D.nc](https://gnome.orr.noaa.gov/py_gnome_testdata/gridded_test_files/ROMS_wcofs_May2026_3D.nc)
 
 ### ROMS Horizontal Error Assessment
-* **File:** `ROMS_horizontal_error_xarray_all_times.py`
-[comment]: # `roms_horizontal_error_assessment.py` / `roms_horizontal_error_assessment.ipynb`
-* **Description:** Performs spatial/horizontal error analysis (such as root-mean-square error or bias calculation) comparing ROMS model outputs against gridded observational fields or reference benchmarks across horizontal grid coordinates.
+* **File:** `roms_horizontal_error_assessment.py` / `roms_horizontal_error_assessment.ipynb`
+* **Description:** Compare ROMS model predictions at grid locations to gridded estimates at the same locations using the absolute error (|u_gridded - u_roms|).  The ROMS prediction values are based on averages adjacent 2-values (rho and psi locations) or 4-values (u and v locations) in order to collocate u- and v-velocitites at the same grid location.  Gridded u- and v-velocities are averaged across 2-values in the x-direction (u-velocity) or y-direction (v-velocity).  Variables averaged in the x-direction are not averaged in the y-direction, and visa versa.  The absolute error reflects the magnitude of the difference between the two representations of velocities.  
 * **Requires:** [ROMS_wcofs_May2026_3D.nc](https://gnome.orr.noaa.gov/py_gnome_testdata/gridded_test_files/ROMS_wcofs_May2026_3D.nc)
 
 ---

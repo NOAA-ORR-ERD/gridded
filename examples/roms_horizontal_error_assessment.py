@@ -7,6 +7,7 @@ import numpy as np
 import xarray as xr
 
 import gridded
+from .roms_tools import avg_xi, avg_eta, avg_4pt
 
 # -----------------------------------------------------------------------
 #
@@ -34,20 +35,20 @@ import gridded
 # location of depth transect in "ROMS_calc_z_velocity_errors.py"
 eta_index, xi_index = 29, 8
 
-def avg_xi(arr):
-    """Average values along the longitude/xi axis."""
-    return 0.5 * (arr[:, :-1] + arr[:, 1:])
+# def avg_xi(arr):
+#     """Average values along the longitude/xi axis."""
+#     return 0.5 * (arr[:, :-1] + arr[:, 1:])
 
-def avg_eta(arr):
-    """Average values along the latitude/eta axis."""
-    return 0.5 * (arr[:-1, :] + arr[1:, :])
+# def avg_eta(arr):
+#     """Average values along the latitude/eta axis."""
+#     return 0.5 * (arr[:-1, :] + arr[1:, :])
 
-def avg_4pt(arr):
-    """4-point average across 2x2 cells, resulting in a diagonal shift."""
-    return 0.25 * (
-        arr[:-1, :-1] + arr[1:, :-1] +
-        arr[:-1, 1:]  + arr[1:, 1:]
-    )
+# def avg_4pt(arr):
+#     """4-point average across 2x2 cells, resulting in a diagonal shift."""
+#     return 0.25 * (
+#         arr[:-1, :-1] + arr[1:, :-1] +
+#         arr[:-1, 1:]  + arr[1:, 1:]
+#     )
 
 def map_roms_error(ds_result: xr.Dataset, vel_dir: str, grid_loc: str) -> None:
     """
@@ -457,154 +458,148 @@ n_t, n_z, n_eta, n_xi = ds["u"].shape
 time_index = 0
 depth_index = n_z-1
 
-# get rho-location [M, L] dimensions for reference and full u-, v- arrays
-M, L = ds["h"].shape
-roms_u = ds["u"][time_index, depth_index,...]
-roms_v = ds["v"][time_index, depth_index,...]
-lat_u = ds["lat_u"]
-lon_u = ds["lon_u"]
-lat_v = ds["lat_v"]
-lon_v = ds["lon_v"]
+# # get rho-location [M, L] dimensions for reference and full u-, v- arrays
+# M, L = ds["h"].shape
+# roms_u = ds["u"][time_index, depth_index,...]
+# roms_v = ds["v"][time_index, depth_index,...]
+# lat_u = ds["lat_u"]
+# lon_u = ds["lon_u"]
+# lat_v = ds["lat_v"]
+# lon_v = ds["lon_v"]
 
-# --- Calculate ROMS u-velocities at u, rho, psi, v locations ---
-u_roms_dict = {
-    "u":   roms_u,
-    "rho": avg_xi(roms_u),  # [M, L-2]
-    "psi": avg_eta(roms_u), # [M-1, L-1]...same as psi, no trim needed
-    "v":   avg_4pt(roms_u), # [M-1, L-2]
-}
-lat_u_roms_dict = {
-    "u":   lat_u,
-    "rho": avg_xi(lat_u),
-    "psi": avg_eta(lat_u),
-    "v":   avg_4pt(lat_u),
-}
-lon_u_roms_dict = {
-    "u":   lon_u,
-    "rho": avg_xi(lon_u),
-    "psi": avg_eta(lon_u),
-    "v":   avg_4pt(lon_u),
-}
+# # --- Calculate ROMS u-velocities at u, rho, psi, v locations ---
+# u_roms_dict = {
+#     "u":   roms_u,
+#     "rho": avg_xi(roms_u),  # [M, L-2]
+#     "psi": avg_eta(roms_u), # [M-1, L-1]...same as psi, no trim needed
+#     "v":   avg_4pt(roms_u), # [M-1, L-2]
+# }
+# lat_u_roms_dict = {
+#     "u":   lat_u,
+#     "rho": avg_xi(lat_u),
+#     "psi": avg_eta(lat_u),
+#     "v":   avg_4pt(lat_u),
+# }
+# lon_u_roms_dict = {
+#     "u":   lon_u,
+#     "rho": avg_xi(lon_u),
+#     "psi": avg_eta(lon_u),
+#     "v":   avg_4pt(lon_u),
+# }
 
-# define how the roms lat/lon arrays need to be sliced to match the u-averaged locations
-# these will apply to Gridded results as well since they are based on ROMS' grid locations
-u_trim_roms = {
-    "rho": (slice(0, M), slice(1, L - 1)),
-    "v":   (slice(0, M - 1), slice(1, L - 1)),
-}
+# # define how the roms lat/lon arrays need to be sliced to match the u-averaged locations
+# # these will apply to Gridded results as well since they are based on ROMS' grid locations
+# u_trim_roms = {
+#     "rho": (slice(0, M), slice(1, L - 1)),
+#     "v":   (slice(0, M - 1), slice(1, L - 1)),
+# }
 
-# --- Calculate ROMS v-velocities at v, rho, psi, u locations ---
-v_roms_dict = {
-    "v":   roms_v,
-    "rho": avg_eta(roms_v),
-    "psi": avg_xi(roms_v),
-    "u":   avg_4pt(roms_v),
-}
-lat_v_roms_dict = {
-    "v":   lat_v,
-    "rho": avg_eta(lat_v),
-    "psi": avg_xi(lat_v),
-    "u":   avg_4pt(lat_v),
-}
-lon_v_roms_dict = {
-    "v":   lon_v,
-    "rho": avg_eta(lon_v),
-    "psi": avg_xi(lon_v),
-    "u":   avg_4pt(lon_v),
-}
+# # --- Calculate ROMS v-velocities at v, rho, psi, u locations ---
+# v_roms_dict = {
+#     "v":   roms_v,
+#     "rho": avg_eta(roms_v),
+#     "psi": avg_xi(roms_v),
+#     "u":   avg_4pt(roms_v),
+# }
+# lat_v_roms_dict = {
+#     "v":   lat_v,
+#     "rho": avg_eta(lat_v),
+#     "psi": avg_xi(lat_v),
+#     "u":   avg_4pt(lat_v),
+# }
+# lon_v_roms_dict = {
+#     "v":   lon_v,
+#     "rho": avg_eta(lon_v),
+#     "psi": avg_xi(lon_v),
+#     "u":   avg_4pt(lon_v),
+# }
 
-# define how the roms lat/lon arrays need to be sliced to match the u-averaged locations
-# these will apply to Gridded results as well since they are based on ROMS' grid locations
-v_trim_roms = {
-    "rho": (slice(1, M - 1), slice(0, L)),
-    "u":   (slice(1, M - 1), slice(0, L)),
-}
-
-
-# --- Load gridded variables and trim to align values for error calculation ---
-gridded_ds = gridded.Dataset(str(roms_file))
-u_var = gridded_ds.variables["u"]
-v_var = gridded_ds.variables["v"]
-
-# Create coordinate arrays at u, v, rho, and psi locations for
-# Gridded interpoloation
-gridded_result = {}
-for grid_loc in ["u", "v", "rho", "psi"]:
-    full_lats = ds[f"lat_{grid_loc}"].data
-    full_lons = ds[f"lon_{grid_loc}"].data
-
-    # create coordinate array to use in Gridded interpolation
-    loc_coords = np.column_stack(
-        (full_lons.ravel(), full_lats.ravel(), -0.5*np.ones(full_lons.size))
-    )
-
-    # interpolate velocities, reshape into 2D array and trim down to match locations
-    # of manual interpolation
-
-    # -> u-velocities
-    u_gridded = u_var.at(
-        loc_coords, time=u_var.time.data[time_index]
-    ).reshape(full_lons.shape)
-    if (grid_loc == "rho") or (grid_loc == "v"):
-        u_gridded = u_gridded[*u_trim_roms[grid_loc]]
-    # -> v-velocities
-    v_gridded = v_var.at(
-        loc_coords, time=v_var.time.data[time_index]
-    ).reshape(full_lons.shape)
-    if grid_loc == "rho" or grid_loc == "u":
-        v_gridded = v_gridded[*v_trim_roms[grid_loc]]
-
-    # assign manually averaged values for calculating errors
-    u_roms, v_roms =  u_roms_dict[grid_loc].data, v_roms_dict[grid_loc].data
-
-    # create lat/lon arrays to save
-    indices_u = u_trim_roms.get(grid_loc, None)
-    lat_u = full_lats[*indices_u] if indices_u else full_lats
-    lon_u = full_lons[*indices_u] if indices_u else full_lons
-    indices_v = v_trim_roms.get(grid_loc, None)
-    lat_v = full_lats[*indices_v] if indices_v else full_lats
-    lon_v = full_lons[*indices_v] if indices_v else full_lons
-
-    print(" --- ", grid_loc, " --- ")
-    print(f"Shape of manual u-avg: {u_roms.shape}")
-    print(f"Shape of gridded u-avg: {u_gridded.shape}")
-    print(f"Shape of lat/lon_u: {lat_u.shape}, {lon_u.shape}")
-    print(f"Shape of manual v-avg: {v_roms.shape}")
-    print(f"Shape of gridded v-avg: {v_gridded.shape}")
-
-    # Creata a DataArray to store values
-    gridded_result[grid_loc] = xr.Dataset(
-        data_vars={
-            f"u_roms_{grid_loc}": (("eta_u", "xi_u"), u_roms),
-            f"v_roms_{grid_loc}": (("eta_v", "xi_v"), v_roms),
-            f"u_gridded_{grid_loc}": (("eta_u", "xi_u"), u_gridded),
-            f"v_gridded_{grid_loc}": (("eta_v", "xi_v"), v_gridded),
-            f"u_error_{grid_loc}": (("eta_u", "xi_u"), np.abs(u_gridded - u_roms)),
-            f"v_error_{grid_loc}": (("eta_v", "xi_v"), np.abs(v_gridded - v_roms)),
-        },
-        coords={
-            f"lat_v_gridded_{grid_loc}": (("eta_v", "xi_v"), lat_v),
-            f"lon_v_gridded_{grid_loc}": (("eta_v", "xi_v"), lon_v),
-            f"lat_u_gridded_{grid_loc}": (("eta_u", "xi_u"), lat_u),
-            f"lon_u_gridded_{grid_loc}": (("eta_u", "xi_u"), lon_u),
-
-            f"lat_v_roms_avg_{grid_loc}": (("eta_v", "xi_v"), lat_v_roms_dict[grid_loc].data),
-            f"lon_v_roms_avg_{grid_loc}": (("eta_v", "xi_v"), lon_v_roms_dict[grid_loc].data),
-            f"lat_u_roms_avg_{grid_loc}": (("eta_u", "xi_u"), lat_u_roms_dict[grid_loc].data),
-            f"lon_u_roms_avg_{grid_loc}": (("eta_u", "xi_u"), lon_u_roms_dict[grid_loc].data),
-        },
-        attrs={
-            "grid_staggering": grid_loc,
-            "description": f"grid_staggering at {grid_loc} locations",
-        }
-    )
+# # define how the roms lat/lon arrays need to be sliced to match the u-averaged locations
+# # these will apply to Gridded results as well since they are based on ROMS' grid locations
+# v_trim_roms = {
+#     "rho": (slice(1, M - 1), slice(0, L)),
+#     "u":   (slice(1, M - 1), slice(0, L)),
+# }
 
 
-for grid_loc in ["u", "v", "rho", "psi"]:
-    for vel_dir in ["u","v"]:
-        print(
-            gridded_result[grid_loc][f"lat_{vel_dir}_gridded_{grid_loc}"].shape
-        )
+# # --- Load gridded variables and trim to align values for error calculation ---
+# gridded_ds = gridded.Dataset(str(roms_file))
+# u_var = gridded_ds.variables["u"]
+# v_var = gridded_ds.variables["v"]
+
+# # Create coordinate arrays at u, v, rho, and psi locations for
+# # Gridded interpoloation
+# gridded_result = {}
+# for grid_loc in ["u", "v", "rho", "psi"]:
+#     full_lats = ds[f"lat_{grid_loc}"].data
+#     full_lons = ds[f"lon_{grid_loc}"].data
+
+#     # create coordinate array to use in Gridded interpolation
+#     loc_coords = np.column_stack(
+#         (full_lons.ravel(), full_lats.ravel(), -0.5*np.ones(full_lons.size))
+#     )
+
+#     # interpolate velocities, reshape into 2D array and trim down to match locations
+#     # of manual interpolation
+
+#     # -> u-velocities
+#     u_gridded = u_var.at(
+#         loc_coords, time=u_var.time.data[time_index]
+#     ).reshape(full_lons.shape)
+#     if (grid_loc == "rho") or (grid_loc == "v"):
+#         u_gridded = u_gridded[*u_trim_roms[grid_loc]]
+#     # -> v-velocities
+#     v_gridded = v_var.at(
+#         loc_coords, time=v_var.time.data[time_index]
+#     ).reshape(full_lons.shape)
+#     if grid_loc == "rho" or grid_loc == "u":
+#         v_gridded = v_gridded[*v_trim_roms[grid_loc]]
+
+#     # assign manually averaged values for calculating errors
+#     u_roms, v_roms =  u_roms_dict[grid_loc].data, v_roms_dict[grid_loc].data
+
+#     # create lat/lon arrays to save
+#     indices_u = u_trim_roms.get(grid_loc, None)
+#     lat_u = full_lats[*indices_u] if indices_u else full_lats
+#     lon_u = full_lons[*indices_u] if indices_u else full_lons
+#     indices_v = v_trim_roms.get(grid_loc, None)
+#     lat_v = full_lats[*indices_v] if indices_v else full_lats
+#     lon_v = full_lons[*indices_v] if indices_v else full_lons
+
+#     print(" --- ", grid_loc, " --- ")
+#     print(f"Shape of manual u-avg: {u_roms.shape}")
+#     print(f"Shape of gridded u-avg: {u_gridded.shape}")
+#     print(f"Shape of lat/lon_u: {lat_u.shape}, {lon_u.shape}")
+#     print(f"Shape of manual v-avg: {v_roms.shape}")
+#     print(f"Shape of gridded v-avg: {v_gridded.shape}")
+
+#     # Creata a DataArray to store values
+#     gridded_result[grid_loc] = xr.Dataset(
+#         data_vars={
+#             f"u_roms_{grid_loc}": (("eta_u", "xi_u"), u_roms),
+#             f"v_roms_{grid_loc}": (("eta_v", "xi_v"), v_roms),
+#             f"u_gridded_{grid_loc}": (("eta_u", "xi_u"), u_gridded),
+#             f"v_gridded_{grid_loc}": (("eta_v", "xi_v"), v_gridded),
+#             f"u_error_{grid_loc}": (("eta_u", "xi_u"), np.abs(u_gridded - u_roms)),
+#             f"v_error_{grid_loc}": (("eta_v", "xi_v"), np.abs(v_gridded - v_roms)),
+#         },
+#         coords={
+#             f"lat_v_gridded_{grid_loc}": (("eta_v", "xi_v"), lat_v),
+#             f"lon_v_gridded_{grid_loc}": (("eta_v", "xi_v"), lon_v),
+#             f"lat_u_gridded_{grid_loc}": (("eta_u", "xi_u"), lat_u),
+#             f"lon_u_gridded_{grid_loc}": (("eta_u", "xi_u"), lon_u),
+
+#             f"lat_v_roms_avg_{grid_loc}": (("eta_v", "xi_v"), lat_v_roms_dict[grid_loc].data),
+#             f"lon_v_roms_avg_{grid_loc}": (("eta_v", "xi_v"), lon_v_roms_dict[grid_loc].data),
+#             f"lat_u_roms_avg_{grid_loc}": (("eta_u", "xi_u"), lat_u_roms_dict[grid_loc].data),
+#             f"lon_u_roms_avg_{grid_loc}": (("eta_u", "xi_u"), lon_u_roms_dict[grid_loc].data),
+#         },
+#         attrs={
+#             "grid_staggering": grid_loc,
+#             "description": f"grid_staggering at {grid_loc} locations",
+#         }
+#     )
+
 
 # --------------
 #  PLOT RESULTS
