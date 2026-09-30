@@ -1,10 +1,8 @@
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
-from matplotlib.ticker import MaxNLocator
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 import numpy as np
-import pandas as pd
 import xarray as xr
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 eta_index, xi_index = 29, 8 # y->eta direction, x->xi direction
 v_transform = 2
@@ -29,7 +27,7 @@ times_num = mdates.date2num(ds_u['time'].values)
 layers = ds_u['layer'].values
 extent = [times_num[0], times_num[-1], layers[0], layers[-1]]
 
-# --- Calc error extremes for reference --- 
+# --- Calc error extremes for reference ---
 err_min_v = np.nanmin(v_matrix).item()
 err_max_v = np.nanmax(v_matrix).item()
 err_min_u = np.nanmin(u_matrix).item()
@@ -78,12 +76,12 @@ ax_m1.text(
     0.02,
     0.95,
     (f"eta,xi indices: {eta_index}, {xi_index}\n"
-    f"Min error: {err_min_u:4.2e}\n" 
+    f"Min error: {err_min_u:4.2e}\n"
     f"Max error: {err_max_u:4.2e}"),
     transform=ax_m1.transAxes,
     verticalalignment="top",
     horizontalalignment="left",
-    fontsize = 12, 
+    fontsize = 12,
     linespacing=1.5,
     zorder=5,
     bbox=dict(
@@ -125,7 +123,7 @@ ax_m2.text(
     0.02,
     0.95,
     (f"eta,xi indices: {eta_index}, {xi_index}\n"
-    f"Min error: {err_min_v:4.2e}\n" 
+    f"Min error: {err_min_v:4.2e}\n"
     f"Max error: {err_max_v:4.2e}"),
     transform=ax_m2.transAxes,
     fontsize = 12,

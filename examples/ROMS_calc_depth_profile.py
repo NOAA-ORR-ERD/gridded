@@ -1,10 +1,10 @@
 import datetime
-import gridded
+
 import numpy as np
-from utils import create_profile_dict
 import xarray as xr
 from scipy.interpolate import UnivariateSpline
-import pdb
+
+import gridded
 
 # =================================================================
 # SETUP
@@ -61,17 +61,17 @@ for t_idx, t in enumerate(available_times):
     u_loc_placeholder = np.array([[lon_u, lat_u, 0.0]])
     try:
         u_transect = u_depth_info.get_depth_profile(
-            points=u_loc_placeholder, 
-            time=t, 
+            points=u_loc_placeholder,
+            time=t,
             data_shape=u_var.data_shape[1:]
-        )            
+        )
     except Exception as e:
         print(f"Error fetching u-velocity depth profile: {e}")
 
     # Create depth profile at u-grid locations for gridded interpolation
     max_u_depth = u_transect[0].data.max()
     gridded_depths_u = np.arange(
-        1e-3, max_u_depth, 
+        1e-3, max_u_depth,
         max_u_depth / n_depths
     )
     u_depth_locations = np.zeros((n_depths, 3))
@@ -80,7 +80,7 @@ for t_idx, t in enumerate(available_times):
     u_depth_locations[:, 2] = gridded_depths_u
     # Use gridded to interpolate u-velocities to gridded depths
     gridded_u = u_var.at(
-        points = u_depth_locations, 
+        points = u_depth_locations,
         time = t
     ).data.flatten()
     # Save ROMS'-original
@@ -94,12 +94,12 @@ for t_idx, t in enumerate(available_times):
 
     # --- PROCESS V-VELOCITY ---
     v_loc_placeholder = np.array([[lon_v, lat_v, 0.0]])
-    try: 
+    try:
         v_transect = v_depth_info.get_depth_profile(
-            points=v_loc_placeholder, 
-            time=t, 
+            points=v_loc_placeholder,
+            time=t,
             data_shape=v_var.data_shape[1:]
-        )   
+        )
     except Exception as e:
         print(f"Error fetching V depth profile: {e}")
 
@@ -122,31 +122,31 @@ for t_idx, t in enumerate(available_times):
 
     # --- FIT POLYNOMIAL TO ROMS' PROFILES FOR ERROR APPROXIMATION ---
     r_depth = u_transect[0].data
-    
+
     # # Fit Least-Squares Polynomial Curves directly onto ROMS points
     # coef_u = np.polyfit(r_depth, raw_roms_u, POLY_DEGREE)
     # coef_v = np.polyfit(r_depth, raw_roms_v, POLY_DEGREE)
-    
+
     # # Regress profiles at the targeted gridded depth levels
     # regress_u = np.polyval(coef_u, gridded_depths)
     # regress_v = np.polyval(coef_v, gridded_depths)
 
     spline_u = UnivariateSpline(
-        np.flip(u_transect[0].data), np.flip(raw_roms_u), 
-        k = POLY_DEGREE, 
+        np.flip(u_transect[0].data), np.flip(raw_roms_u),
+        k = POLY_DEGREE,
         s = s_parameter
     )(gridded_depths_u)
     spline_v = UnivariateSpline(
-        np.flip(v_transect[0].data), np.flip(raw_roms_v), 
-        k = POLY_DEGREE, 
+        np.flip(v_transect[0].data), np.flip(raw_roms_v),
+        k = POLY_DEGREE,
         s = s_parameter
     )(gridded_depths_v)
 
-    # Calculate difference between the gridded interpolation output and 
+    # Calculate difference between the gridded interpolation output and
     # the ROMS regression baseline
     diff_u = gridded_u - spline_u
     diff_v = gridded_v - spline_v
-    
+
     metrics["regress_roms_u"].append(spline_u)
     metrics["regress_roms_v"].append(spline_v)
     metrics["mae_u"].append(np.max(np.abs(diff_u)))
@@ -169,21 +169,21 @@ ds = xr.Dataset(
         "gridded_depth_u": (["gridded_u_depth_dim"], gridded_u_depths_axis),
         "gridded_depth_v": (["gridded_v_depth_dim"], gridded_v_depths_axis),
         "gridded_u": (
-            ["time", "gridded_depth_dim"], 
+            ["time", "gridded_depth_dim"],
             np.array(depth_profile["gridded_u"])
         ),
         "gridded_v": (
-            ["time", "gridded_depth_dim"], 
+            ["time", "gridded_depth_dim"],
             np.array(depth_profile["gridded_v"])
         ),
-        
+
         # Updated Regression variables
         "regression_roms_u": (
-            ["time", "gridded_depth_dim"], 
+            ["time", "gridded_depth_dim"],
             np.array(metrics["regress_roms_u"])
         ),
         "regression_roms_v": (
-            ["time", "gridded_depth_dim"], 
+            ["time", "gridded_depth_dim"],
             np.array(metrics["regress_roms_v"])
         ),
         "mae_u": (["time"], np.array(metrics["mae_u"])),

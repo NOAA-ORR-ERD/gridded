@@ -1,13 +1,18 @@
 # # Test out standardized ADCIRC, SELFE and FVCOM datasets
 #
-# The datasets being accessed here are NetCDF files from ADCIRC, SELFE and FVCOM, with attributes added or modified virtually using NcML to meet the [UGRID conevntions standard for unstructured grid models](https://github.com/ugrid-conventions/ugrid-conventions/blob/v0.9.0/ugrid-conventions.md).
+# The datasets being accessed here are NetCDF files from ADCIRC, SELFE and FVCOM,
+# with attributes added or modified virtually using NcML to meet the [UGRID
+# conventions standard for unstructured grid models](https://github.com/ugrid-
+# conventions/ugrid-conventions/blob/v0.9.0/ugrid-conventions.md).
 #
-# This example was developed for the Integrated Ocean Observing System (IOOS) Coastal and Ocean Modeling Testbed.
+# This example was developed for the Integrated Ocean Observing System (IOOS)
+# Coastal and Ocean Modeling Testbed.
 #
 #     https://ioos.noaa.gov/project/coastal-ocean-modeling-testbed-projects/
 #
 #
-# You can quickly and easily set up a conda environemnt that will run this by installing the conda_requirements_dev.txt file included in the `gridded` repo:
+# You can quickly and easily set up a conda environemnt that will run this by
+# installing the conda_requirements_dev.txt file included in the `gridded` repo:
 #
 # ```
 # conda install --file conda_requirements_dev.txt
@@ -18,8 +23,9 @@
 # In[1]:
 
 
-# get set up:
-get_ipython().magic("matplotlib inline")
+# 09/30/36: Commenting out the following line for linter.
+# I don't think this command is used/needed but it needs testing
+# get_ipython().magic("matplotlib inline")
 
 
 # lets make sure gridded import first!

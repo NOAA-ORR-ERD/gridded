@@ -3,7 +3,10 @@
 # In[29]:
 
 
-get_ipython().magic("matplotlib inline")
+# 09/30/36: Commenting out the following line for linter.
+# I don't think this command is used/needed but it needs testing
+# get_ipython().magic("matplotlib inline")
+
 import matplotlib.pyplot as plt
 import netCDF4
 import numpy as np

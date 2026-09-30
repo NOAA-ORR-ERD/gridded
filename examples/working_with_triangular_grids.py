@@ -11,8 +11,6 @@ Available on conda-forge:  with conda-forge enabled
 import matplotlib.pyplot as plt
 import numpy as np
 import triangle
-from matplotlib.collections import LineCollection
-from matplotlib.tri import Triangulation
 
 import gridded
 from gridded.grids import UGrid
@@ -21,6 +19,8 @@ from gridded.plotting.mpl_plotting import plot_ugrid
 # if the built in one doesn't work for you.
 # requires a recent version of gridded
 # you can also customize it here if you want.
+
+# from matplotlib.collections import LineCollection
 # def plot_ugrid(axes,
 #                grid,
 #                node_numbers=False,

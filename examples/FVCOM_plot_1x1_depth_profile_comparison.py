@@ -1,15 +1,13 @@
-import pandas as pd
-import numpy as np
-import xarray as xr
-import pdb
 import matplotlib.pyplot as plt
+import pandas as pd
+import xarray as xr
 from utils import calc_depth_profile
+
 import gridded.plotting.mpl_plotting as gplt
-from pathlib import Path
 
 netcdf_name = "SFBOFS_3D_07_2026"
 
-# Generate a list of node and centroid locations to query  
+# Generate a list of node and centroid locations to query
 # based off interactive graphic
 csv_path = gplt.fvcom_inspector( "../input_files/SFBOFS_3D_07_2026.nc")
 #csv_path = Path(f"../input_files/{netcdf_name}_selected_cell.csv")
@@ -27,9 +25,9 @@ input_netcdf = f"../input_files/{netcdf_name}.nc"
 profile_netcdf = f"../output/{netcdf_name}_depthprofiles_nele{nele}.nc"
 
 ds, nc_path = calc_depth_profile(
-    model_input = input_netcdf, 
-    model_type = "fvcom", 
-    index = nele, 
+    model_input = input_netcdf,
+    model_type = "fvcom",
+    index = nele,
     output_netcdf = profile_netcdf
 )
 
@@ -42,8 +40,8 @@ times = ds.time.values
 gridded_depth_u = ds.gridded_depth_u.values
 gridded_depth_v = ds.gridded_depth_v.values
 # marker size for line plot markers
-ms = 8 
-# line plot colors: u-velocities (cool), v-velocities (warm) 
+ms = 8
+# line plot colors: u-velocities (cool), v-velocities (warm)
 colors = {
     "model_u": "teal",
     "gridded_u": "lightseagreen",
@@ -58,8 +56,8 @@ Ntimes = len(times) - 1 #number of time steps to plot
 nrows, ncols = 3, 3
 
 fig1, axes = plt.subplots(
-    figsize=(5, 7), 
-    # sharey=True, 
+    figsize=(5, 7),
+    # sharey=True,
     # sharex=True
 )
 
@@ -69,7 +67,7 @@ t_str = pd.to_datetime(times[Ntimes]).strftime("%Y-%m-%d %H:%M")
 # -------------
 # FVCOM PROFILES (Dashed-dotted lines, with markers)
 # -------------
-# u-velocity component 
+# u-velocity component
 ax.plot(
     ds["model_u"][Ntimes].values,
     ds["model_depth_u"][Ntimes].values,
@@ -98,7 +96,7 @@ ax.plot(
 # ----------------
 # GRIDDED PROFILES (Solid lines, NO markers)
 # ----------------
-# u-velocity component 
+# u-velocity component
 ax.plot(
     ds["gridded_u"][Ntimes].values,
     gridded_depth_u,
