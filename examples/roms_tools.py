@@ -1,10 +1,11 @@
+import pdb
 from pathlib import Path
-import xarray as xr
+
 import numpy as np
+import xarray as xr
 
 import gridded
 
-import pdb
 
 def avg_xi(arr):
     """
@@ -51,12 +52,32 @@ def avg_4pt(arr):
         arr[:-1, 1:]  + arr[1:, 1:]
     )
 
+def trim_for_v_alignment(M,L):
+    """Coordinate trimming to align averaged values with the locations of the 
+    grid to which the v-velocities are being averaged. Only `rho` and `u` grids
+    require trimming in this case. """
+    trimming_rules = {
+        "rho": (slice(1, M - 1), slice(0, L)),
+        "u":   (slice(1, M - 1), slice(0, L)),
+    }
+    return trimming_rules
+
+def trim_for_u_alignment(M,L):
+    """Coordinate trimming to align averaged values with the locations of the 
+    grid to which the v-velocities are being averaged. Only `rho` and `u` grids
+    require trimming in this case. """
+    trimming_rules = {
+        "rho": (slice(0, M), slice(1, L - 1)),
+        "v":   (slice(0, M - 1), slice(1, L - 1)),
+    }
+    return trimming_rules
+    
 def roms_grid_velocity_averages(
     input_file: str | Path = Path(
         "../../gnome_test_files/gridded_test_files/ROMS_wcofs_May2026_3D.nc"
     ),
     time_index: int = 0,
-    depth_index: int | None = None,  
+    depth_index: int | None = None,
     gridded_depth: float = 0.25 # having this as a default may lead to issues
 ):
     """
@@ -111,11 +132,11 @@ def roms_grid_velocity_averages(
             f" the depth dimension of {n_z}. For ROMS' surface level, "
             f"depth_from_sfc_index = 1 and the grid index used is {n_z} - 1."
         )
-        raise ValueError(err_msg) 
-    else: 
-        depth_index = n_z - depth_index 
-        
-    # --- Extract variables -- 
+        raise ValueError(err_msg)
+    else:
+        depth_index = n_z - depth_index
+
+    # --- Extract variables --
     # get rho-location [M, L] dimensions for reference and full u-, v- arrays
     M, L = ds["h"].shape
     roms_u = ds["u"][time_index, depth_index,...]
@@ -124,7 +145,7 @@ def roms_grid_velocity_averages(
     lon_u = ds["lon_u"]
     lat_v = ds["lat_v"]
     lon_v = ds["lon_v"]
-    
+
     # --- Calculate ROMS u-velocities at u, rho, psi, v locations ---
     u_roms_dict = {
         "u":   roms_u,
@@ -144,15 +165,15 @@ def roms_grid_velocity_averages(
         "psi": avg_eta(lon_u),
         "v":   avg_4pt(lon_u),
     }
-    
-    # define how the roms lat/lon arrays need to be sliced to match the 
-    # u-averaged locations these will apply to Gridded results as well 
+
+    # define how the roms lat/lon arrays need to be sliced to match the
+    # u-averaged locations these will apply to Gridded results as well
     # since they are based on ROMS' grid locations
-    u_trim_roms = {
-        "rho": (slice(0, M), slice(1, L - 1)),
-        "v":   (slice(0, M - 1), slice(1, L - 1)),
-    }
-    
+    u_trim_roms = trim_for_u_alignment(M,L) #{
+    #     "rho": (slice(0, M), slice(1, L - 1)),
+    #     "v":   (slice(0, M - 1), slice(1, L - 1)),
+    # }
+
     # --- Calculate ROMS v-velocities at v, rho, psi, u locations ---
     v_roms_dict = {
         "v":   roms_v,
@@ -172,37 +193,37 @@ def roms_grid_velocity_averages(
         "psi": avg_xi(lon_v),
         "u":   avg_4pt(lon_v),
     }
-    
-    # define how the roms lat/lon arrays need to be sliced to match the 
-    # u-averaged locations these will apply to Gridded results as well 
+
+    # define how the roms lat/lon arrays need to be sliced to match the
+    # u-averaged locations these will apply to Gridded results as well
     # since they are based on ROMS' grid locations
-    v_trim_roms = {
-        "rho": (slice(1, M - 1), slice(0, L)),
-        "u":   (slice(1, M - 1), slice(0, L)),
-    }
-    
-    
+    v_trim_roms = trim_for_v_alignment(M,L) #{
+    #     "rho": (slice(1, M - 1), slice(0, L)),
+    #     "u":   (slice(1, M - 1), slice(0, L)),
+    # }
+
+
     # --- Load variables with gridded and trim for indexing alignment ---
     gridded_ds = gridded.Dataset(str(input_file))
     u_var = gridded_ds.variables["u"]
     v_var = gridded_ds.variables["v"]
-    
+
     # Create coordinate arrays at u, v, rho, and psi locations for
     # Gridded interpoloation
     gridded_result = {}
     for grid_loc in ["u", "v", "rho", "psi"]:
         full_lats = ds[f"lat_{grid_loc}"].data
         full_lons = ds[f"lon_{grid_loc}"].data
-    
+
         # create coordinate array to use in Gridded interpolation
         loc_coords = np.column_stack(
-            (full_lons.ravel(), 
+            (full_lons.ravel(),
              full_lats.ravel(),
              gridded_depth * np.ones(full_lons.size) # depth of evaluation
             )
         )
-    
-        # interpolate velocities, reshape into 2D array and trim down to 
+
+        # interpolate velocities, reshape into 2D array and trim down to
         # match locations of manual interpolation
         # -> u-velocities
         u_gridded = u_var.at(
@@ -216,11 +237,11 @@ def roms_grid_velocity_averages(
         ).reshape(full_lons.shape)
         if grid_loc == "rho" or grid_loc == "u":
             v_gridded = v_gridded[*v_trim_roms[grid_loc]]
-    
+
         # assign manually averaged values for calculating errors
         u_roms = u_roms_dict[grid_loc].data
         v_roms = v_roms_dict[grid_loc].data
-    
+
         # create lat/lon arrays to save
         indices_u = u_trim_roms.get(grid_loc, None)
         lat_u = full_lats[*indices_u] if indices_u else full_lats
@@ -228,14 +249,14 @@ def roms_grid_velocity_averages(
         indices_v = v_trim_roms.get(grid_loc, None)
         lat_v = full_lats[*indices_v] if indices_v else full_lats
         lon_v = full_lons[*indices_v] if indices_v else full_lons
-    
+
         print(" --- ", grid_loc, " --- ")
         print(f"Shape of manual u-avg: {u_roms.shape}")
         print(f"Shape of gridded u-avg: {u_gridded.shape}")
         print(f"Shape of lat/lon_u: {lat_u.shape}, {lon_u.shape}")
         print(f"Shape of manual v-avg: {v_roms.shape}")
         print(f"Shape of gridded v-avg: {v_gridded.shape}")
-    
+
         # Creata a DataArray to store values
         gridded_result[grid_loc] = xr.Dataset(
             data_vars={
@@ -251,7 +272,7 @@ def roms_grid_velocity_averages(
                 f"lon_v_gridded_{grid_loc}": (("eta_v", "xi_v"), lon_v),
                 f"lat_u_gridded_{grid_loc}": (("eta_u", "xi_u"), lat_u),
                 f"lon_u_gridded_{grid_loc}": (("eta_u", "xi_u"), lon_u),
-    
+
                 f"lat_v_roms_avg_{grid_loc}": (("eta_v", "xi_v"), lat_v_roms_dict[grid_loc].data),
                 f"lon_v_roms_avg_{grid_loc}": (("eta_v", "xi_v"), lon_v_roms_dict[grid_loc].data),
                 f"lat_u_roms_avg_{grid_loc}": (("eta_u", "xi_u"), lat_u_roms_dict[grid_loc].data),
@@ -264,5 +285,5 @@ def roms_grid_velocity_averages(
         )
 
     # ideally, u_trim_roms and v_trim_roms are in the DataArray...
-    # but this solution will have to do for now.  
+    # but this solution will have to do for now.
     return gridded_result, u_trim_roms, v_trim_roms
