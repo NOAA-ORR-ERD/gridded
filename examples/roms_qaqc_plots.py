@@ -26,10 +26,12 @@ def map_roms_error(ds_result: xr.Dataset, vel_dir: str, grid_loc: str) -> None:
     # plot map of error
     fig, ax = plt.subplots(figsize=(8, 6))#, constrained_layout=True)
     pcm = ax.pcolormesh(lon,lat,error, vmin=0, vmax=0.1)
-    ax.plot(
-        lon[eta_index, xi_index], lat[eta_index, xi_index],
-        "*", color = "red",
-        label = "location of vertical\ndepth transect",)
+    # add eta_index, xi_index here if a point location on map is useful
+    # eta_index, xi_index = 29, 8
+    # ax.plot(
+    #     lon[eta_index, xi_index], lat[eta_index, xi_index],
+    #     "*", color = "red",
+    #     label = "location of vertical\ndepth transect",)
 
     # add contour where errors >= 0.5
     if np.any(error >= 0.1):
@@ -49,7 +51,8 @@ def map_roms_error(ds_result: xr.Dataset, vel_dir: str, grid_loc: str) -> None:
         f"ROMS v. Gridded \n"
         f"{vel_dir}-velocity errors at {grid_loc.upper()} locations"
     )
-    plt.legend()
+    ## legend goes with commented out marker
+    #plt.legend()
     ax.set_xlabel("longitude")
     ax.set_ylabel("latitude")
     ax.tick_params(axis='x', labelrotation=45)
@@ -85,7 +88,7 @@ def map_roms_error_with_vectors(
     v_grid = ds_result[f"v_gridded_{grid_loc}"].data
 
     if np.nansum(u_grid[:]) == 0:
-        err_msg(
+        err_msg = (
             "Gridded velocities are all NaN, which can happen if the "
             "gridded_depth used in `roms_tools.roms_grid_velocity_averages()`"
             "is zero."
@@ -158,23 +161,25 @@ def map_roms_error_with_vectors(
     )
     ax.quiverkey(
             q_roms,
-            X=0.85,
-            Y=0.05,
+            X=0.2,
+            Y=0.25,
             U=0.5,
-            label="0.5 m/s",
+            label="ROMS\n0.5 m/s",
             labelpos="E",
             coordinates="axes",
             fontproperties={"size": 9},
+            zorder = 5
         )
     ax.quiverkey(
             q_gridded,
-            X=0.80,
+            X=0.1,
             Y=0.05,
             U=0.5,
-            label="0.5 m/s",
+            label="Gridded\n0.5 m/s",
             labelpos="E",
             coordinates="axes",
             fontproperties={"size": 9},
+            zorder = 5
         )
 
     ax.set_title(
@@ -222,12 +227,10 @@ def plot_velocity_error_scatter(
         "u" : {
                 "averaged": ds_result[f"u_roms_{grid_loc}"].data,
                 "gridded": ds_result[f"u_gridded_{grid_loc}"].data,
-                "longitude": ds_result[f"lon_u_gridded_{grid_loc}"].data
             },
         "v" : {
                 "averaged": ds_result[f"v_roms_{grid_loc}"].data,
                 "gridded": ds_result[f"v_gridded_{grid_loc}"].data,
-                "longitude": ds_result[f"lon_v_gridded_{grid_loc}"].data
             }
 
     }
