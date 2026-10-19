@@ -811,11 +811,11 @@ class Variable:
             #data is on cell edge, or on nodes, so we need to interpolate between the two levels.
             for idx in uniq_idx:
                 if idx == self.data.shape[dim_idx] - 1:
+                    lay_idxs = np.where(d_indices == idx)[0]
                     # special case, index == depth dim length, so only v0 is valid
                     v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs)
                     values.put(lay_idxs, v0)
                     continue
-                lay_idxs = np.where(d_indices == idx)[0]
                 v1 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx + 1,), **kwargs)
                 v0 = val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs)
                 sub_vals = v0 + (v1 - v0) * d_alphas[lay_idxs]

@@ -1178,15 +1178,21 @@ class SGrid:
             alpha[:, 0] = 1 - alpha[:, 1]  # compute alpha1
 
             u1 = self.get_variable_at_index(var, zero_aligned_idxs)
-            m1 = np.logical_xor(
-                self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs - u2_offset)
-            )
+            
+            # this compares the center mask of the current cell with the center mask of the adjacent cell
+            # on the lower (left) edge to determine if the value should be masked, eg water/land border
+            m1 = False
+            # m1 = np.logical_xor(
+            #     self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs - u2_offset)
+            # )
             u1.mask = np.logical_or(u1.mask, m1)
 
             u2 = self.get_variable_at_index(var, zero_aligned_idxs + u2_offset)
-            m2 = np.logical_xor(
-                self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs + u2_offset)
-            )
+            # this is the comparsion vs the cell on the higher (right) edge.
+            m2 = False
+            # m2 = np.logical_xor(
+            #     self.get_variable_at_index(cm, center_idxs), self.get_variable_at_index(cm, center_idxs + u2_offset)
+            # )
             u2.mask = np.logical_or(u2.mask, m2)
 
             result = self.compute_interpolant(np.ma.concatenate((u1, u2), axis=-1), alpha)
