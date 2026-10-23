@@ -1,23 +1,39 @@
 import xarray as xr
 import numpy as np
 from pathlib import Path
+from typing import Optional
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 
-def map_roms_error(ds_result: xr.Dataset, vel_dir: str, grid_loc: str) -> None:
+def map_roms_error(
+    ds_result: xr.Dataset, 
+    vel_dir: str, 
+    grid_loc: str
+) -> None:
     """
     Plot and save a map of absolute velocity errors.
 
     Parameters
     ----------
     ds_result : xr.Dataset
-        Dataset containing latitude, longitude, and error variables.
+        Dataset containing latitude, longitude, and error variables 
+        (output from roms_tools.roms_grid_velocity_averages)
     vel_dir : str
         Velocity direction identifier (e.g., 'u' or 'v').
     grid_loc : str
         Grid point location identifier (e.g., 'rho', 'u', 'v', 'psi').
     """
+    # Construct output file name
+    output_root = Path("../graphics/horizontal_interp/")
+    output_subdir = (
+        f"{ds_result['model_name']}" if ds_result.get("model_name") else ""
+    )
+    output_filename =  (
+        f"ROMS_sfc_{vel_dir}_velocity_at_{grid_loc}_points.png"
+    )
+    output_file = output_root / output_subdir / output_filename
+    
     # assign local variables
     lon = ds_result[f"lon_{vel_dir}_gridded_{grid_loc}"].data
     lat = ds_result[f"lat_{vel_dir}_gridded_{grid_loc}"].data
@@ -58,7 +74,8 @@ def map_roms_error(ds_result: xr.Dataset, vel_dir: str, grid_loc: str) -> None:
     ax.tick_params(axis='x', labelrotation=45)
     cbar = fig.colorbar(pcm, ax=ax)
     cbar.set_label("absolute error (m/s)")
-    plt.savefig(f"../graphics/horizontal_interp/ROMS_sfc_{vel_dir}_velocity_at_{grid_loc}_points.png", dpi=300)
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(output_file, dpi=300)
     
 def map_roms_error_with_vectors(
     ds_result: xr.Dataset,
@@ -81,6 +98,14 @@ def map_roms_error_with_vectors(
     scale : float
         Quiver scaling factor (larger value = smaller arrow length).
     """
+    # Construct output file name
+    output_root = Path("../graphics/horizontal_interp/")
+    output_subdir = (
+        f"{ds_result['model_name']}" if ds_result.get("model_name") else ""
+    )
+    output_filename =  f"quiver_comparison_{grid_loc}.png"
+    output_file = output_root / output_subdir / output_filename
+    
     # Assign velocities
     u_roms = ds_result[f"u_roms_{grid_loc}"].data
     v_roms = ds_result[f"v_roms_{grid_loc}"].data
@@ -199,13 +224,8 @@ def map_roms_error_with_vectors(
     plt.tight_layout()
 
     # Save output
-    out_path = (
-        Path("../graphics/horizontal_interp") /
-        f"quiver_comparison_{grid_loc}.png"
-    )
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_path, dpi=300)
-    plt.close(fig)
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(output_file, dpi=300)
 
 def plot_velocity_error_scatter(
     ds_result: xr.Dataset, 
@@ -222,6 +242,16 @@ def plot_velocity_error_scatter(
         Grid point location identifier (e.g., 'rho', 'u', 'v', 'psi').
 
     """
+    # Construct output file name
+    output_root = Path("../graphics/horizontal_interp/")
+    output_subdir = (
+        f"{ds_result['model_name']}" if ds_result.get("model_name") else ""
+    )
+    output_filename = (
+        f"{grid_loc.upper()}_location_velocity_error_scatter.png"
+    )
+    output_file = output_root / output_subdir / output_filename
+    
     # assign local variables
     velocities = {
         "u" : {
@@ -267,11 +297,8 @@ def plot_velocity_error_scatter(
     fig.suptitle(f"{grid_loc.upper()} grid location surface level velocity error evaluation for t=0")
     plt.tight_layout()
     plt.subplots_adjust(wspace=0.6)
-    fig.savefig(
-        f"../graphics/horizontal_interp/{grid_loc.upper()}_location_velocity_error_scatter.png",
-        dpi=300
-    )#, bbox_inches="tight")
-    plt.close(fig)
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(output_file, dpi=300)
 
 def plot_coord_averaging_error(
     roms_file: Path | str,
@@ -279,7 +306,8 @@ def plot_coord_averaging_error(
     vel_dir: str,
     trim_dict: dict,
     avg_lat_dict: dict,
-    avg_lon_dict: dict,
+    avg_lon_dict: dict, 
+    model_name: Optional[str] = None,
 ) -> None:
     """Scatter plot comparing manually averaged latitude values from either u- or v-velocity
     grid coordinates against true ROMS coordinate value for rho, psi, and either v or u.
@@ -299,7 +327,12 @@ def plot_coord_averaging_error(
     avg_lon_dict : dict
         Dictionary mapping grid location keys to averaged longitude DataArrays.
     """
-
+    # Construct output file name
+    output_root = Path("../graphics/horizontal_interp/")
+    output_subdir = f"{model_name}" or ""
+    output_filename = f"{vel_dir}_coord_comparison_{grid_loc}"
+    output_file = output_root / output_subdir / output_filename
+    
     # load ROMS file into data array
     ds = xr.load_dataset(Path(roms_file))
 
@@ -338,17 +371,14 @@ def plot_coord_averaging_error(
         "-velocity averaging\n"
     )
     plt.tight_layout()
-    fig.savefig(
-        f"../graphics/horizontal_interp/{vel_dir}_coord_comparison_{grid_loc}"
-        ".png",
-        dpi=300
-    )#, bbox_inches="tight")
-    plt.close(fig)
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(output_file, dpi=300)
 
 def plot_coord_error_ROMSaveraging_vs_gridded(
     gridded_result: dict,
     grid_loc: str,
     vel_dir: str,
+    model_name: Optional[str] = None,
 ) -> None:
     """This function plots averaged ROMS grid locations against gridded grid locations
     for all four arakawa-c grids to ensure that the velocity averaging of ROMS velocity values
@@ -364,6 +394,12 @@ def plot_coord_error_ROMSaveraging_vs_gridded(
     vel_dir : str
         Velocity direction identifier ('u' or 'v').
     """
+    # Construct output file name
+    output_root = Path("../graphics/horizontal_interp/")
+    output_subdir = f"{model_name}" or ""
+    output_filename = f"{vel_dir}_coord_comparison-avg_vs_gridded-at_{grid_loc}.png"
+    output_file = output_root / output_subdir / output_filename
+    
     # extract dataset/dictionary for the given grid location
     grid_data = gridded_result[grid_loc]
 
@@ -399,5 +435,5 @@ def plot_coord_error_ROMSaveraging_vs_gridded(
     # tie a bow and save figure
     fig.suptitle(f"{grid_loc.upper()} grid location evaluation for \n{vel_dir}-velocity averaging vs. Gridded\n")
     plt.tight_layout()
-    fig.savefig(f"../graphics/horizontal_interp/{vel_dir}_coord_comparison-avg_vs_gridded-at_{grid_loc}.png", dpi=300)
-    plt.close(fig)
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(output_file, dpi=300)

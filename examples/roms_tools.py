@@ -1,11 +1,23 @@
 import pdb
 from pathlib import Path
-
+from typing import Optional
 import numpy as np
 import xarray as xr
 
 import gridded
 
+def apply_mask(ds):
+    # apply mask to u- and v-velocities
+    for velocity in ["u","v"]:
+        # set velocities to NaN at masked locations
+        ds[velocity] = xr.where(ds[f"mask_{velocity}"], ds[velocity], np.nan)
+        # NaN out lat/lon values at land mask regions as well
+        for coord in ["lat","lon"]:
+            ds[f"{coord}_{velocity}"] = xr.where(
+                ds[f"mask_{velocity}"],
+                ds[f"{coord}_{velocity}"], 
+                np.nan
+            )
 
 def avg_xi(arr):
     """
@@ -54,6 +66,13 @@ def avg_4pt(arr):
         + arr[..., 1:, 1:]
     )
 
+def velocity_names():
+    return {
+            'u': ['u', 'U', 'water_u', 'curr_ucmp', 'u_surface', 'u_sur'],
+            'v': ['v', 'V', 'water_v', 'curr_vcmp', 'v_surface', 'v_sur'],
+            'w': ['w', 'W']
+        }
+
 def trim_for_v_alignment(M,L):
     """Coordinate trimming to align averaged values with the locations of the 
     grid to which the v-velocities are being averaged. Only `rho` and `u` grids
@@ -74,21 +93,42 @@ def trim_for_u_alignment(M,L):
     }
     return trimming_rules
 
-def avg_u_to_staggered(roms_xr, time_index: int = 0, depth_index: int = -1):
+def reorder_roms_dims(da):
+    """Reorder ROMS DataArray dimensions to (time, depth, eta, xi)."""
+    # Identify time dimension
+    t_dim = [d for d in da.dims if "time" in d]
+    # Identify depth/vertical dimension
+    z_dim = [d for d in da.dims if d.startswith("s_") or "depth" in d or "z" in d]
+    # Identify eta (y-axis) dimension
+    eta_dim = [d for d in da.dims if "eta" in d]
+    # Identify xi (x-axis) dimension
+    xi_dim = [d for d in da.dims if "xi" in d]
+    # Combine existing dimensions in desired order
+    target_order = t_dim + z_dim + eta_dim + xi_dim
+
+    return da.transpose(*target_order)
+
+def avg_u_to_staggered(roms_xr, time_index: int = 0, depth_index: int | None = -1):
     """A function to verify the method of averaging velocities to different
     grid locations and trimming the results for comparison by creating lat/lon
     results using the same method that can be compared directly with the 
     native lat/lon grids.  Use with companion function avg_v_to_staggared. """
-    roms_u = roms_xr["u"][time_index, depth_index,...]
+    # --- Enforce ordering of time, depth, eta, xi ---
+    roms_u = reorder_roms_dims(roms_xr["u"])
+    ndims = roms_u.ndim
+    if ndims == 3:   
+        roms_u_2d = roms_u[time_index, ...]
+    elif ndims == 4:
+        roms_u_2d = roms_u[time_index, depth_index,...]
     lat_u = roms_xr["lat_u"]
     lon_u = roms_xr["lon_u"]
     
     # --- Calculate ROMS u-velocities at u, rho, psi, v locations ---
     u_staggered = {
-        "u":   roms_u,
-        "rho": avg_xi(roms_u),  # [M, L-2]
-        "psi": avg_eta(roms_u), # [M-1, L-1]...same as psi, no trim needed
-        "v":   avg_4pt(roms_u), # [M-1, L-2]
+        "u":   roms_u_2d,
+        "rho": avg_xi(roms_u_2d),  # [M, L-2]
+        "psi": avg_eta(roms_u_2d), # [M-1, L-1]...same as psi, no trim needed
+        "v":   avg_4pt(roms_u_2d), # [M-1, L-2]
     }
     u_lat_staggered = {
         "u":   lat_u,
@@ -102,22 +142,28 @@ def avg_u_to_staggered(roms_xr, time_index: int = 0, depth_index: int = -1):
         "psi": avg_eta(lon_u),
         "v":   avg_4pt(lon_u),
     }
+    del roms_u, lat_u, lon_u
     return u_staggered, u_lat_staggered, u_lon_staggered
 
-def avg_v_to_staggered(roms_xr, time_index: int = 0, depth_index: int = -1):
+def avg_v_to_staggered(roms_xr, time_index: int = 0, depth_index: int | None = -1):
     """A function to verify the method of averaging velocities to different
     grid locations and trimming the results for comparison by creating lat/lon
     results using the same method that can be compared directly with the 
     native lat/lon grids.  Use with companion function avg_u_to_staggared. """
-    roms_v = roms_xr["v"][time_index, depth_index,...]
+    roms_v = reorder_roms_dims(roms_xr["v"])
+    ndims = roms_v.ndim
+    if ndims == 3:  
+        roms_v_2d = roms_v[time_index, ...]
+    elif ndims == 4:
+        roms_v_2d = roms_v[time_index, depth_index,...]
     lat_v = roms_xr["lat_v"]
     lon_v = roms_xr["lon_v"]
     
     v_staggered = {
-        "v":   roms_v,
-        "rho": avg_eta(roms_v),
-        "psi": avg_xi(roms_v),
-        "u":   avg_4pt(roms_v),
+        "v":   roms_v_2d,
+        "rho": avg_eta(roms_v_2d),
+        "psi": avg_xi(roms_v_2d),
+        "u":   avg_4pt(roms_v_2d),
     }
     v_lat_staggered = {
         "v":   lat_v,
@@ -131,15 +177,15 @@ def avg_v_to_staggered(roms_xr, time_index: int = 0, depth_index: int = -1):
         "psi": avg_xi(lon_v),
         "u":   avg_4pt(lon_v),
     }
+    del roms_v, lat_v, lon_v
     return v_staggered, v_lat_staggered, v_lon_staggered
 
 def roms_grid_velocity_averages(
-    input_file: str | Path = Path(
-        "../../gnome_test_files/gridded_test_files/ROMS_wcofs_May2026_3D.nc"
-    ),
+    input_file: str | Path = None,
     time_index: int = 0,
-    depth_index: int = -1,
-    gridded_depth: float = 0.25 # having this as a default may lead to issues
+    depth_index: int | None = -1,
+    gridded_depth: float = 0.25, # having this as a default may lead to issues
+    model_name: Optional[str] = None
 ):
     """
     Compute and compare ROMS velocity grid interpolations.
@@ -151,20 +197,22 @@ def roms_grid_velocity_averages(
     :param input_file: Path to the 3D ROMS NetCDF dataset, defaults to 
         Path("../../gnome_test_files/ROMS_wcofs_May2026_3D.nc") from 
         https://gnome.orr.noaa.gov/py_gnome_testdata/gridded_test_files/
-    :type input_file: str | pathlib.Path, optional
+    :type input_file: str | pathlib.Path, default = None
     :param time_index: Time step index to extract from the dataset, defaults to 0.
-    :type time_index: int, optional
+    :type time_index: int, default = 0
     :param depth_index: Index to use for depth slice or None.  
         In ROMS, the surface is the Nth (last) level. This input is python indexing, 
         so the level would be the Nth level - 1. If None, then the 
         level defaults to the surface level.
-    :type depth_index: int, optional
+    :type depth_index: int, default = -1 (surface)
     :param gridded_depth: Depth (in meters) at which gridded should evaluate a comparison with
         with the ROMS depths.  It's up to the user to make sure that this depth is within
         the layer indexed by depth_index, and this depth cannot be zero.  The default value
         of 0.25 is recommended for the surface level but needs to be verified for a particular 
         application.
-    :type depth_index: float, optional
+    :type depth_index: float, default = 0.25
+    :param model_name: str
+    :type model_name: str, optional
     :return: A tuple containing:
         
         * **gridded_result** (*dict[str, xarray.Dataset]*): Dictionary mapping each
@@ -179,29 +227,45 @@ def roms_grid_velocity_averages(
     :raises ValueError: If `depth_index` is less than 1 or is greater than or 
         equal to the total depth dimension `n_z`.
     """
-    # --- Load ROMS file without gridded ---
-    ds = xr.load_dataset(input_file)
-    n_t, n_z, n_eta, n_xi = ds["u"].shape
-
-    # --- Error check inputs ---
-    if depth_index is None:
-        # defaults to surface
-        depth_index = n_z - 1
-    elif (depth_index < 1 and depth_index !=-1) or (depth_index >= n_z):
-        err_msg = (
-            "depth_from_sfc_index must be an integer > 0 but less than"
-            f" the depth dimension of {n_z}. For ROMS' surface level, "
-            f"depth_from_sfc_index = 1 and the grid index used is {n_z} - 1."
+    # --- Pull WCOFS from repository if not file is provided ---  
+    if input_file is None:
+        import gnome.scripting as gs
+        gs.get_datafile(
+            "ROMS_wcofs_May2026_3D.nc", 
+            "gridded_test_files/"
         )
-        raise ValueError(err_msg)
-    elif depth_index != -1:
-        depth_index = n_z - depth_index
+
+    # --- Load ROMS file and velocities without gridded ---
+    ds = xr.load_dataset(input_file)
+    # ensure that the dimensions are in the right order
+    ds = reorder_roms_dims(ds)
+    ndims = ds["u"].ndim
+    if ndims == 4:
+        n_t, n_z, n_eta, n_xi = ds["u"].shape
+        # --- Error check inputs ---
+        if depth_index is None:
+            # defaults to surface
+            depth_index = n_z - 1
+        elif (depth_index < 1 and depth_index !=-1) or (depth_index >= n_z):
+            err_msg = (
+                "depth_from_sfc_index must be an integer > 0 but less than"
+                f" the depth dimension of {n_z}. For ROMS' surface level, "
+                f"depth_from_sfc_index = 1 and the grid index used is {n_z} - 1."
+            )
+            raise ValueError(err_msg)
+        elif depth_index != -1:
+            depth_index = n_z - depth_index
+        roms_u = ds["u"][time_index, depth_index,...]
+        roms_v = ds["v"][time_index, depth_index,...]
+    elif ndims == 3:
+        n_t, n_eta, n_xi = ds["u"].shape
+        depth_index = None
+        roms_u = ds["u"][time_index, ...]
+        roms_v = ds["v"][time_index, ...]
 
     # --- Extract variables --
     # get rho-location [M, L] dimensions for reference and full u-, v- arrays
-    M, L = ds["h"].shape
-    roms_u = ds["u"][time_index, depth_index,...]
-    roms_v = ds["v"][time_index, depth_index,...]
+    M, L = ds["mask_rho"].shape
     lat_u = ds["lat_u"]
     lon_u = ds["lon_u"]
     lat_v = ds["lat_v"]
@@ -238,12 +302,19 @@ def roms_grid_velocity_averages(
         full_lons = ds[f"lon_{grid_loc}"].data
 
         # create coordinate array to use in Gridded interpolation
+        # if ndims == 4:
         loc_coords = np.column_stack(
             (full_lons.ravel(),
              full_lats.ravel(),
              gridded_depth * np.ones(full_lons.size) # depth of evaluation
             )
         )
+        # elif ndims == 3:
+        #     loc_coords = np.column_stack(
+        #         (full_lons.ravel(),
+        #          full_lats.ravel()
+        #         )
+        #     )
 
         # interpolate velocities, reshape into 2D array and trim down to
         # match locations of manual interpolation
@@ -264,6 +335,7 @@ def roms_grid_velocity_averages(
         u_roms = u_stg[grid_loc].data
         v_roms = v_stg[grid_loc].data
 
+        pdb.set_trace()
         # create lat/lon arrays to save
         indices_u = u_trim_roms.get(grid_loc, None)
         lat_u = full_lats[*indices_u] if indices_u else full_lats
@@ -303,6 +375,8 @@ def roms_grid_velocity_averages(
             attrs={
                 "grid_staggering": grid_loc,
                 "description": f"grid_staggering at {grid_loc} locations",
+                "model_name": model_name or None,
+                "depth_index": depth_index
             }
         )
 

@@ -33,12 +33,19 @@ import roms_qaqc_plots as r_plot
 # -----------------------------------------------------------------------
 
 # --- Configuration & Input Setup ---
-roms_file = Path("../../gnome_test_files/gridded_test_files/ROMS_wcofs_May2026_3D.nc")
+roms_file = Path("../../gnome_test_files/gridded_test_files/CIOFS_2026-01-02_2026-01-03_masked.nc")
+model_name = "ciofs"
+
+# roms_file = Path("../../gnome_test_files/gridded_test_files/ROMS-WCOFS-OFS-subsetter.nc")
+# model_name = "wcofs2d"
 input_file = roms_file
 ds = xr.load_dataset(roms_file)
-n_t, n_z, n_eta, n_xi = ds["u"].shape
+ndims = ds["u"].ndim
+if ndims == 4:
+    n_t, n_z, n_eta, n_xi = ds["u"].shape
+elif ndims == 3:
+    n_t, n_eta, n_xi = ds["u"].shape
 time_index = 0
-depth_index = -1#n_z-1
 
 # location of depth transect in "ROMS_calc_z_velocity_errors.py"
 eta_index, xi_index = 29, 8
@@ -47,16 +54,16 @@ eta_index, xi_index = 29, 8
 gridded_result, u_trim_roms, v_trim_roms = staggered_avg(
     roms_file, 
     time_index = 0,
-    depth_index = -1, # sfc
-    gridded_depth = 0.25
+    gridded_depth = 0.25,
+    model_name = model_name
 )
 
 # Calculate velocities and coords at staggered locations using u-,v-values and grids
 u_stg, u_lat_stg, u_lon_stg = r_tools.avg_u_to_staggered(
-        ds, time_index, depth_index
+        ds, time_index
     )
 v_stg, v_lat_stg, v_lon_stg = r_tools.avg_v_to_staggered(
-        ds, time_index, depth_index
+        ds, time_index
     )
 # --------------
 #  PLOT RESULTS
@@ -79,7 +86,8 @@ for grid_loc in ["u", "v", "rho", "psi"]:
         "u",
         u_trim_roms,
         u_lat_stg,
-        u_lon_stg
+        u_lon_stg,
+        model_name
     )
     # check v-velocity averaging
     r_plot.plot_coord_averaging_error(
@@ -99,7 +107,7 @@ for grid_loc in ["u", "v", "rho", "psi"]:
     for vel_dir in ["u","v"]:
         # --- Compare grid locations ---
         r_plot.plot_coord_error_ROMSaveraging_vs_gridded(
-            gridded_result, grid_loc, vel_dir
+            gridded_result, grid_loc, vel_dir, model_name
         )
          # --- Map velocity errors ---
         r_plot.map_roms_error(gridded_result[grid_loc], vel_dir, grid_loc)
