@@ -21,6 +21,11 @@ class DepthBase:
     def __init__(
         self,
         name=None,
+        filename=None,
+        data_file=None,
+        grid_file=None,
+        grid=None,
+        time=None,
         surface_index=-1,
         bottom_index=0,
         default_surface_boundary_condition="extrapolate",
@@ -33,10 +38,24 @@ class DepthBase:
         :param bottom_index: array index of 'lowest' level (closest to seafloor)
         """
         self.name = name
+        self.filename = filename
+        self.data_file = data_file
+        self.grid_file = grid_file
+        self.grid = grid
+        self.time = time
         self._surface_index = surface_index
         self._bottom_index = bottom_index
         self.default_surface_boundary_condition = default_surface_boundary_condition
         self.default_bottom_boundary_condition = default_bottom_boundary_conditon
+        if "name" in kwargs:
+            self.name = kwargs["name"]
+        else:
+            self.name = self.__class__.__name__ + "_" + str(type(self)._instance_count)
+        self.filename = filename
+        type(self)._instance_count += 1
+
+        super().__init__(**kwargs)
+        
 
     @classmethod
     def _can_create_from_netCDF(
@@ -171,7 +190,6 @@ class L_Depth(DepthBase):
     cf_names = {"depth_levels": "depth"}
 
     def __init__(self, terms=None, **kwargs):
-        super().__init__(**kwargs)
         self.terms = {}
         if terms is None:
             raise ValueError("Must provide terms for level depth coordinate")
@@ -179,6 +197,7 @@ class L_Depth(DepthBase):
             self.terms = terms
             for k, v in terms.items():
                 setattr(self, k, v)
+        super().__init__(**kwargs)
 
     @classmethod
     def _can_create_from_netCDF(
@@ -213,7 +232,7 @@ class L_Depth(DepthBase):
         terms["depth_levels"][surface_index] = 0.0
         # 2023-02-21 set the depth of the top layer to zero
 
-        return cls(name=name, terms=terms, **kwargs)
+        return cls(name=name, data_file=data_file, grid_file=grid_file, terms=terms, **kwargs)
 
     @property
     def surface_index(self):
@@ -352,9 +371,6 @@ class S_Depth(DepthBase):
 
     def __init__(
         self,
-        name=None,
-        time=None,
-        grid=None,
         bathymetry=None,
         zeta=None,
         terms=None,
@@ -398,10 +414,6 @@ class S_Depth(DepthBase):
         :type bottom_boundary_condition: string ('extrapolate' or 'mask')
         """
 
-        super().__init__(**kwargs)
-        self.name = name
-        self.time = time
-        self.grid = grid
         self.bathymetry = bathymetry  # Nodal bathymetry only.
         self.zeta = zeta
         self.terms = {}
@@ -417,6 +429,7 @@ class S_Depth(DepthBase):
         # self.w_coordinates = self.compute_coordinates('w')
         self.default_surface_boundary_condition = surface_boundary_condition
         self.default_bottom_boundary_condition = bottom_boundary_condition
+        super().__init__(**kwargs)
 
     @classmethod
     def from_netCDF(
@@ -586,6 +599,8 @@ class S_Depth(DepthBase):
 
         return cls(
             name=name,
+            data_file=data_file,
+            grid_file=grid_file,
             time=time,
             grid=grid,
             bathymetry=bathymetry,
