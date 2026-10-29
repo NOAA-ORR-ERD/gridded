@@ -159,9 +159,11 @@ def create_comparison_netcdf(
     wetdrymask = "wetdry_mask_rho" in variable_list
     if wetdrymask:
         # use masks to isolate computational domain and set all other 
-        # values to NaN.  xarray's "skipna" is used manage/ignore NaN values
+        # values to 0.  
         for velocity in ["u","v"]:
-            ds[velocity] = ds[velocity].where(ds[f"wetdry_mask_{velocity}"] == 1)
+            ds[velocity] = ds[velocity].where(
+                ds[f"wetdry_mask_{velocity}"] == 1, 0
+            )
     
     # --- Use all time steps for surface level ---
     # variables must by xarray.DataArrays for averaging functions
@@ -233,8 +235,8 @@ def create_comparison_netcdf(
     v_var = gridded_ds.variables["v"]
     
     # mask velocities
-    u_var.data = np.where(ds["wetdry_mask_u"].data==1, u_var.data, np.nan)
-    v_var.data = np.where(ds["wetdry_mask_v"].data==1, v_var.data, np.nan)
+    u_var.data = np.where(ds["wetdry_mask_u"].data==1, u_var.data, 0)
+    v_var.data = np.where(ds["wetdry_mask_v"].data==1, v_var.data, 0)
     
     # Use Gridded to estimate velocities at all four grid locations
     gridded_result = {}
