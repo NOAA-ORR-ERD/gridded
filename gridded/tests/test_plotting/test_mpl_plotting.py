@@ -27,7 +27,7 @@ OUTPUT_DIR.mkdir(exist_ok=True)
 
 
 def test_plot_ugrid_no_numbers():
-    gds = gridded.Dataset(EXAMPLE_DATA / "UGRIDv0.9_eleven_points.nc")
+    gds = gridded.Dataset.from_netCDF(EXAMPLE_DATA / "UGRIDv0.9_eleven_points.nc")
 
     fig, axis = plt.subplots()
 
@@ -37,7 +37,7 @@ def test_plot_ugrid_no_numbers():
 
 
 def test_plot_ugrid_face_numbers():
-    grid = gridded.Dataset(EXAMPLE_DATA / "UGRIDv0.9_eleven_points.nc").grid
+    grid = gridded.Dataset.from_netCDF(EXAMPLE_DATA / "UGRIDv0.9_eleven_points.nc").grid
 
     fig, axis = plt.subplots()
 
@@ -47,7 +47,7 @@ def test_plot_ugrid_face_numbers():
 
 
 def test_plot_ugrid_node_numbers():
-    grid = gridded.Dataset(EXAMPLE_DATA / "UGRIDv0.9_eleven_points.nc").grid
+    grid = gridded.Dataset.from_netCDF(EXAMPLE_DATA / "UGRIDv0.9_eleven_points.nc").grid
 
     fig, axis = plt.subplots()
 
@@ -58,7 +58,7 @@ def test_plot_ugrid_node_numbers():
 
 def test_plot_ugrid_FVCOM():
 
-    grid = gridded.Dataset(EXAMPLE_DATA / "tri_grid_example-FVCOM.nc").grid
+    grid = gridded.Dataset.from_netCDF(EXAMPLE_DATA / "tri_grid_example-FVCOM.nc").grid
 
     fig, axis = plt.subplots()
 
@@ -69,7 +69,7 @@ def test_plot_ugrid_FVCOM():
 
 def test_plot_ugrid_bounds():
 
-    grid = gridded.Dataset(EXAMPLE_DATA / "small_ugrid_zero_based.nc").grid
+    grid = gridded.Dataset.from_netCDF(EXAMPLE_DATA / "small_ugrid_zero_based.nc").grid
 
     fig, axis = plt.subplots()
 
@@ -84,7 +84,7 @@ def test_plot_ugrid_bounds():
 
 
 def test_plot_sgrid_no_nodes():
-    grid = gridded.Dataset(EXAMPLE_DATA / "WCOFS_subset.nc").grid
+    grid = gridded.Dataset.from_netCDF(EXAMPLE_DATA / "WCOFS_subset.nc").grid
 
     fig, axis = plt.subplots()
 
@@ -94,7 +94,7 @@ def test_plot_sgrid_no_nodes():
 
 
 def test_plot_sgrid_and_nodes():
-    grid = gridded.Dataset(EXAMPLE_DATA / "staggered_sine_channel.nc").grid
+    grid = gridded.Dataset.from_netCDF(EXAMPLE_DATA / "staggered_sine_channel.nc").grid
 
     fig, axis = plt.subplots()
 
