@@ -1,15 +1,14 @@
 #!/usr/binenv python
 
 import logging
+import warnings
 from datetime import datetime, timedelta
 from textwrap import dedent
-import warnings
 
 import netCDF4 as nc4
 import numpy as np
 
 from gridded.utilities import (
-    get_dataset,
     parse_filename_dataset_args,
     search_netcdf_vars,
 )
@@ -258,7 +257,8 @@ class Time:
             tvar = nc_vars[list(cls.default_names.keys())[0]]
             if tvar is None:
                 warnings.warn(
-                    "No time variables found in the dataset. Returning a constant time object, but in future will raise an error."
+                    "No time variables found in the dataset. "
+                    "Returning a constant time object, but in future will raise an error."
                 )
                 return cls.constant_time() #this is necessary until the refactor where variable.time = None is supported
                 #raise ValueError("No time variables found in the dataset.")
@@ -350,7 +350,7 @@ class Time:
 
     def __iter__(self):
         return iter(self.data)
-    
+
     def _diff(self, other, fail_early=False):
         diff = {}
         if not isinstance(other, self.__class__):

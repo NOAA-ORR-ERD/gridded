@@ -127,7 +127,7 @@ class NetCDFDataset:
         else:
             self._filepath = None
             # raise error?
-            
+
         self.sgrid_compliant_file()
 
     def find_node_coordinates(self, node_dimensions):

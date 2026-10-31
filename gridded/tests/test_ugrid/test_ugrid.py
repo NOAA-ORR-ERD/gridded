@@ -71,17 +71,17 @@ def test_nodes_and_lon_lat():
 
 def test_both_nodes_and_lon_lat():
     with pytest.raises(TypeError):
-        grid = UGrid(node_lon=node_lon, node_lat=node_lat, nodes=nodes)
+        grid = UGrid(node_lon=node_lon, node_lat=node_lat, nodes=nodes)  #noqa: F841
 
 
 def test_both_nodes_and_lon():
     with pytest.raises(TypeError):
-        grid = UGrid(node_lon=node_lon, nodes=nodes)
+        grid = UGrid(node_lon=node_lon, nodes=nodes)  #noqa: F841
 
 
 def test_both_nodes_and_lat():
     with pytest.raises(TypeError):
-        grid = UGrid(node_lat=node_lat, nodes=nodes)
+        grid = UGrid(node_lat=node_lat, nodes=nodes)  #noqa: F841
 
 
 def test_eq():

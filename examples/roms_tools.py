@@ -82,7 +82,7 @@ def avg_u_to_staggered(roms_xr, time_index: int = 0, depth_index: int = -1):
     roms_u = roms_xr["u"][time_index, depth_index,...]
     lat_u = roms_xr["lat_u"]
     lon_u = roms_xr["lon_u"]
-    
+
     # --- Calculate ROMS u-velocities at u, rho, psi, v locations ---
     u_staggered = {
         "u":   roms_u,
@@ -112,7 +112,7 @@ def avg_v_to_staggered(roms_xr, time_index: int = 0, depth_index: int = -1):
     roms_v = roms_xr["v"][time_index, depth_index,...]
     lat_v = roms_xr["lat_v"]
     lon_v = roms_xr["lon_v"]
-    
+
     v_staggered = {
         "v":   roms_v,
         "rho": avg_eta(roms_v),
@@ -223,7 +223,7 @@ def roms_grid_velocity_averages(
     # define how the roms lat/lon arrays need to be sliced to match the
     # u-averaged locations these will apply to Gridded results as well
     # since they are based on ROMS' grid locations
-    v_trim_roms = trim_for_v_alignment(M,L) 
+    v_trim_roms = trim_for_v_alignment(M,L)
 
     # --- Load variables with gridded and trim for indexing alignment ---
     gridded_ds = gridded.Dataset(str(input_file))

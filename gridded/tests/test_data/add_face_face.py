@@ -9,8 +9,8 @@ The script was kept around as an example for future use.
 
 """
 
-import numpy as np
 import netCDF4
+import numpy as np
 
 data = np.array([[-1,  3,  2],
        [ 2,  5, -1],

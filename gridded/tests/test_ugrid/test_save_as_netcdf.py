@@ -4,6 +4,8 @@
 Tests for saving a UGrid in netcdf format.
 """
 
+# ruff: noqa: F811, F401 # imports are weird with fixtures
+
 import os
 
 import netCDF4

@@ -1178,7 +1178,7 @@ class SGrid:
             alpha[:, 0] = 1 - alpha[:, 1]  # compute alpha1
 
             u1 = self.get_variable_at_index(var, zero_aligned_idxs)
-            
+
             # this compares the center mask of the current cell with the center mask of the adjacent cell
             # on the lower (left) edge to determine if the value should be masked, eg water/land border
             m1 = False

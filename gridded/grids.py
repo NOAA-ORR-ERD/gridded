@@ -109,7 +109,7 @@ class GridBase:
         """
 
         raise NotImplementedError("GridBase cannot interpolate variables to itself")
-    
+
     def _diff(self, other, fail_early=False):
         """
         Compares this grid with another grid and returns a dictionary of differences.
@@ -131,7 +131,7 @@ class GridBase:
         if not any(diff.values()):
             return None
         return diff
-    
+
     def __eq__(self, other):
         return self._diff(other, fail_early=True) is None
 
@@ -175,7 +175,7 @@ class Grid_U(GridBase, UGrid):
             init_args["faces"] -= 1
 
         return init_args, gt
-    
+
     def _diff(self, other, fail_early=False):
         """
         Compares this grid with another grid and returns a dictionary of differences.

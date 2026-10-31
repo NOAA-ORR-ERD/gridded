@@ -55,7 +55,7 @@ class DepthBase:
         type(self)._instance_count += 1
 
         super().__init__(**kwargs)
-        
+
 
     @classmethod
     def _can_create_from_netCDF(
@@ -82,7 +82,7 @@ class DepthBase:
         # Subclasses are REQUIRED to implement this property in the manner appropriate
         # for the system being represented
         return self._bottom_index
-    
+
     def _diff(self, other, fail_early=False):
         diff = {}
         if not isinstance(other, self.__class__):
@@ -97,7 +97,7 @@ class DepthBase:
             diff["bottom_index"] = (self.bottom_index, other.bottom_index)
             if fail_early and diff["bottom_index"]:
                 return diff
-            
+
         if hasattr(self, 'grid') and hasattr(other, 'grid'):
             if self.grid != other.grid:
                 diff["grid"] = (self.grid, other.grid)
@@ -650,12 +650,12 @@ class S_Depth(DepthBase):
 
     def __len__(self):
         return self.num_levels
-    
+
     def _diff(self, other, fail_early=False):
         diff = super()._diff(other, fail_early=fail_early) or {}
         if diff and fail_early:
             return diff
-        
+
         if self.bathymetry != other.bathymetry:
             diff["bathymetry"] = (self.bathymetry, other.bathymetry)
             if fail_early:
@@ -1077,6 +1077,6 @@ class Depth:
                     f"with this NetCDF dataset: {detected_systems}. "
                 )
             return typ.from_netCDF(
-                filename=filename, dataset=dataset, data_file=data_file, 
+                filename=filename, dataset=dataset, data_file=data_file,
                 grid_file=grid_file, **kwargs
             )

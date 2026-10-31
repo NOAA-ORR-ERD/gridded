@@ -1,14 +1,16 @@
 from pathlib import Path
-import numpy as np
-import xarray as xr
+
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import matplotlib.pyplot as plt
+import numpy as np
+import roms_qaqc_plots as r_plot
+import roms_tools as r_tools
+import xarray as xr
+from roms_tools import roms_grid_velocity_averages as staggered_avg
 
 import gridded
-from roms_tools import roms_grid_velocity_averages as staggered_avg
-import roms_tools as r_tools
-import roms_qaqc_plots as r_plot 
+
 # -----------------------------------------------------------------------
 #
 # ROMS Arakawa-C grid dimensions 101:
@@ -45,7 +47,7 @@ eta_index, xi_index = 29, 8
 
 # Average ROMS velocities to staggered grid
 gridded_result, u_trim_roms, v_trim_roms = staggered_avg(
-    roms_file, 
+    roms_file,
     time_index = 0,
     depth_index = -1, # sfc
     gridded_depth = 0.25
@@ -72,7 +74,7 @@ for grid_loc in ["u", "v", "rho", "psi"]:
     )
 
     # Validate method using lat/lon averaging
-    # check u-velocity averaging    
+    # check u-velocity averaging
     r_plot.plot_coord_averaging_error(
         roms_file,
         grid_loc,

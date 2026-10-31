@@ -465,7 +465,7 @@ def search_netcdf_vars(cls=None, ds=None, dg=None):
     Given a class with a .default_names and .cf_names attributes, search a datafile
     netCDF4.Dataset and a possible grid netCDF4.Dataset for variables that are sought by
     the class
-    
+
     These names attributes are a dictionary str -> list
     """
     ds_search = search_dataset_for_variables_by_longname(ds, cls.cf_names)

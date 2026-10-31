@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# ruff: noqa: F811, F401 # imports are weird with fixtures
+
 import os
 
 import netCDF4 as nc
@@ -9,7 +11,7 @@ from gridded import utilities
 
 # the get_roms_depth fixture should be in conftest.py
 # so it can be used everywhere
-from gridded.tests.test_depth import get_roms_depth  # noqa: F401
+from gridded.tests.test_depth import get_roms_depth
 
 data_dir = os.path.join(os.path.split(__file__)[0], "test_data")
 

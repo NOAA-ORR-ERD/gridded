@@ -1,9 +1,11 @@
-import xarray as xr
-import numpy as np
 from pathlib import Path
-import matplotlib.pyplot as plt
+
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+import matplotlib.pyplot as plt
+import numpy as np
+import xarray as xr
+
 
 def map_roms_error(ds_result: xr.Dataset, vel_dir: str, grid_loc: str) -> None:
     """
@@ -59,7 +61,7 @@ def map_roms_error(ds_result: xr.Dataset, vel_dir: str, grid_loc: str) -> None:
     cbar = fig.colorbar(pcm, ax=ax)
     cbar.set_label("absolute error (m/s)")
     plt.savefig(f"../graphics/horizontal_interp/ROMS_sfc_{vel_dir}_velocity_at_{grid_loc}_points.png", dpi=300)
-    
+
 def map_roms_error_with_vectors(
     ds_result: xr.Dataset,
     grid_loc: str,
@@ -208,7 +210,7 @@ def map_roms_error_with_vectors(
     plt.close(fig)
 
 def plot_velocity_error_scatter(
-    ds_result: xr.Dataset, 
+    ds_result: xr.Dataset,
     grid_loc: str
 ) -> None:
     """Scatter plot comparing manually averaged velocity values to gridded .at()

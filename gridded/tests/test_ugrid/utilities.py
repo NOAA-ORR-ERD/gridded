@@ -3,9 +3,6 @@ Assorted utilities useful for the tests.
 
 """
 
-import contextlib
-import os
-
 import pytest
 
 from gridded.pyugrid import ugrid
@@ -108,14 +105,3 @@ def twenty_one_triangles():
     grid = ugrid.UGrid(nodes=nodes, faces=faces, boundaries=boundaries)
     grid.build_edges()
     return grid
-
-
-# @contextlib.contextmanager
-# def chdir(dirname=None):
-#     curdir = os.getcwd()
-#     try:
-#         if dirname is not None:
-#             os.chdir(dirname)
-#         yield
-#     finally:
-#         os.chdir(curdir)

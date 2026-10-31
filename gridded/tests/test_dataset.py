@@ -4,12 +4,12 @@
 import datetime
 import os
 
-from gridded.time import Time
 import netCDF4 as nc
 import pytest
 
 from gridded import Dataset
 from gridded.grids import Grid_S
+from gridded.time import Time
 
 from .utilities import TEST_DATA
 
@@ -138,7 +138,7 @@ def test_save_invalid_format():
 #     ds.save(filename)
 
 #     assert os.path.exists(filename)
-    
+
 #     ds2 = Dataset.load(filename)
 #     assert ds.name == "a_test_dataset"
 #     assert ds2 == ds

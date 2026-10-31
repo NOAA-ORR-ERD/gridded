@@ -422,7 +422,7 @@ class Variable:
     @property
     def is_data_on_nodes(self):
         return self.grid.infer_location(self._data) == "node"
-    
+
     def _diff(self, other, fail_early=False):
         diff = {}
         if not isinstance(other, self.__class__):
@@ -443,7 +443,7 @@ class Variable:
             diff["units"] = (self.units, other.units)
             if fail_early and diff["units"]:
                 return diff
-            
+
         # diff for grid, variables, time, depth
         if self.grid != other.grid:
             if self.grid and hasattr(self.grid, "_diff"):
@@ -453,7 +453,7 @@ class Variable:
                 diff['grid'] = f"self.grid: {self.grid}, other.grid: {other.grid}"
             if fail_early and diff['grid']:
                 return diff
-        
+
         if self.time != other.time:
             if self.time and hasattr(self.time, "_diff"):
                 time_diff = self.time._diff(other.time, fail_early=fail_early)
@@ -462,7 +462,7 @@ class Variable:
                 diff['time'] = f"self.time: {self.time}, other.time: {other.time}"
             if fail_early and diff['time']:
                 return diff
-            
+
         if self.depth != other.depth:
             if self.depth and hasattr(self.depth, "_diff"):
                 depth_diff = self.depth._diff(other.depth, fail_early=fail_early)
@@ -473,7 +473,7 @@ class Variable:
                 return diff
 
         return diff if diff else None
-    
+
     def __eq__(self, other):
         return self._diff(other, fail_early=True) is None
 

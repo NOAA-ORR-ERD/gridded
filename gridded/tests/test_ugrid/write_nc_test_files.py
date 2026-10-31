@@ -40,7 +40,7 @@ def quad_and_triangle():
         Title=("2D flexible mesh (mixed triangles, quadrilaterals, etc.) topology"),
         Institution="Deltares",
         References="fedor.baart@deltares.nl",
-        History="created with %s" % (__file__,),
+        History=f"created with {__file__}",
     )
     update_with_attributes(ds, attributes)
 

@@ -140,7 +140,7 @@ class Dataset:
     def __str__(self):
         descp = f"gridded.Dataset with:\ngrid: {type(self.grid)}\nvariables: {list(self.variables.keys())}"
         return descp
-    
+
     def _diff(self, other, fail_early=False):
         diff = {'self': {},
                 'grid': {},
@@ -160,7 +160,7 @@ class Dataset:
             diff['self']['attributes'] = f"self.attributes: {self.attributes}, other.attributes: {other.attributes}"
             if fail_early:
                 return diff
-            
+
         # diff for grid, variables, time, depth
         if self.grid != other.grid:
             if self.grid and hasattr(self.grid, "_diff"):
@@ -170,7 +170,7 @@ class Dataset:
                 diff['grid'] = f"self.grid: {self.grid}, other.grid: {other.grid}"
             if fail_early and diff['grid']:
                 return diff
-        
+
         if self.time != other.time:
             if self.time and hasattr(self.time, "_diff"):
                 time_diff = self.time._diff(other.time, fail_early=fail_early)
@@ -179,7 +179,7 @@ class Dataset:
                 diff['time'] = f"self.time: {self.time}, other.time: {other.time}"
             if fail_early and diff['time']:
                 return diff
-            
+
         if self.depth != other.depth:
             if self.depth and hasattr(self.depth, "_diff"):
                 depth_diff = self.depth._diff(other.depth, fail_early=fail_early)
@@ -188,7 +188,7 @@ class Dataset:
                 diff['depth'] = f"self.depth: {self.depth}, other.depth: {other.depth}"
             if fail_early and diff['depth']:
                 return diff
-        
+
         if self.variables is None:
             if other.variables is not None:
                 diff['variables'] = f"self.variables: {self.variables}, other.variables: {other.variables}"
@@ -204,11 +204,11 @@ class Dataset:
                         diff['variables'][var_name] = var_diff
                 if fail_early and diff['variables']:
                     return diff
-        
+
         if not any(diff.values()):
             return None
-        return diff 
-        
+        return diff
+
 
     def __eq__(self, other):
         diff = self._diff(other, fail_early=True)
