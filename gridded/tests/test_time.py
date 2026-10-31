@@ -38,7 +38,7 @@ def test_init():
     """
     can one even be initialized with no data?
     """
-    t = Time()
+    t = Time()  #noqa:F841
 
 
 def test_init_with_data_None():
@@ -65,7 +65,7 @@ def test_init_with_Time_object():
 
 def test_invalid_timeseries():
     with pytest.raises(TypeError, match="not compatible with datetime"):
-        t = Time(data=["2012-02-03T12:00"])
+        t = Time(data=["2012-02-03T12:00"])  #noqa:F841
 
 
 def test_from_netcdf_filename_no_var():
@@ -124,10 +124,10 @@ def test_from_netcdf_filename_bad():
     initialize from a bad netcdf filename
     """
     with pytest.raises(OSError):
-        t = Time.from_netCDF(filename="http://this.that.com", varname="time")
+        t = Time.from_netCDF(filename="http://this.that.com", varname="time")  #noqa:F841
 
     with pytest.raises(OSError):
-        t = Time.from_netCDF(filename="non_existant_file.nc", varname="time")
+        t = Time.from_netCDF(filename="non_existant_file.nc", varname="time")  #noqa:F841
 
 
 def test_origin():
@@ -177,7 +177,7 @@ def test_new_tz_offset_no_tz_offset():
     """
     new_tz_offset = 8
     with pytest.raises(ValueError):
-        t = Time(SAMPLE_TIMESERIES, new_tz_offset=new_tz_offset)
+        t = Time(SAMPLE_TIMESERIES, new_tz_offset=new_tz_offset)  #noqa:F841
 
 
 def test_new_tz_offset_from_zero():
@@ -515,7 +515,7 @@ def test_from_netcdf_tz_offset_set_Naive():
     filename = TEST_DATA / "just_time_naive.nc"
     t = Time.from_netCDF(filename=filename, varname="time", tz_offset="Naive")
 
-    assert t.tz_offset == None
+    assert t.tz_offset is None
     assert t.tz_offset_name == "No Timezone Specified"
 
 
@@ -625,7 +625,9 @@ def test_parse_time_offset(offset, unit_str, name):
 #
 #         b = Bathymetry(name='bathymetry', data=bathy_data, grid=test_grid, time=None)
 #
-#         dep = S_Depth_T1(bathymetry=b, terms=dict(zip(S_Depth_T1.default_terms[0], [Cs_w, s_w, hc, Cs_r, s_rho])), dataset='dummy')
+#         dep = S_Depth_T1(bathymetry=b,
+#                          terms=dict(zip(S_Depth_T1.default_terms[0],
+#                                          [Cs_w, s_w, hc, Cs_r, s_rho])), dataset='dummy')
 #         assert dep is not None
 #
 #         corners = np.array([[0, 0, 0], [0, 3, 0], [3, 3, 0], [3, 0, 0]], dtype=np.float64)

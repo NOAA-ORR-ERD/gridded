@@ -5,6 +5,9 @@ Tests for adding a data attribute to a UGrid object.
 
 """
 
+# Legacy tests -- we may want to have somethign like a UVar some day.
+# ruff: noqa: F821
+
 import numpy as np
 import pytest
 

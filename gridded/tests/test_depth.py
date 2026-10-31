@@ -40,7 +40,7 @@ def test_from_netCDF():
         # if not valid_depth_test_dataset(ds):
         #     print("NOT DEPTH:", fn)
         #     continue
-        d = S_Depth.from_netCDF(data_file=ds, grid_file=ds)
+        d = S_Depth.from_netCDF(data_file=ds, grid_file=ds)  #noqa: F841
 
 
 @pytest.fixture(scope="module")
@@ -139,7 +139,7 @@ def get_l_depth():
 class Test_S_Depth:
     def test_apply_boundary_conditions(self):
         # Test 1 surf 0 bottom 9 surf extrapolate bottom mask
-        depths = [-0.1, 0, 0.1, 1, 6, 8, 8.9, 9, 9.1]  # for human reference
+        # depths = [-0.1, 0, 0.1, 1, 6, 8, 8.9, 9, 9.1]  # for human reference
         # v = v1 - (1-a)*(v1 - v0)
         indices = np.ma.masked_array(data=np.array([-1, 0, 0, 1, 3, 8, 8, 9, 9]), mask=np.zeros((9), dtype=bool))
         indices.mask[4] = True
@@ -170,7 +170,7 @@ class Test_S_Depth:
         assert np.all(alp.mask == expected_alphas.mask)
 
         # Test 2 surf 9 bottom 0 surf extrapolate bottom mask
-        depths = [-1, 0, 0.1, 1, 6, 8, 8.9, 9, 9.1]  # for human reference
+        # depths = [-1, 0, 0.1, 1, 6, 8, 8.9, 9, 9.1]  # for human reference
         # v = v1 - (1-a)*(v1 - v0)
         indices = np.ma.masked_array(data=np.array([9, 8, 8, 7, 3, 1, 0, 0, -1]), mask=np.zeros((9), dtype=bool))
         indices.mask[4] = True
@@ -201,7 +201,7 @@ class Test_S_Depth:
         assert np.all(alp.mask == expected_alphas.mask)
 
         # Test 3 surf 9 bottom 0 surf extrapolate bottom extrapolate
-        depths = [-1, 0, 0.1, 1, 6, 8, 8.9, 9, 9.1]  # for human reference
+        # depths = [-1, 0, 0.1, 1, 6, 8, 8.9, 9, 9.1]  # for human reference
         # v = v1 - (1-a)*(v1 - v0)
         indices = np.ma.masked_array(data=np.array([9, 8, 8, 7, 3, 1, 0, 0, -1]), mask=np.zeros((9), dtype=bool))
         indices.mask[4] = True
@@ -231,7 +231,7 @@ class Test_S_Depth:
 
     def test_mask_surface(self):
         # Test 3 surf 9 bottom 0 surf extrapolate bottom extrapolate
-        depths = [-1, 0, 0.1, 1, 6, 8, 8.9, 9, 9.1]  # for human reference
+        # depths = [-1, 0, 0.1, 1, 6, 8, 8.9, 9, 9.1]  # for human reference
         # v = v1 - (1-a)*(v1 - v0)
         indices = np.ma.masked_array(data=np.array([9, 8, 8, 7, 3, 1, 0, 0, -1]), mask=np.zeros((9), dtype=bool))
         indices.mask[4] = True
@@ -310,17 +310,18 @@ class Test_ROMS_Depth:
             ],
         )
         expected_idx = np.ma.array(
-            np.array([0, -1000, -1000, -1000, 10, 9, 9, 5, 4, 4]), mask=[False, True, True, True, False, False, False, False, False, False]
+            np.array([0, -1000, -1000, -1000, 10, 9, 9, 5, 4, 4]),
+            mask=[False, True, True, True, False, False, False, False, False, False]
         )
         expected_alpha = np.ma.array(
-            np.array([0.1, -1000, -1000, -1000, 0, 1, 0.9, 0.05, 1, 0.95]), mask=[False, True, True, True, False, False, False, False, False, False]
+            np.array([0.1, -1000, -1000, -1000, 0, 1, 0.9, 0.05, 1, 0.95]),
+            mask=[False, True, True, True, False, False, False, False, False, False]
         )
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
 
-        points = np.array(
-            [[20, 20, 9.9], [20, 20, 10.0], [20, 20, 10.1], [-1, -1, 5], [20, 20, -0.1], [20, 20, 0], [20, 20, 0.1]]
-        )
+        points = np.array([[20, 20, 9.9], [20, 20, 10.0], [20, 20, 10.1], [-1, -1, 5], [20, 20, -0.1],
+                           [20, 20, 0], [20, 20, 0.1]])
         sd.default_bottom_boundary_condition == "extrapolate"
         idx, alphas = sd.interpolation_alphas(
             points,
@@ -330,10 +331,12 @@ class Test_ROMS_Depth:
             ],
         )
         expected_idx = np.ma.array(
-            np.array([0, -1000, -1000, -1000, 10, 9, 9]), mask=[False, False, True, True, False, False, False]
+            np.array([0, -1000, -1000, -1000, 10, 9, 9]),
+            mask=[False, False, True, True, False, False, False]
         )
         expected_alpha = np.ma.array(
-            np.array([0.1, -1000, -1000, -1000, 0, 1, 0.9]), mask=[False, False, True, True, False, False, False]
+            np.array([0.1, -1000, -1000, -1000, 0, 1, 0.9]),
+            mask=[False, False, True, True, False, False, False]
         )
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
@@ -359,9 +362,8 @@ class Test_ROMS_Depth:
         sd.s_rho = sd.s_rho[::-1]
         sd.s_w = sd.s_w[::-1]
 
-        points = np.array(
-            [[20, 20, 9.9], [20, 20, 10.0], [20, 20, 10.1], [-1, -1, 5], [20, 20, -0.1], [20, 20, 0], [20, 20, 0.1]]
-        )
+        points = np.array([[20, 20, 9.9], [20, 20, 10.0], [20, 20, 10.1], [-1, -1, 5], [20, 20, -0.1],
+                           [20, 20, 0], [20, 20, 0.1]])
         ts = sd.time.data[1]
         assert sd.default_bottom_boundary_condition == "mask"
         idx, alphas = sd.interpolation_alphas(
@@ -372,10 +374,12 @@ class Test_ROMS_Depth:
             ],
         )
         expected_idx = np.ma.array(
-            np.array([9, -1000, -1000, -1000, -1, 0, 0]), mask=[False, True, True, True, False, False, False]
+            np.array([9, -1000, -1000, -1000, -1, 0, 0]),
+            mask=[False, True, True, True, False, False, False]
         )
         expected_alpha = np.ma.array(
-            np.array([0.9, -1000, -1000, -1000, 1, 0, 0.1]), mask=[False, True, True, True, False, False, False]
+            np.array([0.9, -1000, -1000, -1000, 1, 0, 0.1]),
+            mask=[False, True, True, True, False, False, False]
         )
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
@@ -392,10 +396,12 @@ class Test_ROMS_Depth:
         expected_alpha = np.ma.array(np.array([0.1, 0, 1]), mask=[False, False, False])
 
         expected_idx = np.ma.array(
-            np.array([9, 9, -1000, -1000, -1, 0, 0]), mask=[False, False, True, True, False, False, False]
+            np.array([9, 9, -1000, -1000, -1, 0, 0]),
+            mask=[False, False, True, True, False, False, False]
         )
         expected_alpha = np.ma.array(
-            np.array([0.9, 0, -1000, -1000, 1, 0, 0.1]), mask=[False, False, True, True, False, False, False]
+            np.array([0.9, 0, -1000, -1000, 1, 0, 0.1]),
+            mask=[False, False, True, True, False, False, False]
         )
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))

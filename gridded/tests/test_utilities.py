@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-# ruff: noqa: F811, F401 # imports are weird with fixtures
-
 import os
 
 import netCDF4 as nc
