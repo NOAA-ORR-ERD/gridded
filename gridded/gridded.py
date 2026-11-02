@@ -22,15 +22,16 @@ from . import VALID_LOCATIONS
 
 
 class Dataset:
-    """
-    An object that represent an entire complete dataset --
-    a collection of Variables and the Grid that they are stored on.
+    """ 
+    An object that represent an entire complete dataset -- a collection of Variables and the Grid that they are stored
+    on.
     """
 
     def __init__(self, ncfile=None, grid=None, variables=None, grid_topology=None, attributes=None):
-        """
-        Construct a gridded.Dataset object. Can be constructed from a data file,
-        or also raw grid and variable objects.
+        """ 
+        Construct a gridded.Dataset object.
+
+        Can be constructed from a data file, or also raw grid and variable objects.
 
         :param ncfile: A file or files to load the Dataset from.
         :type ncfile: Can be one of:
@@ -60,6 +61,7 @@ class Dataset:
 
         If a filename is passed in, the attributes will be pulled from the file, and
         the input ones ignored.
+
         """
         if ncfile is not None:
             # raise ValueError("don't create from a file")
@@ -102,10 +104,10 @@ class Dataset:
 
     @classmethod
     def from_netCDF(cls, filename=None, grid_file=None, variable_files=None, grid_topology=None):
-        """
+        """ 
         NOTE: only loading from a single file is currently implemented.
-              you can create a Dataset by hand, by loading the grid and
-              variables separately, and then adding them
+
+        you can create a Dataset by hand, by loading the grid and variables separately, and then adding them.
 
         load a gridded.Dataset from a netCDF file
 
@@ -122,6 +124,7 @@ class Dataset:
                               used to load non-confirming files.
         :type grid_topology: mapping with keys of topology components and values are
                              variable names.
+
         """
         # create an empty Dataset:
         ds = cls()
@@ -130,8 +133,8 @@ class Dataset:
         return ds
 
     def __getitem__(self, key):
-        """
-        shortcut to getting a variable object
+        """ 
+        Shortcut to getting a variable object.
         """
         return self.variables[key]
 
@@ -213,10 +216,11 @@ class Dataset:
         return diff is None
 
     def _variables_from_netCDF(self, ds):
-        """
-        load up the variables in the nc file
+        """ 
+        Load up the variables in the nc file.
 
         :param ds: initialized netCDF dataset
+
         """
         # fixme: this needs work
         #        It *should* have already gotten the grid and depth and time,
@@ -273,13 +277,12 @@ class Dataset:
     #     raise NotImplementedError
 
     def save(self, filename, format="netcdf4"):
-        """
-        save the dataset to a file
+        """ 
+        Save the dataset to a file.
 
         :param filename: full path to file to save to.
+        :param format: format to save -- 'netcdf3' or 'netcdf4' are the only options at this point.
 
-        :param format: format to save -- 'netcdf3' or 'netcdf4'
-                       are the only options at this point.
         """
         format_options = ("netcdf3", "netcdf4")
         if format not in format_options:
@@ -294,14 +297,15 @@ class Dataset:
         ncds.close()
 
     def get_variables_by_attribute(self, attr, value):
-        """
-        return the variables that have attributes that fit the defined input
+        """ 
+        Return the variables that have attributes that fit the defined input.
 
         :param attr: the name of the attribute you want to match
 
         :param value: the value of the attribute you want to match
 
         fixme: make this a bit more flexible, more like the netCDF4 version
+
         """
         variables = []
         for var in self.variables.values():
@@ -314,8 +318,8 @@ class Dataset:
 
     @property
     def info(self):
-        """
-        Information about the Dataset object
+        """ 
+        Information about the Dataset object.
         """
         vars = [var.info for var in self.variables.values()]
         vars = "".join([" " * 8 + v for v in vars])

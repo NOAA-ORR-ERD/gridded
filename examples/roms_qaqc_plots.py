@@ -278,7 +278,7 @@ def plot_coord_averaging_error(
     ds = xr.load_dataset(Path(roms_file))
 
     # create dictionary with information for both coordinate axes
-    indices = trim_dict.get(grid_loc, None)
+    indices = trim_dict.get(grid_loc)
     coords = {
         "latitude": {
             "roms": ds[f"lat_{grid_loc}"][*indices] if indices else ds[f"lat_{grid_loc}"],

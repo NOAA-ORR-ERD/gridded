@@ -1,5 +1,5 @@
-"""
-Created on Apr 7, 2015
+""" 
+Created on Apr 7, 2015.
 
 @author: ayan
 
@@ -11,13 +11,9 @@ import pytest
 from gridded.pysgrid.sgrid import SGrid, load_grid
 
 pytestmark = pytest.mark.skipif(True, reason="Lots of issues with these -- needs revisiting")
-
-
-"""
+""" 
 Test SGrid WRF Dataset.
-
 """
-
 
 @pytest.fixture
 def sgrid(wrf_sgrid):
@@ -49,10 +45,11 @@ def test_variable_average_axes(sgrid):
 
 
 def test_roundtrip(wrf_sgrid, tmpdir):
-    """
+    """ 
     TODO: add more "round-trip" tests.
 
     Test SGrid Save No-Node Coordinates.
+
     """
     fname = tmpdir.mkdir("files").join("wrf_roundtrip.nc")
     sg_obj = load_grid(wrf_sgrid)

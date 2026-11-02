@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-"""
+""" 
 Tests for writing and reading UGRID compliant netCDF.
-
 """
 
 import os
@@ -21,11 +20,9 @@ test_files = os.path.join(os.path.dirname(__file__), "files")
 
 
 def test_with_faces(two_triangles):
-    """
+    """ 
     Test with faces, edges, but no `face_coordinates` or `edge_coordinates`.
-
     """
-
     expected = two_triangles
 
     fname = "2_triangles.nc"

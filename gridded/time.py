@@ -15,17 +15,15 @@ from gridded.utilities import (
 
 
 class OutOfTimeRangeError(ValueError):
-    """
+    """ 
     Used for when data is asked for outside of the range of times supported by a Time object.
     """
-
 
 
 class TimeSeriesError(ValueError):
-    """
+    """ 
     Used for when data is asked for outside of the range of times supported by a Time object.
     """
-
 
 
 def offset_as_iso_string(offset_hours):
@@ -50,17 +48,14 @@ def offset_as_iso_string(offset_hours):
 def parse_time_offset(unit_str):
     # NOTE: this uses dateutil -- which isn't otherwise required
     #       we could write it by hand instead.
-    """
-    find the time offset from a CF-style time units string.
+    """ 
+    Find the time offset from a CF-style time units string.
 
     Follows the ISO format(s):
 
-    ('UTC', 'days since 2024-1-1T00:00:00Z'),
-    ('UTC-0', 'days since 2024-1-1T00:00:00+00:00'),
-    ('naive', 'days since 2024-1-1T00:00:00'),
-    ('offset-7', 'days since 2024-1-1T00:00:00-7:00')
+    ('UTC', 'days since 2024-1-1T00:00:00Z'), ('UTC-0', 'days since 2024-1-1T00:00:00+00:00'),
+    ('naive', 'days since 2024-1-1T00:00:00'), ('offset-7', 'days since 2024-1-1T00:00:00-7:00')
     :param unit_str: CF-style time unit string
-
     :returns: Number: hours, str: name:
 
     """
@@ -104,34 +99,36 @@ class Time:
         *args,
         **kwargs,
     ):
-        """
-        Representation of a time axis. Provides interpolation alphas and indexing.
+        """ 
+        Representation of a time axis.
 
-        :param data: Ascending list of times to use
-        :type data: Sequence of `datetime.datetime` objects.
+        Provides interpolation alphas and indexing.
+                :param data: Ascending list of times to use
+                :type data: Sequence of `datetime.datetime` objects.
 
-        :param filename=None: name of file data was loaded from -- informational only
-        :param varname=None: name of variable in data file -- informational only
+                :param filename=None: name of file data was loaded from -- informational only
+                :param varname=None: name of variable in data file -- informational only
 
-        :param tz_offset=None: Timezone offset of the data. If not provided it will be NOne ("Naive")
-                               e.g. offset is not known. Use zero for UTC.
-        :type tz_offset: float or integer hours
+                :param tz_offset=None: Timezone offset of the data. If not provided it will be NOne ("Naive")
+                                       e.g. offset is not known. Use zero for UTC.
+                :type tz_offset: float or integer hours
 
-        :param new_tz_offset: Timezone offset desired -- from the offset specified by tz_offset.
-        :type new_tz_offset: float or integer hours
+                :param new_tz_offset: Timezone offset desired -- from the offset specified by tz_offset.
+                :type new_tz_offset: float or integer hours
 
-        :param tz_offset_name="": name for the time zone offset, if desired.
-                                  example: "Pacific Daylight Time"
-                                  NOTE: only informational -- it's up to
-                                  you to have the tz_offset correct.
-        :type tz_offset_name: str.
+                :param tz_offset_name="": name for the time zone offset, if desired.
+                                          example: "Pacific Daylight Time"
+                                          NOTE: only informational -- it's up to
+                                          you to have the tz_offset correct.
+                :type tz_offset_name: str.
 
-        :param origin: shifts the time interval to begin at the time specified
-        :type origin: `datetime.datetime`
+                :param origin: shifts the time interval to begin at the time specified
+                :type origin: `datetime.datetime`
 
-        :param displacement: displacement to apply to the time data.
-               Allows shifting entire time interval into future or past
-        :type displacement: `datetime.timedelta`
+                :param displacement: displacement to apply to the time data.
+                       Allows shifting entire time interval into future or past
+                :type displacement: `datetime.timedelta`
+
         """
         self.name = name
         if isinstance(data, Time):
@@ -202,7 +199,7 @@ class Time:
         name=None,
         **kwargs,
     ):
-        """
+        """ 
         Construct a Time object from a netcdf file.
 
         By default, this will attempt to discover the data variable to use.
@@ -242,8 +239,8 @@ class Time:
                                   NOTE: only informational -- it's up to
                                   you to have the tz_offset correct.
         :type tz_offset_name: str.
-        """
 
+        """
         ds, dg = parse_filename_dataset_args(filename=filename, dataset=dataset)
         if name is None:
             name = cls.__name__ + "_" + str(cls._instance_count)
@@ -306,10 +303,11 @@ class Time:
 
     @classmethod
     def constant_time(cls):
-        """
+        """ 
         Returns a Time object that represents a single point in time.
 
         In practice, that's a Time object with a single datetime
+
         """
         return cls(data=np.array([datetime.now()]))
 
@@ -328,9 +326,8 @@ class Time:
 
     @property
     def info(self):
-        """
-        Provides info about this Time object
-
+        """ 
+        Provides info about this Time object.
         """
         msg = f"""
               Time object:
@@ -385,39 +382,44 @@ class Time:
 
     @property
     def min_time(self):
-        """
-        First time in series
+        """ 
+        First time in series.
 
         :rtype: datetime.datetime
+
         """
         return self.data[0]
 
     @property
     def max_time(self):
-        """
-        Last time in series
+        """ 
+        Last time in series.
 
         :rtype: datetime.datetime
+
         """
         return self.data[-1]
 
     @property
     def tz_offset(self):
-        """
-        Timezone offset of the time series
+        """ 
+        Timezone offset of the time series.
 
         :rtype: number
+
         """
         return self._tz_offset
 
     @tz_offset.setter
     def tz_offset(self, offset):
-        """
-        Set the timezone offset of the time series. Replaces the current offset by
-        reverting the current offset and applying the new offset.
+        """ 
+        Set the timezone offset of the time series.
+
+        Replaces the current offset by reverting the current offset and applying the new offset.
 
         :param offset: offset to adjust for timezone, in hours.
         :type offset: float, integer hours
+
         """
         if self._tz_offset is not None and offset is not None:
             # undo previous offset
@@ -448,26 +450,28 @@ class Time:
             raise AttributeError("displacement is settable only once")
 
     def get_time_array(self):
-        """
-        returns a copy of the internal data array
+        """ 
+        Returns a copy of the internal data array.
         """
         return self.data.copy()
 
     def time_in_bounds(self, time):
-        """
+        """ 
         Checks if time provided is within the bounds represented by this object.
 
         :param time: time to be queried
-        :type time: `datetime.datetime`
+        :type time:`datetime.datetime`
         :rtype: bool
+
         """
         return not ((time < self.min_time) or (time > self.max_time))
 
     def valid_time(self, time):
-        """
-        Raises a OutOfTimeRangeError if time is not within the bounds of the timeseries
+        """ 
+        Raises a OutOfTimeRangeError if time is not within the bounds of the timeseries.
 
         :param time: a datetime object that you want to check.
+
         """
         # if time < self.min_time or time > self.max_time:
         if not self.time_in_bounds(time):
@@ -477,18 +481,17 @@ class Time:
             )
 
     def index_of(self, time, extrapolate=False):
-        """
+        """ 
         Returns the index of the provided time with respect to the time intervals in the file.
 
         :param time: Time to be queried
-        :type time: `datetime.datetime`
-
-        :param extrapolate: whether to allow extrapolation:
-                            i.e. will not raise if outside the bounds of the time data.
+        :type time:`datetime.datetime`
+        :param extrapolate: whether to allow extrapolation: i.e. will not raise if outside the
+            bounds of the time data.
         :type extrapolate: bool
-
         :return: index of first time before specified time
         :rtype: integer
+
         """
         if not (extrapolate or len(self.data) == 1):
             self.valid_time(time)
@@ -498,8 +501,8 @@ class Time:
         return index
 
     def interp_alpha(self, time, extrapolate=False):
-        """
-        Returns interpolation alpha for the specified time
+        """ 
+        Returns interpolation alpha for the specified time.
 
         This is the weighting to give the index before
         -- 1-alpha would be the weight to the index after.
@@ -514,6 +517,7 @@ class Time:
 
         :return: interpolation alpha
         :rtype: float (0 <= r <= 1)
+
         """
         if (not extrapolate) and (not len(self.data) == 1):
             self.valid_time(time)

@@ -1,5 +1,5 @@
-"""
-Created on Apr 7, 2015
+""" 
+Created on Apr 7, 2015.
 
 @author: ayan
 
@@ -56,11 +56,9 @@ def test_sgrid_compliant_check(roms_sgrid):
     nc_ds = NetCDFDataset(roms_sgrid)
     result = nc_ds.sgrid_compliant_file()
     assert result
-
-
-"""
+\
+""" 
 Test NetCDF Dataset Without Nodes.
-
 """
 
 

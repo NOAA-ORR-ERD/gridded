@@ -1,5 +1,5 @@
-"""
-Created on Apr 7, 2015
+""" 
+Created on Apr 7, 2015.
 
 @author: ayan
 
@@ -81,10 +81,10 @@ def deltares_sgrid_no_optional_attr():
 
 @pytest.fixture
 def deltares_sgrid():
-    """
-    Create a netCDF file that is structurally similar to
-    deltares output. Dimension and variable names may differ
-    from an actual file.
+    """ 
+    Create a netCDF file that is structurally similar to deltares output.
+
+    Dimension and variable names may differ from an actual file.
 
     """
     fname = tempfile.mktemp(suffix=".nc")
@@ -163,10 +163,10 @@ def deltares_sgrid():
 
 @pytest.fixture
 def roms_sgrid():
-    """
-    Create a netCDF file that is structurally similar to
-    ROMS output. Dimension and variable names may differ
-    from an actual file.
+    """ 
+    Create a netCDF file that is structurally similar to ROMS output.
+
+    Dimension and variable names may differ from an actual file.
 
     """
     fname = tempfile.mktemp(suffix=".nc")
@@ -335,10 +335,10 @@ def wrf_sgrid():
 
 @pytest.fixture
 def non_compliant_sgrid():
-    """
-    Create a netCDF file that is structurally similar to
-    ROMS output. Dimension and variable names may differ
-    from an actual file.
+    """ 
+    Create a netCDF file that is structurally similar to ROMS output.
+
+    Dimension and variable names may differ from an actual file.
 
     """
     fname = tempfile.mktemp(suffix=".nc")

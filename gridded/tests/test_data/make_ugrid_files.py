@@ -5,7 +5,12 @@ import numpy as np
 
 
 def fvcom_eleven_points_with_depth():
-    """Use UGRIDv0.9_eleven_points.nc as a starting point. Add sigma depth coordinates and provide better values for the bathymetry"""
+    """ 
+    Use UGRIDv0.9_eleven_points.nc as a starting point.
+
+    Add sigma depth coordinates and provide better values for the bathymetry
+
+    """
     fn = "./UGRIDv0.9_eleven_points.nc"
     shutil.copy(fn, "./UGRIDv0.9_eleven_points_with_depth.nc")
 
@@ -98,10 +103,9 @@ def fvcom_eleven_points_with_depth():
 
 
 def make_all():
+    """ 
+    Make all the sample files.
     """
-    make all the sample files
-    """
-
     fvcom_eleven_points_with_depth()
     # semi_circular_single_grid()
 

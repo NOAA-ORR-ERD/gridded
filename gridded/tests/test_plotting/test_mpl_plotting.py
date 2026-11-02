@@ -1,9 +1,10 @@
-"""
+""" 
 Quick and dirty tests of the plotting code.
 
 All this really does it make sure it doesn't barf out
 
 But you can look at the results to see if it makes sense
+
 """
 
 from pathlib import Path

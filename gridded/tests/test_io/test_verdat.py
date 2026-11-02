@@ -1,5 +1,5 @@
-"""
-testing verdat read/write capability
+""" 
+Testing verdat read/write capability.
 """
 
 from pathlib import Path
@@ -23,8 +23,8 @@ test_filename_tiny = EXAMPLES / "tiny.verdat"
 
 
 def test_read():
-    """
-    at least it does something
+    """ 
+    At least it does something.
     """
     ds = io.load_verdat(test_filename)
 
@@ -38,8 +38,8 @@ def test_read_no_units():
 
 
 def test_read_tiny():
-    """
-    a small example, so we can realy be sure
+    """ 
+    A small example, so we can realy be sure.
     """
     ds = io.load_verdat(test_filename_tiny)
 
@@ -124,8 +124,8 @@ def test_save_verdat():
 
 
 def test_order_boundary_segments():
-    """
-    tests that we can find the order of the boundary segments
+    """ 
+    Tests that we can find the order of the boundary segments.
     """
     # bounds from tiny verdat, randomized
     boundaries = np.array([[8, 5], [7, 8], [6, 7], [0, 1], [4, 0], [1, 2], [5, 6], [3, 4], [2, 3]])
@@ -144,10 +144,11 @@ def test_order_boundary_segments():
 
 
 def test_order_boundary_segments_open():
-    """
-    tests that we can find the order of the boundary segments
+    """ 
+    Tests that we can find the order of the boundary segments.
 
     and it will find an open boundary
+
     """
     # bounds from tiny verdat, randomized
     boundaries = np.array([[8, 5], [7, 8], [6, 7], [0, 1], [4, 0], [1, 2], [5, 6], [3, 4]])
@@ -176,8 +177,8 @@ def test_order_boundary_segments_none():
 
 
 def test_general_ugrid_to_verdat_no_depth():
-    """
-    Loads a regular old UGRID netCDF file, and saves it to verdat
+    """ 
+    Loads a regular old UGRID netCDF file, and saves it to verdat.
     """
     ugrid_file = data_file_cache.fetch("SSCOFS.ugrid.nc")
     ds = gridded.Dataset.from_netCDF(ugrid_file)

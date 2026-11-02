@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-"""
+""" 
 Tests for testing a UGrid file read.
 
 We really need a **lot** more sample data files...
+
 """
 
 import os
@@ -27,11 +28,12 @@ output_dir.mkdir(exist_ok=True)
 
 
 def test_simple_read():
-    """
+    """ 
     Can it be read at all?
-    NOTE: passing the file name into the constructor is now deprecated
-    """
 
+    NOTE: passing the file name into the constructor is now deprecated
+
+    """
     ds = Dataset.from_netCDF(test_data_dir / "UGRIDv0.9_eleven_points.nc")
     assert isinstance(ds, Dataset)
     assert isinstance(ds.grid, UGrid)
@@ -43,7 +45,6 @@ def test_read_variables():
 
     UGRIDv0.9_eleven_points.nc file
     """
-
     ds = Dataset.from_netCDF(test_data_dir / "UGRIDv0.9_eleven_points.nc")
     varnames = list(ds.variables.keys())
     varnames.sort()
@@ -96,10 +97,11 @@ def test_read_variable_attributes():
 
 
 def test_read_variable():
-    """
-    at least see if one variable can be read :-)
+    """ 
+    At least see if one variable can be read :-)
 
     this is an old pyugrid test ported over.
+
     """
     expected_depth = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0]
     expected_depth_attributes = {
@@ -119,9 +121,8 @@ def test_read_variable():
 
 
 def test_read_from_nc_dataset():
-    """
-    Minimal test, but makes sure you can read from an already
-    open netCDF4.Dataset.
+    """ 
+    Minimal test, but makes sure you can read from an already open netCDF4.Dataset.
     """
     with netCDF4.Dataset(test_data_dir / "UGRIDv0.9_eleven_points_with_depth.nc") as nc:
         ds = Dataset.from_netCDF(nc)

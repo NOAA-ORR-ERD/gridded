@@ -6,18 +6,21 @@ from gridded.utilities import get_dataset, parse_filename_dataset_args
 
 
 class GridBase:
-    """
-    Base object for grids to share common behavior
+    """ 
+    Base object for grids to share common behavior.
     """
 
     _instance_count = 0
 
     def __init__(self, filename=None, *args, **kwargs):
-        """
-        Init common to all Grid types. This initializer will take all the kwargs of both
-        pyugrid.UGrid and pysgrid.SGrid. See their documentation for details
+        """ 
+        Init common to all Grid types.
+
+        This initializer will take all the kwargs of both pyugrid.UGrid and pysgrid.SGrid. See their
+        documentation for details
 
         :param filename: Name of the file this grid was constructed from, if available.
+
         """
         if "name" in kwargs:
             self.name = kwargs["name"]
@@ -40,14 +43,15 @@ class GridBase:
         dataset=None,
         grid_topology=None,
     ):
-        """
-        This function is the top level 'search for attributes' function. If there are any
-        common attributes to all potential grid types, they will be sought here.
+        """ 
+        This function is the top level 'search for attributes' function.
 
-        This function returns a dict, which maps an attribute name to a netCDF4
-        Variable or numpy array object extracted from the dataset. When called from
-        Grid_U or Grid_S, this function should provide all the kwargs needed to
-        create a valid instance.
+        If there are any common attributes to all potential grid types, they will be sought here.
+
+        This function returns a dict, which maps an attribute name to a netCDF4 Variable or numpy
+        array object extracted from the dataset. When called from Grid_U or Grid_S, this function
+        should provide all the kwargs needed to create a valid instance.
+
         """
         gf_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
         gf_vars = dict([(k.lower(), v) for k, v in gf_vars.items()])
@@ -94,27 +98,28 @@ class GridBase:
         self.save_as_netcdf(pth)
 
     def import_variable(self, variable, location="node"):
-        """
+        """ 
         Takes a Variable or VectorVariable and interpolates the data onto this grid.
-        You may pass a location ('nodes', 'faces', 'edge1', 'edge2) and the
-        variable will be interpolated there if possible
-        If no location is passed, the variable will be interpolated to the
-        nodes of this grid. If the Variable's grid and this grid are the same, this
-        function will return the Variable unchanged.
 
-        If this grid covers area that the source grid does not, all values
-        in this area will be masked. If regridding from cell centers to the nodes,
-        The values of any border point not within will be equal to the value at the
-        center of the border cell.
+        You may pass a location ('nodes', 'faces', 'edge1', 'edge2) and the variable will be
+        interpolated there if possible If no location is passed, the variable will be interpolated
+        to the nodes of this grid. If the Variable's grid and this grid are the same, this function
+        will return the Variable unchanged.
+
+        If this grid covers area that the source grid does not, all values in this area will be
+        masked. If regridding from cell centers to the nodes, The values of any border point not
+        within will be equal to the value at the center of the border cell.
+
         """
-
         raise NotImplementedError("GridBase cannot interpolate variables to itself")
 
     def _diff(self, other, fail_early=False):
-        """
+        """ 
         Compares this grid with another grid and returns a dictionary of differences.
-        If fail_early is True, the comparison will stop at the first difference found.
-        Returns None if no differences are found.
+
+        If fail_early is True, the comparison will stop at the first difference found. Returns None
+        if no differences are found.
+
         """
         diff = {}
         if self.__class__ != other.__class__:
@@ -177,10 +182,12 @@ class Grid_U(GridBase, UGrid):
         return init_args, gt
 
     def _diff(self, other, fail_early=False):
-        """
+        """ 
         Compares this grid with another grid and returns a dictionary of differences.
-        If fail_early is True, the comparison will stop at the first difference found.
-        Returns None if no differences are found.
+
+        If fail_early is True, the comparison will stop at the first difference found. Returns None
+        if no differences are found.
+
         """
         diff = super()._diff(other, fail_early=fail_early) or {}
         if diff and fail_early:
@@ -284,10 +291,11 @@ class Grid_S(GridBase, SGrid):
 
 
 class Grid_R(GridBase):
-    """
-    Rectangular Grid
+    """ 
+    Rectangular Grid.
 
     lon and lat of the nodes are vectors
+
     """
 
     def __init__(
@@ -300,12 +308,10 @@ class Grid_R(GridBase):
         *args,
         **kwargs,
     ):
-        """
-        :param node_lon=None: vector of the node longitudes
-        :param node_lat=None: vector of the node latitudes
-        :param grid_topology=None: ``????``
-        :param node_dimensions=None: (should only be required for netcdf)
-        :param node_coordinates=None:  ``?????``
+        """ 
+        :param node_lon=None: vector of the node longitudes :param node_lat=None: vector of the node latitudes :param
+        grid_topology=None: ``????`` :param node_dimensions=None: (should only be required for netcdf) :param
+        node_coordinates=None:  ``?????``
         """
         self.node_lon = node_lon
         self.node_lat = node_lat
@@ -356,19 +362,20 @@ class Grid_R(GridBase):
         return np.stack((np.meshgrid(self.center_lon, self.center_lat)), axis=-1)
 
     def locate_faces(self, points):
-        """
+        """ 
         Returns the node grid indices, one per point.
 
         Points that are not on the node grid will have an index of -1
 
-        If a single point is passed in, a single index will be returned.
-        If a sequence of points is passed in an array of indexes will be returned.
+        If a single point is passed in, a single index will be returned. If a sequence of points is
+        passed in an array of indexes will be returned.
 
-        :param points:  The points that you want to locate -- (lon, lat). If the shape of point
-                        is 1D, function will return a scalar index. If it is 2D, it will return
-                        a 1D array of indices.
-        :type points: array-like containing one or more points: shape (2,) for one point,
-                      shape (N, 2) for more than one point.
+        :param points: The points that you want to locate -- (lon, lat). If the shape of point is
+            1D, function will return a scalar index. If it is 2D, it will return a 1D array of
+            indices.
+        :type points: array-like containing one or more points: shape (2,) for one point, shape (N,
+            2) for more than one point.
+
         """
         points = np.asarray(points, dtype=np.float64)
         just_one = points.ndim == 1
@@ -397,13 +404,13 @@ class Grid_R(GridBase):
             return idxs
 
     def lonlat_to_yx(self, variable):
-        """
-        The RegualarGridInterpolator needs to have its two dimensions x and y be associated
-        correctly with lon and lat (or vice versa). The order depends on the orientation in
-        the variable
+        """ 
+        The RegualarGridInterpolator needs to have its two dimensions x and y be associated correctly with lon and lat
+        (or vice versa). The order depends on the orientation in the variable.
 
-        if the variable provided does not have a dimensions attribute,
-        it will use the dimensions arg
+        if the variable provided does not have a dimensions attribute, it will use the dimensions
+        arg
+
         """
         retval = (self.node_lat, self.node_lon)
         var_shape = variable.shape[-2::]
@@ -492,11 +499,11 @@ class Grid_R(GridBase):
             return vals
 
     def infer_location(self, variable):
-        """
-        fixme: should first look for "location" attribute.
+        """ 
+        Fixme: should first look for "location" attribute.
 
-        But now we are checking variable dimensions to which part
-        of the grid it is on.
+        But now we are checking variable dimensions to which part of the grid it is on.
+
         """
         if hasattr(variable, "location"):
             return variable.location
@@ -519,17 +526,22 @@ class Grid_R(GridBase):
 
 
 class Grid:
-    """
-    Factory class that generates grid objects. Also handles common
-    loading and parsing operations
+    """ 
+    Factory class that generates grid objects.
+
+    Also handles common loading and parsing operations
+
     """
 
     def __init__(self):
-        """
-        Init common to all Grid types. This constructor will take all the kwargs of both
-        pyugrid.UGrid and pysgrid.SGrid. See their documentation for details
+        """ 
+        Init common to all Grid types.
+
+        This constructor will take all the kwargs of both pyugrid.UGrid and pysgrid.SGrid. See their
+        documentation for details
 
         :param filename: Name of the file this grid was constructed from, if available.
+
         """
         raise NotImplementedError(
             "Grid is not meant to be instantiated. "
@@ -539,7 +551,7 @@ class Grid:
 
     @staticmethod
     def _load_grid(filename, grid_type, dataset=None):
-        """
+        """ 
         Redirect to grid-specific loading routine.
         """
         if issubclass(grid_type, UGrid):
@@ -627,9 +639,9 @@ class Grid:
         else:
             _default_types = dict(_default_types)
 
-        Grid_U = _default_types.get("ugrid", None)
-        Grid_S = _default_types.get("sgrid", None)
-        Grid_R = _default_types.get("rgrid", None)
+        Grid_U = _default_types.get("ugrid")
+        Grid_S = _default_types.get("sgrid")
+        Grid_R = _default_types.get("rgrid")
 
         sgrid_names = ["sgrid", "pygrid_s", "staggered", "curvilinear", "roms"]
         ugrid_names = ["ugrid", "pygrid_u", "triangular", "unstructured"]

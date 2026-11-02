@@ -1,7 +1,8 @@
-"""
-Created on Mar 19, 2015
+""" 
+Created on Mar 19, 2015.
 
 @author: ayan
+
 """
 
 import re
@@ -11,10 +12,9 @@ from gridded.pysgrid.utils import GridPadding
 
 
 def find_grid_topology_var(nc):
-    """
-    Get the variable from a netCDF dataset
-    that have a `cf_role `attribute of 'grid_topology' and
-    `topology_dimension` of 2.
+    """ 
+    Get the variable from a netCDF dataset that have a `cf_role `attribute of 'grid_topology' and `topology_dimension`
+    of 2.
 
     :params nc: netCDF dataset
     :type nc: netCDF4.Dataset
@@ -131,10 +131,8 @@ class NetCDFDataset:
         self.sgrid_compliant_file()
 
     def find_node_coordinates(self, node_dimensions):
-        """
-        Find the variables for the grid
-        cell vertices.
-
+        """ 
+        Find the variables for the grid cell vertices.
         """
         nc_vars = self.nc.variables
         node_dims = node_dimensions.split(" ")
@@ -184,10 +182,11 @@ class NetCDFDataset:
         return matches
 
     def find_coordinates_by_location(self, location_str, topology_dim):
-        """
-        Find a grid coordinates variables with a location attribute equal
-        to location_str. This method can be used to infer edge, face, or
-        volume coordinates from the location attribute of a variable.
+        """ 
+        Find a grid coordinates variables with a location attribute equal to location_str.
+
+        This method can be used to infer edge, face, or volume coordinates from the location
+        attribute of a variable.
 
         Location is a required attribute per SGRID conventions.
 
@@ -272,9 +271,8 @@ class NetCDFDataset:
         return coordinate_result
 
     def sgrid_compliant_file(self):
-        """
-        Determine whether a dataset is
-        SGRID compliant.
+        """ 
+        Determine whether a dataset is SGRID compliant.
 
         :return: True if dataset is compliant, raise an exception if it is not
         :rtype: bool

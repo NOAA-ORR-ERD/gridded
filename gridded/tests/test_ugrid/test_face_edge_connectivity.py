@@ -1,4 +1,6 @@
-"""Test file for building the face_edge_connectivity"""
+""" 
+Test file for building the face_edge_connectivity.
+"""
 
 import numpy as np
 

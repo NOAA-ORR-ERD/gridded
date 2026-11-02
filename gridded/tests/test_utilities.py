@@ -188,8 +188,8 @@ def test_spatial_data_metadata():
 
     a4 = utilities._align_results_to_spatial_data(res_4, pts_4)
     a5 = utilities._align_results_to_spatial_data(res_5, pts_4)
-    assert np.all(a4.T == res_4)
-    assert np.all(a5.T == res_5)
+    assert np.all(res_4 == a4.T)
+    assert np.all(res_5 == a5.T)
 
 
 def test_regrid_variable_TDStoS(get_roms_depth):
@@ -257,9 +257,8 @@ def test_regrid_variable_StoS(get_roms_depth):
 
 
 class DummyArrayLike:
-    """
-    Class that will look like an array to this function, even
-    though it won't work!
+    """ 
+    Class that will look like an array to this function, even though it won't work!
 
     Just for tests. All it does is add a few expected attributes
 
@@ -287,9 +286,8 @@ def test_dummy_array_like():
 
 
 def test_asarraylike_list():
-    """
+    """ 
     Passing in a list should return a np.ndarray.
-
     """
     lst = [1, 2, 3, 4]
     result = utilities.asarraylike(lst)
@@ -298,9 +296,8 @@ def test_asarraylike_list():
 
 
 def test_asarraylike_array():
-    """
+    """ 
     Passing in a list should return a np.ndarray.
-
     """
     arr = np.array([1, 2, 3, 4])
     result = utilities.asarraylike(arr)

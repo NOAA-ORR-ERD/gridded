@@ -35,8 +35,8 @@ TEST_DATA = Path(__file__).parent / "test_data"
 
 
 def test_init():
-    """
-    can one even be initialized with no data?
+    """ 
+    Can one even be initialized with no data?
     """
     t = Time()  # noqa:F841
 
@@ -69,16 +69,16 @@ def test_invalid_timeseries():
 
 
 def test_from_netcdf_filename_no_var():
-    """
-    initialize from a netcdf filename
+    """ 
+    Initialize from a netcdf filename.
     """
     t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc")
     assert t.varname == "time"
 
 
 def test_from_netcdf_filename_specify_time_var_name():
-    """
-    initialize from a netcdf filename and a time variable name
+    """ 
+    Initialize from a netcdf filename and a time variable name.
     """
     # note: not the best example, as the time
     #       variable is using float seconds, so loses precision.
@@ -89,9 +89,8 @@ def test_from_netcdf_filename_specify_time_var_name():
 
 
 def test_from_netcdf_filename_specify_var_name():
-    """
-    initialize from a netcdf filename and specifying a variable
-    that you want the time for.
+    """ 
+    Initialize from a netcdf filename and specifying a variable that you want the time for.
     """
     t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc", datavar="v")
 
@@ -100,9 +99,8 @@ def test_from_netcdf_filename_specify_var_name():
 
 
 def test_from_netcdf_filename_specify_var():
-    """
-    initialize from a netcdf filename and specifying a variable
-    that you want the time for.
+    """ 
+    Initialize from a netcdf filename and specifying a variable that you want the time for.
     """
     ncds = netCDF4.Dataset(filename=TEST_DATA / "tri_grid_example-FVCOM.nc")
     datavar = ncds.variables["v"]
@@ -113,16 +111,16 @@ def test_from_netcdf_filename_specify_var():
 
 
 def test_from_netcdf_nonstandard_time_var():
-    """
-    init from a netcdf where the time var is found via long_name or standard_name, not the default names
+    """ 
+    Init from a netcdf where the time var is found via long_name or standard_name, not the default names.
     """
     t = Time.from_netCDF(filename=TEST_DATA / "non_standard_names.nc")
     assert t.varname == "MT"
 
 
 def test_from_netcdf_filename_bad():
-    """
-    initialize from a bad netcdf filename
+    """ 
+    Initialize from a bad netcdf filename.
     """
     with pytest.raises(OSError):
         t = Time.from_netCDF(filename="http://this.that.com", varname="time")
@@ -173,8 +171,8 @@ def test_tz_offset():
 
 
 def test_new_tz_offset_no_tz_offset():
-    """
-    you can't set a new offset without specifying the original offset"
+    """ 
+    You can't set a new offset without specifying the original offset".
     """
     new_tz_offset = 8
     with pytest.raises(ValueError):
@@ -284,13 +282,13 @@ def test_eq_constant_time():
 
 
 def test_eq_different_type():
-    """
-    A Time object is never equal to any other type
+    """ 
+    A Time object is never equal to any other type.
     """
     t = Time(SAMPLE_TIMESERIES)
 
     assert not t == "a string"
-    assert not "a string" == t
+    assert not t == "a string"
 
 
 def test_out_of_order():
@@ -394,13 +392,14 @@ def test_interp_alpha_outside(dt, expected):
     ],
 )
 def test_interp_alpha_constant_time(shift, expected):
-    """
+    """ 
     What should the constant time Time object give for alphas?
 
     I would expect always 1.0! It seems to be always 0.0
 
     Maybe this isn't used anywhere?
     Jay: 0.0
+
     """
     t = Time.constant_time()
 
@@ -433,8 +432,8 @@ def test_interp_alpha_constant_time(shift, expected):
 
 
 def test_from_netcdf_tz_offset_Z():
-    """
-    make sure you can load time from a netcdf file with Z specified
+    """ 
+    Make sure you can load time from a netcdf file with Z specified.
     """
     filename = TEST_DATA / "just_time_UTC.nc"
     t = Time.from_netCDF(filename=filename, varname="time")
@@ -446,9 +445,8 @@ def test_from_netcdf_tz_offset_Z():
 
 
 def test_from_netcdf_tz_offset_bad(caplog):
-    """
-    make sure you can load time from a netcdf file with the offset
-    specified incorrectly -- e.g. "U C" instead of "UTC"
+    """ 
+    Make sure you can load time from a netcdf file with the offset specified incorrectly -- e.g. "U C" instead of "UTC".
     """
     filename = TEST_DATA / "just_time_bad_tzo.nc"
     caplog.clear()
@@ -474,10 +472,11 @@ def test_from_netcdf_tz_offset_bad(caplog):
     ],
 )
 def test_from_netcdf_tz_offset_in_file(filename, offset, name):
-    """
-    make sure you can load time from a netcdf file with Z specified
+    """ 
+    Make sure you can load time from a netcdf file with Z specified.
 
     NOTE: currently naive time in netcdf is assumed to be UTC -- correct??
+
     """
     filename = TEST_DATA / filename
     t = Time.from_netCDF(filename=filename, varname="time")
@@ -486,10 +485,11 @@ def test_from_netcdf_tz_offset_in_file(filename, offset, name):
 
 
 def test_from_netcdf_tz_offset_in_file_provide_name():
-    """
-    make sure you can load time from a netcdf file with Z specified
+    """ 
+    Make sure you can load time from a netcdf file with Z specified.
 
     NOTE: currently naive time in netcdf is assumed to be UTC -- correct??
+
     """
     filename, offset, name = ("just_time_offset-7.nc", -7, "PDT")
     filename = TEST_DATA / filename
@@ -499,7 +499,7 @@ def test_from_netcdf_tz_offset_in_file_provide_name():
 
 
 def test_from_netcdf_tz_offset_set_UTC():
-    """
+    """ 
     Make sure you can load time from a netcdf file that's naive, specifying UTC (0 offset)
     """
     filename = TEST_DATA / "just_time_naive.nc"
@@ -509,7 +509,7 @@ def test_from_netcdf_tz_offset_set_UTC():
 
 
 def test_from_netcdf_tz_offset_set_Naive():
-    """
+    """ 
     Make sure you can load time from a netcdf file and tell it to keep it Naive.
     """
     filename = TEST_DATA / "just_time_naive.nc"
@@ -520,7 +520,7 @@ def test_from_netcdf_tz_offset_set_Naive():
 
 
 def test_from_netcdf_tz_offset_set_new_offset():
-    """
+    """ 
     Make sure you can load time from a netcdf file and tell it to keep it Naive.
     """
     filename = TEST_DATA / "just_time_offset-7.nc"
@@ -545,7 +545,7 @@ def test_from_netcdf_tz_offset_set_new_offset():
     ],
 )
 def test_parse_time_offset(offset, unit_str, name):
-    """
+    """ 
     Do we get the right offset from the units string?
     """
     tz_off, new_name = parse_time_offset(unit_str)

@@ -46,14 +46,15 @@ ignore = [
   "E402", # module level import not at top of file
   "E731", # do not assign a lambda expression, use a def
 ]
-# select = [
-# #  "F",   # Pyflakes
-#   "E",   # Pycodestyle
+select = [
+#  "SIM",  # flake8 simplify -- maybe use in the future -- particularly when there are complete tests.
+#  "F",   # Pyflakes --
+  "E",   # Pycodestyle
 #   "W",
 # #  "TID", # flake8-tidy-imports (absolute imports)
 # #  "I",   # isort
 # #  "UP",  # Pyupgrade
-# ]
+]
 
 extend-safe-fixes = [
   "TID252", # absolute imports
@@ -69,3 +70,19 @@ max-doc-length = 120
 # Ignore specific rules (e.g., S101 for asserts, D for docstrings) in all test files
 "gridded/tests/**/*.py" = ["F811", "F401"]  # fixtures confuse ruff
 # "*_test.py" = ["S101"]
+
+# note: docformatter is not run regularly
+#       as part of the workflow -- but here are the settings
+#       that were used to do bulk-cleanup at some stage.
+[tool.docformatter]
+recursive = true
+in-place = true
+# style = sphinx
+wrap-summaries = 120  # that's what the code line length is set to.
+wrap-descriptions = 100  # keeps it a bit more manageable
+tab-width = 4
+blank = true
+pre-summary-newline = true
+pre-summary-space = true
+close-quotes-on-newline = true
+make-summary-multi-line = true
