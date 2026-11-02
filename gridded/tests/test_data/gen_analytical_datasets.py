@@ -157,8 +157,19 @@ def gen_sinusoid(filename=None):
     vx = np.ones_like(x)
     vy = np.cos(x / 2) / 2
     vz = np.zeros_like(x)
-    #     ax.quiver(x, y, vx, vy, color='darkblue', pivot='tail', angles='xy', scale=1.5, scale_units='xy', width=0.0025)
-    #     ax.plot(x[2], y[2])
+
+    # ax.quiver(x,
+    #           y,
+    #           vx,
+    #           vy,
+    #           color='darkblue',
+    #           pivot='tail',
+    #           angles='xy',
+    #           scale=1.5,
+    #           scale_units='xy',
+    #           width=0.0025)
+    # ax.plot(x[2], y[2])
+
     mask_rho = np.zeros_like(x, dtype=bool)
     mask_rho[0, :] = True
     mask_rho[-1, :] = True

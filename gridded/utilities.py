@@ -85,9 +85,10 @@ def regrid_variable(grid, o_var, location="node"):
     """
     Takes a Variable or VectorVariable and interpolates the data onto grid.
 
-    You may pass a location ('nodes', 'faces', 'edge1', 'edge2) and the variable will be interpolated there if possible If no location is passed, the variable will
-    be interpolated to the nodes of this grid. If the Variable's grid and this grid are the same, this function will
-    return the Variable unchanged.
+    You may pass a location ('nodes', 'faces', 'edge1', 'edge2) and the variable
+    will be interpolated there if possible If no location is passed, the variable
+    will be interpolated to the nodes of this grid. If the Variable's grid and
+    this grid are the same, this function will return the Variable unchanged.
 
     If this grid covers area that the source grid does not, all values
     in this area will be masked. If regridding from cell centers to the nodes,

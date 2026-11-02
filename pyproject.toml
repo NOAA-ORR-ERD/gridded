@@ -66,14 +66,14 @@ unfixable = ["F401",  # unused imports -- messes up pytest fixtures
 # Set your target maximum length for docstrings
 max-doc-length = 120
 
+
 [tool.ruff.lint.per-file-ignores]
 # Ignore specific rules (e.g., S101 for asserts, D for docstrings) in all test files
 "gridded/tests/**/*.py" = ["F811", "F401"]  # fixtures confuse ruff
-# "*_test.py" = ["S101"]
 
-# note: docformatter is not run regularly
+# Note: docformatter is not run regularly
 #       as part of the workflow -- but here are the settings
-#       that were used to do bulk-cleanup at some stage.
+#       that were used to do bulk-cleanup on 11/02/2026
 [tool.docformatter]
 style = "sphinx"
 recursive = true
