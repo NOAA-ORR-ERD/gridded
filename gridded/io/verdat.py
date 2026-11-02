@@ -205,15 +205,7 @@ def make_outer_first(bounds, nodes):
     """
     # note: code for this is in the NOAA ERD ood_utils package.
     raise NotImplementedError("this code needs to be written")
-    try:
-        import geometry_utils
-    except ImportError:
-        print("writing verdat requires the geometry_utils module:\ngithub.com/NOAA-ORR-ERD/geometry_utils")
 
-    # Assume the first bound is the outer one to start
-    outer = bounds[0]
-    for bound in bounds[1:]:
-        pass
 
 
 def set_winding_order(bounds, nodes, order="clockwise"):

@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
+# ruff: noqa: F401
+
 from ._version import __version__
 
-# __version__ = "0.7.5"
 
 VALID_SGRID_LOCATIONS = (None, "center", "edge1", "edge2", "node")
 VALID_UGRID_LOCATIONS = (None, "node", "face", "edge", "boundary")

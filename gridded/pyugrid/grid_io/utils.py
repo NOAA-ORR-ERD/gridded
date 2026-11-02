@@ -9,7 +9,6 @@ Ideally, we'll add loading from shape files or what have you in the future
 
 """
 
-import netCDF4
 import numpy as np
 
 from gridded.pyugrid.ugrid import UGrid
@@ -42,7 +41,6 @@ def load_from_varnames(filename, names_mapping, attribute_check=None, post_proce
     attribute_check = {} if attribute_check is None else attribute_check
 
     nc = get_dataset(filename)
-    # nc = netCDF4.Dataset(filename)
 
     # Check for the specified attributes.
     for name, value in attribute_check:

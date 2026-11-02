@@ -258,7 +258,7 @@ class Grid_S(GridBase, SGrid):
             ):
                 for n1, n2 in names:
                     if n1 in gf_vars and n2 in gf_vars:
-                        mask = False
+                        # mask = False
                         # for n in maskname:
                         #     if n in gf_vars:
                         #         mask = gen_mask(gf_vars[n])
@@ -273,7 +273,7 @@ class Grid_S(GridBase, SGrid):
                         gt[attr[1]] = n2
                         break
             if "node_lon" in init_args and "node_lat" in init_args:
-                mask = False  # fixme -- is mask used??
+                # mask = False  # fixme -- is mask used??
                 for name in node_mask_names:
                     if name in gf_vars:
                         init_args[node_mask] = gf_vars[name]
@@ -458,8 +458,8 @@ class Grid_R(GridBase):
         points = np.asarray(points, dtype=np.float64)
         just_one = points.ndim == 1
         points = points.reshape(-1, 2)
-        points_y = points[:, 1]  # lat
-        points_x = points[:, 0]  # lon
+        # points_y = points[:, 1]  # lat
+        # points_x = points[:, 0]  # lon
         y, x = self.lonlat_to_yx(variable)
 
         if slices is not None:

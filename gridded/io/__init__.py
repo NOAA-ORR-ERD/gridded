@@ -10,3 +10,4 @@ But for now, special functions for loading custom file types can go here.
 """
 
 from .verdat import load_verdat, save_verdat
+__all__ = ["load_verdat", "save_verdat"]

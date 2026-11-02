@@ -656,7 +656,8 @@ class SGrid:
         indices = tree.locate(points)
         if rev_arrs is not None:
             indices = rev_arrs[indices]
-        lon, lat = self.node_lon, self.node_lat
+        # lon, lat = self.node_lon, self.node_lat
+        _, lat = self.node_lon, self.node_lat
         x = indices % (lat.shape[1] - 1)
         y = indices // (lat.shape[1] - 1)
         ind = np.column_stack((y, x))
@@ -1175,7 +1176,7 @@ class SGrid:
             # per_cell_log_offset[:,0]
             # because per_cell_log_offset has the correct shape for upcoming calculations
             # discard the other dimension and use it to store the complement alpha value
-            alpha_dim_idx = 0
+            # alpha_dim_idx = 0
             alpha = per_cell_log_offset[:, ::-1]  # swap the value we want into alpha2
             alpha[:, 0] = 1 - alpha[:, 1]  # compute alpha1
 
@@ -1215,7 +1216,7 @@ class SGrid:
             # per_cell_log_offset[:,1]
             # because per_cell_log_offset has the correct shape for upcoming calculations
             # discard the other dimension and use it to store the complement alpha value
-            alpha_dim_idx = 1
+            # alpha_dim_idx = 1
             alpha = per_cell_log_offset  # no swap needed, alpha2 is already in the correct place
             alpha[:, 0] = 1 - alpha[:, 1]  # compute alpha1
 

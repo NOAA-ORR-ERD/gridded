@@ -605,7 +605,7 @@ class UGrid:
 
         if method == "celltree":
             try:
-                import cell_tree2d
+                import cell_tree2d  #noqa: F401
             except ImportError:
                 raise ImportError(
                     "the cell_tree2d package must be installed to use the celltree search:\n"

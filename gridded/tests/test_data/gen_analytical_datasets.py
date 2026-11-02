@@ -7,6 +7,7 @@ import numpy as np
 from gridded import Grid
 from gridded.grids import Grid_S
 
+# ruff: noqa: F841  # part of tests, so imports confuse ruff
 
 def gen_vortex_3D(filename=None):
     x, y = np.mgrid[-30:30:61j, -30:30:61j]
@@ -273,7 +274,7 @@ def gen_ring(filename=None):
 
     x = (radii * np.cos(angles)).flatten()
     y = (radii * np.sin(angles)).flatten()
-    z = (np.cos(radii) * np.cos(angles * 3.0)).flatten()
+#    z = (np.cos(radii) * np.cos(angles * 3.0)).flatten()
 
     # Create the Triangulation; no triangles so Delaunay triangulation created.
     triang = tri.Triangulation(x, y)

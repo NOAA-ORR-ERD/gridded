@@ -16,7 +16,7 @@ import logging
 import netCDF4
 import numpy as np
 
-from .uvar import UVar
+# from .uvar import UVar
 
 logger = logging.getLogger(__name__)
 

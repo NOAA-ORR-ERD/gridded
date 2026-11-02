@@ -48,7 +48,7 @@ ignore = [
 ]
 select = [
 #  "SIM",  # flake8 simplify -- maybe use in the future -- particularly when there are complete tests.
-#  "F",   # Pyflakes --
+  "F",   # Pyflakes --
   "E",   # Pycodestyle
 #   "W",
 # #  "TID", # flake8-tidy-imports (absolute imports)
