@@ -75,9 +75,9 @@ max-doc-length = 120
 #       as part of the workflow -- but here are the settings
 #       that were used to do bulk-cleanup at some stage.
 [tool.docformatter]
+style = "sphinx"
 recursive = true
 in-place = true
-# style = sphinx
 wrap-summaries = 120  # that's what the code line length is set to.
 wrap-descriptions = 100  # keeps it a bit more manageable
 tab-width = 4
