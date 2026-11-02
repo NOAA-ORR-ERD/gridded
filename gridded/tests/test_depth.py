@@ -40,7 +40,7 @@ def test_from_netCDF():
         # if not valid_depth_test_dataset(ds):
         #     print("NOT DEPTH:", fn)
         #     continue
-        d = S_Depth.from_netCDF(data_file=ds, grid_file=ds)  #noqa: F841
+        d = S_Depth.from_netCDF(data_file=ds, grid_file=ds)  # noqa: F841
 
 
 @pytest.fixture(scope="module")
@@ -297,8 +297,18 @@ class Test_ROMS_Depth:
         """
         sd = get_roms_depth
         points = np.array(
-            [[20, 20, 9.9], [20, 20, 10.0], [20, 20, 10.1], [-1, -1, 5], [20, 20, -0.1], [20, 20, 0], [20, 20, 0.1],
-             [0, 0, 9.9], [0, 0, 10], [0, 0, 10.1]]
+            [
+                [20, 20, 9.9],
+                [20, 20, 10.0],
+                [20, 20, 10.1],
+                [-1, -1, 5],
+                [20, 20, -0.1],
+                [20, 20, 0],
+                [20, 20, 0.1],
+                [0, 0, 9.9],
+                [0, 0, 10],
+                [0, 0, 10.1],
+            ]
         )
         ts = sd.time.data[1]
         assert sd.default_bottom_boundary_condition == "mask"
@@ -311,17 +321,18 @@ class Test_ROMS_Depth:
         )
         expected_idx = np.ma.array(
             np.array([0, -1000, -1000, -1000, 10, 9, 9, 5, 4, 4]),
-            mask=[False, True, True, True, False, False, False, False, False, False]
+            mask=[False, True, True, True, False, False, False, False, False, False],
         )
         expected_alpha = np.ma.array(
             np.array([0.1, -1000, -1000, -1000, 0, 1, 0.9, 0.05, 1, 0.95]),
-            mask=[False, True, True, True, False, False, False, False, False, False]
+            mask=[False, True, True, True, False, False, False, False, False, False],
         )
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
 
-        points = np.array([[20, 20, 9.9], [20, 20, 10.0], [20, 20, 10.1], [-1, -1, 5], [20, 20, -0.1],
-                           [20, 20, 0], [20, 20, 0.1]])
+        points = np.array(
+            [[20, 20, 9.9], [20, 20, 10.0], [20, 20, 10.1], [-1, -1, 5], [20, 20, -0.1], [20, 20, 0], [20, 20, 0.1]]
+        )
         sd.default_bottom_boundary_condition == "extrapolate"
         idx, alphas = sd.interpolation_alphas(
             points,
@@ -331,12 +342,10 @@ class Test_ROMS_Depth:
             ],
         )
         expected_idx = np.ma.array(
-            np.array([0, -1000, -1000, -1000, 10, 9, 9]),
-            mask=[False, False, True, True, False, False, False]
+            np.array([0, -1000, -1000, -1000, 10, 9, 9]), mask=[False, False, True, True, False, False, False]
         )
         expected_alpha = np.ma.array(
-            np.array([0.1, -1000, -1000, -1000, 0, 1, 0.9]),
-            mask=[False, False, True, True, False, False, False]
+            np.array([0.1, -1000, -1000, -1000, 0, 1, 0.9]), mask=[False, False, True, True, False, False, False]
         )
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
@@ -362,8 +371,9 @@ class Test_ROMS_Depth:
         sd.s_rho = sd.s_rho[::-1]
         sd.s_w = sd.s_w[::-1]
 
-        points = np.array([[20, 20, 9.9], [20, 20, 10.0], [20, 20, 10.1], [-1, -1, 5], [20, 20, -0.1],
-                           [20, 20, 0], [20, 20, 0.1]])
+        points = np.array(
+            [[20, 20, 9.9], [20, 20, 10.0], [20, 20, 10.1], [-1, -1, 5], [20, 20, -0.1], [20, 20, 0], [20, 20, 0.1]]
+        )
         ts = sd.time.data[1]
         assert sd.default_bottom_boundary_condition == "mask"
         idx, alphas = sd.interpolation_alphas(
@@ -374,12 +384,10 @@ class Test_ROMS_Depth:
             ],
         )
         expected_idx = np.ma.array(
-            np.array([9, -1000, -1000, -1000, -1, 0, 0]),
-            mask=[False, True, True, True, False, False, False]
+            np.array([9, -1000, -1000, -1000, -1, 0, 0]), mask=[False, True, True, True, False, False, False]
         )
         expected_alpha = np.ma.array(
-            np.array([0.9, -1000, -1000, -1000, 1, 0, 0.1]),
-            mask=[False, True, True, True, False, False, False]
+            np.array([0.9, -1000, -1000, -1000, 1, 0, 0.1]), mask=[False, True, True, True, False, False, False]
         )
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
@@ -396,12 +404,10 @@ class Test_ROMS_Depth:
         expected_alpha = np.ma.array(np.array([0.1, 0, 1]), mask=[False, False, False])
 
         expected_idx = np.ma.array(
-            np.array([9, 9, -1000, -1000, -1, 0, 0]),
-            mask=[False, False, True, True, False, False, False]
+            np.array([9, 9, -1000, -1000, -1, 0, 0]), mask=[False, False, True, True, False, False, False]
         )
         expected_alpha = np.ma.array(
-            np.array([0.9, 0, -1000, -1000, 1, 0, 0.1]),
-            mask=[False, False, True, True, False, False, False]
+            np.array([0.9, 0, -1000, -1000, 1, 0, 0.1]), mask=[False, False, True, True, False, False, False]
         )
         assert np.all(idx == expected_idx)
         assert np.all(np.isclose(alphas, expected_alpha))
@@ -449,9 +455,7 @@ class Test_ROMS_Depth:
             ],
         )
         expected_idx = np.ma.array(np.array([0, 1, 1, -1000]), mask=[False, False, False, True])
-        expected_alpha = np.ma.array(
-            np.array([0.8, 1.0 / 3.0, 5.0 / 6.0, -1000]), mask=[False, False, False, True]
-        )
+        expected_alpha = np.ma.array(np.array([0.8, 1.0 / 3.0, 5.0 / 6.0, -1000]), mask=[False, False, False, True])
         assert np.all(idx == expected_idx)
         assert np.all(idx.mask == expected_idx.mask)
         assert np.all(np.isclose(alphas, expected_alpha, atol=1e-4))
@@ -548,7 +552,7 @@ def get_database_nc():
     L_depth_file = os.path.join(TEST_DATA, "test_L_Depth.nc")
 
     # ncfile = nc.Dataset(L_depth_file)
-#    ds = gridded.Dataset(L_depth_file)
+    #    ds = gridded.Dataset(L_depth_file)
     ds = gridded.Dataset.from_netCDF(L_depth_file)
     depth = gridded.depth.Depth.from_netCDF(filename=L_depth_file)
     # what's going on here? We shouldn't have to separately get time?
@@ -558,7 +562,6 @@ def get_database_nc():
     time = gridded.time.Time.from_netCDF(filename=L_depth_file, varname="time")
 
     return time, depth, ds
-
 
 
 class Test_L_Depth:

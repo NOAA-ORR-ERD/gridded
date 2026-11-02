@@ -20,7 +20,6 @@ except ImportError:
     pytestmark = pytest.mark.skip(reason="matplotlib is not installed")
 
 
-
 EXAMPLE_DATA = Path(__file__).parent.parent / "test_data"
 OUTPUT_DIR = Path(__file__).parent / "plotting_output"
 OUTPUT_DIR.mkdir(exist_ok=True)

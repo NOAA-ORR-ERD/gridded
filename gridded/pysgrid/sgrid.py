@@ -589,8 +589,8 @@ class SGrid:
         :param indices: Nx2 array of logical cell indices (Optional, but required if points omitted)
         :param location: 'center', 'edge1', 'edge2','node'
         """
-        #Currently there is a bug here, possibly related to negative indices, so the function
-        #is being removed from service.
+        # Currently there is a bug here, possibly related to negative indices, so the function
+        # is being removed from service.
         if indices is None:
             indices = self.locate_faces(points, _memo, _copy, _hash)
         xmin = indices[:, 0].astype("uint32").min()
@@ -1138,7 +1138,7 @@ class SGrid:
         #     slices = slices + (yslice,)
         # else:
         #     slices = (xslice, yslice)
-        zero_aligned_idxs = idxs#.copy() - [xslice.start, yslice.start]
+        zero_aligned_idxs = idxs  # .copy() - [xslice.start, yslice.start]
         var = variable[slices]
         if len(var.shape) > 2:
             raise ValueError(

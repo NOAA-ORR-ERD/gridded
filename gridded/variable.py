@@ -387,8 +387,7 @@ class Variable:
                 self.location = self.grid.infer_location(d)
             if self.location is None:
                 raise ValueError(
-                    f"Data/grid shape mismatch: Data shape is {d.shape}, "
-                    f"Grid shape is {self.grid.node_lon.shape}"
+                    f"Data/grid shape mismatch: Data shape is {d.shape}, Grid shape is {self.grid.node_lon.shape}"
                 )
         self._data = d
 
@@ -448,28 +447,28 @@ class Variable:
         if self.grid != other.grid:
             if self.grid and hasattr(self.grid, "_diff"):
                 grid_diff = self.grid._diff(other.grid, fail_early=fail_early)
-                diff['grid'] = grid_diff
+                diff["grid"] = grid_diff
             else:
-                diff['grid'] = f"self.grid: {self.grid}, other.grid: {other.grid}"
-            if fail_early and diff['grid']:
+                diff["grid"] = f"self.grid: {self.grid}, other.grid: {other.grid}"
+            if fail_early and diff["grid"]:
                 return diff
 
         if self.time != other.time:
             if self.time and hasattr(self.time, "_diff"):
                 time_diff = self.time._diff(other.time, fail_early=fail_early)
-                diff['time'] = time_diff
+                diff["time"] = time_diff
             else:
-                diff['time'] = f"self.time: {self.time}, other.time: {other.time}"
-            if fail_early and diff['time']:
+                diff["time"] = f"self.time: {self.time}, other.time: {other.time}"
+            if fail_early and diff["time"]:
                 return diff
 
         if self.depth != other.depth:
             if self.depth and hasattr(self.depth, "_diff"):
                 depth_diff = self.depth._diff(other.depth, fail_early=fail_early)
-                diff['depth'] = depth_diff
+                diff["depth"] = depth_diff
             else:
-                diff['depth'] = f"self.depth: {self.depth}, other.depth: {other.depth}"
-            if fail_early and diff['depth']:
+                diff["depth"] = f"self.depth: {self.depth}, other.depth: {other.depth}"
+            if fail_early and diff["depth"]:
                 return diff
 
         return diff if diff else None
@@ -775,7 +774,7 @@ class Variable:
         d_indices, d_alphas = self.depth.interpolation_alphas(
             points,
             time,
-            (self.depth.num_levels,), #level interpolation only
+            (self.depth.num_levels,),  # level interpolation only
             extrapolate=extrapolate,
             surface_boundary_condition=surface_boundary_condition,
             bottom_boundary_condition=bottom_boundary_condition,
@@ -800,15 +799,15 @@ class Variable:
         if np.ma.masked in uniq_idx:  # the [0:-1] is required to skip all masked indices
             uniq_idx = uniq_idx[0:-1]
         if self.data.shape[dim_idx] == self.depth.num_layers:
-            #data is located on cell centers, so value is held constant across cell.
+            # data is located on cell centers, so value is held constant across cell.
             for idx in uniq_idx:
                 if idx == -1:
-                    #special case for out of bounds and extrapolation.
+                    # special case for out of bounds and extrapolation.
                     idx = 0
                 lay_idxs = np.where(d_indices == idx)[0]
                 values.put(lay_idxs, val_func(points[lay_idxs], time, extrapolate, slices=slices + (idx,), **kwargs))
         else:
-            #data is on cell edge, or on nodes, so we need to interpolate between the two levels.
+            # data is on cell edge, or on nodes, so we need to interpolate between the two levels.
             for idx in uniq_idx:
                 lay_idxs = np.where(d_indices == idx)[0]
                 if idx == self.data.shape[dim_idx] - 1:

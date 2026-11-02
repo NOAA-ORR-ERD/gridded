@@ -1,4 +1,3 @@
-
 import warnings
 
 import numpy as np
@@ -56,7 +55,6 @@ class DepthBase:
 
         super().__init__(**kwargs)
 
-
     @classmethod
     def _can_create_from_netCDF(
         cls,
@@ -98,7 +96,7 @@ class DepthBase:
             if fail_early and diff["bottom_index"]:
                 return diff
 
-        if hasattr(self, 'grid') and hasattr(other, 'grid'):
+        if hasattr(self, "grid") and hasattr(other, "grid"):
             if self.grid != other.grid:
                 diff["grid"] = (self.grid, other.grid)
                 if fail_early and diff["grid"]:
@@ -299,8 +297,7 @@ class L_Depth(DepthBase):
         indices = np.ma.MaskedArray(data=idxs, mask=np.zeros((len(idxs)), dtype=bool))
 
         alphas = np.ma.MaskedArray(
-            data=np.full((len(points),), np.nan, dtype=np.float64),
-            mask=np.zeros((len(points)), dtype=bool)
+            data=np.full((len(points),), np.nan, dtype=np.float64), mask=np.zeros((len(points)), dtype=bool)
         )
 
         # set above surface and below seafloor alphas to allow future filtering
@@ -547,22 +544,22 @@ class S_Depth(DepthBase):
                 if dg:
                     raise ValueError(err + " or grid file")
                 raise ValueError(err)
-            #bathymetry data is on cell centers, but needs to be averaged to the nodes in order
-            #to properly define the terrain following coordinate.
-            if 'node' in grid.infer_location(bathy_var):
+            # bathymetry data is on cell centers, but needs to be averaged to the nodes in order
+            # to properly define the terrain following coordinate.
+            if "node" in grid.infer_location(bathy_var):
                 bathymetry = Bathymetry(
                     data=bathy_var,
                     grid=grid,
                     name="bathymetry",
                 )
             else:
-                h = (bathy_var[0:-1,:] + bathy_var[1:,:]) / 2
-                psi_h = (h[:,0:-1] + h[:,1:]) /2
+                h = (bathy_var[0:-1, :] + bathy_var[1:, :]) / 2
+                psi_h = (h[:, 0:-1] + h[:, 1:]) / 2
                 bathymetry = Bathymetry(
                     data=psi_h,
                     grid=grid,
                     name="bathymetry",
-            )
+                )
 
         if zeta is None:
             zeta_var = nc_vars.get("zeta", None)
@@ -574,13 +571,13 @@ class S_Depth(DepthBase):
                 warnings.warn(warn)
                 zeta = Zeta.constant(0)
             else:
-                if 'node' in grid.infer_location(bathy_var):
+                if "node" in grid.infer_location(bathy_var):
                     zeta = Zeta(data=zeta_var, grid=grid, time=time, name="zeta")
                 else:
-                    #zeta data is on cell centers, but needs to be averaged to the nodes in order
-                    #to properly define the terrain following coordinate.
-                    z = (zeta_var[:,0:-1,:] + zeta_var[:,1:,:]) / 2
-                    psi_z = (z[:,:,0:-1] + z[:,:,1:]) /2
+                    # zeta data is on cell centers, but needs to be averaged to the nodes in order
+                    # to properly define the terrain following coordinate.
+                    z = (zeta_var[:, 0:-1, :] + zeta_var[:, 1:, :]) / 2
+                    psi_z = (z[:, :, 0:-1] + z[:, :, 1:]) / 2
                     zeta = Zeta(data=psi_z, grid=grid, time=time, name="zeta")
 
         if terms is None:
@@ -592,7 +589,7 @@ class S_Depth(DepthBase):
                 if tvar is not None:
                     terms[term] = tvar[:]
                 else:
-                    warnings.warn('term not found in netCDF dataset: ' + term)
+                    warnings.warn("term not found in netCDF dataset: " + term)
         if vtransform is None:
             vtransform = 2  # default for ROMS
             #  messing about trying to detect this.
@@ -734,18 +731,15 @@ class S_Depth(DepthBase):
         # if data_shape[0] == self.num_layers:
         #    raise NotImplementedError('Interpolation of data on depth layers not supported yet')
 
-        depth_profiles = self.get_depth_profile(points,
-                                                time,
-                                                data_shape=data_shape,
-                                                _hash=_hash,
-                                                extrapolate=extrapolate)
+        depth_profiles = self.get_depth_profile(
+            points, time, data_shape=data_shape, _hash=_hash, extrapolate=extrapolate
+        )
 
         indices = np.ma.MaskedArray(
             data=-np.ones((len(points)), dtype=np.int64) * 1000, mask=np.zeros((len(points)), dtype=bool)
         )
         alphas = np.ma.MaskedArray(
-            data=np.full((len(points)), np.nan, dtype=np.float64),
-            mask=np.zeros((len(points)), dtype=bool)
+            data=np.full((len(points)), np.nan, dtype=np.float64), mask=np.zeros((len(points)), dtype=bool)
         )
 
         # use np.digitize to bin the depths into the layers.
@@ -843,12 +837,7 @@ class S_Depth(DepthBase):
         alphas.mask = np.logical_or(alphas.mask, exclusion_mask)
         return indices, alphas, oob_mask
 
-    def get_s_coordinate(self,
-                         points,
-                         time,
-                         data_shape=None,
-                         _hash=None,
-                         **kwargs):
+    def get_s_coordinate(self, points, time, data_shape=None, _hash=None, **kwargs):
         """
         Given an array of points and a time, returns the S-Coordinate values
         of the depth layers at those points and time.
@@ -950,25 +939,26 @@ class ROMS_Depth(S_Depth):
             s_coord = -(zeta + (zeta + h) * S)
         return s_coord
 
+
 class FVCOM_Depth(S_Depth):
     _instance_count = 0
     default_names = {
         "siglay": ["siglay"],  # mid layer depth coordinate on nodes
-        #"siglay_center": ["siglay_center"],  # mid layer depth coordinate on centers
+        # "siglay_center": ["siglay_center"],  # mid layer depth coordinate on centers
         "siglev": ["siglev"],  # layer depth coordinate on nodes
-        #"siglev_center": ["siglev_center"],  # layer depth coordinate on centers
+        # "siglev_center": ["siglev_center"],  # layer depth coordinate on centers
         "bathymetry": ["h"],  # bathymetry on nodes
-        #"h_center": ["h_center"],  # bathymetry on centers
+        # "h_center": ["h_center"],  # bathymetry on centers
         "zeta": ["zeta"],  # free surface
     }
 
     cf_names = {
         "siglay": ["ocean_sigma/general_coordinate"],
-        #"siglay_center": ["ocean_sigma/general_coordinate"],
+        # "siglay_center": ["ocean_sigma/general_coordinate"],
         "siglev": ["ocean_sigma/general_coordinate"],
-        #"siglev_center": ["ocean_sigma/general_coordinate"],
+        # "siglev_center": ["ocean_sigma/general_coordinate"],
         "bathymetry": ["sea_floor_depth_below_geoid"],
-        #"h_center": ["sea_floor_depth_below_geoid"],
+        # "h_center": ["sea_floor_depth_below_geoid"],
         "zeta": ["sea_surface_height_above_geoid"],
     }
 
@@ -1069,14 +1059,11 @@ class Depth:
             typ = typs[np.argmax(available_to_create)]
             if sum(available_to_create) > 1:
                 # Create list of depth class names from boolean available_to_create
-                detected_systems = [
-                    t.__name__ for t, matched in zip(typs, available_to_create) if matched
-                ]
+                detected_systems = [t.__name__ for t, matched in zip(typs, available_to_create) if matched]
                 raise ValueError(
                     f"Ambiguous vertical grid structure: Multiple depth classes associated "
                     f"with this NetCDF dataset: {detected_systems}. "
                 )
             return typ.from_netCDF(
-                filename=filename, dataset=dataset, data_file=data_file,
-                grid_file=grid_file, **kwargs
+                filename=filename, dataset=dataset, data_file=data_file, grid_file=grid_file, **kwargs
             )

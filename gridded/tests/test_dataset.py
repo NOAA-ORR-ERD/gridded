@@ -99,7 +99,8 @@ def test_diff_method():
     ds2.attributes = {"name": "modified_name"}
     diff = ds1._diff(ds2)
     assert diff is not None
-    assert diff['self']['attributes'] == "self.attributes: {}, other.attributes: {'name': 'modified_name'}"
+    assert diff["self"]["attributes"] == "self.attributes: {}, other.attributes: {'name': 'modified_name'}"
+
 
 def test_eq_method():
     ds1 = Dataset.from_netCDF(arakawa_c_file)
@@ -116,6 +117,7 @@ def test_save_invalid_format():
 
     with pytest.raises(ValueError):
         ds.save("a_filename.txt", format="text")
+
 
 # def test_save_basic():
 #     ds = Dataset()

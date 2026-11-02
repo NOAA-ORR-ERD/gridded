@@ -147,8 +147,9 @@ def regrid_variable(grid, o_var, location="node"):
     if o_var.time is not None:
         for t_idx, t in enumerate(o_var.time.data):
             if n_depth is not None and issubclass(n_depth.__class__, S_Depth):
-                transect = o_var.depth.get_depth_profile(o_var.grid.nodes.reshape(-1, 2),
-                                                         t, data_shape=(len(n_depth),)).T
+                transect = o_var.depth.get_depth_profile(
+                    o_var.grid.nodes.reshape(-1, 2), t, data_shape=(len(n_depth),)
+                ).T
                 for lev_idx, lev_data in enumerate(transect):
                     lev = Variable(
                         name=f"level{lev_idx}", data=lev_data.reshape(o_var.grid.node_lon.shape), grid=o_var.grid
@@ -530,7 +531,7 @@ def search_dataset_for_variables_by_longname(ds, possible_names):
             t2 = ds.get_variables_by_attributes(standard_name=query)
             if t1 or t2:
                 rtv[k] = (t1 + t2)[0]
-                break #only take the first match
+                break  # only take the first match
         if k not in rtv:
             rtv[k] = None
     return rtv

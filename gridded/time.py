@@ -89,8 +89,8 @@ def parse_time_offset(unit_str):
 
 class Time:
     _instance_count = 0
-    default_names = {'data': ['time', 'ocean_time', 't']}
-    cf_names = {'data': ['time', 'ocean_time']}
+    default_names = {"data": ["time", "ocean_time", "t"]}
+    cf_names = {"data": ["time", "ocean_time"]}
 
     def __init__(
         self,
@@ -246,9 +246,7 @@ class Time:
         :type tz_offset_name: str.
         """
 
-        ds, dg = parse_filename_dataset_args(
-            filename=filename, dataset=dataset
-        )
+        ds, dg = parse_filename_dataset_args(filename=filename, dataset=dataset)
         if name is None:
             name = cls.__name__ + "_" + str(cls._instance_count)
             cls._instance_count += 1
@@ -260,8 +258,10 @@ class Time:
                     "No time variables found in the dataset. "
                     "Returning a constant time object, but in future will raise an error."
                 )
-                return cls.constant_time() #this is necessary until the refactor where variable.time = None is supported
-                #raise ValueError("No time variables found in the dataset.")
+                return (
+                    cls.constant_time()
+                )  # this is necessary until the refactor where variable.time = None is supported
+                # raise ValueError("No time variables found in the dataset.")
             varname = tvar.name
             if datavar is not None:
                 if isinstance(datavar, str):

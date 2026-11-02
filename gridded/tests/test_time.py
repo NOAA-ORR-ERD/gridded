@@ -38,7 +38,7 @@ def test_init():
     """
     can one even be initialized with no data?
     """
-    t = Time()  #noqa:F841
+    t = Time()  # noqa:F841
 
 
 def test_init_with_data_None():
@@ -65,7 +65,7 @@ def test_init_with_Time_object():
 
 def test_invalid_timeseries():
     with pytest.raises(TypeError, match="not compatible with datetime"):
-        t = Time(data=["2012-02-03T12:00"])  #noqa:F841
+        t = Time(data=["2012-02-03T12:00"])  # noqa:F841
 
 
 def test_from_netcdf_filename_no_var():
@@ -111,6 +111,7 @@ def test_from_netcdf_filename_specify_var():
     assert len(t.data) == 10
     assert t.data[0] == datetime(2024, 5, 23, 0, 0)
 
+
 def test_from_netcdf_nonstandard_time_var():
     """
     init from a netcdf where the time var is found via long_name or standard_name, not the default names
@@ -124,10 +125,10 @@ def test_from_netcdf_filename_bad():
     initialize from a bad netcdf filename
     """
     with pytest.raises(OSError):
-        t = Time.from_netCDF(filename="http://this.that.com", varname="time")  #noqa:F841
+        t = Time.from_netCDF(filename="http://this.that.com", varname="time")  # noqa:F841
 
     with pytest.raises(OSError):
-        t = Time.from_netCDF(filename="non_existant_file.nc", varname="time")  #noqa:F841
+        t = Time.from_netCDF(filename="non_existant_file.nc", varname="time")  # noqa:F841
 
 
 def test_origin():
@@ -177,7 +178,7 @@ def test_new_tz_offset_no_tz_offset():
     """
     new_tz_offset = 8
     with pytest.raises(ValueError):
-        t = Time(SAMPLE_TIMESERIES, new_tz_offset=new_tz_offset)  #noqa:F841
+        t = Time(SAMPLE_TIMESERIES, new_tz_offset=new_tz_offset)  # noqa:F841
 
 
 def test_new_tz_offset_from_zero():
@@ -252,7 +253,6 @@ def test_eq_diff_length():
 
     assert t1._diff(t2) is not None
     assert "data" in t1._diff(t2)
-
 
 
 def test_eq_diff_values():
