@@ -46,19 +46,24 @@ ignore = [
   "E402", # module level import not at top of file
   "E731", # do not assign a lambda expression, use a def
 ]
-select = [
-  "F",   # Pyflakes
-  "E",   # Pycodestyle
-  "W",
-  "TID", # flake8-tidy-imports (absolute imports)
-  "I",   # isort
-  "UP",  # Pyupgrade
-]
+# select = [
+# #  "F",   # Pyflakes
+#   "E",   # Pycodestyle
+#   "W",
+# #  "TID", # flake8-tidy-imports (absolute imports)
+# #  "I",   # isort
+# #  "UP",  # Pyupgrade
+# ]
+
 extend-safe-fixes = [
   "TID252", # absolute imports
 ]
 unfixable = ["F401",  # unused imports -- messes up pytest fixtures
              "F811"]  # redefinition
+
+[tool.ruff.lint.pycodestyle]
+# Set your target maximum length for docstrings
+max-doc-length = 120
 
 [tool.ruff.lint.per-file-ignores]
 # Ignore specific rules (e.g., S101 for asserts, D for docstrings) in all test files

@@ -41,9 +41,8 @@ def test_get_mesh_names():
 
 def test_mesh_not_there():
     """Test raising Value error with incorrect mesh name."""
-    with pytest.raises(ValueError):
-        with chdir(files):
-            UGrid.from_ncfile("ElevenPoints_UGRIDv0.9.nc", mesh_name="garbage")
+    with pytest.raises(ValueError), chdir(files):
+        UGrid.from_ncfile("ElevenPoints_UGRIDv0.9.nc", mesh_name="garbage")
 
 
 def test_load_grid_from_nc():
@@ -185,9 +184,8 @@ def test_read_from_nc_dataset():
     open netCDF4.Dataset.
 
     """
-    with chdir(files):
-        with netCDF4.Dataset("ElevenPoints_UGRIDv0.9.nc") as nc:
-            grid = UGrid.from_nc_dataset(nc)
+    with chdir(files), netCDF4.Dataset("ElevenPoints_UGRIDv0.9.nc") as nc:
+        grid = UGrid.from_nc_dataset(nc)
     assert grid.mesh_name == "Mesh2"
     assert grid.nodes.shape == (11, 2)
     assert grid.faces.shape == (13, 3)

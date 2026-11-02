@@ -22,7 +22,7 @@ from collections import OrderedDict
 
 import numpy as np
 
-import gridded.pyugrid.read_netcdf as read_netcdf
+from gridded.pyugrid import read_netcdf
 from gridded.pyugrid.util import point_in_tri
 from gridded.utilities import get_writable_dataset
 

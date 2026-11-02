@@ -5,7 +5,7 @@ Created on Apr 2, 2015
 """
 
 import numpy as np
-import numpy.ma as ma
+from numpy import ma
 
 
 def vector_sum(x_arr, y_arr):

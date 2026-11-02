@@ -125,7 +125,7 @@ def test_from_netcdf_filename_bad():
     initialize from a bad netcdf filename
     """
     with pytest.raises(OSError):
-        t = Time.from_netCDF(filename="http://this.that.com", varname="time")  # noqa:F841
+        t = Time.from_netCDF(filename="http://this.that.com", varname="time")
 
     with pytest.raises(OSError):
         t = Time.from_netCDF(filename="non_existant_file.nc", varname="time")  # noqa:F841

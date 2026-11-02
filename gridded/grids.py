@@ -551,7 +551,6 @@ class Grid:
             return g
         else:
             return grid_type.from_ncfile(filename)
-        pass
 
     @staticmethod
     def from_netCDF(

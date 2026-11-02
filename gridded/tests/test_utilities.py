@@ -204,7 +204,7 @@ def test_regrid_variable_TDStoS(get_roms_depth):
     grid = sd.grid
     n_levels = sd.num_levels
     data = np.ones((1, n_levels, grid.node_lon.shape[0], grid.node_lon.shape[1]))
-    for lev in range(0, n_levels):
+    for lev in range(n_levels):
         data[0, lev] *= lev
 
     v1 = Variable(name="v1", grid=grid, data=data, depth=sd, time=Time.constant_time())

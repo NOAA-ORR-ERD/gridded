@@ -22,13 +22,13 @@ S_Depth._default_component_types["zeta"] = Variable
 from .time import OutOfTimeRangeError
 
 __all__ = [
-    "Variable",
-    "VectorVariable",
+    "Dataset",
     "Grid",
     "Grid_R",
     "Grid_S",
     "Grid_U",
-    "Dataset",
-    "Time",
     "OutOfTimeRangeError",
+    "Time",
+    "Variable",
+    "VectorVariable",
 ]

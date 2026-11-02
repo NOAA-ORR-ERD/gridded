@@ -147,4 +147,3 @@ ds_v.to_netcdf(f"../output/ROMS_v_errors_eta{eta_index}_xi{xi_index}.nc")
 print("Median Absolute Error for u velocity:", np.nanmedian(df_u_errors["error"]))
 print("Median Absolute Error for v velocity:", np.nanmedian(df_v_errors["error"]))
 
-#

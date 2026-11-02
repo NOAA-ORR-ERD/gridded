@@ -217,4 +217,3 @@ if __name__ == "__main__":
     v = UVar("NS_water_velocity", "node", df["v"])
     vels = UMVar("velocity", "node", [u, v])
     vels.add_var(u)
-    pass

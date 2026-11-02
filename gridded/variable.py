@@ -1126,7 +1126,7 @@ class VectorVariable:
                 if n in df.variables.keys():
                     rd[k] = n
                     continue
-            if k not in rd.keys():
+            if k not in rd:
                 rd[k] = None
         for k in cls.comp_order:
             v = std_names_dict[k] if k in std_names_dict else []
@@ -1181,7 +1181,7 @@ class VectorVariable:
                 except ValueError as e:
                     raise ValueError(f"""Time was not compatible with variables.
                     Set variables attribute to None to allow changing other attributes
-                    Original error: {str(e)}""")
+                    Original error: {e!s}""")
         if isinstance(t, Time_class):
             self._time = t
         elif isinstance(t, collections.Iterable) or isinstance(t, nc4.Variable):

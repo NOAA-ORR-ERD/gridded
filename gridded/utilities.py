@@ -261,7 +261,6 @@ def _reorganize_spatial_data(points):
             return points_arr
         else:
             return points_arr.T
-        pass
 
 
 def _align_results_to_spatial_data(result, points):

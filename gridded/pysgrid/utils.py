@@ -129,11 +129,11 @@ def infer_avg_axes(sgrid_obj, nc_var_obj):
     """
     var_dims = nc_var_obj.dimensions
     node_dimensions = tuple(sgrid_obj.node_dimensions.split(" "))
-    separate_edge_dim_exists = does_intersection_exist(node_dimensions, var_dims)  # noqa
+    separate_edge_dim_exists = does_intersection_exist(node_dimensions, var_dims)
     if separate_edge_dim_exists:
         padding = sgrid_obj.get_all_face_padding()
     else:
-        padding = sgrid_obj.get_all_face_padding() + sgrid_obj.get_all_edge_padding()  # noqa
+        padding = sgrid_obj.get_all_face_padding() + sgrid_obj.get_all_edge_padding()
     # Define center averaging axis for a variable.
     for var_dim in var_dims:
         try:
@@ -192,7 +192,7 @@ def calculate_bearing(lon_lat_1, lon_lat_2):
     lon_2 = lon_lat_2_radians[..., 0]
     lat_2 = lon_lat_2_radians[..., 1]
     x1 = np.sin(lon_2 - lon_1) * np.cos(lat_2)
-    x2 = np.cos(lat_1) * np.sin(lat_2) - np.sin(lat_1) * np.cos(lat_2) * np.cos(lon_2 - lon_1)  # noqa
+    x2 = np.cos(lat_1) * np.sin(lat_2) - np.sin(lat_1) * np.cos(lat_2) * np.cos(lon_2 - lon_1)
     bearing_radians = np.arctan2(x1, x2)
     bearing_degrees = bearing_radians * 180 / np.pi
     return (bearing_degrees + 360) % 360
@@ -231,7 +231,7 @@ def points_in_polys(points, polys, polyy=None):
     pointsx = points[:, 0]
     pointsy = points[:, 1]
     v1x = v1y = v2x = v2y = -1
-    for i in range(0, polys.shape[1]):
+    for i in range(polys.shape[1]):
         if polyy is not None:
             v1x = polys[:, i - 1]
             v1y = polyy[:, i - 1]

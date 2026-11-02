@@ -31,7 +31,7 @@ def find_grid_topology_var(nc):
         raise ValueError(msg(len(grid_topology)))
 
     grid_topology = grid_topology[0]
-    topology_dimension = int(grid_topology.topology_dimension) if hasattr(grid_topology, "topology_dimension") else None  # noqa
+    topology_dimension = int(grid_topology.topology_dimension) if hasattr(grid_topology, "topology_dimension") else None
 
     if topology_dimension != 2:
         msg = "Only 2 dimensions topology are supported.Got {0}".format
@@ -230,7 +230,7 @@ class NetCDFDataset:
                         x_coordinate = pc_name
                     elif any(y in pc_name.lower() for y in Y_COORDINATES) or any(
                         y in pc_std_name.lower() for y in Y_COORDINATES
-                    ):  # noqa
+                    ):
                         y_coordinate = pc_name
                     else:
                         z_coordinate = pc_name  # this might not always work...

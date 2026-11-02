@@ -188,17 +188,17 @@ class SGrid:
         dimensions = sa.get_dimensions()
         node_dimensions, node_coordinates = sa.get_node_coordinates()
         grid_topology_var = sa.get_topology_var()
-        edge1_dimensions, edge1_padding = sa.get_attr_dimension("edge1_dimensions")  # noqa
-        edge2_dimensions, edge2_padding = sa.get_attr_dimension("edge2_dimensions")  # noqa
+        edge1_dimensions, edge1_padding = sa.get_attr_dimension("edge1_dimensions")
+        edge2_dimensions, edge2_padding = sa.get_attr_dimension("edge2_dimensions")
         edge1_coordinates = sa.get_attr_coordinates("edge1_coordinates")
         edge2_coordinates = sa.get_attr_coordinates("edge2_coordinates")
         angles = sa.get_angles()
-        vertical_dimensions, vertical_padding = sa.get_attr_dimension("vertical_dimensions")  # noqa
+        vertical_dimensions, vertical_padding = sa.get_attr_dimension("vertical_dimensions")
         node_lon, node_lat = sa.get_cell_node_lat_lon()
         center_lon, center_lat = sa.get_cell_center_lat_lon()
         edge1_lon, edge1_lat = sa.get_cell_edge1_lat_lon()
         edge2_lon, edge2_lat = sa.get_cell_edge2_lat_lon()
-        face_dimensions, face_padding = sa.get_attr_dimension("face_dimensions")  # noqa
+        face_dimensions, face_padding = sa.get_attr_dimension("face_dimensions")
         face_coordinates = sa.get_attr_coordinates("face_coordinates")
         node_mask, center_mask, edge1_mask, edge2_mask = sa.get_masks(node_lon, center_lon, edge1_lon, edge2_lon)
         sgrid = cls(
@@ -469,9 +469,9 @@ class SGrid:
                 if dataset_var_obj.grid is not None:
                     dataset_grid_var.grid = grid_var
                 if dataset_var_obj.standard_name is not None:
-                    dataset_grid_var.standard_name = dataset_var_obj.standard_name  # noqa
+                    dataset_grid_var.standard_name = dataset_var_obj.standard_name
                 if dataset_var_obj.coordinates is not None:
-                    dataset_grid_var.coordinates = " ".join(dataset_var_obj.coordinates)  # noqa
+                    dataset_grid_var.coordinates = " ".join(dataset_var_obj.coordinates)
                 if dataset_var_obj.x_axis is not None:
                     x_axis = f"X: {dataset_var_obj.x_axis}"
                     axes.append(x_axis)
@@ -896,7 +896,7 @@ class SGrid:
             lin_faces = np.array(
                 [
                     np.array([[x, x + 1, x + x_size + 1, x + x_size] for x in range(0, x_size - 1, 1)]) + y * x_size
-                    for y in range(0, y_size - 1)
+                    for y in range(y_size - 1)
                 ]
             )
         lin_faces = np.ascontiguousarray(lin_faces.reshape(-1, 4).astype(np.int32))
@@ -1387,7 +1387,7 @@ class SGridAttributes:
             attr_coordinates_raw = getattr(self.topology_var, attr_name)
         except AttributeError:
             location_name = attr_name.split("_")[0]
-            attr_coordinates = self.ncd.find_coordinates_by_location(location_name, self.topology_dim)  # noqa
+            attr_coordinates = self.ncd.find_coordinates_by_location(location_name, self.topology_dim)
         else:
             attr_coordinates_val = attr_coordinates_raw.split(" ")
             attr_coordinates = tuple(attr_coordinates_val)
@@ -1399,7 +1399,7 @@ class SGridAttributes:
         try:
             node_coordinates = self.topology_var.node_coordinates
         except AttributeError:
-            grid_cell_node_vars = self.ncd.find_node_coordinates(node_dimensions)  # noqa
+            grid_cell_node_vars = self.ncd.find_node_coordinates(node_dimensions)
             node_coordinates = grid_cell_node_vars
         else:
             node_coordinate_val = node_coordinates.split(" ")
@@ -1433,7 +1433,7 @@ class SGridAttributes:
 
     def get_cell_center_lat_lon(self):
         try:
-            grid_cell_center_lon_var, grid_cell_center_lat_var = self.get_attr_coordinates("face_coordinates")  # noqa
+            grid_cell_center_lon_var, grid_cell_center_lat_var = self.get_attr_coordinates("face_coordinates")
         except TypeError:
             center_lat, center_lon = None, None
         else:

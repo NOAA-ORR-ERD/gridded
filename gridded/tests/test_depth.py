@@ -65,23 +65,23 @@ def get_roms_depth():
 
     # bathymetry data
     b_data = np.empty((sz, sz))
-    for x in range(0, sz):
-        for y in range(0, sz):
+    for x in range(sz):
+        for y in range(sz):
             b_data[x, y] = d0 - center_el * np.exp(
                 -0.1 * ((x - (sz / 2)) ** 2 / 2.0 * ((sig) ** 2) + (y - (sz / 2)) ** 2 / 2.0 * ((sig) ** 2))
             )
 
     # zeta data
     z_data = np.empty((3, sz, sz))
-    for t in range(0, 3):
-        for x in range(0, sz):
-            for y in range(0, sz):
+    for t in range(3):
+        for x in range(sz):
+            for y in range(sz):
                 z_data[t, x, y] = (t - 1.0) / 2.0
     g = Grid_S(node_lon=node_lon, node_lat=node_lat)
     bathy = Variable(name="bathy", grid=g, data=b_data)
 
     # time data
-    t_data = np.array([Time.constant_time().data[0] + datetime.timedelta(minutes=10 * d) for d in range(0, 3)])
+    t_data = np.array([Time.constant_time().data[0] + datetime.timedelta(minutes=10 * d) for d in range(3)])
     zeta = Variable(
         name="zeta",
         time=Time(data=t_data),

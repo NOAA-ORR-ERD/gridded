@@ -35,9 +35,9 @@ from datetime import datetime
 import cartopy
 import cartopy.crs as ccrs
 import matplotlib.pyplot as plt
-import matplotlib.tri as tri
 import numpy as np
 from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
+from matplotlib import tri
 
 import gridded
 

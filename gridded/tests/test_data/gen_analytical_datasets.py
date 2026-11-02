@@ -23,7 +23,7 @@ def gen_vortex_3D(filename=None):
                 [([lx, lx + x_size + 1, lx + 1], [lx, lx + x_size, lx + x_size + 1]) for lx in range(0, x_size - 1, 1)]
             )
             + ly * x_size
-            for ly in range(0, y_size - 1)
+            for ly in range(y_size - 1)
         ]
     )
     lin_faces = lin_faces.reshape(-1, 3)
@@ -31,7 +31,7 @@ def gen_vortex_3D(filename=None):
     # x += np.sin(x) / 5
 
     t0 = datetime(2001, 1, 1, 0, 0)
-    tarr = [t0 + timedelta(hours=i) for i in range(0, 11)]
+    tarr = [t0 + timedelta(hours=i) for i in range(11)]
     angs = -np.arctan2(y, x)
     mag = np.sqrt(x**2 + y**2)
     vx = np.cos(angs) * mag
@@ -248,7 +248,7 @@ def gen_sinusoid(filename=None):
 def gen_ring(filename=None):
     import math
 
-    import matplotlib.tri as tri
+    from matplotlib import tri
 
     n_angles = 36
     n_radii = 6

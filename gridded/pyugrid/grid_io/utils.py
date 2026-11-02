@@ -82,7 +82,7 @@ def load_from_varnames(filename, names_mapping, attribute_check=None, post_proce
 
     # Connectivity (optional).
     if "face_face_connectivity" in names_mapping:
-        face_face_connectivity = nc.variables[names_mapping["face_face_connectivity"]]  # noqa
+        face_face_connectivity = nc.variables[names_mapping["face_face_connectivity"]]
         # FIXME: This logic assumes there are more than three triangles.
         if face_face_connectivity.shape[0] <= face_face_connectivity.shape[1]:
             # Fortran order.
@@ -96,8 +96,8 @@ def load_from_varnames(filename, names_mapping, attribute_check=None, post_proce
     # Center (optional).
     if "face_coordinates_lon" in names_mapping and "face_coordinates_lat" in names_mapping:
         ug.face_coordinates = np.zeros((len(ug.faces), 2), dtype=lon.dtype)
-        ug.face_coordinates[:, 0] = nc.variables[names_mapping["face_coordinates_lon"]][:]  # noqa
-        ug.face_coordinates[:, 1] = nc.variables[names_mapping["face_coordinates_lat"]][:]  # noqa
+        ug.face_coordinates[:, 0] = nc.variables[names_mapping["face_coordinates_lon"]][:]
+        ug.face_coordinates[:, 1] = nc.variables[names_mapping["face_coordinates_lat"]][:]
 
     # Boundaries (optional).
     if "boundaries" in names_mapping:

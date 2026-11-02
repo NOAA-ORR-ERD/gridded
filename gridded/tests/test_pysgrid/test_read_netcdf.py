@@ -66,7 +66,7 @@ Test NetCDF Dataset Without Nodes.
 
 def test_node_coordinates(wrf_sgrid):
     nc_ds = NetCDFDataset(wrf_sgrid)
-    node_coordinates = nc_ds.find_node_coordinates("west_east_stag south_north_stag")  # noqa
+    node_coordinates = nc_ds.find_node_coordinates("west_east_stag south_north_stag")
     assert node_coordinates is None
 
 

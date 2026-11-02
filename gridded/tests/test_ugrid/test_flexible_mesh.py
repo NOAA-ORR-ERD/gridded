@@ -1,6 +1,6 @@
 import pytest
 
-import gridded.pyugrid.ugrid as ugrid
+from gridded.pyugrid import ugrid
 
 # test stuff
 from .write_nc_test_files import quad_and_triangle  # noqa: ignore=F401

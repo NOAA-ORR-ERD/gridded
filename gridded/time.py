@@ -19,7 +19,6 @@ class OutOfTimeRangeError(ValueError):
     Used for when data is asked for outside of the range of times supported by a Time object.
     """
 
-    pass
 
 
 class TimeSeriesError(ValueError):
@@ -27,7 +26,6 @@ class TimeSeriesError(ValueError):
     Used for when data is asked for outside of the range of times supported by a Time object.
     """
 
-    pass
 
 
 def offset_as_iso_string(offset_hours):

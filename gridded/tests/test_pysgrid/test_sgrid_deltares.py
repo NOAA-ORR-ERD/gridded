@@ -252,4 +252,4 @@ def test_saved_sgrid_attributes(sgrid_no_node):
     saved_angles = sgrid_no_node.angles
     assert u1_var_center_avg_axis == expected_u1_center_axis
     assert u1_vector_axis == expected_u1_vector_axis
-    np.testing.assert_almost_equal(original_angles, saved_angles, decimal=3)  # noqa
+    np.testing.assert_almost_equal(original_angles, saved_angles, decimal=3)

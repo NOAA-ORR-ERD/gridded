@@ -88,7 +88,7 @@ def test_angle_from_true_east_calculation():
 
     bearing_start_points = centers[:, :-1, :]
     bearing_end_points = centers[:, 1:, :]
-    angle_from_true_east = calculate_angle_from_true_east(bearing_start_points, bearing_end_points)  # noqa
+    angle_from_true_east = calculate_angle_from_true_east(bearing_start_points, bearing_end_points)
     expected_values = np.array(
         [[0.7598, 0.9033, 0.9033], [-0.903, -0.994, -0.994], [-2.011, -0.719, -0.719], [-3.706, -3.926, -3.926]]
     )
