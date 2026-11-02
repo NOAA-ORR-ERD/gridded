@@ -736,7 +736,7 @@ class SGrid:
                 hi_offsets[dim] = None
                 lo_offsets[dim] = 0
 
-        lo_offsets = [l if l != 0 else None for l in lo_offsets]
+        lo_offsets = [l if l != 0 else None for l in lo_offsets]  #noqa:E741
         hi_offsets = [h if h != 0 else None for h in hi_offsets]
         return np.s_[lo_offsets[0] : hi_offsets[0], lo_offsets[1] : hi_offsets[1]]
 
@@ -1234,7 +1234,7 @@ class SGrid:
             result = self.compute_interpolant(np.ma.concatenate((v1, v2), axis=-1), alpha)
 
         elif location in node_alternate_names:
-            l = per_cell_log_offset[:, 0]
+            l = per_cell_log_offset[:, 0]  #noqa: E741
             m = per_cell_log_offset[:, 1]
 
             # Each corner alpha is the ratio Area_opposite/Area_total
@@ -1278,7 +1278,7 @@ class SGrid:
 
         a = self._l_coeffs[indices[:, 0], indices[:, 1]]
         b = self._m_coeffs[indices[:, 0], indices[:, 1]]
-        (l, m) = self.x_to_l(points[:, 0], points[:, 1], a, b)
+        (l, m) = self.x_to_l(points[:, 0], points[:, 1], a, b)  #noqa:E741
 
         result = indices.copy() + np.stack((l, m), axis=-1)
 
@@ -1304,7 +1304,7 @@ class SGrid:
         l = (l-a1 - a3*m)/(a2 + a4*m)
         """
 
-        def quad_eqn(l, m, t, aa, bb, cc):
+        def quad_eqn(l, m, t, aa, bb, cc):  #noqa:E741
             """
             solves the following eqns for m and l
             m = (-bb +- sqrt(bb^2 - 4*aa*cc))/(2*aa)
@@ -1335,7 +1335,7 @@ class SGrid:
         bb = a[3] * b[0] - a[0] * b[3] + a[1] * b[2] - a[2] * b[1] + x * b[3] - y * a[3]
         cc = a[1] * b[0] - a[0] * b[1] + x * b[1] - y * a[1]
         m = np.zeros(bb.shape)
-        l = np.zeros(bb.shape)
+        l = np.zeros(bb.shape)  #noqa:E741
 
         t = aa[:] == 0
 
