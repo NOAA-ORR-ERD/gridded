@@ -4,12 +4,12 @@
 import datetime
 import os
 
-from gridded.time import Time
 import netCDF4 as nc
 import pytest
 
 from gridded import Dataset
 from gridded.grids import Grid_S
+from gridded.time import Time
 
 from .utilities import TEST_DATA
 
@@ -21,7 +21,9 @@ arakawa_c_file = TEST_DATA / "arakawa_c_test_grid.nc"
 
 
 def test_load_sgrid():
-    """tests you can initialize an conforming sgrid file"""
+    """
+    Tests you can initialize an conforming sgrid file.
+    """
     sinusoid = Dataset.from_netCDF(sample_sgrid_file)
 
     assert isinstance(sinusoid.grid, Grid_S)
@@ -31,7 +33,7 @@ def test_load_sgrid():
 
 def test_init_from_netcdf_file_directly():
     """
-    This should raise a deprecation warning, but still work
+    This should raise a deprecation warning, but still work.
     """
     with pytest.warns(DeprecationWarning):
         gds = Dataset(arakawa_c_file)
@@ -44,8 +46,7 @@ def test_init_from_netcdf_file_directly():
 
 def test_info():
     """
-    Make sure the info property is working
-    This doesn't test much -- jsut tht it won't crash
+    Make sure the info property is working This doesn't test much -- jsut tht it won't crash.
     """
     gds = Dataset.from_netCDF(sample_sgrid_file)
 
@@ -79,7 +80,7 @@ def test_get_variable_by_attribute_multiple():
 
 def test_get_variable_by_attribute_not_there():
     """
-    This should return an empty list
+    This should return an empty list.
     """
     gds = Dataset.from_netCDF(arakawa_c_file)
 
@@ -99,7 +100,8 @@ def test_diff_method():
     ds2.attributes = {"name": "modified_name"}
     diff = ds1._diff(ds2)
     assert diff is not None
-    assert diff['self']['attributes'] == "self.attributes: {}, other.attributes: {'name': 'modified_name'}"
+    assert diff["self"]["attributes"] == "self.attributes: {}, other.attributes: {'name': 'modified_name'}"
+
 
 def test_eq_method():
     ds1 = Dataset.from_netCDF(arakawa_c_file)
@@ -116,6 +118,7 @@ def test_save_invalid_format():
 
     with pytest.raises(ValueError):
         ds.save("a_filename.txt", format="text")
+
 
 # def test_save_basic():
 #     ds = Dataset()
@@ -138,7 +141,7 @@ def test_save_invalid_format():
 #     ds.save(filename)
 
 #     assert os.path.exists(filename)
-    
+
 #     ds2 = Dataset.load(filename)
 #     assert ds.name == "a_test_dataset"
 #     assert ds2 == ds

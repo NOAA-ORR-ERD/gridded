@@ -1,5 +1,5 @@
 """
-Created on Apr 7, 2015
+Created on Apr 7, 2015.
 
 @author: ayan
 
@@ -16,6 +16,7 @@ from gridded.pysgrid.sgrid import SGrid, load_grid
 Test SGrid ROMS.
 
 """
+
 
 def test_load_from_dataset(roms_sgrid):
     sg_obj = load_grid(roms_sgrid)
@@ -146,7 +147,6 @@ def test_optional_grid_attrs(sgrid):
 def test_round_trip(sgrid, tmpdir):
     """
     TODO: add more "round-trip" tests.
-
     """
     fname = tmpdir.mkdir("files").join("deltares_roundtrip.nc")
     sgrid.save_as_netcdf(fname)

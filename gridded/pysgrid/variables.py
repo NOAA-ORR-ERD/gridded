@@ -1,7 +1,8 @@
 """
-Created on Apr 15, 2015
+Created on Apr 15, 2015.
 
 @author: ayan
+
 """
 
 from collections import OrderedDict
@@ -14,9 +15,7 @@ from gridded.pysgrid.utils import determine_variable_slicing, infer_avg_axes, in
 
 class SGridVariable:
     """
-    Object of variables found and inferred
-    from an SGRID compliant dataset.
-
+    Object of variables found and inferred from an SGRID compliant dataset.
     """
 
     def __init__(
@@ -165,9 +164,10 @@ class SGridVariable:
     def __getitem__(self, item):
         """
         Transfers responsibility to the data's __getitem__.
-        Does not flatten any underlying data.
-        """
 
+        Does not flatten any underlying data.
+
+        """
         if not hasattr(self, "_cache"):
             self._cache = OrderedDict()
         rv = None

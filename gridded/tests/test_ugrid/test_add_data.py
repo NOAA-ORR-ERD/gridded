@@ -2,8 +2,10 @@
 
 """
 Tests for adding a data attribute to a UGrid object.
-
 """
+
+# Legacy tests -- we may want to have somethign like a UVar some day.
+# ruff: noqa: F821
 
 import numpy as np
 import pytest
@@ -16,7 +18,9 @@ pytestmark = pytest.mark.skipif(True, reason="gridded does not support UVars any
 
 
 def test_add_all_data(two_triangles):
-    """You should not be able add a data dict directly."""
+    """
+    You should not be able add a data dict directly.
+    """
     grid = two_triangles
 
     assert grid.data == {}
@@ -42,8 +46,9 @@ def test_add_node_data(two_triangles):
 
 
 def test_add_node_data_wrong(two_triangles):
-    """Too short an array."""
-
+    """
+    Too short an array.
+    """
     grid = two_triangles
 
     # Create a UVar object for the depths:
@@ -69,8 +74,9 @@ def test_add_face_data(two_triangles):
 
 
 def test_add_face_data_wrong(two_triangles):
-    """Too short an array."""
-
+    """
+    Too short an array.
+    """
     grid = two_triangles
 
     # Create a UVar object for velocity:
@@ -94,7 +100,9 @@ def test_add_edge_data(two_triangles):
 
 
 def test_add_edge_data_wrong(two_triangles):
-    """Too long an array."""
+    """
+    Too long an array.
+    """
     grid = two_triangles
 
     # Create a UVar object for velocity:

@@ -5,7 +5,7 @@ from .utilities import twenty_one_triangles
 
 # used to parametrize tests for both methods
 try:
-    import cell_tree2d  # noqa: ignore=F401
+    import cell_tree2d
 
     methods = ["simple", "celltree"]
 except ImportError:

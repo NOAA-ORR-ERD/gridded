@@ -1,7 +1,8 @@
 """
-Created on Apr 20, 2015
+Created on Apr 20, 2015.
 
 @author: ayan
+
 """
 
 import hashlib
@@ -188,17 +189,17 @@ class SGrid:
         dimensions = sa.get_dimensions()
         node_dimensions, node_coordinates = sa.get_node_coordinates()
         grid_topology_var = sa.get_topology_var()
-        edge1_dimensions, edge1_padding = sa.get_attr_dimension("edge1_dimensions")  # noqa
-        edge2_dimensions, edge2_padding = sa.get_attr_dimension("edge2_dimensions")  # noqa
+        edge1_dimensions, edge1_padding = sa.get_attr_dimension("edge1_dimensions")
+        edge2_dimensions, edge2_padding = sa.get_attr_dimension("edge2_dimensions")
         edge1_coordinates = sa.get_attr_coordinates("edge1_coordinates")
         edge2_coordinates = sa.get_attr_coordinates("edge2_coordinates")
         angles = sa.get_angles()
-        vertical_dimensions, vertical_padding = sa.get_attr_dimension("vertical_dimensions")  # noqa
+        vertical_dimensions, vertical_padding = sa.get_attr_dimension("vertical_dimensions")
         node_lon, node_lat = sa.get_cell_node_lat_lon()
         center_lon, center_lat = sa.get_cell_center_lat_lon()
         edge1_lon, edge1_lat = sa.get_cell_edge1_lat_lon()
         edge2_lon, edge2_lat = sa.get_cell_edge2_lat_lon()
-        face_dimensions, face_padding = sa.get_attr_dimension("face_dimensions")  # noqa
+        face_dimensions, face_padding = sa.get_attr_dimension("face_dimensions")
         face_coordinates = sa.get_attr_coordinates("face_coordinates")
         node_mask, center_mask, edge1_mask, edge2_mask = sa.get_masks(node_lon, center_lon, edge1_lon, edge2_lon)
         sgrid = cls(
@@ -242,9 +243,10 @@ class SGrid:
     @property
     def info(self):
         """
-        Summary of information about the grid
+        Summary of information about the grid.
 
         This needs to be implimented -- see UGrid for example
+
         """
         names = ", ".join([name for name, at in vars(self).items() if not name.startswith("_") if at is not None])
 
@@ -275,9 +277,10 @@ class SGrid:
 
     def save_as_netcdf(self, filepath):
         """
-        save the grid as a netcdf file
+        Save the grid as a netcdf file.
 
         :param filepath: path to the file to be created and saved to
+
         """
         with Dataset(filepath, "w") as nclocal:
             grid_vars = self._save_common_components(nclocal)
@@ -388,8 +391,7 @@ class SGrid:
 
     def infer_location(self, variable):
         """
-        Assuming default is psi grid, check variable dimensions to determine which grid
-        it is on.
+        Assuming default is psi grid, check variable dimensions to determine which grid it is on.
         """
         shape = None
         try:
@@ -469,9 +471,9 @@ class SGrid:
                 if dataset_var_obj.grid is not None:
                     dataset_grid_var.grid = grid_var
                 if dataset_var_obj.standard_name is not None:
-                    dataset_grid_var.standard_name = dataset_var_obj.standard_name  # noqa
+                    dataset_grid_var.standard_name = dataset_var_obj.standard_name
                 if dataset_var_obj.coordinates is not None:
-                    dataset_grid_var.coordinates = " ".join(dataset_var_obj.coordinates)  # noqa
+                    dataset_grid_var.coordinates = " ".join(dataset_var_obj.coordinates)
                 if dataset_var_obj.x_axis is not None:
                     x_axis = f"X: {dataset_var_obj.x_axis}"
                     axes.append(x_axis)
@@ -511,7 +513,7 @@ class SGrid:
 
     def _hash_of_pts(self, points):
         """
-        Returns a SHA1 hash of the array of points passed in
+        Returns a SHA1 hash of the array of points passed in.
         """
         return hashlib.sha1(points.tobytes()).hexdigest()
 
@@ -583,14 +585,16 @@ class SGrid:
 
     def get_efficient_slice(self, points=None, indices=None, location=None, _memo=False, _copy=False, _hash=None):
         """
-        Computes the minimum 2D slice that captures all the provided points/indices
-        within.
+        Computes the minimum 2D slice that captures all the provided points/indices within.
+
         :param points: Nx2 array of longitude/latitude. (Optional)
-        :param indices: Nx2 array of logical cell indices (Optional, but required if points omitted)
+        :param indices: Nx2 array of logical cell indices (Optional, but
+            required if points omitted)
         :param location: 'center', 'edge1', 'edge2','node'
+
         """
-        #Currently there is a bug here, possibly related to negative indices, so the function
-        #is being removed from service.
+        # Currently there is a bug here, possibly related to negative indices, so the function
+        # is being removed from service.
         if indices is None:
             indices = self.locate_faces(points, _memo, _copy, _hash)
         xmin = indices[:, 0].astype("uint32").min()
@@ -616,24 +620,22 @@ class SGrid:
 
     def locate_faces(self, points, _memo=False, _copy=False, _hash=None, use_mask=True):
         """
-        Given a list of points, returns a list of x, y indices of the cell
-        that contains each respective point
+        Given a list of points, returns a list of x, y indices of the cell that contains each
+        respective point.
 
         Points that are not on the node grid will have an index of -1
 
-        If a single point is passed in, a single index will be returned.
-        If a sequence of points is passed in an array of indexes will be returned.
+        If a single point is passed in, a single index will be returned. If a
+        sequence of points is passed in an array of indexes will be returned.
 
-        :param points:  The points that you want to locate -- (lon, lat). If the shape of point
-                        is 1D, function will return a scalar index. If it is 2D, it will return
-                        a 1D array of indices.
-        :type points: array-like containing one or more points: shape (2,) for one point,
-                      shape (N, 2) for more than one point.
-
+        :param points: The points that you want to locate -- (lon, lat). If the
+            shape of point is 1D, function will return a scalar index. If it is
+            2D, it will return a 1D array of indices.
+        :type points: array-like containing one or more points: shape (2,) for
+            one point, shape (N, 2) for more than one point.
         :param grid: The grid on which you want to locate the points
-        :type grid: Name of the grid ('node', 'center', 'edge1', 'edge2)
-
-        This version utilizes the CellTree data structure.
+        :type grid: Name of the grid ('node', 'center', 'edge1', 'edge2) This
+            version utilizes the CellTree data structure.
 
         """
         points = np.asarray(points, dtype=np.float64)
@@ -656,7 +658,8 @@ class SGrid:
         indices = tree.locate(points)
         if rev_arrs is not None:
             indices = rev_arrs[indices]
-        lon, lat = self.node_lon, self.node_lat
+        # lon, lat = self.node_lon, self.node_lat
+        _, lat = self.node_lon, self.node_lat
         x = indices % (lat.shape[1] - 1)
         y = indices // (lat.shape[1] - 1)
         ind = np.column_stack((y, x))
@@ -690,7 +693,9 @@ class SGrid:
     def apply_padding_to_idxs(self, idxs, padding=("none", "none")):
         """
         Given a list of indexes, increment each dimension to compensate for padding.
+
         Input indexes are assumed to be cell indexes
+
         """
         for dim, typ in enumerate(padding):
             if typ == "none" or typ == "high" or typ is None:
@@ -716,8 +721,8 @@ class SGrid:
 
     def get_padding_slices(self, padding=("none", "none")):
         """
-        Given a pair of padding types, return a numpy slice object you can use directly on
-        data or lon/lat variables
+        Given a pair of padding types, return a numpy slice object you can use directly on data or
+        lon/lat variables.
         """
         lo_offsets = [0, 0]
         hi_offsets = [0, 0]
@@ -735,7 +740,7 @@ class SGrid:
                 hi_offsets[dim] = None
                 lo_offsets[dim] = 0
 
-        lo_offsets = [l if l != 0 else None for l in lo_offsets]
+        lo_offsets = [l if l != 0 else None for l in lo_offsets]  #noqa:E741
         hi_offsets = [h if h != 0 else None for h in hi_offsets]
         return np.s_[lo_offsets[0] : hi_offsets[0], lo_offsets[1] : hi_offsets[1]]
 
@@ -776,7 +781,7 @@ class SGrid:
 
     def get_variable_at_index(self, var, index):
         """
-        Given a list of 2D indices, return the value of var at each index
+        Given a list of 2D indices, return the value of var at each index.
         """
         var = var[:]
         rv = np.ma.zeros((index.shape[0], 1), dtype=np.float64)
@@ -790,7 +795,9 @@ class SGrid:
         return np.ma.array(rv, mask=mask)
 
     def build_kdtree(self, grid="node"):
-        """Builds the kdtree for the specified grid"""
+        """
+        Builds the kdtree for the specified grid.
+        """
         try:
             from scipy.spatial import cKDTree
         except ImportError:
@@ -807,18 +814,19 @@ class SGrid:
 
     def build_celltree(self, use_mask=True):
         """
-        Builds the celltree across the grid defined by nodes (self.node_lon, self.node_lat)
-        If center masking is provided in self.center_mask, it will remove masked cells, and
-        take precedence over any node masking for celltree insertion.
+        Builds the celltree across the grid defined by nodes (self.node_lon, self.node_lat) If
+        center masking is provided in self.center_mask, it will remove masked cells, and take
+        precedence over any node masking for celltree insertion.
 
-        If node masking is provided in self.node_mask and self.center_mask is not provided,
-        it will remove masked nodes from the grid, which also removes all adjacent cells
+        If node masking is provided in self.node_mask and self.center_mask is
+        not provided, it will remove masked nodes from the grid, which also
+        removes all adjacent cells
 
-        :param use_mask: If False, ignores all masks and builds the celltree over the raw
-                         arrays. Does nothing if self.node_mask or self.center_mask are not
-                         present
+        :param use_mask: If False, ignores all masks and builds the celltree
+            over the raw arrays. Does nothing if self.node_mask or
+            self.center_mask are not present
+
         """
-
         try:
             from cell_tree2d import CellTree
         except ImportError:
@@ -896,7 +904,7 @@ class SGrid:
             lin_faces = np.array(
                 [
                     np.array([[x, x + 1, x + x_size + 1, x + x_size] for x in range(0, x_size - 1, 1)]) + y * x_size
-                    for y in range(0, y_size - 1)
+                    for y in range(y_size - 1)
                 ]
             )
         lin_faces = np.ascontiguousarray(lin_faces.reshape(-1, 4).astype(np.int32))
@@ -963,10 +971,10 @@ class SGrid:
 
     def compute_interpolant(self, values, alphas, mask_behavior=None, check_alphas=True):
         """
-        Interpolation of a value field upon this grid to an interpolant point is
-        accomplished by determining the relevant values, and the alphas (proportions)
-        that each value contributes. This function computes the interpolated value
-        while also applying any relevant masking behavior specified.
+        Interpolation of a value field upon this grid to an interpolant point is accomplished by
+        determining the relevant values, and the alphas (proportions) that each value contributes.
+        This function computes the interpolated value while also applying any relevant masking
+        behavior specified.
 
         mask_behavior can be one of 'mask', 'zero', 'mirror'.
         If not provided (None) it will default to the self.masked_interpolant_behavior attribute
@@ -996,6 +1004,7 @@ class SGrid:
         :type check_alphas: boolean
 
         :return: np.ndarray or np.ma.MaskedArray
+
         """
         values = np.asanyarray(values)
         alphas = np.asanyarray(alphas)
@@ -1138,7 +1147,7 @@ class SGrid:
         #     slices = slices + (yslice,)
         # else:
         #     slices = (xslice, yslice)
-        zero_aligned_idxs = idxs#.copy() - [xslice.start, yslice.start]
+        zero_aligned_idxs = idxs  # .copy() - [xslice.start, yslice.start]
         var = variable[slices]
         if len(var.shape) > 2:
             raise ValueError(
@@ -1173,12 +1182,12 @@ class SGrid:
             # per_cell_log_offset[:,0]
             # because per_cell_log_offset has the correct shape for upcoming calculations
             # discard the other dimension and use it to store the complement alpha value
-            alpha_dim_idx = 0
+            # alpha_dim_idx = 0
             alpha = per_cell_log_offset[:, ::-1]  # swap the value we want into alpha2
             alpha[:, 0] = 1 - alpha[:, 1]  # compute alpha1
 
             u1 = self.get_variable_at_index(var, zero_aligned_idxs)
-            
+
             # this compares the center mask of the current cell with the center mask of the adjacent cell
             # on the lower (left) edge to determine if the value should be masked, eg water/land border
             m1 = False
@@ -1213,7 +1222,7 @@ class SGrid:
             # per_cell_log_offset[:,1]
             # because per_cell_log_offset has the correct shape for upcoming calculations
             # discard the other dimension and use it to store the complement alpha value
-            alpha_dim_idx = 1
+            # alpha_dim_idx = 1
             alpha = per_cell_log_offset  # no swap needed, alpha2 is already in the correct place
             alpha[:, 0] = 1 - alpha[:, 1]  # compute alpha1
 
@@ -1232,7 +1241,7 @@ class SGrid:
             result = self.compute_interpolant(np.ma.concatenate((v1, v2), axis=-1), alpha)
 
         elif location in node_alternate_names:
-            l = per_cell_log_offset[:, 0]
+            l = per_cell_log_offset[:, 0]  #noqa: E741
             m = per_cell_log_offset[:, 1]
 
             # Each corner alpha is the ratio Area_opposite/Area_total
@@ -1259,8 +1268,7 @@ class SGrid:
 
     def geo_to_logical(self, points, indices=None, _memo=False, _copy=False, _hash=None):
         """
-        Given a list of lon/lat points, converts them to l/m coordinates in
-        logical cell space.
+        Given a list of lon/lat points, converts them to l/m coordinates in logical cell space.
         """
         if _memo:
             if _hash is None:
@@ -1277,7 +1285,7 @@ class SGrid:
 
         a = self._l_coeffs[indices[:, 0], indices[:, 1]]
         b = self._m_coeffs[indices[:, 0], indices[:, 1]]
-        (l, m) = self.x_to_l(points[:, 0], points[:, 1], a, b)
+        (l, m) = self.x_to_l(points[:, 0], points[:, 1], a, b)  #noqa:E741
 
         result = indices.copy() + np.stack((l, m), axis=-1)
 
@@ -1303,7 +1311,7 @@ class SGrid:
         l = (l-a1 - a3*m)/(a2 + a4*m)
         """
 
-        def quad_eqn(l, m, t, aa, bb, cc):
+        def quad_eqn(l, m, t, aa, bb, cc):  #noqa:E741
             """
             solves the following eqns for m and l
             m = (-bb +- sqrt(bb^2 - 4*aa*cc))/(2*aa)
@@ -1334,7 +1342,7 @@ class SGrid:
         bb = a[3] * b[0] - a[0] * b[3] + a[1] * b[2] - a[2] * b[1] + x * b[3] - y * a[3]
         cc = a[1] * b[0] - a[0] * b[1] + x * b[1] - y * a[1]
         m = np.zeros(bb.shape)
-        l = np.zeros(bb.shape)
+        l = np.zeros(bb.shape)  #noqa:E741
 
         t = aa[:] == 0
 
@@ -1350,9 +1358,7 @@ class SGrid:
 
 class SGridAttributes:
     """
-    Class containing methods to help with getting the
-    attributes for either SGrid.
-
+    Class containing methods to help with getting the attributes for either SGrid.
     """
 
     def __init__(self, nc, topology_dim, topology_variable):
@@ -1387,7 +1393,7 @@ class SGridAttributes:
             attr_coordinates_raw = getattr(self.topology_var, attr_name)
         except AttributeError:
             location_name = attr_name.split("_")[0]
-            attr_coordinates = self.ncd.find_coordinates_by_location(location_name, self.topology_dim)  # noqa
+            attr_coordinates = self.ncd.find_coordinates_by_location(location_name, self.topology_dim)
         else:
             attr_coordinates_val = attr_coordinates_raw.split(" ")
             attr_coordinates = tuple(attr_coordinates_val)
@@ -1399,7 +1405,7 @@ class SGridAttributes:
         try:
             node_coordinates = self.topology_var.node_coordinates
         except AttributeError:
-            grid_cell_node_vars = self.ncd.find_node_coordinates(node_dimensions)  # noqa
+            grid_cell_node_vars = self.ncd.find_node_coordinates(node_dimensions)
             node_coordinates = grid_cell_node_vars
         else:
             node_coordinate_val = node_coordinates.split(" ")
@@ -1433,7 +1439,7 @@ class SGridAttributes:
 
     def get_cell_center_lat_lon(self):
         try:
-            grid_cell_center_lon_var, grid_cell_center_lat_var = self.get_attr_coordinates("face_coordinates")  # noqa
+            grid_cell_center_lon_var, grid_cell_center_lat_var = self.get_attr_coordinates("face_coordinates")
         except TypeError:
             center_lat, center_lon = None, None
         else:

@@ -64,7 +64,7 @@ class TestGrid_S:
         print(sg4.shape)
         assert sg == sg3
         assert sg2 == sg4
-    
+
     def test_diff(self, sg_data, sg_topology):
         filename = sg_data[0]
         dataset = sg_data[1]
@@ -78,7 +78,7 @@ class TestGrid_S:
         assert diff is not None
         assert "node_lon" in diff
         assert "node_lat" not in diff
-        
+
     def test_eq(self, sg_data, sg_topology):
         filename = sg_data[0]
         dataset = sg_data[1]
@@ -166,13 +166,13 @@ class TestGrid_R:
         rg = Grid_R(node_lon=node_lon, node_lat=node_lat, grid_topology=gt)
         assert rg.dimensions[0] == gt["node_lat"]
         assert rg.dimensions[1] == gt["node_lon"]
-    
+
     def test_eq(self, example_rg):
         rg2 = Grid_R(node_lon=example_rg.node_lon, node_lat=example_rg.node_lat, grid_topology=example_rg.grid_topology)
         assert example_rg == rg2
         rg2.node_lon = rg2.node_lon + 1
         assert example_rg != rg2
-    
+
     def test_diff(self, example_rg):
         rg2 = Grid_R(node_lon=example_rg.node_lon, node_lat=example_rg.node_lat, grid_topology=example_rg.grid_topology)
         diff = example_rg._diff(rg2)

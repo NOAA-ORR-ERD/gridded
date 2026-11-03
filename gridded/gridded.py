@@ -23,14 +23,15 @@ from . import VALID_LOCATIONS
 
 class Dataset:
     """
-    An object that represent an entire complete dataset --
-    a collection of Variables and the Grid that they are stored on.
+    An object that represent an entire complete dataset -- a collection of Variables and the Grid
+    that they are stored on.
     """
 
     def __init__(self, ncfile=None, grid=None, variables=None, grid_topology=None, attributes=None):
         """
-        Construct a gridded.Dataset object. Can be constructed from a data file,
-        or also raw grid and variable objects.
+        Construct a gridded.Dataset object.
+
+        Can be constructed from a data file, or also raw grid and variable objects.
 
         :param ncfile: A file or files to load the Dataset from.
         :type ncfile: Can be one of:
@@ -60,6 +61,7 @@ class Dataset:
 
         If a filename is passed in, the attributes will be pulled from the file, and
         the input ones ignored.
+
         """
         if ncfile is not None:
             # raise ValueError("don't create from a file")
@@ -95,9 +97,7 @@ class Dataset:
 
         self.nc_dataset = get_dataset(filename)
         self.filename = self.nc_dataset.filepath()
-        self.grid = Grid.from_netCDF(filename=self.filename,
-                                     dataset=self.nc_dataset,
-                                     grid_topology=grid_topology)
+        self.grid = Grid.from_netCDF(filename=self.filename, dataset=self.nc_dataset, grid_topology=grid_topology)
         # fixme: this should load the depth and time, and then the variables.
         self.variables = self._variables_from_netCDF(self.nc_dataset)
         self.attributes = get_dataset_attrs(self.nc_dataset)
@@ -106,8 +106,8 @@ class Dataset:
     def from_netCDF(cls, filename=None, grid_file=None, variable_files=None, grid_topology=None):
         """
         NOTE: only loading from a single file is currently implemented.
-              you can create a Dataset by hand, by loading the grid and
-              variables separately, and then adding them
+
+        you can create a Dataset by hand, by loading the grid and variables separately, and then adding them.
 
         load a gridded.Dataset from a netCDF file
 
@@ -124,6 +124,7 @@ class Dataset:
                               used to load non-confirming files.
         :type grid_topology: mapping with keys of topology components and values are
                              variable names.
+
         """
         # create an empty Dataset:
         ds = cls()
@@ -133,82 +134,82 @@ class Dataset:
 
     def __getitem__(self, key):
         """
-        shortcut to getting a variable object
+        Shortcut to getting a variable object.
         """
         return self.variables[key]
 
     def __str__(self):
         descp = f"gridded.Dataset with:\ngrid: {type(self.grid)}\nvariables: {list(self.variables.keys())}"
         return descp
-    
+
     def _diff(self, other, fail_early=False):
-        diff = {'self': {},
-                'grid': {},
-                'variables': {},
-                'time': {},
-                'depth': {},
-                }
+        diff = {
+            "self": {},
+            "grid": {},
+            "variables": {},
+            "time": {},
+            "depth": {},
+        }
         # diff for self items
         if not isinstance(other, self.__class__):
-            diff['self']['type'] = f"self type: {type(self)}, other type: {type(other)}"
+            diff["self"]["type"] = f"self type: {type(self)}, other type: {type(other)}"
             return diff
         # if self.name != other.name:
         #     diff['self']['name'] = f"self.name: {self.name}, other.name: {other.name}"
         #     if fail_early:
         #         return diff
         if self.attributes != other.attributes:
-            diff['self']['attributes'] = f"self.attributes: {self.attributes}, other.attributes: {other.attributes}"
+            diff["self"]["attributes"] = f"self.attributes: {self.attributes}, other.attributes: {other.attributes}"
             if fail_early:
                 return diff
-            
+
         # diff for grid, variables, time, depth
         if self.grid != other.grid:
             if self.grid and hasattr(self.grid, "_diff"):
                 grid_diff = self.grid._diff(other.grid, fail_early=fail_early)
-                diff['grid'] = grid_diff
+                diff["grid"] = grid_diff
             else:
-                diff['grid'] = f"self.grid: {self.grid}, other.grid: {other.grid}"
-            if fail_early and diff['grid']:
+                diff["grid"] = f"self.grid: {self.grid}, other.grid: {other.grid}"
+            if fail_early and diff["grid"]:
                 return diff
-        
+
         if self.time != other.time:
             if self.time and hasattr(self.time, "_diff"):
                 time_diff = self.time._diff(other.time, fail_early=fail_early)
-                diff['time'] = time_diff
+                diff["time"] = time_diff
             else:
-                diff['time'] = f"self.time: {self.time}, other.time: {other.time}"
-            if fail_early and diff['time']:
+                diff["time"] = f"self.time: {self.time}, other.time: {other.time}"
+            if fail_early and diff["time"]:
                 return diff
-            
+
         if self.depth != other.depth:
             if self.depth and hasattr(self.depth, "_diff"):
                 depth_diff = self.depth._diff(other.depth, fail_early=fail_early)
-                diff['depth'] = depth_diff
+                diff["depth"] = depth_diff
             else:
-                diff['depth'] = f"self.depth: {self.depth}, other.depth: {other.depth}"
-            if fail_early and diff['depth']:
+                diff["depth"] = f"self.depth: {self.depth}, other.depth: {other.depth}"
+            if fail_early and diff["depth"]:
                 return diff
-        
+
         if self.variables is None:
             if other.variables is not None:
-                diff['variables'] = f"self.variables: {self.variables}, other.variables: {other.variables}"
-                if fail_early and diff['variables']:
+                diff["variables"] = f"self.variables: {self.variables}, other.variables: {other.variables}"
+                if fail_early and diff["variables"]:
                     return diff
         else:
             for var_name, var in self.variables.items():
                 if var_name not in other.variables:
-                    diff['variables'][var_name] = f"self.variables[{var_name}] exists, but not in other"
+                    diff["variables"][var_name] = f"self.variables[{var_name}] exists, but not in other"
                 else:
                     var_diff = var._diff(other.variables[var_name], fail_early=fail_early)
                     if var_diff:
-                        diff['variables'][var_name] = var_diff
-                if fail_early and diff['variables']:
+                        diff["variables"][var_name] = var_diff
+                if fail_early and diff["variables"]:
                     return diff
-        
+
         if not any(diff.values()):
             return None
-        return diff 
-        
+        return diff
 
     def __eq__(self, other):
         diff = self._diff(other, fail_early=True)
@@ -216,9 +217,10 @@ class Dataset:
 
     def _variables_from_netCDF(self, ds):
         """
-        load up the variables in the nc file
+        Load up the variables in the nc file.
 
         :param ds: initialized netCDF dataset
+
         """
         # fixme: this needs work
         #        It *should* have already gotten the grid and depth and time,
@@ -276,12 +278,12 @@ class Dataset:
 
     def save(self, filename, format="netcdf4"):
         """
-        save the dataset to a file
+        Save the dataset to a file.
 
         :param filename: full path to file to save to.
+        :param format: format to save -- 'netcdf3' or 'netcdf4' are the only
+            options at this point.
 
-        :param format: format to save -- 'netcdf3' or 'netcdf4'
-                       are the only options at this point.
         """
         format_options = ("netcdf3", "netcdf4")
         if format not in format_options:
@@ -297,13 +299,14 @@ class Dataset:
 
     def get_variables_by_attribute(self, attr, value):
         """
-        return the variables that have attributes that fit the defined input
+        Return the variables that have attributes that fit the defined input.
 
         :param attr: the name of the attribute you want to match
 
         :param value: the value of the attribute you want to match
 
         fixme: make this a bit more flexible, more like the netCDF4 version
+
         """
         variables = []
         for var in self.variables.values():
@@ -317,7 +320,7 @@ class Dataset:
     @property
     def info(self):
         """
-        Information about the Dataset object
+        Information about the Dataset object.
         """
         vars = [var.info for var in self.variables.values()]
         vars = "".join([" " * 8 + v for v in vars])

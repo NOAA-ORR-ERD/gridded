@@ -1,8 +1,8 @@
 """
 Assorted utilities useful for the tests.
 
-
 NOTE: the fixtures should be in conftest, so they can be found automatically
+
 """
 
 import contextlib
@@ -37,6 +37,7 @@ data_file_cache = pooch.create(
         "projected_coords_ugrid.nc": "sha256:019c1469c0583021268dbf1ea3eed97038364a0b7a361bc3f50b6be5f83b1ff2",
     },
 )
+
 
 @contextlib.contextmanager
 def chdir(dirname=None):

@@ -1,7 +1,8 @@
 """
-Created on Mar 19, 2015
+Created on Mar 19, 2015.
 
 @author: ayan
+
 """
 
 import re
@@ -12,8 +13,7 @@ from gridded.pysgrid.utils import GridPadding
 
 def find_grid_topology_var(nc):
     """
-    Get the variable from a netCDF dataset
-    that have a `cf_role `attribute of 'grid_topology' and
+    Get the variable from a netCDF dataset that have a `cf_role `attribute of 'grid_topology' and
     `topology_dimension` of 2.
 
     :params nc: netCDF dataset
@@ -31,7 +31,7 @@ def find_grid_topology_var(nc):
         raise ValueError(msg(len(grid_topology)))
 
     grid_topology = grid_topology[0]
-    topology_dimension = int(grid_topology.topology_dimension) if hasattr(grid_topology, "topology_dimension") else None  # noqa
+    topology_dimension = int(grid_topology.topology_dimension) if hasattr(grid_topology, "topology_dimension") else None
 
     if topology_dimension != 2:
         msg = "Only 2 dimensions topology are supported.Got {0}".format
@@ -120,21 +120,19 @@ class NetCDFDataset:
     def __init__(self, nc):
         self.nc = nc
         # in case a user as a version netcdf C library < 4.1.2
-        if hasattr(nc, '_filepath'):
-            self._filepath = nc.filepath() # Returns single string
-        elif hasattr(nc, '_files'):
-            self._filepath = nc._files # Returns a list of strings
+        if hasattr(nc, "_filepath"):
+            self._filepath = nc.filepath()  # Returns single string
+        elif hasattr(nc, "_files"):
+            self._filepath = nc._files  # Returns a list of strings
         else:
             self._filepath = None
             # raise error?
-            
+
         self.sgrid_compliant_file()
 
     def find_node_coordinates(self, node_dimensions):
         """
-        Find the variables for the grid
-        cell vertices.
-
+        Find the variables for the grid cell vertices.
         """
         nc_vars = self.nc.variables
         node_dims = node_dimensions.split(" ")
@@ -185,9 +183,10 @@ class NetCDFDataset:
 
     def find_coordinates_by_location(self, location_str, topology_dim):
         """
-        Find a grid coordinates variables with a location attribute equal
-        to location_str. This method can be used to infer edge, face, or
-        volume coordinates from the location attribute of a variable.
+        Find a grid coordinates variables with a location attribute equal to location_str.
+
+        This method can be used to infer edge, face, or volume coordinates from
+        the location attribute of a variable.
 
         Location is a required attribute per SGRID conventions.
 
@@ -230,7 +229,7 @@ class NetCDFDataset:
                         x_coordinate = pc_name
                     elif any(y in pc_name.lower() for y in Y_COORDINATES) or any(
                         y in pc_std_name.lower() for y in Y_COORDINATES
-                    ):  # noqa
+                    ):
                         y_coordinate = pc_name
                     else:
                         z_coordinate = pc_name  # this might not always work...
@@ -273,8 +272,7 @@ class NetCDFDataset:
 
     def sgrid_compliant_file(self):
         """
-        Determine whether a dataset is
-        SGRID compliant.
+        Determine whether a dataset is SGRID compliant.
 
         :return: True if dataset is compliant, raise an exception if it is not
         :rtype: bool

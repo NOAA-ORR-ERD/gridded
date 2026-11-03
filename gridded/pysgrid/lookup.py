@@ -1,7 +1,8 @@
 """
-Created on Mar 24, 2015
+Created on Mar 24, 2015.
 
 @author: ayan
+
 """
 
 LAT_GRID_CELL_CENTER_LONG_NAME = [

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 
 """
-Utilities to help with grid io
+Utilities to help with grid io.
 
-NOTE: this isn't used yet, but should be useful for loading non
-UGRID-compliant files.
+NOTE: this isn't used yet, but should be useful for loading non UGRID-compliant
+files.
 
 Ideally, we'll add loading from shape files or what have you in the future
+
 """
 
-import netCDF4
 import numpy as np
 
 from gridded.pyugrid.ugrid import UGrid
@@ -18,8 +18,7 @@ from gridded.utilities import get_dataset
 
 def load_from_varnames(filename, names_mapping, attribute_check=None, post_process=None):
     """
-    Load a UGrid from a netcdf file where the roles are defined by the
-    names of the variables.
+    Load a UGrid from a netcdf file where the roles are defined by the names of the variables.
 
     :param filename: names of the file to load (or OPeNDAP URL).
 
@@ -43,7 +42,6 @@ def load_from_varnames(filename, names_mapping, attribute_check=None, post_proce
     attribute_check = {} if attribute_check is None else attribute_check
 
     nc = get_dataset(filename)
-    # nc = netCDF4.Dataset(filename)
 
     # Check for the specified attributes.
     for name, value in attribute_check:
@@ -82,7 +80,7 @@ def load_from_varnames(filename, names_mapping, attribute_check=None, post_proce
 
     # Connectivity (optional).
     if "face_face_connectivity" in names_mapping:
-        face_face_connectivity = nc.variables[names_mapping["face_face_connectivity"]]  # noqa
+        face_face_connectivity = nc.variables[names_mapping["face_face_connectivity"]]
         # FIXME: This logic assumes there are more than three triangles.
         if face_face_connectivity.shape[0] <= face_face_connectivity.shape[1]:
             # Fortran order.
@@ -96,8 +94,8 @@ def load_from_varnames(filename, names_mapping, attribute_check=None, post_proce
     # Center (optional).
     if "face_coordinates_lon" in names_mapping and "face_coordinates_lat" in names_mapping:
         ug.face_coordinates = np.zeros((len(ug.faces), 2), dtype=lon.dtype)
-        ug.face_coordinates[:, 0] = nc.variables[names_mapping["face_coordinates_lon"]][:]  # noqa
-        ug.face_coordinates[:, 1] = nc.variables[names_mapping["face_coordinates_lat"]][:]  # noqa
+        ug.face_coordinates[:, 0] = nc.variables[names_mapping["face_coordinates_lon"]][:]
+        ug.face_coordinates[:, 1] = nc.variables[names_mapping["face_coordinates_lat"]][:]
 
     # Boundaries (optional).
     if "boundaries" in names_mapping:

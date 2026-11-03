@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Tests for the UVar object
+Tests for the UVar object.
 """
 
 import os
@@ -65,7 +65,7 @@ def test_add_attributes():
 
 def test_nc_variable():
     """
-    test that it works with a netcdf variable object
+    Test that it works with a netcdf variable object.
     """
     import netCDF4
 

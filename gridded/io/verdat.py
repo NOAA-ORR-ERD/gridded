@@ -1,13 +1,14 @@
 """
-functions for reading/writting "verdat" files
+Functions for reading/writting "verdat" files.
 
-verdat ("vertex data") is a text file format for bathymetry grids for
-triangular mesh models.
+verdat ("vertex data") is a text file format for bathymetry grids for triangular
+mesh models.
 
-It is used by NOAA's Emergegency Response Division for its CATS model
+It is used by NOAA's Emergency Response Division for its CATS model
 
-It is limited to storing points with associated depths, and grid boudnaries
+It is limited to storing points with associated depths, and grid boundaries
 (including islands), but that's about it.
+
 """
 
 import numpy as np
@@ -86,7 +87,7 @@ def load_verdat(filename):
 
 def save_verdat(ds, filename, depth_var="depth"):
     """
-    Saves an appropriate dataset as a verdat file
+    Saves an appropriate dataset as a verdat file.
 
     :param ds: The gridded.Dataset you want to save
 
@@ -99,6 +100,7 @@ def save_verdat(ds, filename, depth_var="depth"):
 
     If it has boundaries, they will be used. Otherwise,
     it will create them from the grid.
+
     """
     nodes = ds.grid.nodes
     if depth_var is None:
@@ -144,9 +146,10 @@ def save_verdat(ds, filename, depth_var="depth"):
 
 def order_boundary_segments(bound_segs):
     """
-    verdat requires that the boundary segments all be in order
+    Verdat requires that the boundary segments all be in order.
 
     This code re-orders the segments as required
+
     """
     # make a list so they can be removed as processed
     bound_segs = bound_segs.tolist()
@@ -199,20 +202,11 @@ def order_boundary_segments(bound_segs):
 
 def make_outer_first(bounds, nodes):
     """
-    figures out which boundary is the outer boundary,
-    and puts it first in the list
+    Figures out which boundary is the outer boundary, and puts it first in the list.
     """
     # note: code for this is in the NOAA ERD ood_utils package.
     raise NotImplementedError("this code needs to be written")
-    try:
-        import geometry_utils
-    except ImportError:
-        print("writing verdat requires the geometry_utils module:\ngithub.com/NOAA-ORR-ERD/geometry_utils")
 
-    # Assume the first bound is the outer one to start
-    outer = bounds[0]
-    for bound in bounds[1:]:
-        pass
 
 
 def set_winding_order(bounds, nodes, order="clockwise"):

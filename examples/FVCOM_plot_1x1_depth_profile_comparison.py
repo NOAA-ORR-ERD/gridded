@@ -9,27 +9,22 @@ netcdf_name = "SFBOFS_3D_07_2026"
 
 # Generate a list of node and centroid locations to query
 # based off interactive graphic
-csv_path = gplt.fvcom_inspector( "../input_files/SFBOFS_3D_07_2026.nc")
-#csv_path = Path(f"../input_files/{netcdf_name}_selected_cell.csv")
+csv_path = gplt.fvcom_inspector("../input_files/SFBOFS_3D_07_2026.nc")
+# csv_path = Path(f"../input_files/{netcdf_name}_selected_cell.csv")
 
 # Load CSV with index and lat/lon information of selection by rows of:
 # 'nele', 'nele_lat', 'nele_lon', <----- Face/centroid ID
 # 'node1', 'node1_lat', 'node1_lon'-.
 # 'node2', 'node2_lat', 'node2_lon' | <-- Surrounding node IDs
 # 'node3', 'node3_lat', 'node3_lon'-'
-gpts=pd.read_csv(csv_path)
+gpts = pd.read_csv(csv_path)
 
 # Calculate depth profile at one of the locations in the CSV file
-nele = gpts['nele'][0]
+nele = gpts["nele"][0]
 input_netcdf = f"../input_files/{netcdf_name}.nc"
 profile_netcdf = f"../output/{netcdf_name}_depthprofiles_nele{nele}.nc"
 
-ds, nc_path = calc_depth_profile(
-    model_input = input_netcdf,
-    model_type = "fvcom",
-    index = nele,
-    output_netcdf = profile_netcdf
-)
+ds, nc_path = calc_depth_profile(model_input=input_netcdf, model_type="fvcom", index=nele, output_netcdf=profile_netcdf)
 
 # =================================================================
 # SETUP
@@ -52,7 +47,7 @@ colors = {
 # =================================================================
 # PLOT FVCOM PROFILE VS GRIDDED INTERPOLATION (sample of timesteps)
 # =================================================================
-Ntimes = len(times) - 1 #number of time steps to plot
+Ntimes = len(times) - 1  # number of time steps to plot
 nrows, ncols = 3, 3
 
 fig1, axes = plt.subplots(
@@ -147,8 +142,6 @@ plt.suptitle(
 )
 
 plt.tight_layout(rect=[0, 0, 1, 0.94])
-plt.savefig(
-    f"../graphics/{netcdf_name}_vs_Gridded_1x1_profile_comparison.png", dpi=300
-)
+plt.savefig(f"../graphics/{netcdf_name}_vs_Gridded_1x1_profile_comparison.png", dpi=300)
 plt.show()
 plt.close()

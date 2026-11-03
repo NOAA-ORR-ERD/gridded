@@ -7,6 +7,7 @@ import numpy as np
 from gridded import Grid
 from gridded.grids import Grid_S
 
+# ruff: noqa: F841  # part of tests, so imports confuse ruff
 
 def gen_vortex_3D(filename=None):
     x, y = np.mgrid[-30:30:61j, -30:30:61j]
@@ -23,7 +24,7 @@ def gen_vortex_3D(filename=None):
                 [([lx, lx + x_size + 1, lx + 1], [lx, lx + x_size, lx + x_size + 1]) for lx in range(0, x_size - 1, 1)]
             )
             + ly * x_size
-            for ly in range(0, y_size - 1)
+            for ly in range(y_size - 1)
         ]
     )
     lin_faces = lin_faces.reshape(-1, 3)
@@ -31,7 +32,7 @@ def gen_vortex_3D(filename=None):
     # x += np.sin(x) / 5
 
     t0 = datetime(2001, 1, 1, 0, 0)
-    tarr = [t0 + timedelta(hours=i) for i in range(0, 11)]
+    tarr = [t0 + timedelta(hours=i) for i in range(11)]
     angs = -np.arctan2(y, x)
     mag = np.sqrt(x**2 + y**2)
     vx = np.cos(angs) * mag
@@ -157,8 +158,19 @@ def gen_sinusoid(filename=None):
     vx = np.ones_like(x)
     vy = np.cos(x / 2) / 2
     vz = np.zeros_like(x)
-    #     ax.quiver(x, y, vx, vy, color='darkblue', pivot='tail', angles='xy', scale=1.5, scale_units='xy', width=0.0025)
-    #     ax.plot(x[2], y[2])
+
+    # ax.quiver(x,
+    #           y,
+    #           vx,
+    #           vy,
+    #           color='darkblue',
+    #           pivot='tail',
+    #           angles='xy',
+    #           scale=1.5,
+    #           scale_units='xy',
+    #           width=0.0025)
+    # ax.plot(x[2], y[2])
+
     mask_rho = np.zeros_like(x, dtype=bool)
     mask_rho[0, :] = True
     mask_rho[-1, :] = True
@@ -248,7 +260,7 @@ def gen_sinusoid(filename=None):
 def gen_ring(filename=None):
     import math
 
-    import matplotlib.tri as tri
+    from matplotlib import tri
 
     n_angles = 36
     n_radii = 6
@@ -262,7 +274,7 @@ def gen_ring(filename=None):
 
     x = (radii * np.cos(angles)).flatten()
     y = (radii * np.sin(angles)).flatten()
-    z = (np.cos(radii) * np.cos(angles * 3.0)).flatten()
+#    z = (np.cos(radii) * np.cos(angles * 3.0)).flatten()
 
     # Create the Triangulation; no triangles so Delaunay triangulation created.
     triang = tri.Triangulation(x, y)

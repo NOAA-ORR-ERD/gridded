@@ -1,7 +1,8 @@
 """
-Created on Mar 23, 2015
+Created on Mar 23, 2015.
 
 @author: ayan
+
 """
 
 from collections import namedtuple
@@ -21,12 +22,10 @@ GridPadding = namedtuple(
 
 def pair_arrays(x_array, y_array):
     """
-    Given two arrays to equal dimensions,
-    pair their values element-wise.
+    Given two arrays to equal dimensions, pair their values element-wise.
 
-    For example given arrays [[1, 2], [3, 4]]
-    and [[-1, -2], [-3, -4]], this function will
-    return [[[1, -1], [2, -2]], [[3, -3], [4, -4]]].
+    For example given arrays [[1, 2], [3, 4]] and [[-1, -2], [-3, -4]], this
+    function will return [[[1, -1], [2, -2]], [[3, -3], [4, -4]]].
 
     :param np.array x_array: a numpy array containing "x" coordinates
     :param np.array y_array: a numpy array containing "y" coordinates
@@ -44,8 +43,7 @@ def pair_arrays(x_array, y_array):
 
 def check_element_equal(lst):
     """
-    Check that all elements in an
-    iterable are the same.
+    Check that all elements in an iterable are the same.
 
     :params lst: iterable object to be checked
     :type lst: np.array, list, tuple
@@ -73,20 +71,21 @@ def does_intersection_exist(a, b):
 
 def determine_variable_slicing(sgrid_obj, nc_variable, method="center"):
     """
-    Figure out how to slice a variable. This function
-    only knows who to figure out slices that would be
-    used to trim data before averaging to grid cell
-    centers; grid cell nodes will be supported later.
+    Figure out how to slice a variable.
+
+    This function only knows who to figure out slices that would be used to trim
+    data before averaging to grid cell centers; grid cell nodes will be
+    supported later.
 
     :param sgrid_obj: an SGrid object derived from a netCDF file or
-                      netCDF4.Dataset object.
+        netCDF4.Dataset object.
     :type sgrid_obj: sgrid.SGrid
-    :param nc_dataset: a netCDF4.Dataset object from which
-                       the sgrid_obj was derived.
+    :param nc_dataset: a netCDF4.Dataset object from which the sgrid_obj was
+        derived.
     :type nc_dataset: netCDF4.Dataset
     :param str variable: the name of a variable to be sliced.
     :param str method: slice method for analysis at grid cell centers or grid
-                       cell nodes; accepts either 'center' or 'node'.
+        cell nodes; accepts either 'center' or 'node'.
     :return: the slice for the variable for the given method.
     :rtype: tuple
 
@@ -122,18 +121,18 @@ def determine_variable_slicing(sgrid_obj, nc_variable, method="center"):
 
 def infer_avg_axes(sgrid_obj, nc_var_obj):
     """
-    Infer which numpy axis to average over given
-    the a variable defined on the grid. Works
-    well for 2D. Not so sure about 3D.
+    Infer which numpy axis to average over given the a variable defined on the grid.
+
+    Works well for 2D. Not so sure about 3D.
 
     """
     var_dims = nc_var_obj.dimensions
     node_dimensions = tuple(sgrid_obj.node_dimensions.split(" "))
-    separate_edge_dim_exists = does_intersection_exist(node_dimensions, var_dims)  # noqa
+    separate_edge_dim_exists = does_intersection_exist(node_dimensions, var_dims)
     if separate_edge_dim_exists:
         padding = sgrid_obj.get_all_face_padding()
     else:
-        padding = sgrid_obj.get_all_face_padding() + sgrid_obj.get_all_edge_padding()  # noqa
+        padding = sgrid_obj.get_all_face_padding() + sgrid_obj.get_all_edge_padding()
     # Define center averaging axis for a variable.
     for var_dim in var_dims:
         try:
@@ -182,8 +181,7 @@ def infer_variable_location(sgrid, variable):
 
 def calculate_bearing(lon_lat_1, lon_lat_2):
     """
-    return bearing from true north in degrees
-
+    Return bearing from true north in degrees.
     """
     lon_lat_1_radians = lon_lat_1 * np.pi / 180
     lon_lat_2_radians = lon_lat_2 * np.pi / 180
@@ -192,7 +190,7 @@ def calculate_bearing(lon_lat_1, lon_lat_2):
     lon_2 = lon_lat_2_radians[..., 0]
     lat_2 = lon_lat_2_radians[..., 1]
     x1 = np.sin(lon_2 - lon_1) * np.cos(lat_2)
-    x2 = np.cos(lat_1) * np.sin(lat_2) - np.sin(lat_1) * np.cos(lat_2) * np.cos(lon_2 - lon_1)  # noqa
+    x2 = np.cos(lat_1) * np.sin(lat_2) - np.sin(lat_1) * np.cos(lat_2) * np.cos(lon_2 - lon_1)
     bearing_radians = np.arctan2(x1, x2)
     bearing_degrees = bearing_radians * 180 / np.pi
     return (bearing_degrees + 360) % 360
@@ -201,7 +199,6 @@ def calculate_bearing(lon_lat_1, lon_lat_2):
 def calculate_angle_from_true_east(lon_lat_1, lon_lat_2):
     """
     Return the angle from true east in radians.
-
     """
     bearing = calculate_bearing(lon_lat_1, lon_lat_2)
     bearing_from_true_east = 90 - bearing
@@ -220,7 +217,6 @@ def points_in_polys(points, polys, polyy=None):
                   by Mx2 points (NxMx2) for each point, see if respective poly
                   contains it. Returns array of True/False
     """
-
     result = np.zeros((points.shape[0],), dtype=bool)
     if isinstance(points, np.ma.masked_array):
         points = points.data
@@ -231,7 +227,7 @@ def points_in_polys(points, polys, polyy=None):
     pointsx = points[:, 0]
     pointsy = points[:, 1]
     v1x = v1y = v2x = v2y = -1
-    for i in range(0, polys.shape[1]):
+    for i in range(polys.shape[1]):
         if polyy is not None:
             v1x = polys[:, i - 1]
             v1y = polyy[:, i - 1]

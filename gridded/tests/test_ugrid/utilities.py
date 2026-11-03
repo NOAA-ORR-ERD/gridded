@@ -1,10 +1,6 @@
 """
 Assorted utilities useful for the tests.
-
 """
-
-import contextlib
-import os
 
 import pytest
 
@@ -15,7 +11,6 @@ from gridded.pyugrid import ugrid
 def two_triangles():
     """
     Returns a simple triangular grid: 4 nodes, two triangles, five edges.
-
     """
     nodes = [(0.1, 0.1), (2.1, 0.1), (1.1, 2.1), (3.1, 2.1)]
 
@@ -33,7 +28,6 @@ def two_triangles():
 def twenty_one_triangles():
     """
     Returns a basic triangular grid:  21 triangles, a hole, and a tail.
-
     """
     nodes = [
         (5, 1),
@@ -108,14 +102,3 @@ def twenty_one_triangles():
     grid = ugrid.UGrid(nodes=nodes, faces=faces, boundaries=boundaries)
     grid.build_edges()
     return grid
-
-
-# @contextlib.contextmanager
-# def chdir(dirname=None):
-#     curdir = os.getcwd()
-#     try:
-#         if dirname is not None:
-#             os.chdir(dirname)
-#         yield
-#     finally:
-#         os.chdir(curdir)

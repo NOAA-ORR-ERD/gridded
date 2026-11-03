@@ -1,6 +1,5 @@
 """
 Tests for the utilities module.
-
 """
 
 import numpy as np
@@ -10,8 +9,7 @@ from gridded.pyugrid import util
 
 class DummyArrayLike:
     """
-    Class that will look like an array to this function, even
-    though it won't work!
+    Class that will look like an array to this function, even though it won't work!
 
     Just for tests. All it does is add a few expected attributes
 
@@ -40,7 +38,6 @@ def test_dummy_array_like():
 def test_asarraylike_list():
     """
     Passing in a list should return a np.ndarray.
-
     """
     lst = [1, 2, 3, 4]
     result = util.asarraylike(lst)
@@ -51,7 +48,6 @@ def test_asarraylike_list():
 def test_asarraylike_array():
     """
     Passing in a list should return a np.ndarray.
-
     """
     arr = np.array([1, 2, 3, 4])
     result = util.asarraylike(arr)

@@ -73,7 +73,7 @@ data_file = data_file_cache.fetch("projected_coords_ugrid.nc")
 
 def test_load():
     """
-    The file should load without error
+    The file should load without error.
     """
     ds = Dataset.from_netCDF(data_file)
 

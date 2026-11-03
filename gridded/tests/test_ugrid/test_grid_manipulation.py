@@ -2,7 +2,6 @@
 
 """
 Testing of various utilities to manipulate the grid.
-
 """
 
 import numpy as np

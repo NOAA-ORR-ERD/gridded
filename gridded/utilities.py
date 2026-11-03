@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-assorted utility functions needed by gridded
+Assorted utility functions needed by gridded.
 """
 
 import os
@@ -19,9 +19,8 @@ def convert_numpy_datetime64_to_datetime(dt):
 
 def convert_mask_to_numpy_mask(mask_var):
     """
-    Converts a netCDF4.Variable representing a mask into a numpy array mask
-    'Water' Values are converted to False (including 'lake', 'river' etc)
-    'land' values are converted to True
+    Converts a netCDF4.Variable representing a mask into a numpy array mask 'Water' Values are
+    converted to False (including 'lake', 'river' etc) 'land' values are converted to True.
     """
     ret_mask = np.ones(mask_var.shape, dtype=bool)
     mask_data = mask_var[:]
@@ -71,9 +70,8 @@ def convert_mask_to_numpy_mask(mask_var):
 
 def gen_celltree_mask_from_center_mask(center_mask, sl):
     """
-    Generates celltree face mask from the center mask
+    Generates celltree face mask from the center mask.
     """
-
     input_mask = convert_mask_to_numpy_mask(center_mask)
     return input_mask[sl]
 
@@ -84,14 +82,13 @@ def regrid_variable(grid, o_var, location="node"):
     from gridded.depth import DepthBase, L_Depth, S_Depth
     from gridded.grids import Grid_U
     from gridded.variable import Variable
-
     """
     Takes a Variable or VectorVariable and interpolates the data onto grid.
-    You may pass a location ('nodes', 'faces', 'edge1', 'edge2) and the
-    variable will be interpolated there if possible
-    If no location is passed, the variable will be interpolated to the
-    nodes of this grid. If the Variable's grid and this grid are the same, this
-    function will return the Variable unchanged.
+
+    You may pass a location ('nodes', 'faces', 'edge1', 'edge2) and the variable
+    will be interpolated there if possible If no location is passed, the variable
+    will be interpolated to the nodes of this grid. If the Variable's grid and
+    this grid are the same, this function will return the Variable unchanged.
 
     If this grid covers area that the source grid does not, all values
     in this area will be masked. If regridding from cell centers to the nodes,
@@ -101,8 +98,8 @@ def regrid_variable(grid, o_var, location="node"):
     NOTE: This function will load the ENTIRE data space of the source Variable.
     Make sure that this is reasonable. If it is not, consider pre-slicing
     the time and depth dimensions of the source Variable to what you need.
-    """
 
+    """
     dest_points = None
     if location == "node":
         dest_points = grid.nodes
@@ -147,8 +144,9 @@ def regrid_variable(grid, o_var, location="node"):
     if o_var.time is not None:
         for t_idx, t in enumerate(o_var.time.data):
             if n_depth is not None and issubclass(n_depth.__class__, S_Depth):
-                transect = o_var.depth.get_depth_profile(o_var.grid.nodes.reshape(-1, 2),
-                                                         t, data_shape=(len(n_depth),)).T
+                transect = o_var.depth.get_depth_profile(
+                    o_var.grid.nodes.reshape(-1, 2), t, data_shape=(len(n_depth),)
+                ).T
                 for lev_idx, lev_data in enumerate(transect):
                     lev = Variable(
                         name=f"level{lev_idx}", data=lev_data.reshape(o_var.grid.node_lon.shape), grid=o_var.grid
@@ -249,9 +247,11 @@ def _reorganize_spatial_data(points):
         return points_arr
     else:
         """
-        Make sure at least one of the dimensions is length 2 or 3. If it is
-        dimension 0, then reshape, otherwise do nothing. If both dimensions are
-        longer than 3, this is an error.
+        Make sure at least one of the dimensions is length 2 or 3.
+
+        If it is dimension 0, then reshape, otherwise do nothing. If both
+        dimensions are longer than 3, this is an error.
+
         """
         if shp[0] > 3 and shp[1] > 3:
             raise ValueError("Too many coordinate dimensions in input array")
@@ -260,7 +260,6 @@ def _reorganize_spatial_data(points):
             return points_arr
         else:
             return points_arr.T
-        pass
 
 
 def _align_results_to_spatial_data(result, points):
@@ -332,11 +331,12 @@ def _align_results_to_spatial_data(result, points):
 
 def isarraylike(obj):
     """
-    tests if obj acts enough like an array to be used in gridded.
+    Tests if obj acts enough like an array to be used in gridded.
 
     This should catch netCDF4 variables and numpy arrays, at least, etc.
 
     Note: these won't check if the attributes required actually work right.
+
     """
     for attr in must_have:
         if not hasattr(obj, attr):
@@ -347,18 +347,18 @@ def isarraylike(obj):
 def asarraylike(obj):
     """
     If it satisfies the requirements of pyugrid the object is returned as is.
+
     If not, then numpy's array() will be called on it.
 
     :param obj: The object to check if it's like an array
 
     """
-
     return obj if isarraylike(obj) else np.array(obj)
 
 
 def isstring(obj):
     """
-    py2/3 compatble way to test for a string
+    Py2/3 compatble way to test for a string.
     """
     try:
         return isinstance(obj, basestring)
@@ -368,13 +368,14 @@ def isstring(obj):
 
 def get_dataset(ncfile, dataset=None):
     """
-    Utility to create a netCDF4 Dataset from a filename, list of filenames,
-    or just pass it through if it's already a netCDF4.Dataset
+    Utility to create a netCDF4 Dataset from a filename, list of filenames, or just pass it through
+    if it's already a netCDF4.Dataset.
 
     if dataset is not None, it should be a valid netCDF4 Dataset object,
     and it will simply be returned
 
     fixme: why can you pass in a dataset specifically ???
+
     """
     if dataset is not None:
         return dataset
@@ -399,15 +400,20 @@ def parse_filename_dataset_args(
     data_file=None,
     grid_file=None,
 ):
-    """A perinnial problem is that we need to be able to accept a variety of
-    filename/dataset arguments. This function will return a tuple of 'ds' and 'dg'
-    where ds is the netCDF4.Dataset for the data and dg is the netCDF4.Dataset for the grid. If such
-    datasets are from the same file, it will return the same object for both.
+    """
+    A perinnial problem is that we need to be able to accept a variety of filename/dataset
+    arguments.
+
+    This function will return a tuple of 'ds' and 'dg' where ds is the
+    netCDF4.Dataset for the data and dg is the netCDF4.Dataset for the grid. If
+    such datasets are from the same file, it will return the same object for
+    both.
 
     :param filename: str or pathlike
     :param dataset: netCDF4.Dataset
     :param data_file: str, pathlike, or netCDF4.Dataset
     :param grid_file: str, pathlike, or netCDF4.Dataset
+
     """
     ds = None
     dg = None
@@ -435,11 +441,12 @@ def parse_filename_dataset_args(
 
 def get_writable_dataset(ncfile, format="netcdf4"):
     """
-    Utility to create a writable netCDF4 Dataset from a filename, list of filenames,
-    or just pass it through if it's already a netCDF4.Dataset
+    Utility to create a writable netCDF4 Dataset from a filename, list of filenames, or just pass it
+    through if it's already a netCDF4.Dataset.
 
-    if dataset is not None, it should be a valid netCDF4 Dataset object,
-    and it will simply be returned
+    if dataset is not None, it should be a valid netCDF4 Dataset object, and it
+    will simply be returned
+
     """
     if isinstance(ncfile, nc4.Dataset):
         # fixme: check for writable
@@ -453,20 +460,21 @@ def get_writable_dataset(ncfile, format="netcdf4"):
 
 def get_dataset_attrs(ds):
     """
-    get all the attributes of the dataset as a single dict
+    Get all the attributes of the dataset as a single dict.
 
     :param ds: an open netCDF4.Dataset
+
     """
     return {name: ds.getncattr(name) for name in ds.ncattrs()}
 
 
 def search_netcdf_vars(cls=None, ds=None, dg=None):
     """
-    Given a class with a .default_names and .cf_names attributes, search a datafile
-    netCDF4.Dataset and a possible grid netCDF4.Dataset for variables that are sought by
-    the class
-    
+    Given a class with a .default_names and .cf_names attributes, search a datafile netCDF4.Dataset
+    and a possible grid netCDF4.Dataset for variables that are sought by the class.
+
     These names attributes are a dictionary str -> list
+
     """
     ds_search = search_dataset_for_variables_by_longname(ds, cls.cf_names)
     vn_search = search_dataset_for_variables_by_varname(ds, cls.default_names)
@@ -489,18 +497,20 @@ def varnames_merge(cls, inc_varnames=None):
     """
     Helper function to support the `varnames` argument pattern.
 
-    `varnames` is a keyword used to specify an association between a desired subcomponent
-    of an object and a desired data source name. It is meant to be a mechanism by which
-    custom digestion of a file can be specified.
+    `varnames` is a keyword used to specify an association between a desired
+    subcomponent of an object and a desired data source name. It is meant to be
+    a mechanism by which custom digestion of a file can be specified.
+
     """
 
 
 def search_dataset_for_any_long_name(ds, names):
     """
     Searches a netCDF4.Dataset for any netCDF4.Variable that satisfies one of the search terms.
-    :param name: list of strings or str -> list dictionary
 
+    :param name: list of strings or str -> list dictionary.
     :returns: boolean
+
     """
     if isinstance(names, Mapping):
         names = sum(list(names.values()), [])
@@ -514,14 +524,14 @@ def search_dataset_for_any_long_name(ds, names):
 
 def search_dataset_for_variables_by_longname(ds, possible_names):
     """
-    For each longname list in possible_names, search the Dataset
+    For each longname list in possible_names, search the Dataset.
 
     :param ds: Dataset
     :type ds: netCDF4.Dataset
     :param possible_names: str -> list dictionary
     :type possible_names: dict
-
     :returns: str -> netCDF4.Variable dictionary
+
     """
     rtv = {}
     for k, v in possible_names.items():
@@ -530,7 +540,7 @@ def search_dataset_for_variables_by_longname(ds, possible_names):
             t2 = ds.get_variables_by_attributes(standard_name=query)
             if t1 or t2:
                 rtv[k] = (t1 + t2)[0]
-                break #only take the first match
+                break  # only take the first match
         if k not in rtv:
             rtv[k] = None
     return rtv
@@ -538,14 +548,14 @@ def search_dataset_for_variables_by_longname(ds, possible_names):
 
 def search_dataset_for_variables_by_varname(ds, possible_names):
     """
-    For each varname list in possible_names, search the Dataset
+    For each varname list in possible_names, search the Dataset.
 
     :param ds: Dataset
     :type ds: netCDF4.Dataset
     :param possible_names: str -> list dictionary
     :type possible_names: dict
-
     :returns: str -> netCDF4.Variable (or None if not found) dictionary
+
     """
     rtv = {}
     for k, v in possible_names.items():

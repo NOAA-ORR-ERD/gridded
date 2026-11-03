@@ -1,5 +1,5 @@
 """
-Created on Apr 7, 2015
+Created on Apr 7, 2015.
 
 @author: ayan
 
@@ -56,17 +56,15 @@ def test_sgrid_compliant_check(roms_sgrid):
     nc_ds = NetCDFDataset(roms_sgrid)
     result = nc_ds.sgrid_compliant_file()
     assert result
-
-
+\
 """
 Test NetCDF Dataset Without Nodes.
-
 """
 
 
 def test_node_coordinates(wrf_sgrid):
     nc_ds = NetCDFDataset(wrf_sgrid)
-    node_coordinates = nc_ds.find_node_coordinates("west_east_stag south_north_stag")  # noqa
+    node_coordinates = nc_ds.find_node_coordinates("west_east_stag south_north_stag")
     assert node_coordinates is None
 
 

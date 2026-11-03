@@ -89,7 +89,6 @@ def nc_has_dimension(ds, dim_name):
 def nc_var_has_attr(ds, var_name, att_name):
     """
     Checks that the variable, var_name, has the attribute, att_name.
-
     """
     if not isinstance(ds, netCDF4.Dataset):
         ds = netCDF4.Dataset(ds)
@@ -103,9 +102,7 @@ def nc_var_has_attr(ds, var_name, att_name):
 
 def nc_var_has_attr_vals(ds, var_name, att_dict):
     """
-    Checks that the variable, var_name, as the attributes (and values)
-    in the att_dict.
-
+    Checks that the variable, var_name, as the attributes (and values) in the att_dict.
     """
     if not isinstance(ds, netCDF4.Dataset):
         ds = netCDF4.Dataset(ds)
@@ -180,8 +177,9 @@ def test_set_mesh_name(two_triangles, ncds):
 
 
 def test_write_with_depths(two_triangles, ncds):
-    """Tests writing a netcdf file with depth data."""
-
+    """
+    Tests writing a netcdf file with depth data.
+    """
     fname, ncds = ncds
 
     grid = two_triangles
@@ -210,8 +208,9 @@ def test_write_with_depths(two_triangles, ncds):
 
 
 def test_write_with_velocities(two_triangles, ncds):
-    """Tests writing a netcdf file with velocities on the faces."""
-
+    """
+    Tests writing a netcdf file with velocities on the faces.
+    """
     fname, ncds = ncds
 
     two_triangles.mesh_name = "mesh2"
@@ -255,8 +254,9 @@ def test_write_with_velocities(two_triangles, ncds):
 
 
 def test_write_with_edge_data(two_triangles, ncds):
-    """Tests writing a netcdf file with data on the edges (fluxes, maybe?)."""
-
+    """
+    Tests writing a netcdf file with data on the edges (fluxes, maybe?).
+    """
     fname, ncds = ncds
 
     two_triangles.mesh_name = "mesh2"
@@ -302,9 +302,8 @@ def test_write_with_edge_data(two_triangles, ncds):
 
 def test_write_with_bound_data(two_triangles, ncds):
     """
-    Tests writing a netcdf file with data on the boundaries
-    suitable for boundary conditions, for example fluxes.
-
+    Tests writing a netcdf file with data on the boundaries suitable for boundary conditions, for
+    example fluxes.
     """
     fname, ncds = ncds
     grid = two_triangles
@@ -349,8 +348,9 @@ def test_write_with_bound_data(two_triangles, ncds):
 
 
 def test_write_everything(twenty_one_triangles, ncds):
-    """An example with all features enabled, and a less trivial grid."""
-
+    """
+    An example with all features enabled, and a less trivial grid.
+    """
     fname, ncds = ncds
     grid = twenty_one_triangles
     grid.mesh_name = "mesh"

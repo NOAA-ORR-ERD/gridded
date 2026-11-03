@@ -1,9 +1,11 @@
-import xarray as xr
-import numpy as np
 from pathlib import Path
-import matplotlib.pyplot as plt
+
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+import matplotlib.pyplot as plt
+import numpy as np
+import xarray as xr
+
 
 def map_roms_error(ds_result: xr.Dataset, vel_dir: str, grid_loc: str) -> None:
     """
@@ -24,8 +26,8 @@ def map_roms_error(ds_result: xr.Dataset, vel_dir: str, grid_loc: str) -> None:
     error = ds_result[f"{vel_dir}_error_{grid_loc}"].data
 
     # plot map of error
-    fig, ax = plt.subplots(figsize=(8, 6))#, constrained_layout=True)
-    pcm = ax.pcolormesh(lon,lat,error, vmin=0, vmax=0.1)
+    fig, ax = plt.subplots(figsize=(8, 6))  # , constrained_layout=True)
+    pcm = ax.pcolormesh(lon, lat, error, vmin=0, vmax=0.1)
     # add eta_index, xi_index here if a point location on map is useful
     # eta_index, xi_index = 29, 8
     # ax.plot(
@@ -35,37 +37,23 @@ def map_roms_error(ds_result: xr.Dataset, vel_dir: str, grid_loc: str) -> None:
 
     # add contour where errors >= 0.5
     if np.any(error >= 0.1):
-        contour = ax.contour(
-            lon,
-            lat,
-            error,
-            levels=[0.5],
-            colors="white",
-            linewidths=2,
-            zorder = 5
-        )
+        contour = ax.contour(lon, lat, error, levels=[0.5], colors="white", linewidths=2, zorder=5)
         ax.clabel(contour, inline=True, fmt="0.5 m/s", fontsize=9)
 
     # set title and axes information
-    ax.set_title(
-        f"ROMS v. Gridded \n"
-        f"{vel_dir}-velocity errors at {grid_loc.upper()} locations"
-    )
+    ax.set_title(f"ROMS v. Gridded \n{vel_dir}-velocity errors at {grid_loc.upper()} locations")
     ## legend goes with commented out marker
-    #plt.legend()
+    # plt.legend()
     ax.set_xlabel("longitude")
     ax.set_ylabel("latitude")
-    ax.tick_params(axis='x', labelrotation=45)
+    ax.tick_params(axis="x", labelrotation=45)
     cbar = fig.colorbar(pcm, ax=ax)
     cbar.set_label("absolute error (m/s)")
     plt.savefig(f"../graphics/horizontal_interp/ROMS_sfc_{vel_dir}_velocity_at_{grid_loc}_points.png", dpi=300)
-    
+
+
 def map_roms_error_with_vectors(
-    ds_result: xr.Dataset,
-    grid_loc: str,
-    time_idx: int = 0,
-    step: int = 2,
-    scale: float = 10.0
+    ds_result: xr.Dataset, grid_loc: str, time_idx: int = 0, step: int = 2, scale: float = 10.0
 ) -> None:
     """Plots velocity vectors with ROMS-averaged (green) and Gridded (purple)
     using the results from `roms_tools.roms_grid_velocity_averages()`.
@@ -92,7 +80,7 @@ def map_roms_error_with_vectors(
             "Gridded velocities are all NaN, which can happen if the "
             "gridded_depth used in `roms_tools.roms_grid_velocity_averages()`"
             "is zero."
-            )
+        )
         raise ValueError(err_msg)
 
     # Handle the case where time dimension is included
@@ -122,24 +110,20 @@ def map_roms_error_with_vectors(
         u_r_sub, v_r_sub = u_roms[:min_eta, :min_xi], v_roms[:min_eta, :min_xi]
         u_g_sub, v_g_sub = u_grid[:min_eta, :min_xi], v_grid[:min_eta, :min_xi]
 
-
     # Apply spatial subsampling (step)
     sub = (slice(None, None, step), slice(None, None, step))
     plot_lon = lon_q[sub]
     plot_lat = lat_q[sub]
 
-    fig, ax = plt.subplots(
-        figsize=(10, 4),
-        subplot_kw={"projection": ccrs.PlateCarree()},
-        dpi=100
-    )
+    fig, ax = plt.subplots(figsize=(10, 4), subplot_kw={"projection": ccrs.PlateCarree()}, dpi=100)
 
     ax.add_feature(cfeature.LAND, facecolor="lightgray", zorder=2)
     ax.add_feature(cfeature.COASTLINE, linewidth=1, zorder=3)
     ax.add_feature(cfeature.BORDERS, linestyle=":", zorder=3)
     # Green ROMS vectors
     q_roms = ax.quiver(
-        plot_lon, plot_lat,
+        plot_lon,
+        plot_lat,
         u_r_sub[sub],
         v_r_sub[sub],
         color="green",
@@ -150,7 +134,8 @@ def map_roms_error_with_vectors(
     )
     # Purple Gridded vectors
     q_gridded = ax.quiver(
-        plot_lon, plot_lat,
+        plot_lon,
+        plot_lat,
         u_g_sub[sub],
         v_g_sub[sub],
         color="purple",
@@ -160,32 +145,29 @@ def map_roms_error_with_vectors(
         label="Gridded .at()",
     )
     ax.quiverkey(
-            q_roms,
-            X=0.2,
-            Y=0.25,
-            U=0.5,
-            label="ROMS\n0.5 m/s",
-            labelpos="E",
-            coordinates="axes",
-            fontproperties={"size": 9},
-            zorder = 5
-        )
-    ax.quiverkey(
-            q_gridded,
-            X=0.1,
-            Y=0.05,
-            U=0.5,
-            label="Gridded\n0.5 m/s",
-            labelpos="E",
-            coordinates="axes",
-            fontproperties={"size": 9},
-            zorder = 5
-        )
-
-    ax.set_title(
-        f"Staggering: {grid_loc.upper()} Locations",
-        fontsize=12, fontweight="bold"
+        q_roms,
+        X=0.2,
+        Y=0.25,
+        U=0.5,
+        label="ROMS\n0.5 m/s",
+        labelpos="E",
+        coordinates="axes",
+        fontproperties={"size": 9},
+        zorder=5,
     )
+    ax.quiverkey(
+        q_gridded,
+        X=0.1,
+        Y=0.05,
+        U=0.5,
+        label="Gridded\n0.5 m/s",
+        labelpos="E",
+        coordinates="axes",
+        fontproperties={"size": 9},
+        zorder=5,
+    )
+
+    ax.set_title(f"Staggering: {grid_loc.upper()} Locations", fontsize=12, fontweight="bold")
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
     ax.legend(loc="upper left", framealpha=0.9, fontsize=9)
@@ -195,22 +177,17 @@ def map_roms_error_with_vectors(
         fontsize=14,
         fontweight="bold",
         y=0.98,
-     )
+    )
     plt.tight_layout()
 
     # Save output
-    out_path = (
-        Path("../graphics/horizontal_interp") /
-        f"quiver_comparison_{grid_loc}.png"
-    )
+    out_path = Path("../graphics/horizontal_interp") / f"quiver_comparison_{grid_loc}.png"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=300)
     plt.close(fig)
 
-def plot_velocity_error_scatter(
-    ds_result: xr.Dataset, 
-    grid_loc: str
-) -> None:
+
+def plot_velocity_error_scatter(ds_result: xr.Dataset, grid_loc: str) -> None:
     """Scatter plot comparing manually averaged velocity values to gridded .at()
     results of velocities at the given locations.
 
@@ -224,19 +201,18 @@ def plot_velocity_error_scatter(
     """
     # assign local variables
     velocities = {
-        "u" : {
-                "averaged": ds_result[f"u_roms_{grid_loc}"].data,
-                "gridded": ds_result[f"u_gridded_{grid_loc}"].data,
-            },
-        "v" : {
-                "averaged": ds_result[f"v_roms_{grid_loc}"].data,
-                "gridded": ds_result[f"v_gridded_{grid_loc}"].data,
-            }
-
+        "u": {
+            "averaged": ds_result[f"u_roms_{grid_loc}"].data,
+            "gridded": ds_result[f"u_gridded_{grid_loc}"].data,
+        },
+        "v": {
+            "averaged": ds_result[f"v_roms_{grid_loc}"].data,
+            "gridded": ds_result[f"v_gridded_{grid_loc}"].data,
+        },
     }
 
     # setup figure
-    fig, axs = plt.subplots(1,2,figsize=(8,4))
+    fig, axs = plt.subplots(1, 2, figsize=(8, 4))
 
     # loop through the arakawa-c grid locations and plot ROMS grid
     # values vs. the estimated locations from averaging u- or v-coordinates
@@ -247,10 +223,7 @@ def plot_velocity_error_scatter(
         error = np.abs(avg_vals - gridded_vals)
         max_error = np.nanmax(error)
         # plot 1:1 line
-        sc = ax.scatter(
-            avg_vals, gridded_vals,
-            c = error, vmin=0, vmax=0.5
-        )
+        sc = ax.scatter(avg_vals, gridded_vals, c=error, vmin=0, vmax=0.5)
         # add labels
         ax.set_title(
             f"{velocity}-velocity absolute error\n "
@@ -260,7 +233,8 @@ def plot_velocity_error_scatter(
         ax.set_xlabel(f"Averaged {velocity}-velocity ")
         ax.set_ylabel(f"Gridded.at() {velocity}-velocity ")
         plt.colorbar(
-            sc, label = rf"|${velocity}_{{avg}} - {velocity}_{{gridded}}$| (m/s)",
+            sc,
+            label=rf"|${velocity}_{{avg}} - {velocity}_{{gridded}}$| (m/s)",
         )
 
     # tie a bow and save figure
@@ -268,10 +242,10 @@ def plot_velocity_error_scatter(
     plt.tight_layout()
     plt.subplots_adjust(wspace=0.6)
     fig.savefig(
-        f"../graphics/horizontal_interp/{grid_loc.upper()}_location_velocity_error_scatter.png",
-        dpi=300
-    )#, bbox_inches="tight")
+        f"../graphics/horizontal_interp/{grid_loc.upper()}_location_velocity_error_scatter.png", dpi=300
+    )  # , bbox_inches="tight")
     plt.close(fig)
+
 
 def plot_coord_averaging_error(
     roms_file: Path | str,
@@ -304,7 +278,7 @@ def plot_coord_averaging_error(
     ds = xr.load_dataset(Path(roms_file))
 
     # create dictionary with information for both coordinate axes
-    indices = trim_dict.get(grid_loc, None)
+    indices = trim_dict.get(grid_loc)
     coords = {
         "latitude": {
             "roms": ds[f"lat_{grid_loc}"][*indices] if indices else ds[f"lat_{grid_loc}"],
@@ -317,7 +291,7 @@ def plot_coord_averaging_error(
     }
 
     # setup figure
-    fig, axs = plt.subplots(1,2,figsize=(8,4))
+    fig, axs = plt.subplots(1, 2, figsize=(8, 4))
 
     # loop through the arakawa-c grid locations and plot ROMS grid
     # values vs. the estimated locations from averaging u- or v-coordinates
@@ -333,17 +307,13 @@ def plot_coord_averaging_error(
         ax.set_ylabel(f"ROMS {grid_loc} grid {coord_name}")
 
     # tie a bow and save figure
-    fig.suptitle(
-        f"{grid_loc.upper()} grid location evaluation for \n{vel_dir}"
-        "-velocity averaging\n"
-    )
+    fig.suptitle(f"{grid_loc.upper()} grid location evaluation for \n{vel_dir}-velocity averaging\n")
     plt.tight_layout()
     fig.savefig(
-        f"../graphics/horizontal_interp/{vel_dir}_coord_comparison_{grid_loc}"
-        ".png",
-        dpi=300
-    )#, bbox_inches="tight")
+        f"../graphics/horizontal_interp/{vel_dir}_coord_comparison_{grid_loc}.png", dpi=300
+    )  # , bbox_inches="tight")
     plt.close(fig)
+
 
 def plot_coord_error_ROMSaveraging_vs_gridded(
     gridded_result: dict,

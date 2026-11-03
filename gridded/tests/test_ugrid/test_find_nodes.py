@@ -13,15 +13,17 @@ from .utilities import twenty_one_triangles
 
 
 def test_locate_node(twenty_one_triangles):
-    """Test finding a single node."""
-
+    """
+    Test finding a single node.
+    """
     ugrid = twenty_one_triangles
     assert ugrid.locate_nodes((4.58, 5.08)) == 6
 
 
 def test_locate_nodes(twenty_one_triangles):
-    """Test finding multiple nodes at once."""
-
+    """
+    Test finding multiple nodes at once.
+    """
     ugrid = twenty_one_triangles
     assert np.array_equal(
         ugrid.locate_nodes(
@@ -39,16 +41,16 @@ def test_locate_nodes(twenty_one_triangles):
 
 def test_locate_exact(twenty_one_triangles):
     """
-    The nearest neighbor of the exact node locations had better be
-    the nodes!
-
+    The nearest neighbor of the exact node locations had better be the nodes!
     """
     ugrid = twenty_one_triangles
     assert np.array_equal(ugrid.locate_nodes(ugrid.nodes), list(range(len(ugrid.nodes))))
 
 
 def test_locate_middle(twenty_one_triangles):
-    """See what happens the point is equidistant to two nodes."""
+    """
+    See what happens the point is equidistant to two nodes.
+    """
     ugrid = twenty_one_triangles
 
     # (3,5) is equidistant between nodes 2, 6 and 7

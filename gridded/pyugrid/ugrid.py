@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-ugrid classes
+Ugrid classes.
 
 set of classes for working with unstructured model grids
 
@@ -22,7 +22,7 @@ from collections import OrderedDict
 
 import numpy as np
 
-import gridded.pyugrid.read_netcdf as read_netcdf
+from gridded.pyugrid import read_netcdf
 from gridded.pyugrid.util import point_in_tri
 from gridded.utilities import get_writable_dataset
 
@@ -42,6 +42,7 @@ class UGrid:
     A basic class to hold an unstructured grid as defined in the UGrid convention.
 
     The internal structure mirrors the netcdf data standard.
+
     """
 
     def __init__(
@@ -159,14 +160,13 @@ class UGrid:
     @classmethod
     def from_ncfile(klass, filename=None, dataset=None, mesh_name=None):  # , load_data=False):
         """
-        create a UGrid object from a netcdf file name (or opendap url)
+        Create a UGrid object from a netcdf file name (or opendap url)
 
-        :param nc_url: the filename or OpenDap url you want to load
+        :param nc_url: the filename or OpenDap url you want to load :param
+            mesh_name=None: the name of the mesh you want. If None, then you'll
+            get the only mesh in the file. If there is more than one mesh in the
+            file, a ValueError Will be raised
 
-        :param mesh_name=None: the name of the mesh you want. If None, then
-                               you'll get the only mesh in the file. If there
-                               is more than one mesh in the file, a ValueError
-                               Will be raised
         """
         grid = klass()
         if filename is not None:
@@ -179,24 +179,17 @@ class UGrid:
     @classmethod
     def from_nc_dataset(klass, nc, mesh_name=None):  # , load_data=False):
         """
-        create a UGrid object from a netcdf file (or opendap url)
+        Create a UGrid object from a netcdf file (or opendap url)
 
         :param nc: An already open Dataset object
-        :type nc: netCDF4.DataSet
-
-        :param mesh_name=None: the name of the mesh you want. If None, then
-                               you'll get the only mesh in the file. If there
-                               is more than one mesh in the file, a ValueError
-                               Will be raised
-
-        # :param load_data=False: flag to indicate whether you want to load the
-        #                         associated data or not.  The mesh will be
-        #                         loaded in any case.  If False, only the mesh
-        #                         will be loaded.  If True, then all the data
-        #                         associated with the mesh will be loaded.
-        #                         This could be huge!
-
-        # :type load_data: boolean
+        :type nc: netCDF4.DataSet :param mesh_name=None: the name of the mesh
+            you want. If None, then you'll get the only mesh in the file. If
+            there is more than one mesh in the file, a ValueError Will be raised
+            # :param load_data=False: flag to indicate whether you want to load
+            the # associated data or not. The mesh will be # loaded in any case.
+            If False, only the mesh # will be loaded. If True, then all the data
+            # associated with the mesh will be loaded. # This could be huge! #
+        :type load_data: boolean
 
         """
         grid = klass()
@@ -206,13 +199,13 @@ class UGrid:
     @property
     def info(self):
         """
-        summary of information about the grid
+        Summary of information about the grid.
         """
         msg = [f"UGrid object: {self.mesh_name}"]
-        msg.append("Number of nodes: %i" % len(self.nodes))
-        msg.append("Number of faces: %i with %i vertices per face" % (len(self.faces), self.num_vertices))
+        msg.append(f"Number of nodes: {len(self.nodes)}")
+        msg.append(f"Number of faces: {len(self.faces)} with {self.num_vertices} vertices per face")
         if self.boundaries is not None:
-            msg.append("Number of boundaries: %i" % len(self.boundaries))
+            msg.append("Number of boundaries: {self.boundaries}")
 
         return "\n".join(msg)
 
@@ -246,9 +239,7 @@ class UGrid:
 
     def check_consistent(self):
         """
-        Check if the various data is consistent: the edges and faces reference
-        existing nodes, etc.
-
+        Check if the various data is consistent: the edges and faces reference existing nodes, etc.
         """
         raise NotImplementedError
 
@@ -256,7 +247,6 @@ class UGrid:
     def num_vertices(self):
         """
         Maximum number of vertices in a face.
-
         """
         if self._faces is None:
             return None
@@ -526,11 +516,9 @@ class UGrid:
         """
         Returns the index of the closest nodes to the input locations.
 
-        :param points: the lons/lats of locations you want the nodes
-                       closest to.
-        :type point: a (N, 2) ndarray of points
-                     (or something that can be converted).
-
+        :param points: the lons/lats of locations you want the nodes closest to.
+        :type point: a (N, 2) ndarray of points (or something that can be
+            converted).
         :returns: the index of the closest node.
 
         """
@@ -553,7 +541,7 @@ class UGrid:
 
     def _hash_of_pts(self, points):
         """
-        Returns a SHA1 hash of the array of points passed in
+        Returns a SHA1 hash of the array of points passed in.
         """
         return hashlib.sha1(points.tobytes()).hexdigest()
 
@@ -621,7 +609,7 @@ class UGrid:
 
         if method == "celltree":
             try:
-                import cell_tree2d
+                import cell_tree2d  #noqa: F401
             except ImportError:
                 raise ImportError(
                     "the cell_tree2d package must be installed to use the celltree search:\n"
@@ -656,8 +644,10 @@ class UGrid:
 
     def build_celltree(self):
         """
-        Tries to build the celltree for the current UGrid. Will fail if nodes
-        or faces is not defined.
+        Tries to build the celltree for the current UGrid.
+
+        Will fail if nodes or faces is not defined.
+
         """
         from cell_tree2d import CellTree
 
@@ -667,10 +657,10 @@ class UGrid:
 
     def interpolation_alphas(self, points, indices=None, _copy=False, _memo=True, _hash=None):
         """
-        Given an array of points, this function will return the bilinear interpolation alphas
-        for each of the three nodes of the face that the point is located in. If the point is
-        not located on the grid, the alphas are set to 0
-        :param points: Nx2 numpy array of lat/lon coordinates
+        Given an array of points, this function will return the bilinear interpolation alphas for
+        each of the three nodes of the face that the point is located in. If the point is not
+        located on the grid, the alphas are set to 0 :param points: Nx2 numpy array of lat/lon
+        coordinates.
 
         :param indices: If the face indices of the points is already known, it can be passed
                         in to save repeating the effort.
@@ -678,8 +668,8 @@ class UGrid:
         :return: Nx3 numpy array of interpolation factors
 
         TODO: mask the indices that aren't on the grid properly.
-        """
 
+        """
         if _memo:
             if _hash is None:
                 _hash = self._hash_of_pts(points)
@@ -804,8 +794,8 @@ class UGrid:
         Builds the face_face_connectivity array: giving the neighbors of each cell.
 
         Note: arbitrary order and CW vs CCW may not be consistent.
-        """
 
+        """
         num_vertices = self.num_vertices
         num_faces = self.faces.shape[0]
         face_face = np.zeros((num_faces, num_vertices), dtype=IND_DT)
@@ -839,13 +829,13 @@ class UGrid:
 
     def build_edges(self):
         """
-        Builds the edges array: all the edges defined by the faces
+        Builds the edges array: all the edges defined by the faces.
 
         This will replace the existing edge array, if there is one.
 
         NOTE: arbitrary order -- should the order be preserved?
-        """
 
+        """
         num_vertices = self.num_vertices
         if self.faces is None:
             # No faces means no edges
@@ -877,8 +867,8 @@ class UGrid:
         This is a not-very-smart just loop through all the faces method.
 
         If face_face_connectivity is None, it will be computed
-        """
 
+        """
         boundaries = []
         if self.face_face_connectivity is None:
             self.build_face_face_connectivity()
@@ -894,12 +884,11 @@ class UGrid:
 
     def build_face_edge_connectivity(self):
         """
-        Builds the face-edge connectivity array
+        Builds the face-edge connectivity array.
 
         Not implemented yet.
 
         """
-
         try:
             from scipy.spatial import cKDTree
         except ImportError:
@@ -931,12 +920,10 @@ class UGrid:
 
     def build_face_coordinates(self):
         """
-        Builds the face_coordinates array, using the average of the
-        nodes defining each face.
+        Builds the face_coordinates array, using the average of the nodes defining each face.
 
-        Note that you may want a different definition of the face
-        coordinates than this computes, but this is here to have
-        an easy default.
+        Note that you may want a different definition of the face coordinates
+        than this computes, but this is here to have an easy default.
 
         This will write-over an existing face_coordinates array.
 
@@ -947,13 +934,10 @@ class UGrid:
 
     def build_edge_coordinates(self):
         """
-        Builds the edge_coordinates array, using the average of the
-        nodes defining each edge.
+        Builds the edge_coordinates array, using the average of the nodes defining each edge.
 
-        Note that you may want a different definition of the edge
-        coordinates than this computes, but this is here to have
-        an easy default.
-
+        Note that you may want a different definition of the edge coordinates
+        than this computes, but this is here to have an easy default.
 
         This will write-over an existing edge_coordinates array
 
@@ -964,12 +948,12 @@ class UGrid:
 
     def build_boundary_coordinates(self):
         """
-        Builds the boundary_coordinates array, using the average of the
-        nodes defining each boundary segment.
+        Builds the boundary_coordinates array, using the average of the nodes defining each boundary
+        segment.
 
         Note that you may want a different definition of the boundary
-        coordinates than this computes, but this is here to have
-        an easy default.
+        coordinates than this computes, but this is here to have an easy
+        default.
 
         This will write-over an existing face_coordinates array
 
@@ -980,12 +964,12 @@ class UGrid:
 
     def save_as_netcdf(self, filename, format="netcdf4"):
         """
-        save the dataset to a file
+        Save the dataset to a file.
 
         :param filename: full path to file to save to.
+        :param format: format to save -- 'netcdf3' or 'netcdf4' are the only
+            options at this point.
 
-        :param format: format to save -- 'netcdf3' or 'netcdf4'
-                       are the only options at this point.
         """
         self.save(filename, format="netcdf4")
 
@@ -1004,6 +988,7 @@ class UGrid:
 
         NOTE: Variables are saved here, because different conventions do it
               differently.
+
         """
         format_options = ("netcdf3", "netcdf4")
         if format not in format_options:
@@ -1152,7 +1137,7 @@ class UGrid:
 
     def _save_variables(self, nclocal, variables):
         """
-        Save the Variables
+        Save the Variables.
         """
         mesh_name = self.mesh_name
         for name, var in variables.items():

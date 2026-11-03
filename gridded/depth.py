@@ -1,4 +1,3 @@
-
 import warnings
 
 import numpy as np
@@ -55,7 +54,6 @@ class DepthBase:
         type(self)._instance_count += 1
 
         super().__init__(**kwargs)
-        
 
     @classmethod
     def _can_create_from_netCDF(
@@ -82,7 +80,7 @@ class DepthBase:
         # Subclasses are REQUIRED to implement this property in the manner appropriate
         # for the system being represented
         return self._bottom_index
-    
+
     def _diff(self, other, fail_early=False):
         diff = {}
         if not isinstance(other, self.__class__):
@@ -97,8 +95,8 @@ class DepthBase:
             diff["bottom_index"] = (self.bottom_index, other.bottom_index)
             if fail_early and diff["bottom_index"]:
                 return diff
-            
-        if hasattr(self, 'grid') and hasattr(other, 'grid'):
+
+        if hasattr(self, "grid") and hasattr(other, "grid"):
             if self.grid != other.grid:
                 diff["grid"] = (self.grid, other.grid)
                 if fail_early and diff["grid"]:
@@ -119,13 +117,14 @@ class DepthBase:
         **kwargs,
     ):
         """
-        Returns the weights (alphas) required for interpolation
+        Returns the weights (alphas) required for interpolation.
 
         The base class implementation only supports surface values:
         it returns the surface index and 0.0 for the alpha
 
         This is the expected outcome for the case where all points
         are on the surface.
+
         """
         sz = len(points)
         indices = np.ma.MaskedArray(
@@ -137,15 +136,18 @@ class DepthBase:
     @classmethod
     def _find_required_depth_attrs(cls, filename, dataset=None, depth_topology=None):
         """
-        This function is the top level 'search for attributes' function. If there are any
-        common attributes to all potential depth types, they will be sought here.
+        This function is the top level 'search for attributes' function.
+
+        If there are any common attributes to all potential depth types, they
+        will be sought here.
 
         This function returns a dict, which maps an attribute name to a netCDF4
-        Variable or numpy array object extracted from the dataset. When called from
-        a child depth object, this function should provide all the kwargs needed to
-        create a valid instance using the __init__.
+        Variable or numpy array object extracted from the dataset. When called
+        from a child depth object, this function should provide all the kwargs
+        needed to create a valid instance using the __init__.
 
         There are no universally required terms (yet)
+
         """
         df_vars = dataset.variables if dataset is not None else get_dataset(filename).variables
         df_vars = dict([(k.lower(), v) for k, v in df_vars.items()])
@@ -163,6 +165,7 @@ class DepthBase:
         :type filename: string
         :type dataset: netCDF.Dataset
         :return: List of default variable names, or None if none are found
+
         """
         df = None
         if dataset is not None:
@@ -270,6 +273,7 @@ class L_Depth(DepthBase):
         The 2nd value is an array of the interpolation alphas for the particles
         between their depth index and depth_index+1. If both values are None,
         then all particles are on the surface layer.
+
         """
         points = np.asarray(points, dtype=np.float64)
         points = points.reshape(-1, 3)
@@ -299,8 +303,7 @@ class L_Depth(DepthBase):
         indices = np.ma.MaskedArray(data=idxs, mask=np.zeros((len(idxs)), dtype=bool))
 
         alphas = np.ma.MaskedArray(
-            data=np.full((len(points),), np.nan, dtype=np.float64),
-            mask=np.zeros((len(points)), dtype=bool)
+            data=np.full((len(points),), np.nan, dtype=np.float64), mask=np.zeros((len(points)), dtype=bool)
         )
 
         # set above surface and below seafloor alphas to allow future filtering
@@ -357,8 +360,8 @@ class L_Depth(DepthBase):
 
 class S_Depth(DepthBase):
     """
-    Represents the ocean s-coordinates as implemented by ROMS,
-    It may or may not be useful for other systems.
+    Represents the ocean s-coordinates as implemented by ROMS, It may or may not be useful for other
+    systems.
     """
 
     _default_component_types = {
@@ -547,22 +550,22 @@ class S_Depth(DepthBase):
                 if dg:
                     raise ValueError(err + " or grid file")
                 raise ValueError(err)
-            #bathymetry data is on cell centers, but needs to be averaged to the nodes in order
-            #to properly define the terrain following coordinate.
-            if 'node' in grid.infer_location(bathy_var):
+            # bathymetry data is on cell centers, but needs to be averaged to the nodes in order
+            # to properly define the terrain following coordinate.
+            if "node" in grid.infer_location(bathy_var):
                 bathymetry = Bathymetry(
                     data=bathy_var,
                     grid=grid,
                     name="bathymetry",
                 )
             else:
-                h = (bathy_var[0:-1,:] + bathy_var[1:,:]) / 2
-                psi_h = (h[:,0:-1] + h[:,1:]) /2
+                h = (bathy_var[0:-1, :] + bathy_var[1:, :]) / 2
+                psi_h = (h[:, 0:-1] + h[:, 1:]) / 2
                 bathymetry = Bathymetry(
                     data=psi_h,
                     grid=grid,
                     name="bathymetry",
-            )
+                )
 
         if zeta is None:
             zeta_var = nc_vars.get("zeta", None)
@@ -574,13 +577,13 @@ class S_Depth(DepthBase):
                 warnings.warn(warn)
                 zeta = Zeta.constant(0)
             else:
-                if 'node' in grid.infer_location(bathy_var):
+                if "node" in grid.infer_location(bathy_var):
                     zeta = Zeta(data=zeta_var, grid=grid, time=time, name="zeta")
                 else:
-                    #zeta data is on cell centers, but needs to be averaged to the nodes in order
-                    #to properly define the terrain following coordinate.
-                    z = (zeta_var[:,0:-1,:] + zeta_var[:,1:,:]) / 2
-                    psi_z = (z[:,:,0:-1] + z[:,:,1:]) /2
+                    # zeta data is on cell centers, but needs to be averaged to the nodes in order
+                    # to properly define the terrain following coordinate.
+                    z = (zeta_var[:, 0:-1, :] + zeta_var[:, 1:, :]) / 2
+                    psi_z = (z[:, :, 0:-1] + z[:, :, 1:]) / 2
                     zeta = Zeta(data=psi_z, grid=grid, time=time, name="zeta")
 
         if terms is None:
@@ -592,7 +595,7 @@ class S_Depth(DepthBase):
                 if tvar is not None:
                     terms[term] = tvar[:]
                 else:
-                    warnings.warn('term not found in netCDF dataset: ' + term)
+                    warnings.warn("term not found in netCDF dataset: " + term)
         if vtransform is None:
             vtransform = 2  # default for ROMS
             #  messing about trying to detect this.
@@ -650,12 +653,12 @@ class S_Depth(DepthBase):
 
     def __len__(self):
         return self.num_levels
-    
+
     def _diff(self, other, fail_early=False):
         diff = super()._diff(other, fail_early=fail_early) or {}
         if diff and fail_early:
             return diff
-        
+
         if self.bathymetry != other.bathymetry:
             diff["bathymetry"] = (self.bathymetry, other.bathymetry)
             if fail_early:
@@ -697,17 +700,21 @@ class S_Depth(DepthBase):
         **kwargs,
     ):
         """
-        Returns a pair of arrays. The 1st array is of the depth indices
-        of all the points. The 2nd value is an array of the interpolation
-        alphas for the points between their depth index and depth_index+1.
+        Returns a pair of arrays.
 
-        If a depth is between coordinate N and N+1, the index will be N.
-        If a depth is exactly on a coordinate, the index will be N.
+        The 1st array is of the depth indices of all the points. The 2nd value
+        is an array of the interpolation alphas for the points between their
+        depth index and depth_index+1.
 
-        Any points that are 'off grid' will be subject to the boundary conditions
-        'mask' or 'extrapolate'. 'mask' will mask the index and the alpha of the point.
-        'extrapolate' will set the index to the surface or bottom index, and the alpha to
-        0 or 1 depending on the orientation of the layers
+        If a depth is between coordinate N and N+1, the index will be N. If a
+        depth is exactly on a coordinate, the index will be N.
+
+        Any points that are 'off grid' will be subject to the boundary
+        conditions 'mask' or 'extrapolate'. 'mask' will mask the index and the
+        alpha of the point. 'extrapolate' will set the index to the surface or
+        bottom index, and the alpha to 0 or 1 depending on the orientation of
+        the layers
+
         """
         depths = points[:, 2]
         surface_boundary_condition = (
@@ -734,18 +741,15 @@ class S_Depth(DepthBase):
         # if data_shape[0] == self.num_layers:
         #    raise NotImplementedError('Interpolation of data on depth layers not supported yet')
 
-        depth_profiles = self.get_depth_profile(points,
-                                                time,
-                                                data_shape=data_shape,
-                                                _hash=_hash,
-                                                extrapolate=extrapolate)
+        depth_profiles = self.get_depth_profile(
+            points, time, data_shape=data_shape, _hash=_hash, extrapolate=extrapolate
+        )
 
         indices = np.ma.MaskedArray(
             data=-np.ones((len(points)), dtype=np.int64) * 1000, mask=np.zeros((len(points)), dtype=bool)
         )
         alphas = np.ma.MaskedArray(
-            data=np.full((len(points)), np.nan, dtype=np.float64),
-            mask=np.zeros((len(points)), dtype=bool)
+            data=np.full((len(points)), np.nan, dtype=np.float64), mask=np.zeros((len(points)), dtype=bool)
         )
 
         # use np.digitize to bin the depths into the layers.
@@ -792,11 +796,13 @@ class S_Depth(DepthBase):
         bottom_boundary_condition=None,
     ):
         """
-        Applies the boundary conditions to the indices and alphas
-        indices is expected to be fresh from the np.digitize step, meaning values
-        from -1 to num_levels-1 are expected.
-        alphas is expected to still contain nans, but this function can still work by
-        masking and setting values to 0 or 1 depending on the boundary condition
+        Applies the boundary conditions to the indices and alphas indices is expected to be fresh
+        from the np.digitize step, meaning values from -1 to num_levels-1 are expected.
+
+        alphas is expected to still contain nans, but this function can still
+        work by masking and setting values to 0 or 1 depending on the boundary
+        condition
+
         """
         exclusion_mask = indices.mask.copy()
         surface_index = self.surface_index if surface_index is None else surface_index
@@ -843,48 +849,39 @@ class S_Depth(DepthBase):
         alphas.mask = np.logical_or(alphas.mask, exclusion_mask)
         return indices, alphas, oob_mask
 
-    def get_s_coordinate(self,
-                         points,
-                         time,
-                         data_shape=None,
-                         _hash=None,
-                         **kwargs):
+    def get_s_coordinate(self, points, time, data_shape=None, _hash=None, **kwargs):
         """
-        Given an array of points and a time, returns the S-Coordinate values
-        of the depth layers at those points and time.
+        Given an array of points and a time, returns the S-Coordinate values of the depth layers at
+        those points and time.
 
         :param points: array of points to interpolate to
         :type points: numpy array of shape (n, 3)
-
         :param time: time to interpolate to
         :type time: datetime.datetime
-
-        :param data_shape: shape of the variable to be interpolated.
-                           This param is used to determine whether to
-                           index on the sigma layers or levels.
+        :param data_shape: shape of the variable to be interpolated. This param
+            is used to determine whether to index on the sigma layers or levels.
         :type data_shape: tuple of int
-
         :return: numpy array of shape (n, num_w_levels) of n s-coordinate
-                 depth_profiles. 0 reference is mean sea surface.
+            depth_profiles. 0 reference is mean sea surface.
+
         """
         raise NotImplementedError("get_s_coordinate not implemented for S_Depth, required in subclasses")
 
     def get_depth_profile(self, points, time, data_shape=None, _hash=None, **kwargs):
         """
-        Given an array of points and a time, returns depth profiles of the water column at those points and time.
+        Given an array of points and a time, returns depth profiles of the water column at those
+        points and time.
+
         :param points: array of points to interpolate to
         :type points: numpy array of shape (n, 3)
-
         :param time: time to interpolate to
         :type time: datetime.datetime
-
-        :param data_shape: shape of the variable to be interpolated.
-                           This param is used to determine whether to
-                           index on the sigma layers or levels.
+        :param data_shape: shape of the variable to be interpolated. This param
+            is used to determine whether to index on the sigma layers or levels.
         :type data_shape: tuple of int
-
         :return: numpy array of shape (n, num_w_levels) of n depth_profiles,
-                 referenced to the surface (i.e. surface is 0, seafloor is negative)
+            referenced to the surface (i.e. surface is 0, seafloor is negative)
+
         """
         z = self.zeta.at(points, time, unmask=False, _hash=_hash, **kwargs)
         return self.get_s_coordinate(points, time, data_shape=data_shape, _hash=_hash, **kwargs) + z
@@ -892,7 +889,7 @@ class S_Depth(DepthBase):
 
 class ROMS_Depth(S_Depth):
     """
-    Sigma coordinate depth object for ROMS style output
+    Sigma coordinate depth object for ROMS style output.
     """
 
     _instance_count = 0
@@ -950,25 +947,26 @@ class ROMS_Depth(S_Depth):
             s_coord = -(zeta + (zeta + h) * S)
         return s_coord
 
+
 class FVCOM_Depth(S_Depth):
     _instance_count = 0
     default_names = {
         "siglay": ["siglay"],  # mid layer depth coordinate on nodes
-        #"siglay_center": ["siglay_center"],  # mid layer depth coordinate on centers
+        # "siglay_center": ["siglay_center"],  # mid layer depth coordinate on centers
         "siglev": ["siglev"],  # layer depth coordinate on nodes
-        #"siglev_center": ["siglev_center"],  # layer depth coordinate on centers
+        # "siglev_center": ["siglev_center"],  # layer depth coordinate on centers
         "bathymetry": ["h"],  # bathymetry on nodes
-        #"h_center": ["h_center"],  # bathymetry on centers
+        # "h_center": ["h_center"],  # bathymetry on centers
         "zeta": ["zeta"],  # free surface
     }
 
     cf_names = {
         "siglay": ["ocean_sigma/general_coordinate"],
-        #"siglay_center": ["ocean_sigma/general_coordinate"],
+        # "siglay_center": ["ocean_sigma/general_coordinate"],
         "siglev": ["ocean_sigma/general_coordinate"],
-        #"siglev_center": ["ocean_sigma/general_coordinate"],
+        # "siglev_center": ["ocean_sigma/general_coordinate"],
         "bathymetry": ["sea_floor_depth_below_geoid"],
-        #"h_center": ["sea_floor_depth_below_geoid"],
+        # "h_center": ["sea_floor_depth_below_geoid"],
         "zeta": ["sea_surface_height_above_geoid"],
     }
 
@@ -1012,6 +1010,7 @@ class Depth:
     Factory class that generates depth objects.
 
     Also handles common loading and parsing operations
+
     """
 
     ld_types = [L_Depth]
@@ -1026,8 +1025,8 @@ class Depth:
     @staticmethod
     def surface_only(surface_index=-1, **kwargs):
         """
-        If instantiated directly, this will always return a DepthBase It is assumed index -1
-        is the surface index
+        If instantiated directly, this will always return a DepthBase It is assumed index -1 is the
+        surface index.
         """
         return DepthBase(surface_index=surface_index, **kwargs)
 
@@ -1069,14 +1068,11 @@ class Depth:
             typ = typs[np.argmax(available_to_create)]
             if sum(available_to_create) > 1:
                 # Create list of depth class names from boolean available_to_create
-                detected_systems = [
-                    t.__name__ for t, matched in zip(typs, available_to_create) if matched
-                ]
+                detected_systems = [t.__name__ for t, matched in zip(typs, available_to_create) if matched]
                 raise ValueError(
                     f"Ambiguous vertical grid structure: Multiple depth classes associated "
                     f"with this NetCDF dataset: {detected_systems}. "
                 )
             return typ.from_netCDF(
-                filename=filename, dataset=dataset, data_file=data_file, 
-                grid_file=grid_file, **kwargs
+                filename=filename, dataset=dataset, data_file=data_file, grid_file=grid_file, **kwargs
             )

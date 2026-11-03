@@ -1,8 +1,9 @@
 """
-tests of Variable object
+Tests of Variable object.
 
-Variable objects are mostly tested implicitly in other tests,
-but good to have a few explicitly for the Variable object
+Variable objects are mostly tested implicitly in other tests, but good to have a
+few explicitly for the Variable object
+
 """
 
 import netCDF4
@@ -25,7 +26,7 @@ def test_create_from_netcdf_dataset():
     print(var.info)
 
     assert var.data.shape == (1, 12, 11)
-    
+
 
 def test_diff():
     ds = netCDF4.Dataset(sample_sgrid_file)
@@ -42,10 +43,10 @@ def test_diff():
     diff = var1._diff(var2)
     print(diff)
     assert all([v in diff for v in ["varname", "data_shape"]])
-    
+
     diff = var1._diff(var2, fail_early=True)
     assert len(diff) == 1
-    
+
     var2.grid = None
     diff = var1._diff(var2)
     print(diff)
@@ -54,8 +55,8 @@ def test_diff():
 
 def test_Variable_api_at_function():
     """
-    Test to ensure that the .at() function can accept a list, array, or separate lon/lat array,
-    and that the output format is the same in all cases
+    Test to ensure that the .at() function can accept a list, array, or separate lon/lat array, and
+    that the output format is the same in all cases.
     """
     ds = netCDF4.Dataset(sample_sgrid_file)
 
@@ -79,7 +80,7 @@ def test_Variable_api_at_function():
 
 def test_Variable_api_at_function_edge_cases():
     """
-    Test for edge cases of input point shape (eg, 2x2) as well as single values
+    Test for edge cases of input point shape (eg, 2x2) as well as single values.
     """
     ds = netCDF4.Dataset(sample_sgrid_file)
 
@@ -90,7 +91,7 @@ def test_Variable_api_at_function_edge_cases():
     p1 = (1.5, 35.5)
     p2 = (1.5, 35.5, 1)  # expected: r2 == r1
     p3 = [(1.5, 35.5), (35.5, 1.5)]  # expected: [[1],[masked]]
-#    p4 = [(1.5, 35.5, 1), (35.5, 1.5, 1)]  # expected: [[1],[masked]]
+    #    p4 = [(1.5, 35.5, 1), (35.5, 1.5, 1)]  # expected: [[1],[masked]]
 
     t = var.time.min_time
 
@@ -132,8 +133,8 @@ def test_Variable_api_at_function_edge_cases():
 
 def test_VectorVariable_api_at_function():
     """
-    Test to ensure that the .at() function can accept a list, array, or separate lon/lat array,
-    and that the output format is the same in all cases
+    Test to ensure that the .at() function can accept a list, array, or separate lon/lat array, and
+    that the output format is the same in all cases.
     """
     ds = netCDF4.Dataset(sample_sgrid_file)
 
@@ -157,7 +158,7 @@ def test_VectorVariable_api_at_function():
 
 def test_VectorVariable_api_at_function_edge_cases():
     """
-    Test for edge cases of input point shape (eg, 2x2) as well as single values
+    Test for edge cases of input point shape (eg, 2x2) as well as single values.
     """
     ds = netCDF4.Dataset(sample_sgrid_file)
 

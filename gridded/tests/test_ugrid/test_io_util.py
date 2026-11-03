@@ -72,6 +72,5 @@ def test_load_from_varnames_bad_mapping():
     }
 
     fname = "non_compliant_ugrid.nc"
-    with non_compliant_mesh(fname) as ds:
-        with pytest.raises(KeyError):
-            load_from_varnames(ds, mapping)
+    with non_compliant_mesh(fname) as ds, pytest.raises(KeyError):
+        load_from_varnames(ds, mapping)

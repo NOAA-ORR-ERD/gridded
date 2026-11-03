@@ -2,7 +2,10 @@
 ugid_wx.py:
 
 A small wxPython utility app to visualize pyugrids, etc.
+
 """
+
+# ruff: noqa: UP031
 
 import os
 
@@ -33,7 +36,6 @@ preferences = {
 class DrawFrame(wx.Frame):
     """
     A frame used for the ugrid viewer.
-
     """
 
     # Some parameters for drawing:
@@ -92,7 +94,6 @@ class DrawFrame(wx.Frame):
         """
         Draws a UGRID Object.
         """
-
         self.Canvas.ClearAll()
         # add the elements:
         nodes = grid.nodes
@@ -137,7 +138,6 @@ class DrawFrame(wx.Frame):
     def OnMove(self, event):
         """
         Updates the status bar with the world coordinates.
-
         """
         self.SetStatusText("%.2f, %.2f" % tuple(event.Coords))
 

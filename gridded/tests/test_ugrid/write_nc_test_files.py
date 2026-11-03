@@ -14,8 +14,9 @@ logger.setLevel(logging.DEBUG)
 
 @pytest.fixture
 def quad_and_triangle():
-    """create a quad and triangle grid"""
-
+    """
+    Create a quad and triangle grid.
+    """
     # create tempfile in the test directory
     fname = tempfile.mktemp(suffix=".nc", dir=test_files, prefix="tmp_quad_and_triangle")
     logger.debug("creating filename %s", fname)
@@ -31,7 +32,9 @@ def quad_and_triangle():
     ds.createDimension("two", 2)
 
     def update_with_attributes(obj, attributes):
-        """update object with attributes"""
+        """
+        Update object with attributes.
+        """
         for key, val in attributes.items():
             setattr(obj, key, val)
 
@@ -40,7 +43,7 @@ def quad_and_triangle():
         Title=("2D flexible mesh (mixed triangles, quadrilaterals, etc.) topology"),
         Institution="Deltares",
         References="fedor.baart@deltares.nl",
-        History="created with %s" % (__file__,),
+        History=f"created with {__file__}",
     )
     update_with_attributes(ds, attributes)
 

@@ -1,21 +1,21 @@
 import pytest
 
-import gridded.pyugrid.ugrid as ugrid
+from gridded.pyugrid import ugrid
 
 # test stuff
-from .write_nc_test_files import quad_and_triangle  # noqa: ignore=F401
+from .write_nc_test_files import quad_and_triangle
 
 
-def test_read_flexible_mesh(quad_and_triangle):  # noqa: ignore=F811
+def test_read_flexible_mesh(quad_and_triangle):
     """
-    Test if we get back a mesh from a flexible mesh
+    Test if we get back a mesh from a flexible mesh.
     """
     grid = ugrid.UGrid.from_nc_dataset(quad_and_triangle)
     assert grid.mesh_name == "Mesh2"
 
 
 @pytest.mark.skipif(True, reason="just broken")
-def test_read_flexible_mesh_mask(quad_and_triangle):  # noqa: ignore=F811
+def test_read_flexible_mesh_mask(quad_and_triangle):
     """
     Test if we get back a masked array from a flexible mesh (for faces and edges)
     """
@@ -25,9 +25,9 @@ def test_read_flexible_mesh_mask(quad_and_triangle):  # noqa: ignore=F811
     assert not hasattr(grid.edges, "mask"), "expected unmasked edges"
 
 
-def test_read_flexible_mesh_nodes_per_face(quad_and_triangle):  # noqa: ignore=F811
+def test_read_flexible_mesh_nodes_per_face(quad_and_triangle):
     """
-    Test if we the grid contains both triangles and quads
+    Test if we the grid contains both triangles and quads.
     """
     grid = ugrid.UGrid.from_nc_dataset(quad_and_triangle)
     n_nodes_per_face = (~grid.faces.mask).sum(axis=1)

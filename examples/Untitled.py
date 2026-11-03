@@ -10,7 +10,7 @@
 import matplotlib.pyplot as plt
 import netCDF4
 import numpy as np
-import numpy.ma as ma
+from numpy import ma
 
 # In[30]:
 

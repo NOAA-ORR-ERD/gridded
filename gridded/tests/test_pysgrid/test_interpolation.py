@@ -1,7 +1,8 @@
 """
-Created on Feb 17, 2016
+Created on Feb 17, 2016.
 
 @author: jay.hennen
+
 """
 
 import numpy as np

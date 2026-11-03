@@ -36,9 +36,9 @@ TEST_DATA = Path(__file__).parent / "test_data"
 
 def test_init():
     """
-    can one even be initialized with no data?
+    Can one even be initialized with no data?
     """
-    t = Time()
+    t = Time()  # noqa:F841
 
 
 def test_init_with_data_None():
@@ -65,12 +65,12 @@ def test_init_with_Time_object():
 
 def test_invalid_timeseries():
     with pytest.raises(TypeError, match="not compatible with datetime"):
-        t = Time(data=["2012-02-03T12:00"])
+        t = Time(data=["2012-02-03T12:00"])  # noqa:F841
 
 
 def test_from_netcdf_filename_no_var():
     """
-    initialize from a netcdf filename
+    Initialize from a netcdf filename.
     """
     t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc")
     assert t.varname == "time"
@@ -78,7 +78,7 @@ def test_from_netcdf_filename_no_var():
 
 def test_from_netcdf_filename_specify_time_var_name():
     """
-    initialize from a netcdf filename and a time variable name
+    Initialize from a netcdf filename and a time variable name.
     """
     # note: not the best example, as the time
     #       variable is using float seconds, so loses precision.
@@ -90,8 +90,7 @@ def test_from_netcdf_filename_specify_time_var_name():
 
 def test_from_netcdf_filename_specify_var_name():
     """
-    initialize from a netcdf filename and specifying a variable
-    that you want the time for.
+    Initialize from a netcdf filename and specifying a variable that you want the time for.
     """
     t = Time.from_netCDF(filename=TEST_DATA / "tri_grid_example-FVCOM.nc", datavar="v")
 
@@ -101,8 +100,7 @@ def test_from_netcdf_filename_specify_var_name():
 
 def test_from_netcdf_filename_specify_var():
     """
-    initialize from a netcdf filename and specifying a variable
-    that you want the time for.
+    Initialize from a netcdf filename and specifying a variable that you want the time for.
     """
     ncds = netCDF4.Dataset(filename=TEST_DATA / "tri_grid_example-FVCOM.nc")
     datavar = ncds.variables["v"]
@@ -111,9 +109,11 @@ def test_from_netcdf_filename_specify_var():
     assert len(t.data) == 10
     assert t.data[0] == datetime(2024, 5, 23, 0, 0)
 
+
 def test_from_netcdf_nonstandard_time_var():
     """
-    init from a netcdf where the time var is found via long_name or standard_name, not the default names
+    Init from a netcdf where the time var is found via long_name or standard_name, not the default
+    names.
     """
     t = Time.from_netCDF(filename=TEST_DATA / "non_standard_names.nc")
     assert t.varname == "MT"
@@ -121,13 +121,13 @@ def test_from_netcdf_nonstandard_time_var():
 
 def test_from_netcdf_filename_bad():
     """
-    initialize from a bad netcdf filename
+    Initialize from a bad netcdf filename.
     """
     with pytest.raises(OSError):
         t = Time.from_netCDF(filename="http://this.that.com", varname="time")
 
     with pytest.raises(OSError):
-        t = Time.from_netCDF(filename="non_existant_file.nc", varname="time")
+        t = Time.from_netCDF(filename="non_existant_file.nc", varname="time")  # noqa:F841
 
 
 def test_origin():
@@ -173,11 +173,11 @@ def test_tz_offset():
 
 def test_new_tz_offset_no_tz_offset():
     """
-    you can't set a new offset without specifying the original offset"
+    You can't set a new offset without specifying the original offset".
     """
     new_tz_offset = 8
     with pytest.raises(ValueError):
-        t = Time(SAMPLE_TIMESERIES, new_tz_offset=new_tz_offset)
+        t = Time(SAMPLE_TIMESERIES, new_tz_offset=new_tz_offset)  # noqa:F841
 
 
 def test_new_tz_offset_from_zero():
@@ -238,7 +238,7 @@ def test_eq():
     t2 = Time(data=copy.copy(SAMPLE_TIMESERIES))
 
     assert t1 == t2
-    
+
     assert t1._diff(t2) is None
 
 
@@ -249,10 +249,9 @@ def test_eq_diff_length():
     t2 = Time(data=data2)
 
     assert t1 != t2
-    
+
     assert t1._diff(t2) is not None
     assert "data" in t1._diff(t2)
-    
 
 
 def test_eq_diff_values():
@@ -277,7 +276,7 @@ def test_eq_constant_time():
     t2 = Time.constant_time()
     t2.data += timedelta(minutes=5)
     assert t1._diff(t2) is None
-    
+
     assert t1.data[0] != t2.data[0]
 
     assert t1 == t2
@@ -285,12 +284,12 @@ def test_eq_constant_time():
 
 def test_eq_different_type():
     """
-    A Time object is never equal to any other type
+    A Time object is never equal to any other type.
     """
     t = Time(SAMPLE_TIMESERIES)
 
     assert not t == "a string"
-    assert not "a string" == t
+    assert not t == "a string"
 
 
 def test_out_of_order():
@@ -401,6 +400,7 @@ def test_interp_alpha_constant_time(shift, expected):
 
     Maybe this isn't used anywhere?
     Jay: 0.0
+
     """
     t = Time.constant_time()
 
@@ -434,7 +434,7 @@ def test_interp_alpha_constant_time(shift, expected):
 
 def test_from_netcdf_tz_offset_Z():
     """
-    make sure you can load time from a netcdf file with Z specified
+    Make sure you can load time from a netcdf file with Z specified.
     """
     filename = TEST_DATA / "just_time_UTC.nc"
     t = Time.from_netCDF(filename=filename, varname="time")
@@ -447,8 +447,8 @@ def test_from_netcdf_tz_offset_Z():
 
 def test_from_netcdf_tz_offset_bad(caplog):
     """
-    make sure you can load time from a netcdf file with the offset
-    specified incorrectly -- e.g. "U C" instead of "UTC"
+    Make sure you can load time from a netcdf file with the offset specified incorrectly -- e.g. "U
+    C" instead of "UTC".
     """
     filename = TEST_DATA / "just_time_bad_tzo.nc"
     caplog.clear()
@@ -475,9 +475,10 @@ def test_from_netcdf_tz_offset_bad(caplog):
 )
 def test_from_netcdf_tz_offset_in_file(filename, offset, name):
     """
-    make sure you can load time from a netcdf file with Z specified
+    Make sure you can load time from a netcdf file with Z specified.
 
     NOTE: currently naive time in netcdf is assumed to be UTC -- correct??
+
     """
     filename = TEST_DATA / filename
     t = Time.from_netCDF(filename=filename, varname="time")
@@ -487,9 +488,10 @@ def test_from_netcdf_tz_offset_in_file(filename, offset, name):
 
 def test_from_netcdf_tz_offset_in_file_provide_name():
     """
-    make sure you can load time from a netcdf file with Z specified
+    Make sure you can load time from a netcdf file with Z specified.
 
     NOTE: currently naive time in netcdf is assumed to be UTC -- correct??
+
     """
     filename, offset, name = ("just_time_offset-7.nc", -7, "PDT")
     filename = TEST_DATA / filename
@@ -515,7 +517,7 @@ def test_from_netcdf_tz_offset_set_Naive():
     filename = TEST_DATA / "just_time_naive.nc"
     t = Time.from_netCDF(filename=filename, varname="time", tz_offset="Naive")
 
-    assert t.tz_offset == None
+    assert t.tz_offset is None
     assert t.tz_offset_name == "No Timezone Specified"
 
 
@@ -625,7 +627,9 @@ def test_parse_time_offset(offset, unit_str, name):
 #
 #         b = Bathymetry(name='bathymetry', data=bathy_data, grid=test_grid, time=None)
 #
-#         dep = S_Depth_T1(bathymetry=b, terms=dict(zip(S_Depth_T1.default_terms[0], [Cs_w, s_w, hc, Cs_r, s_rho])), dataset='dummy')
+#         dep = S_Depth_T1(bathymetry=b,
+#                          terms=dict(zip(S_Depth_T1.default_terms[0],
+#                                          [Cs_w, s_w, hc, Cs_r, s_rho])), dataset='dummy')
 #         assert dep is not None
 #
 #         corners = np.array([[0, 0, 0], [0, 3, 0], [3, 3, 0], [3, 0, 0]], dtype=np.float64)

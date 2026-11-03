@@ -47,15 +47,43 @@ ignore = [
   "E731", # do not assign a lambda expression, use a def
 ]
 select = [
-  "F",   # Pyflakes
+#  "SIM",  # flake8 simplify -- maybe use in the future -- particularly when there are complete tests.
+  "F",   # Pyflakes --
   "E",   # Pycodestyle
-  "W",
+  "W",   # Pycodestle whitespace issues
   "TID", # flake8-tidy-imports (absolute imports)
   "I",   # isort
   "UP",  # Pyupgrade
 ]
+
 extend-safe-fixes = [
   "TID252", # absolute imports
 ]
 unfixable = ["F401",  # unused imports -- messes up pytest fixtures
-             "F811"]  # redefinition
+             "F811"]  # redefinition -- messes up pytest fixtures
+
+[tool.ruff.lint.pycodestyle]
+# Set your target maximum length for docstrings
+max-doc-length = 120
+
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore specific rules (e.g., S101 for asserts, D for docstrings) in all test files
+"gridded/tests/**/*.py" = ["F811", "F401"]  # fixtures confuse ruff
+"*__init__.py" = ["I001"] # , "F401", ]
+
+# Note: docformatter is not run regularly
+#       as part of the workflow -- but here are the settings
+#       that were used to do bulk-cleanup on 11/02/2026
+[tool.docformatter]
+style = "sphinx"
+recursive = true
+in-place = true
+wrap-summaries = 100  # that's what the code line length is set to.
+wrap-descriptions = 80  # keeps it a bit more manageable
+tab-width = 4
+blank = true
+pre-summary-newline = true
+pre-summary-space = false  # does not work well (and is uneccesary) with make-summary-multi-line
+close-quotes-on-newline = true
+make-summary-multi-line = true
