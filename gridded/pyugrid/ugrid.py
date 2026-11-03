@@ -202,10 +202,10 @@ class UGrid:
         Summary of information about the grid.
         """
         msg = [f"UGrid object: {self.mesh_name}"]
-        msg.append("Number of nodes: %i" % len(self.nodes))
-        msg.append("Number of faces: %i with %i vertices per face" % (len(self.faces), self.num_vertices))
+        msg.append(f"Number of nodes: {len(self.nodes)}")
+        msg.append(f"Number of faces: {len(self.faces)} with {self.num_vertices} vertices per face")
         if self.boundaries is not None:
-            msg.append("Number of boundaries: %i" % len(self.boundaries))
+            msg.append("Number of boundaries: {self.boundaries}")
 
         return "\n".join(msg)
 

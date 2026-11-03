@@ -5,6 +5,8 @@ A small wxPython utility app to visualize pyugrids, etc.
 
 """
 
+# ruff: noqa: UP031
+
 import os
 
 try:
