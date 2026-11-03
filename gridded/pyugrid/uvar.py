@@ -3,11 +3,11 @@
 # NOTE: THIS MODULE IS DEPRECATED
 #       THis funcitonality should all be in gridded.Variable
 
-""" 
+"""
 UVar object, used to hold variables that are associated with a ugrid.
 
-FixMe: should we enable direct attribute acces via python's attribute access?        i.e. like
-netcdf variables -- would use overloading __setattr__ and __getattr__
+FixMe: should we enable direct attribute acces via python's attribute access?
+i.e. like netcdf variables -- would use overloading __setattr__ and __getattr__
 
 """
 
@@ -22,13 +22,14 @@ except ValueError:
 
 
 class UVar:
-    """ 
+    """
     A class to hold a variable associated with the UGrid.
 
     Data can be on the nodes, edges, etc. -- "UGrid Variable"
 
-    It holds an array of the data, as well as the attributes associated with that data  -- this is
-    mapped to a netcdf variable with attributes(attributes get stored in the netcdf file)
+    It holds an array of the data, as well as the attributes associated with
+    that data  -- this is mapped to a netcdf variable with attributes(attributes
+    get stored in the netcdf file)
 
     """
 
@@ -82,7 +83,7 @@ class UVar:
 
     @property
     def data(self):
-        """ 
+        """
         The data associated with the UVar -- a numpy array-like object with the actual data.
         """
         return self._data
@@ -97,41 +98,41 @@ class UVar:
 
     @property
     def shape(self):
-        """ 
+        """
         The shape of the data array associated with the UVar.
         """
         return self.data.shape
 
     @property
     def max(self):
-        """ 
+        """
         Maximum value of the variable.
         """
         return np.max(self._data)
 
     @property
     def min(self):
-        """ 
+        """
         Minimum value of the variable.
         """
         return np.min(self._data)
 
     @property
     def dtype(self):
-        """ 
+        """
         Data type of the variable.
         """
         return self.data.dtype
 
     @property
     def ndim(self):
-        """ 
+        """
         Number of dimensions of the variable.
         """
         return self.data.ndim
 
     def __getitem__(self, item):
-        """ 
+        """
         Transfers responsibility to the data's __getitem__ if not cached.
         """
         rv = None
@@ -154,7 +155,7 @@ class UVar:
 
 
 class UMVar:
-    """ 
+    """
     A class to group multiple UVars (or other data sources) and retrieve common information.
 
     All the variables grouped in this class must have the same shape, location, and unique names.

@@ -21,7 +21,7 @@ arakawa_c_file = TEST_DATA / "arakawa_c_test_grid.nc"
 
 
 def test_load_sgrid():
-    """ 
+    """
     Tests you can initialize an conforming sgrid file.
     """
     sinusoid = Dataset.from_netCDF(sample_sgrid_file)
@@ -32,7 +32,7 @@ def test_load_sgrid():
 
 
 def test_init_from_netcdf_file_directly():
-    """ 
+    """
     This should raise a deprecation warning, but still work.
     """
     with pytest.warns(DeprecationWarning):
@@ -45,7 +45,7 @@ def test_init_from_netcdf_file_directly():
 
 
 def test_info():
-    """ 
+    """
     Make sure the info property is working This doesn't test much -- jsut tht it won't crash.
     """
     gds = Dataset.from_netCDF(sample_sgrid_file)
@@ -79,7 +79,7 @@ def test_get_variable_by_attribute_multiple():
 
 
 def test_get_variable_by_attribute_not_there():
-    """ 
+    """
     This should return an empty list.
     """
     gds = Dataset.from_netCDF(arakawa_c_file)

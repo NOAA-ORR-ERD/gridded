@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-""" 
+"""
 Tests for testing a UGrid file read.
 
 We really need a **lot** more sample data files...
@@ -28,7 +28,7 @@ output_dir.mkdir(exist_ok=True)
 
 
 def test_simple_read():
-    """ 
+    """
     Can it be read at all?
 
     NOTE: passing the file name into the constructor is now deprecated
@@ -97,7 +97,7 @@ def test_read_variable_attributes():
 
 
 def test_read_variable():
-    """ 
+    """
     At least see if one variable can be read :-)
 
     this is an old pyugrid test ported over.
@@ -121,7 +121,7 @@ def test_read_variable():
 
 
 def test_read_from_nc_dataset():
-    """ 
+    """
     Minimal test, but makes sure you can read from an already open netCDF4.Dataset.
     """
     with netCDF4.Dataset(test_data_dir / "UGRIDv0.9_eleven_points_with_depth.nc") as nc:

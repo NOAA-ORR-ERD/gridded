@@ -14,7 +14,7 @@ logger.setLevel(logging.DEBUG)
 
 @pytest.fixture
 def quad_and_triangle():
-    """ 
+    """
     Create a quad and triangle grid.
     """
     # create tempfile in the test directory
@@ -32,7 +32,7 @@ def quad_and_triangle():
     ds.createDimension("two", 2)
 
     def update_with_attributes(obj, attributes):
-        """ 
+        """
         Update object with attributes.
         """
         for key, val in attributes.items():

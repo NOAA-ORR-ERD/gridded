@@ -50,7 +50,7 @@ select = [
 #  "SIM",  # flake8 simplify -- maybe use in the future -- particularly when there are complete tests.
   "F",   # Pyflakes --
   "E",   # Pycodestyle
-#   "W",
+  "W",
 # #  "TID", # flake8-tidy-imports (absolute imports)
 # #  "I",   # isort
 # #  "UP",  # Pyupgrade
@@ -78,11 +78,11 @@ max-doc-length = 120
 style = "sphinx"
 recursive = true
 in-place = true
-wrap-summaries = 120  # that's what the code line length is set to.
-wrap-descriptions = 100  # keeps it a bit more manageable
+wrap-summaries = 100  # that's what the code line length is set to.
+wrap-descriptions = 80  # keeps it a bit more manageable
 tab-width = 4
 blank = true
 pre-summary-newline = true
-pre-summary-space = true
+pre-summary-space = false  # does not work well (and is uneccesary) with make-summary-multi-line
 close-quotes-on-newline = true
 make-summary-multi-line = true

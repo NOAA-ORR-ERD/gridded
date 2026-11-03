@@ -1,4 +1,4 @@
-""" 
+"""
 Testing verdat read/write capability.
 """
 
@@ -23,7 +23,7 @@ test_filename_tiny = EXAMPLES / "tiny.verdat"
 
 
 def test_read():
-    """ 
+    """
     At least it does something.
     """
     ds = io.load_verdat(test_filename)
@@ -38,7 +38,7 @@ def test_read_no_units():
 
 
 def test_read_tiny():
-    """ 
+    """
     A small example, so we can realy be sure.
     """
     ds = io.load_verdat(test_filename_tiny)
@@ -124,7 +124,7 @@ def test_save_verdat():
 
 
 def test_order_boundary_segments():
-    """ 
+    """
     Tests that we can find the order of the boundary segments.
     """
     # bounds from tiny verdat, randomized
@@ -144,7 +144,7 @@ def test_order_boundary_segments():
 
 
 def test_order_boundary_segments_open():
-    """ 
+    """
     Tests that we can find the order of the boundary segments.
 
     and it will find an open boundary
@@ -177,7 +177,7 @@ def test_order_boundary_segments_none():
 
 
 def test_general_ugrid_to_verdat_no_depth():
-    """ 
+    """
     Loads a regular old UGRID netCDF file, and saves it to verdat.
     """
     ugrid_file = data_file_cache.fetch("SSCOFS.ugrid.nc")

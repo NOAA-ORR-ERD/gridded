@@ -1,4 +1,4 @@
-""" 
+"""
 Assorted utilities useful for the tests.
 """
 
@@ -9,7 +9,7 @@ from gridded.pyugrid import ugrid
 
 @pytest.fixture
 def two_triangles():
-    """ 
+    """
     Returns a simple triangular grid: 4 nodes, two triangles, five edges.
     """
     nodes = [(0.1, 0.1), (2.1, 0.1), (1.1, 2.1), (3.1, 2.1)]
@@ -26,7 +26,7 @@ def two_triangles():
 
 @pytest.fixture
 def twenty_one_triangles():
-    """ 
+    """
     Returns a basic triangular grid:  21 triangles, a hole, and a tail.
     """
     nodes = [

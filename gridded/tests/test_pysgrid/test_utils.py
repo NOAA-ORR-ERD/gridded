@@ -1,4 +1,4 @@
-""" 
+"""
 Created on Mar 23, 2015.
 
 @author: ayan
@@ -49,7 +49,7 @@ def test_pair_arrays():
 
 @pytest.fixture
 def check_element():
-    """ 
+    """
     FIXME: These tests only check for a True return and not for correctness.
     """
     a = [7, 7, 7, 7]

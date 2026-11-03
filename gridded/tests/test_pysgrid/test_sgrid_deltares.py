@@ -1,4 +1,4 @@
-""" 
+"""
 Created on Apr 7, 2015.
 
 @author: ayan
@@ -11,11 +11,11 @@ import pytest
 from gridded.pysgrid.sgrid import SGrid, load_grid
 
 pytestmark = pytest.mark.skipif(True, reason="Lots of issues with these -- needs revisiting")
-""" 
+"""
 Test SGrid No Coordinates.
 
-Test to make sure that if no coordinates (e.g. face, edge1, etc) are specified, those coordinates
-can be inferred from the dataset.
+Test to make sure that if no coordinates (e.g. face, edge1, etc) are specified,
+those coordinates can be inferred from the dataset.
 
 A file is representing a delft3d dataset is used for this test.
 
@@ -57,7 +57,7 @@ def test_grid_angles(sgrid):
     angles_shape = (4, 4)
     assert angles.shape == angles_shape
 \
-""" 
+"""
 Test SGrid Delft3d Dataset.
 """
 
@@ -160,7 +160,7 @@ def test_2d_attributes(sgrid_obj):
     assert hasattr(sgrid_obj, "vertical_padding")
     assert hasattr(sgrid_obj, "vertical_dimensions")
 \
-""" 
+"""
 Test SGrid Save Node Coordinates.
 
 Test that `SGrid.save_as_netcdf `is saving the content correctly.
@@ -169,7 +169,7 @@ Test that `SGrid.save_as_netcdf `is saving the content correctly.
 
 
 def test_round_trip(deltares_sgrid, tmpdir):
-    """ 
+    """
     TODO: add more "round-trip" tests.
     """
     fname = tmpdir.mkdir("files").join("deltares_roundtrip.nc")
@@ -183,7 +183,7 @@ def sgrid_no_node(deltares_sgrid):
 
 
 def test_save_as_netcdf(sgrid_no_node):
-    """ 
+    """
     Test that the attributes in the saved netCDF file are as expected.
     """
     target_dims = sgrid_no_node.dimensions
@@ -229,7 +229,7 @@ def test_save_as_netcdf(sgrid_no_node):
 
 
 def test_saved_sgrid_attributes(sgrid_no_node):
-    """ 
+    """
     Test that calculated/inferred attributes are as expected from the saved filed.
     """
     u1_var = sgrid_no_node.U1

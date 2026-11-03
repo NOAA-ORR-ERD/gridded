@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-""" 
+"""
 Tests for finding a given UVar by standard name.
 
-FIXME: This could use some more testing and cleaning up. No need for all this reading and writing;
-that is tested elsewhere.
+FIXME: This could use some more testing and cleaning up. No need for all this
+reading and writing; that is tested elsewhere.
 
 """
 
@@ -37,7 +37,7 @@ def two_triangles_with_depths(two_triangles):
 
 @pytest.fixture
 def twenty_one_triangles_with_depths(twenty_one_triangles):
-    """ 
+    """
     Returns a basic triangle grid with 21 triangles, a hole and a tail.
     """
     grid = twenty_one_triangles
@@ -59,7 +59,7 @@ def find_depths(grid):
 
 
 def test_no_std_name(two_triangles_with_depths):
-    """ 
+    """
     Tests to make sure it doesn't crash if a `UVar` does not have a `standard_name`.
     """
     grid = two_triangles_with_depths

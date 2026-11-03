@@ -22,13 +22,13 @@ from . import VALID_LOCATIONS
 
 
 class Dataset:
-    """ 
-    An object that represent an entire complete dataset -- a collection of Variables and the Grid that they are stored
-    on.
+    """
+    An object that represent an entire complete dataset -- a collection of Variables and the Grid
+    that they are stored on.
     """
 
     def __init__(self, ncfile=None, grid=None, variables=None, grid_topology=None, attributes=None):
-        """ 
+        """
         Construct a gridded.Dataset object.
 
         Can be constructed from a data file, or also raw grid and variable objects.
@@ -104,7 +104,7 @@ class Dataset:
 
     @classmethod
     def from_netCDF(cls, filename=None, grid_file=None, variable_files=None, grid_topology=None):
-        """ 
+        """
         NOTE: only loading from a single file is currently implemented.
 
         you can create a Dataset by hand, by loading the grid and variables separately, and then adding them.
@@ -133,7 +133,7 @@ class Dataset:
         return ds
 
     def __getitem__(self, key):
-        """ 
+        """
         Shortcut to getting a variable object.
         """
         return self.variables[key]
@@ -216,7 +216,7 @@ class Dataset:
         return diff is None
 
     def _variables_from_netCDF(self, ds):
-        """ 
+        """
         Load up the variables in the nc file.
 
         :param ds: initialized netCDF dataset
@@ -277,11 +277,12 @@ class Dataset:
     #     raise NotImplementedError
 
     def save(self, filename, format="netcdf4"):
-        """ 
+        """
         Save the dataset to a file.
 
         :param filename: full path to file to save to.
-        :param format: format to save -- 'netcdf3' or 'netcdf4' are the only options at this point.
+        :param format: format to save -- 'netcdf3' or 'netcdf4' are the only
+            options at this point.
 
         """
         format_options = ("netcdf3", "netcdf4")
@@ -297,7 +298,7 @@ class Dataset:
         ncds.close()
 
     def get_variables_by_attribute(self, attr, value):
-        """ 
+        """
         Return the variables that have attributes that fit the defined input.
 
         :param attr: the name of the attribute you want to match
@@ -318,7 +319,7 @@ class Dataset:
 
     @property
     def info(self):
-        """ 
+        """
         Information about the Dataset object.
         """
         vars = [var.info for var in self.variables.values()]

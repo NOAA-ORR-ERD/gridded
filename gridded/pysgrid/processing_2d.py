@@ -1,4 +1,4 @@
-""" 
+"""
 Created on Apr 2, 2015.
 
 @author: ayan
@@ -10,7 +10,7 @@ from numpy import ma
 
 
 def vector_sum(x_arr, y_arr):
-    """ 
+    """
     Calculate the vector sum of arrays of x and y vectors.
 
     :param x_arr: array of x-directed vectors
@@ -25,8 +25,9 @@ def vector_sum(x_arr, y_arr):
 
 
 def rotate_vectors(x_arr, y_arr, angle_arr):
-    """ 
-    Given x and y vectors in a projected coordinate system, rotate them by angles into a different coordinate system.
+    """
+    Given x and y vectors in a projected coordinate system, rotate them by angles into a different
+    coordinate system.
 
     All arrays must have the same dimensions.
 
@@ -46,9 +47,9 @@ def rotate_vectors(x_arr, y_arr, angle_arr):
 
 
 def avg_to_cell_center(data_array, avg_dim):
-    """ 
-    Given a two-dimensional numpy.array, average adjacent row values (avg_dim=1) or adjacent column values (avg_dim=0)
-    to the grid cell center.
+    """
+    Given a two-dimensional numpy.array, average adjacent row values (avg_dim=1) or adjacent column
+    values (avg_dim=0) to the grid cell center.
 
     :param data_array: 2-dimensional data
     :type data_array: numpy.array

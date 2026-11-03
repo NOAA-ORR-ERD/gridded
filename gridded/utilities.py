@@ -19,8 +19,8 @@ def convert_numpy_datetime64_to_datetime(dt):
 
 def convert_mask_to_numpy_mask(mask_var):
     """
-    Converts a netCDF4.Variable representing a mask into a numpy array mask 'Water' Values are converted to False
-    (including 'lake', 'river' etc) 'land' values are converted to True.
+    Converts a netCDF4.Variable representing a mask into a numpy array mask 'Water' Values are
+    converted to False (including 'lake', 'river' etc) 'land' values are converted to True.
     """
     ret_mask = np.ones(mask_var.shape, dtype=bool)
     mask_data = mask_var[:]
@@ -249,8 +249,8 @@ def _reorganize_spatial_data(points):
         """
         Make sure at least one of the dimensions is length 2 or 3.
 
-        If it is dimension 0, then reshape, otherwise do nothing. If both dimensions are longer than
-        3, this is an error.
+        If it is dimension 0, then reshape, otherwise do nothing. If both
+        dimensions are longer than 3, this is an error.
 
         """
         if shp[0] > 3 and shp[1] > 3:
@@ -368,8 +368,8 @@ def isstring(obj):
 
 def get_dataset(ncfile, dataset=None):
     """
-    Utility to create a netCDF4 Dataset from a filename, list of filenames, or just pass it through if it's already a
-    netCDF4.Dataset.
+    Utility to create a netCDF4 Dataset from a filename, list of filenames, or just pass it through
+    if it's already a netCDF4.Dataset.
 
     if dataset is not None, it should be a valid netCDF4 Dataset object,
     and it will simply be returned
@@ -401,11 +401,13 @@ def parse_filename_dataset_args(
     grid_file=None,
 ):
     """
-    A perinnial problem is that we need to be able to accept a variety of filename/dataset arguments.
+    A perinnial problem is that we need to be able to accept a variety of filename/dataset
+    arguments.
 
-    This function will return a tuple of 'ds' and 'dg' where ds is the netCDF4.Dataset for the data
-    and dg is the netCDF4.Dataset for the grid. If such datasets are from the same file, it will
-    return the same object for both.
+    This function will return a tuple of 'ds' and 'dg' where ds is the
+    netCDF4.Dataset for the data and dg is the netCDF4.Dataset for the grid. If
+    such datasets are from the same file, it will return the same object for
+    both.
 
     :param filename: str or pathlike
     :param dataset: netCDF4.Dataset
@@ -439,11 +441,11 @@ def parse_filename_dataset_args(
 
 def get_writable_dataset(ncfile, format="netcdf4"):
     """
-    Utility to create a writable netCDF4 Dataset from a filename, list of filenames, or just pass it through if it's
-    already a netCDF4.Dataset.
+    Utility to create a writable netCDF4 Dataset from a filename, list of filenames, or just pass it
+    through if it's already a netCDF4.Dataset.
 
-    if dataset is not None, it should be a valid netCDF4 Dataset object, and it will simply be
-    returned
+    if dataset is not None, it should be a valid netCDF4 Dataset object, and it
+    will simply be returned
 
     """
     if isinstance(ncfile, nc4.Dataset):
@@ -468,8 +470,8 @@ def get_dataset_attrs(ds):
 
 def search_netcdf_vars(cls=None, ds=None, dg=None):
     """
-    Given a class with a .default_names and .cf_names attributes, search a datafile netCDF4.Dataset and a possible grid
-    netCDF4.Dataset for variables that are sought by the class.
+    Given a class with a .default_names and .cf_names attributes, search a datafile netCDF4.Dataset
+    and a possible grid netCDF4.Dataset for variables that are sought by the class.
 
     These names attributes are a dictionary str -> list
 
@@ -495,9 +497,9 @@ def varnames_merge(cls, inc_varnames=None):
     """
     Helper function to support the `varnames` argument pattern.
 
-    `varnames` is a keyword used to specify an association between a desired subcomponent of an
-    object and a desired data source name. It is meant to be a mechanism by which custom digestion
-    of a file can be specified.
+    `varnames` is a keyword used to specify an association between a desired
+    subcomponent of an object and a desired data source name. It is meant to be
+    a mechanism by which custom digestion of a file can be specified.
 
     """
 

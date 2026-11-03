@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-""" 
+"""
 The basic test of the UGrid object.
 
 More specific functionality is other test modules.

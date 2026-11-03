@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-""" 
+"""
 Ugrid classes.
 
 set of classes for working with unstructured model grids
@@ -9,7 +9,8 @@ The "ugrid" class is the base class: it stores everything in memory
 
 It can read from and write to netcdf files in the UGRID format.
 
-It may be able to reference a netcdf file at some point, rather than storing directly in memory.
+It may be able to reference a netcdf file at some point, rather than storing
+directly in memory.
 
 NOTE: only tested for triangular and quad mesh grids at the moment.
 
@@ -37,7 +38,7 @@ NODE_DT = np.float64  # datatype used for node coordinates.
 
 
 class UGrid:
-    """ 
+    """
     A basic class to hold an unstructured grid as defined in the UGrid convention.
 
     The internal structure mirrors the netcdf data standard.
@@ -158,12 +159,13 @@ class UGrid:
 
     @classmethod
     def from_ncfile(klass, filename=None, dataset=None, mesh_name=None):  # , load_data=False):
-        """ 
+        """
         Create a UGrid object from a netcdf file name (or opendap url)
 
-        :param nc_url: the filename or OpenDap url you want to load :param mesh_name=None: the name
-            of the mesh you want. If None, then you'll get the only mesh in the file. If there is
-            more than one mesh in the file, a ValueError Will be raised
+        :param nc_url: the filename or OpenDap url you want to load :param
+            mesh_name=None: the name of the mesh you want. If None, then you'll
+            get the only mesh in the file. If there is more than one mesh in the
+            file, a ValueError Will be raised
 
         """
         grid = klass()
@@ -176,16 +178,17 @@ class UGrid:
 
     @classmethod
     def from_nc_dataset(klass, nc, mesh_name=None):  # , load_data=False):
-        """ 
+        """
         Create a UGrid object from a netcdf file (or opendap url)
 
         :param nc: An already open Dataset object
-        :type nc: netCDF4.DataSet :param mesh_name=None: the name of the mesh you want. If None,
-            then you'll get the only mesh in the file. If there is more than one mesh in the file, a
-            ValueError Will be raised # :param load_data=False: flag to indicate whether you want to
-            load the # associated data or not. The mesh will be # loaded in any case. If False, only
-            the mesh # will be loaded. If True, then all the data # associated with the mesh will be
-            loaded. # This could be huge! #
+        :type nc: netCDF4.DataSet :param mesh_name=None: the name of the mesh
+            you want. If None, then you'll get the only mesh in the file. If
+            there is more than one mesh in the file, a ValueError Will be raised
+            # :param load_data=False: flag to indicate whether you want to load
+            the # associated data or not. The mesh will be # loaded in any case.
+            If False, only the mesh # will be loaded. If True, then all the data
+            # associated with the mesh will be loaded. # This could be huge! #
         :type load_data: boolean
 
         """
@@ -195,7 +198,7 @@ class UGrid:
 
     @property
     def info(self):
-        """ 
+        """
         Summary of information about the grid.
         """
         msg = [f"UGrid object: {self.mesh_name}"]
@@ -235,14 +238,14 @@ class UGrid:
         return True
 
     def check_consistent(self):
-        """ 
+        """
         Check if the various data is consistent: the edges and faces reference existing nodes, etc.
         """
         raise NotImplementedError
 
     @property
     def num_vertices(self):
-        """ 
+        """
         Maximum number of vertices in a face.
         """
         if self._faces is None:
@@ -510,11 +513,12 @@ class UGrid:
     #     return found
 
     def locate_nodes(self, points):
-        """ 
+        """
         Returns the index of the closest nodes to the input locations.
 
         :param points: the lons/lats of locations you want the nodes closest to.
-        :type point: a (N, 2) ndarray of points (or something that can be converted).
+        :type point: a (N, 2) ndarray of points (or something that can be
+            converted).
         :returns: the index of the closest node.
 
         """
@@ -536,7 +540,7 @@ class UGrid:
         self._kdtree = cKDTree(self.nodes)
 
     def _hash_of_pts(self, points):
-        """ 
+        """
         Returns a SHA1 hash of the array of points passed in.
         """
         return hashlib.sha1(points.tobytes()).hexdigest()
@@ -569,7 +573,7 @@ class UGrid:
             return None
 
     def locate_faces(self, points, method="celltree", _memo=True, _copy=False, _hash=None):
-        """ 
+        """
         Returns the face indices, one per point.
 
         Points that are not in the mesh will have an index of -1
@@ -639,7 +643,7 @@ class UGrid:
         return self.locate_faces(points=points, method=method, _memo=_memo, _copy=_copy, _hash=_hash, use_mask=use_mask)
 
     def build_celltree(self):
-        """ 
+        """
         Tries to build the celltree for the current UGrid.
 
         Will fail if nodes or faces is not defined.
@@ -652,10 +656,11 @@ class UGrid:
         self._cell_tree = CellTree(self.nodes, self.faces)
 
     def interpolation_alphas(self, points, indices=None, _copy=False, _memo=True, _hash=None):
-        """ 
-        Given an array of points, this function will return the bilinear interpolation alphas for each of the three
-        nodes of the face that the point is located in. If the point is not located on the grid, the alphas are set to 0
-        :param points: Nx2 numpy array of lat/lon coordinates.
+        """
+        Given an array of points, this function will return the bilinear interpolation alphas for
+        each of the three nodes of the face that the point is located in. If the point is not
+        located on the grid, the alphas are set to 0 :param points: Nx2 numpy array of lat/lon
+        coordinates.
 
         :param indices: If the face indices of the points is already known, it can be passed
                         in to save repeating the effort.
@@ -785,7 +790,7 @@ class UGrid:
     interpolate = interpolate_var_to_points
 
     def build_face_face_connectivity(self):
-        """ 
+        """
         Builds the face_face_connectivity array: giving the neighbors of each cell.
 
         Note: arbitrary order and CW vs CCW may not be consistent.
@@ -823,7 +828,7 @@ class UGrid:
         return self.nodes[self.edges]
 
     def build_edges(self):
-        """ 
+        """
         Builds the edges array: all the edges defined by the faces.
 
         This will replace the existing edge array, if there is one.
@@ -852,7 +857,7 @@ class UGrid:
         self._edges = np.array(list(edges), dtype=IND_DT)
 
     def build_boundaries(self):
-        """ 
+        """
         Builds the boundary segments from the cell array.
 
         It is assumed that -1 means no neighbor, which indicates a boundary
@@ -878,7 +883,7 @@ class UGrid:
         self.boundaries = boundaries
 
     def build_face_edge_connectivity(self):
-        """ 
+        """
         Builds the face-edge connectivity array.
 
         Not implemented yet.
@@ -914,11 +919,11 @@ class UGrid:
         self.face_edge_connectivity = np.roll(connectivity.reshape(faces.shape), -1, -1)
 
     def build_face_coordinates(self):
-        """ 
+        """
         Builds the face_coordinates array, using the average of the nodes defining each face.
 
-        Note that you may want a different definition of the face coordinates than this computes,
-        but this is here to have an easy default.
+        Note that you may want a different definition of the face coordinates
+        than this computes, but this is here to have an easy default.
 
         This will write-over an existing face_coordinates array.
 
@@ -928,11 +933,11 @@ class UGrid:
         self.face_coordinates = self.nodes[self.faces].mean(axis=1)
 
     def build_edge_coordinates(self):
-        """ 
+        """
         Builds the edge_coordinates array, using the average of the nodes defining each edge.
 
-        Note that you may want a different definition of the edge coordinates than this computes,
-        but this is here to have an easy default.
+        Note that you may want a different definition of the edge coordinates
+        than this computes, but this is here to have an easy default.
 
         This will write-over an existing edge_coordinates array
 
@@ -942,11 +947,13 @@ class UGrid:
         self.edge_coordinates = self.nodes[self.edges].mean(axis=1)
 
     def build_boundary_coordinates(self):
-        """ 
-        Builds the boundary_coordinates array, using the average of the nodes defining each boundary segment.
+        """
+        Builds the boundary_coordinates array, using the average of the nodes defining each boundary
+        segment.
 
-        Note that you may want a different definition of the boundary coordinates than this
-        computes, but this is here to have an easy default.
+        Note that you may want a different definition of the boundary
+        coordinates than this computes, but this is here to have an easy
+        default.
 
         This will write-over an existing face_coordinates array
 
@@ -956,17 +963,18 @@ class UGrid:
         self.boundary_coordinates = self.nodes[self.boundaries].mean(axis=1)
 
     def save_as_netcdf(self, filename, format="netcdf4"):
-        """ 
+        """
         Save the dataset to a file.
 
         :param filename: full path to file to save to.
-        :param format: format to save -- 'netcdf3' or 'netcdf4' are the only options at this point.
+        :param format: format to save -- 'netcdf3' or 'netcdf4' are the only
+            options at this point.
 
         """
         self.save(filename, format="netcdf4")
 
     def save(self, filepath, format="netcdf4", variables={}):
-        """ 
+        """
         Save the ugrid object as a netcdf file.
 
         :param filepath: path to file you want o save to.  An existing one
@@ -1128,7 +1136,7 @@ class UGrid:
         return nclocal
 
     def _save_variables(self, nclocal, variables):
-        """ 
+        """
         Save the Variables.
         """
         mesh_name = self.mesh_name

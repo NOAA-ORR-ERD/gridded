@@ -1,4 +1,4 @@
-""" 
+"""
 Test file for building the face_edge_connectivity.
 """
 

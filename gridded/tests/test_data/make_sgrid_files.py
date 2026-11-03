@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-""" 
+"""
 Script to make sample sgrid files.
 
-Borrowed from pysgrid, and refactored to simply generate them, rather than as fixtures.
+Borrowed from pysgrid, and refactored to simply generate them, rather than as
+fixtures.
 
 NOTE: making these session fixtures might make sense.
 
@@ -76,7 +77,7 @@ def deltares_sgrid_no_optional_attr(fname="sgrid_deltares_no_opt_attr.nc"):
 
 
 def deltares_sgrid(fname="sgrid_deltares.nc"):
-    """ 
+    """
     Create a netCDF file that is structurally similar to deltares output.
 
     Dimension and variable names may differ from an actual file.
@@ -154,7 +155,7 @@ def deltares_sgrid(fname="sgrid_deltares.nc"):
 
 
 def roms_sgrid(fname="sgrid_roms.nc"):
-    """ 
+    """
     Create a netCDF file that is structurally similar to ROMS output.
 
     Dimension and variable names may differ from an actual file.
@@ -318,7 +319,7 @@ def wrf_sgrid_2d(fname="sgrid_wrf_2.nc"):
 
 
 def wrf_sgrid(fname="sgrid_wrf.nc"):
-    """ 
+    """
     Write an SGrid file using 3D conventions.
     """
     nc = Dataset(fname, "w")
@@ -377,7 +378,7 @@ def wrf_sgrid(fname="sgrid_wrf.nc"):
 
 
 def non_compliant_sgrid(fname="noncompliant_sgrid.nc"):
-    """ 
+    """
     Create a netCDF file that is structurally similar to ROMS output.
 
     Dimension and variable names may differ from an actual file.
@@ -458,8 +459,9 @@ def non_compliant_sgrid(fname="noncompliant_sgrid.nc"):
 
 
 def semi_circular_single_grid(fname="simple_cgrid.nc"):
-    """ 
-    NOTE: this one is currently not loadable with gridded! not sure if it's a gridded bug or a bug in this file.
+    """
+    NOTE: this one is currently not loadable with gridded! not sure if it's a gridded bug or a bug
+    in this file.
 
     a simple, one grid curvilinear grid
 
@@ -536,7 +538,7 @@ def semi_circular_single_grid(fname="simple_cgrid.nc"):
 
 
 def make_all():
-    """ 
+    """
     Make all the sample files.
     """
     deltares_sgrid_no_optional_attr()

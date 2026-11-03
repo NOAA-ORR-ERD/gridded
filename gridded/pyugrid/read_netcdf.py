@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 def find_mesh_names(nc):
-    """ 
+    """
     Find all the meshes in an open netcCDF4.DataSet.
 
     :param nc: the netCDF4 Dataset object to look for mesh names in
@@ -38,7 +38,7 @@ def find_mesh_names(nc):
 
 
 def is_valid_mesh(nc, varname):
-    """ 
+    """
     Determine if the given variable name is a valid mesh definition.
 
     :param nc: a netCDF4 Dataset to check
@@ -109,7 +109,7 @@ coord_defs = [
 
 
 def load_grid_from_nc_dataset(nc, grid, mesh_name=None):  # , load_data=True):
-    """ 
+    """
     Loads UGrid object from a netCDF4.DataSet object, adding the data to the passed-in grid object.
 
     It will load the mesh specified, or look
@@ -265,18 +265,20 @@ def load_grid_from_nc_dataset(nc, grid, mesh_name=None):  # , load_data=True):
 
 
 def load_grid_from_ncfilename(filename, grid, mesh_name=None):  # , load_data=True):
-    """ 
+    """
     Loads UGrid object from a netcdf file, adding the data to the passed-in grid object.
 
-    It will load the mesh specified, or look for the first one it finds if none is specified
+    It will load the mesh specified, or look for the first one it finds if none
+    is specified
 
     :param filename: filename or OpenDAP url of dataset.
     :param grid: the grid object to put the mesh and data into.
     :type grid: UGrid object.  :param mesh_name=None: name of the mesh to load
-    :type mesh_name: string # :param load_data=False: flag to indicate whether you want to load the
-        # associated data or not. The mesh will be loaded # in any case. If False, only the mesh
-        will be # loaded. If True, then all the data associated # with the mesh will be loaded. This
-        could be huge! #
+    :type mesh_name: string # :param load_data=False: flag to indicate whether
+        you want to load the # associated data or not. The mesh will be loaded #
+        in any case. If False, only the mesh will be # loaded. If True, then all
+        the data associated # with the mesh will be loaded. This could be huge!
+        #
     :type load_data: boolean
 
     """

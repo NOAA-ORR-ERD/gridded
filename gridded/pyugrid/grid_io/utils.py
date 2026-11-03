@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-""" 
+"""
 Utilities to help with grid io.
 
-NOTE: this isn't used yet, but should be useful for loading non UGRID-compliant files.
+NOTE: this isn't used yet, but should be useful for loading non UGRID-compliant
+files.
 
 Ideally, we'll add loading from shape files or what have you in the future
 
@@ -16,7 +17,7 @@ from gridded.utilities import get_dataset
 
 
 def load_from_varnames(filename, names_mapping, attribute_check=None, post_process=None):
-    """ 
+    """
     Load a UGrid from a netcdf file where the roles are defined by the names of the variables.
 
     :param filename: names of the file to load (or OPeNDAP URL).

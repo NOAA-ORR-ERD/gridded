@@ -22,15 +22,15 @@ log = logging.getLogger(__name__)
 
 
 class Variable:
-    """ 
+    """
     Variable object: represents a field of values associated with the grid.
 
-    Abstractly, it is usually a scalar physical property such a temperature, salinity that varies
-    over a the domain of the model.
+    Abstractly, it is usually a scalar physical property such a temperature,
+    salinity that varies over a the domain of the model.
 
-    This more or less maps to a variable in a netcdf file, but does not have to come form a netcdf
-    file, and this provides and abstraction where the user can access the value in world
-    coordinates, interpolated from the grid.
+    This more or less maps to a variable in a netcdf file, but does not have to
+    come form a netcdf file, and this provides and abstraction where the user
+    can access the value in world coordinates, interpolated from the grid.
 
     It holds a reference to its own grid object, and its data.
 
@@ -60,7 +60,7 @@ class Variable:
         bottom_boundary_condition="mask",
         **kwargs,
     ):
-        """ 
+        """
         This class represents a value defined on a grid.
 
         :param name: Name
@@ -157,7 +157,7 @@ class Variable:
         fill_value=0,
         **kwargs,
     ):
-        """ 
+        """
         Allows one-function creation of a Variable from a file.
 
         :param filename: Default data source. Has lowest priority.
@@ -334,7 +334,7 @@ class Variable:
 
     @property
     def info(self):
-        """ 
+        """
         Information about the variable object This could be filled out more.
         """
         try:
@@ -393,7 +393,7 @@ class Variable:
 
     @property
     def units(self):
-        """ 
+        """
         Units of underlying data.
 
         :rtype: string
@@ -478,7 +478,7 @@ class Variable:
         return self._diff(other, fail_early=True) is None
 
     def _get_hash(self, points, time):
-        """ 
+        """
         Returns a SHA1 hash of the array of points passed in.
         """
         return (hashlib.sha1(points.tobytes()).hexdigest(), hashlib.sha1(str(time).encode("utf-8")).hexdigest())
@@ -503,7 +503,7 @@ class Variable:
             return None
 
     def center_values(self, time, units=None, extrapolate=False):
-        """ 
+        """
         Interpolate data to the center of the cells.
 
         :param time: the time to interpolate at
@@ -531,20 +531,21 @@ class Variable:
 
     @property
     def dimension_ordering(self):
-        """ 
+        """
         Returns a list that describes the dimensions of the property's data.
 
-        If a dimension_ordering is assigned, it will continue to use that. If no dimension_ordering
-        is set, then a default ordering will be generated based on the object properties and data
-        shape.
+        If a dimension_ordering is assigned, it will continue to use that. If no
+        dimension_ordering is set, then a default ordering will be generated
+        based on the object properties and data shape.
 
-        For example, if the data has 4 dimensions and is represented by a Grid_S (structured grid),
-        and the Variable has a depth and time assigned, then the assumed ordering is
-        ['time','depth','lon','lat']
+        For example, if the data has 4 dimensions and is represented by a Grid_S
+        (structured grid), and the Variable has a depth and time assigned, then
+        the assumed ordering is ['time','depth','lon','lat']
 
-        If the data has 3 dimensions, self.grid is a Grid_S, and self.time is None, then the
-        ordering is ['depth','lon','lat'] If the data has 3 dimensions, self.grid is a Grid_U, the
-        ordering is ['time','depth','ele']
+        If the data has 3 dimensions, self.grid is a Grid_S, and self.time is
+        None, then the ordering is ['depth','lon','lat'] If the data has 3
+        dimensions, self.grid is a Grid_U, the ordering is
+        ['time','depth','ele']
 
         """
         if not hasattr(self, "_order"):
@@ -590,7 +591,7 @@ class Variable:
         _mem=True,
         **kwargs,
     ):
-        """ 
+        """
         Find the value of the property at positions P at time T.
 
         :param points: Cartesian coordinates to be queried (P).
@@ -685,15 +686,16 @@ class Variable:
     interpolate = at  # common request
 
     def _xy_interp(self, points, time, extrapolate, slices=(), **kwargs):
-        """ 
-        Uses the py(s/u)grid interpolation to determine the values at the points, and returns it :param points:
-        Coordinates to be queried (3D) :type points: Nx3 array of double.
+        """
+        Uses the py(s/u)grid interpolation to determine the values at the points, and returns it
+        :param points: Coordinates to be queried (3D) :type points: Nx3 array of double.
 
         :param time: Time of the query
         :type time: datetime.datetime object
         :param extrapolate: Turns extrapolation on or off
         :type extrapolate: boolean
-        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
+        :param slices: describes how the data needs to be sliced to reach the appropriate
+            dimension
         :type slices: tuple of integers or slice objects
 
         """
@@ -710,15 +712,17 @@ class Variable:
         return value
 
     def _time_interp(self, points, time, extrapolate, slices=(), **kwargs):
-        """ 
-        Uses the Time object to interpolate the result of the next level of interpolation, as specified by the
-        dimension_ordering attribute. :param points: Coordinates to be queried (3D) :type points: Nx3 array of double.
+        """
+        Uses the Time object to interpolate the result of the next level of interpolation, as
+        specified by the dimension_ordering attribute. :param points: Coordinates to be queried (3D)
+        :type points: Nx3 array of double.
 
         :param time: Time of the query
         :type time: datetime.datetime object
         :param extrapolate: Turns extrapolation on or off
         :type extrapolate: boolean
-        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
+        :param slices: describes how the data needs to be sliced to reach the appropriate
+            dimension
         :type slices: tuple of integers or slice objects
 
         """
@@ -745,15 +749,17 @@ class Variable:
             return v0 + (v1 - v0) * alphas
 
     def _depth_interp(self, points, time, extrapolate, slices=(), **kwargs):
-        """ 
-        Uses the Depth object to interpolate the result of the next level of interpolation, as specified by the
-        dimension_ordering attribute. :param points: Coordinates to be queried (3D) :type points: Nx3 array of double.
+        """
+        Uses the Depth object to interpolate the result of the next level of interpolation, as
+        specified by the dimension_ordering attribute. :param points: Coordinates to be queried (3D)
+        :type points: Nx3 array of double.
 
         :param time: Time of the query
         :type time: datetime.datetime object
         :param extrapolate: Turns extrapolation on or off
         :type extrapolate: boolean
-        :param slices: describes how the data needs to be sliced to reach the appropriate dimension
+        :param slices: describes how the data needs to be sliced to reach the appropriate
+            dimension
         :type slices: tuple of integers or slice objects
 
         """
@@ -819,10 +825,11 @@ class Variable:
 
     @classmethod
     def _gen_varname(cls, filename=None, dataset=None, names_list=None, std_names_list=None):
-        """ 
+        """
         Function to find the default variable names if they are not provided.
 
-        This function does nothing without defined default_names or cf_names class attributes
+        This function does nothing without defined default_names or cf_names
+        class attributes
 
         :param filename: Name of file that will be searched for variables
         :type filename: string
@@ -875,11 +882,12 @@ class VectorVariable:
     comp_order = []
 
     _instance_count = 0
-    """ 
-    ' These are the classes which are used when internal components are created by default, such as automatically from a
-    file or other python data structure.
+    """
+    ' These are the classes which are used when internal components are created by default, such as
+    automatically from a file or other python data structure.
 
-    Subclasses of this type may override this to use different classes for it's components
+    Subclasses of this type may override this to use different classes for it's
+    components
 
     """
 
@@ -951,7 +959,7 @@ class VectorVariable:
         variables=None,
         **kwargs,
     ):
-        """ 
+        """
         Allows one-function creation of a VectorVariable from a file.
 
         :param filename: Default data source. Parameters below take precedence
@@ -1095,14 +1103,15 @@ class VectorVariable:
 
     @classmethod
     def _gen_varnames(cls, filename=None, dataset=None, names_dict=None, std_names_dict=None):
-        """ 
+        """
         Function to find the default variable names if they are not provided.
 
         :param filename: Name of file that will be searched for variables
         :type filename: string
         :param dataset: Existing instance of a netCDF4.Dataset
         :type dataset: netCDF.Dataset
-        :return: dict of component to name mapping (eg {'u': 'water_u', 'v': 'water_v', etc})
+        :return: dict of component to name mapping (eg {'u': 'water_u', 'v':
+            'water_v', etc})
 
         """
         df = None
@@ -1186,7 +1195,7 @@ class VectorVariable:
 
     @property
     def units(self):
-        """ 
+        """
         Units of underlying data.
 
         :rtype: string
@@ -1209,7 +1218,7 @@ class VectorVariable:
 
     @property
     def varnames(self):
-        """ 
+        """
         Names of underlying variables.
 
         :rtype: [] of strings
@@ -1225,7 +1234,7 @@ class VectorVariable:
             return None
 
     def _get_hash(self, points, time):
-        """ 
+        """
         Returns a SHA1 hash of the array of points passed in.
         """
         return (hashlib.sha1(points.tobytes()).hexdigest(), hashlib.sha1(str(time).encode("utf-8")).hexdigest())
@@ -1394,7 +1403,7 @@ class VectorVariable:
         return getvars
 
     def save(self, filepath, format="netcdf4"):
-        """ 
+        """
         Save the variable object to a netcdf file.
 
         :param filepath: path to file you want o save to. or a writable

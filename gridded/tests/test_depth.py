@@ -20,8 +20,9 @@ from gridded.variable import Variable, VectorVariable
 
 
 def valid_depth_test_dataset(ds):
-    """ 
-    A filter to be applied to the loaded .cdl that excludes the file if it's almost definitely not going to work.
+    """
+    A filter to be applied to the loaded .cdl that excludes the file if it's almost definitely not
+    going to work.
 
     A file must contain at least 4D variable for it to pass this test
 
@@ -53,7 +54,7 @@ def get_fvcom_depth():
 
 @pytest.fixture(scope="function")
 def get_roms_depth():
-    """ 
+    """
     This is setup for a ROMS S-level Depth that is on a square grid with a center mound.
 
     Control vars: sz=xy size, center_el=height of the mound in meters,
@@ -122,7 +123,7 @@ def get_roms_depth():
 
 @pytest.fixture(scope="module")
 def get_l_depth():
-    """ 
+    """
     This sets up a HYCOM level depth where surface is index 0 and bottom is last index.
     """
     depth_levels = np.array([0, 1, 2, 4, 6, 10])
@@ -282,18 +283,21 @@ class Test_ROMS_Depth:
         assert "grid" in diff
 
     def test_interpolation_alphas(self, get_roms_depth):
-        """ 
-        We will focus on the center mound to see if the correct alphas and indices are returned for various points
-        nearby. interpolation_alphas(self, points, time, data_shape, _hash=None, extrapolate=False):
+        """
+        We will focus on the center mound to see if the correct alphas and indices are returned for
+        various points nearby. interpolation_alphas(self, points, time, data_shape, _hash=None,
+        extrapolate=False):
 
-        With ROMS, the bottom level is index 0 and the top level is last index (in this case, 10) #
-        query center mound (20,20) at 3 depths. 1st point is 0.1m off the seafloor and 10% of # the
-        distance to the next s-layer (meaning, expected alpha returned is 10%) # this is an index of
-        0 and an alpha of 0.1 # 2nd point is directly on the seafloor (should register as 'in
-        bounds' index 0 and 0 alpha) # 3rd point is 0.1m underground, and should indicate with
-        masked value. # 4th point is off grid, masked index and alpha expected. # 5th point is 0.1m
-        ABOVE surface. Expected index of 10 and alpha of 0 # 6th point is directly at surface.
-        Expected index of 10 and alpha of 0 #7th point is 0.1m below surface. Expected index of 9
+        With ROMS, the bottom level is index 0 and the top level is last index
+        (in this case, 10) # query center mound (20,20) at 3 depths. 1st point
+        is 0.1m off the seafloor and 10% of # the distance to the next s-layer
+        (meaning, expected alpha returned is 10%) # this is an index of 0 and an
+        alpha of 0.1 # 2nd point is directly on the seafloor (should register as
+        'in bounds' index 0 and 0 alpha) # 3rd point is 0.1m underground, and
+        should indicate with masked value. # 4th point is off grid, masked index
+        and alpha expected. # 5th point is 0.1m ABOVE surface. Expected index of
+        10 and alpha of 0 # 6th point is directly at surface. Expected index of
+        10 and alpha of 0 #7th point is 0.1m below surface. Expected index of 9
         and alpha of 0.9
 
         """
@@ -353,7 +357,7 @@ class Test_ROMS_Depth:
         assert np.all(np.isclose(alphas, expected_alpha))
 
     def test_interpolation_alphas_reversed(self, get_roms_depth):
-        """ 
+        """
         Same as the previous test, but with the depth system reversed as it may be in FVCOM.
 
         # query center mound (20,20) at 3 depths. 1st point is 0.1m off the seafloor and 10% of #
@@ -548,7 +552,7 @@ class Test_FVCOM_Depth:
 
 @pytest.fixture(scope="module")
 def get_database_nc():
-    """ 
+    """
     This sets up netcdf dataset for interpolation test.
     """
     L_depth_file = os.path.join(TEST_DATA, "test_L_Depth.nc")

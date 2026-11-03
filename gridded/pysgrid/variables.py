@@ -1,4 +1,4 @@
-""" 
+"""
 Created on Apr 15, 2015.
 
 @author: ayan
@@ -14,7 +14,7 @@ from gridded.pysgrid.utils import determine_variable_slicing, infer_avg_axes, in
 
 
 class SGridVariable:
-    """ 
+    """
     Object of variables found and inferred from an SGRID compliant dataset.
     """
 
@@ -162,7 +162,7 @@ class SGridVariable:
         return self._data
 
     def __getitem__(self, item):
-        """ 
+        """
         Transfers responsibility to the data's __getitem__.
 
         Does not flatten any underlying data.

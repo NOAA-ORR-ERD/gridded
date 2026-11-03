@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-""" 
+"""
 Testing of code to find nodes.
 
 Currently only nearest neighbor.
@@ -13,7 +13,7 @@ from .utilities import twenty_one_triangles
 
 
 def test_locate_node(twenty_one_triangles):
-    """ 
+    """
     Test finding a single node.
     """
     ugrid = twenty_one_triangles
@@ -21,7 +21,7 @@ def test_locate_node(twenty_one_triangles):
 
 
 def test_locate_nodes(twenty_one_triangles):
-    """ 
+    """
     Test finding multiple nodes at once.
     """
     ugrid = twenty_one_triangles
@@ -40,7 +40,7 @@ def test_locate_nodes(twenty_one_triangles):
 
 
 def test_locate_exact(twenty_one_triangles):
-    """ 
+    """
     The nearest neighbor of the exact node locations had better be the nodes!
     """
     ugrid = twenty_one_triangles
@@ -48,7 +48,7 @@ def test_locate_exact(twenty_one_triangles):
 
 
 def test_locate_middle(twenty_one_triangles):
-    """ 
+    """
     See what happens the point is equidistant to two nodes.
     """
     ugrid = twenty_one_triangles

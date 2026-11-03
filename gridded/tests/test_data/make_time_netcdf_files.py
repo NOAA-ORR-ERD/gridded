@@ -1,8 +1,8 @@
-""" 
+"""
 Generate a few netcdf files that have time in various forms.
 
-NOTE: this was run, and the results saved -- but figured I might as well save it in git in case we
-want to make more / different
+NOTE: this was run, and the results saved -- but figured I might as well save it
+in git in case we want to make more / different
 
 """
 

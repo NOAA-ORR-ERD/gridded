@@ -1,4 +1,4 @@
-""" 
+"""
 Created on Apr 7, 2015.
 
 @author: ayan
@@ -145,7 +145,7 @@ def test_optional_grid_attrs(sgrid):
 
 
 def test_round_trip(sgrid, tmpdir):
-    """ 
+    """
     TODO: add more "round-trip" tests.
     """
     fname = tmpdir.mkdir("files").join("deltares_roundtrip.nc")

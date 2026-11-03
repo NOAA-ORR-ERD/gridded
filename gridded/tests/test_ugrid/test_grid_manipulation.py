@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-""" 
+"""
 Testing of various utilities to manipulate the grid.
 """
 

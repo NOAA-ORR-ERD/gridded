@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-""" 
+"""
 Tests for the UVar object.
 """
 
@@ -64,7 +64,7 @@ def test_add_attributes():
 
 
 def test_nc_variable():
-    """ 
+    """
     Test that it works with a netcdf variable object.
     """
     import netCDF4

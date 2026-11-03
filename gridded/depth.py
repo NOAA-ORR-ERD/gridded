@@ -116,7 +116,7 @@ class DepthBase:
         _hash=None,
         **kwargs,
     ):
-        """ 
+        """
         Returns the weights (alphas) required for interpolation.
 
         The base class implementation only supports surface values:
@@ -135,14 +135,16 @@ class DepthBase:
 
     @classmethod
     def _find_required_depth_attrs(cls, filename, dataset=None, depth_topology=None):
-        """ 
+        """
         This function is the top level 'search for attributes' function.
 
-        If there are any common attributes to all potential depth types, they will be sought here.
+        If there are any common attributes to all potential depth types, they
+        will be sought here.
 
-        This function returns a dict, which maps an attribute name to a netCDF4 Variable or numpy
-        array object extracted from the dataset. When called from a child depth object, this
-        function should provide all the kwargs needed to create a valid instance using the __init__.
+        This function returns a dict, which maps an attribute name to a netCDF4
+        Variable or numpy array object extracted from the dataset. When called
+        from a child depth object, this function should provide all the kwargs
+        needed to create a valid instance using the __init__.
 
         There are no universally required terms (yet)
 
@@ -155,7 +157,7 @@ class DepthBase:
 
     @classmethod
     def _gen_varname(cls, filename=None, dataset=None, grid_dataset=None, names_list=None, std_names_list=None):
-        """ 
+        """
         Function to find the default variable names if they are not provided.
 
         :param filename: Name of file that will be searched for variables
@@ -263,14 +265,14 @@ class L_Depth(DepthBase):
         *args,
         **kwargs,
     ):
-        """ 
+        """
         Returns a pair of values.
 
         The 1st value is an array of the depth indices of all the particles.
 
-        The 2nd value is an array of the interpolation alphas for the particles between their depth
-        index and depth_index+1. If both values are None, then all particles are on the surface
-        layer.
+        The 2nd value is an array of the interpolation alphas for the particles
+        between their depth index and depth_index+1. If both values are None,
+        then all particles are on the surface layer.
 
         """
         points = np.asarray(points, dtype=np.float64)
@@ -357,8 +359,9 @@ class L_Depth(DepthBase):
 
 
 class S_Depth(DepthBase):
-    """ 
-    Represents the ocean s-coordinates as implemented by ROMS, It may or may not be useful for other systems.
+    """
+    Represents the ocean s-coordinates as implemented by ROMS, It may or may not be useful for other
+    systems.
     """
 
     _default_component_types = {
@@ -696,19 +699,21 @@ class S_Depth(DepthBase):
         extrapolate=False,
         **kwargs,
     ):
-        """ 
+        """
         Returns a pair of arrays.
 
-        The 1st array is of the depth indices of all the points. The 2nd value is an array of the
-        interpolation alphas for the points between their depth index and depth_index+1.
+        The 1st array is of the depth indices of all the points. The 2nd value
+        is an array of the interpolation alphas for the points between their
+        depth index and depth_index+1.
 
-        If a depth is between coordinate N and N+1, the index will be N. If a depth is exactly on a
-        coordinate, the index will be N.
+        If a depth is between coordinate N and N+1, the index will be N. If a
+        depth is exactly on a coordinate, the index will be N.
 
-        Any points that are 'off grid' will be subject to the boundary conditions 'mask' or
-        'extrapolate'. 'mask' will mask the index and the alpha of the point. 'extrapolate' will set
-        the index to the surface or bottom index, and the alpha to 0 or 1 depending on the
-        orientation of the layers
+        Any points that are 'off grid' will be subject to the boundary
+        conditions 'mask' or 'extrapolate'. 'mask' will mask the index and the
+        alpha of the point. 'extrapolate' will set the index to the surface or
+        bottom index, and the alpha to 0 or 1 depending on the orientation of
+        the layers
 
         """
         depths = points[:, 2]
@@ -790,12 +795,13 @@ class S_Depth(DepthBase):
         surface_boundary_condition=None,
         bottom_boundary_condition=None,
     ):
-        """ 
-        Applies the boundary conditions to the indices and alphas indices is expected to be fresh from the np.digitize
-        step, meaning values from -1 to num_levels-1 are expected.
+        """
+        Applies the boundary conditions to the indices and alphas indices is expected to be fresh
+        from the np.digitize step, meaning values from -1 to num_levels-1 are expected.
 
-        alphas is expected to still contain nans, but this function can still work by masking and
-        setting values to 0 or 1 depending on the boundary condition
+        alphas is expected to still contain nans, but this function can still
+        work by masking and setting values to 0 or 1 depending on the boundary
+        condition
 
         """
         exclusion_mask = indices.mask.copy()
@@ -844,36 +850,37 @@ class S_Depth(DepthBase):
         return indices, alphas, oob_mask
 
     def get_s_coordinate(self, points, time, data_shape=None, _hash=None, **kwargs):
-        """ 
-        Given an array of points and a time, returns the S-Coordinate values of the depth layers at those points and
-        time.
+        """
+        Given an array of points and a time, returns the S-Coordinate values of the depth layers at
+        those points and time.
 
         :param points: array of points to interpolate to
         :type points: numpy array of shape (n, 3)
         :param time: time to interpolate to
         :type time: datetime.datetime
-        :param data_shape: shape of the variable to be interpolated. This param is used to determine
-            whether to index on the sigma layers or levels.
+        :param data_shape: shape of the variable to be interpolated. This param
+            is used to determine whether to index on the sigma layers or levels.
         :type data_shape: tuple of int
-        :return: numpy array of shape (n, num_w_levels) of n s-coordinate depth_profiles. 0
-            reference is mean sea surface.
+        :return: numpy array of shape (n, num_w_levels) of n s-coordinate
+            depth_profiles. 0 reference is mean sea surface.
 
         """
         raise NotImplementedError("get_s_coordinate not implemented for S_Depth, required in subclasses")
 
     def get_depth_profile(self, points, time, data_shape=None, _hash=None, **kwargs):
-        """ 
-        Given an array of points and a time, returns depth profiles of the water column at those points and time.
+        """
+        Given an array of points and a time, returns depth profiles of the water column at those
+        points and time.
 
         :param points: array of points to interpolate to
         :type points: numpy array of shape (n, 3)
         :param time: time to interpolate to
         :type time: datetime.datetime
-        :param data_shape: shape of the variable to be interpolated. This param is used to determine
-            whether to index on the sigma layers or levels.
+        :param data_shape: shape of the variable to be interpolated. This param
+            is used to determine whether to index on the sigma layers or levels.
         :type data_shape: tuple of int
-        :return: numpy array of shape (n, num_w_levels) of n depth_profiles, referenced to the
-            surface (i.e. surface is 0, seafloor is negative)
+        :return: numpy array of shape (n, num_w_levels) of n depth_profiles,
+            referenced to the surface (i.e. surface is 0, seafloor is negative)
 
         """
         z = self.zeta.at(points, time, unmask=False, _hash=_hash, **kwargs)
@@ -881,7 +888,7 @@ class S_Depth(DepthBase):
 
 
 class ROMS_Depth(S_Depth):
-    """ 
+    """
     Sigma coordinate depth object for ROMS style output.
     """
 
@@ -999,7 +1006,7 @@ class FVCOM_Depth(S_Depth):
 
 
 class Depth:
-    """ 
+    """
     Factory class that generates depth objects.
 
     Also handles common loading and parsing operations
@@ -1017,8 +1024,9 @@ class Depth:
 
     @staticmethod
     def surface_only(surface_index=-1, **kwargs):
-        """ 
-        If instantiated directly, this will always return a DepthBase It is assumed index -1 is the surface index.
+        """
+        If instantiated directly, this will always return a DepthBase It is assumed index -1 is the
+        surface index.
         """
         return DepthBase(surface_index=surface_index, **kwargs)
 

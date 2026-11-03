@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-""" 
+"""
 Tests for testing a UGrid file read.
 
 We really need a **lot** more sample data files...
@@ -22,7 +22,7 @@ files = os.path.join(os.path.split(__file__)[0], "files")
 
 
 def test_simple_read():
-    """ 
+    """
     Can it be read at all?
     """
     with chdir(files):
@@ -31,7 +31,7 @@ def test_simple_read():
 
 
 def test_get_mesh_names():
-    """ 
+    """
     Check that it can find the mesh variable names.
     """
     with chdir(files):
@@ -41,7 +41,7 @@ def test_get_mesh_names():
 
 
 def test_mesh_not_there():
-    """ 
+    """
     Test raising Value error with incorrect mesh name.
     """
     with pytest.raises(ValueError), chdir(files):
@@ -49,7 +49,7 @@ def test_mesh_not_there():
 
 
 def test_load_grid_from_nc():
-    """ 
+    """
     Test reading a fairly full example file.
     """
     with chdir(files):
@@ -67,7 +67,7 @@ def test_load_grid_from_nc():
 
 
 def test_read_nodes():
-    """ 
+    """
     Do we get the right nodes array?
     """
     with chdir(files):
@@ -80,7 +80,7 @@ def test_read_nodes():
 
 
 def test_read_none_edges():
-    """ 
+    """
     Do we get the right edge array?
     """
     with chdir(files):
@@ -93,7 +93,7 @@ def test_read_none_edges():
 
 
 def test_read_faces():
-    """ 
+    """
     Do we get the right faces array?
     """
     with chdir(files):
@@ -106,7 +106,7 @@ def test_read_faces():
 
 
 def test_read_face_face():
-    """ 
+    """
     Do we get the right face_face_connectivity array?
     """
     with chdir(files):
@@ -119,7 +119,7 @@ def test_read_face_face():
 
 
 def test_read_boundaries():
-    """ 
+    """
     Do we get the right boundaries array?
     """
     with chdir(files):
@@ -133,7 +133,7 @@ def test_read_boundaries():
 
 
 def test_read_face_coordinates():
-    """ 
+    """
     Do we get the right face_coordinates array?
     """
     with chdir(files):
@@ -146,7 +146,7 @@ def test_read_face_coordinates():
 
 
 def test_read_none_edge_coordinates():
-    """ 
+    """
     Do we get the right edge_coordinates array?
     """
     with chdir(files):
@@ -155,7 +155,7 @@ def test_read_none_edge_coordinates():
 
 
 def test_read_none_boundary_coordinates():
-    """ 
+    """
     Do we get the right boundary_coordinates array?
     """
     with chdir(files):
@@ -195,7 +195,7 @@ def test_read_data():
 
 
 def test_read_from_nc_dataset():
-    """ 
+    """
     Minimal test, but makes sure you can read from an already open netCDF4.Dataset.
     """
     with chdir(files), netCDF4.Dataset("ElevenPoints_UGRIDv0.9.nc") as nc:

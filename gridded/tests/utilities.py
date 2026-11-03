@@ -1,4 +1,4 @@
-""" 
+"""
 Assorted utilities useful for the tests.
 
 NOTE: the fixtures should be in conftest, so they can be found automatically

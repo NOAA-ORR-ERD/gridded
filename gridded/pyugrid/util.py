@@ -1,4 +1,4 @@
-""" 
+"""
 Miscellaneous util functions.
 """
 
@@ -8,9 +8,9 @@ epsilon = 1.0e-5
 
 
 def point_in_tri(face_points, point, return_weights=False):
-    """ 
-    Calculates whether point is internal/external to element by comparing summed area of sub triangles with area of
-    triangle element.
+    """
+    Calculates whether point is internal/external to element by comparing summed area of sub
+    triangles with area of triangle element.
 
     NOTE: this seems like a pretty expensive way to do it
            -- compared to three side of line tests..
@@ -41,8 +41,9 @@ def point_in_tri(face_points, point, return_weights=False):
 
 
 def _signed_area_tri(points):
-    """ 
-    Points : the coordinates of the triangle vertices -- (3x2) float array returns signed area of the triangle.
+    """
+    Points : the coordinates of the triangle vertices -- (3x2) float array returns signed area of
+    the triangle.
     """
     x1, y1 = points[0]
     x2, y2 = points[1]
@@ -55,7 +56,7 @@ must_have = ["dtype", "shape", "ndim", "__len__", "__getitem__", "__getattribute
 
 
 def isarraylike(obj):
-    """ 
+    """
     Tests if obj acts enough like an array to be used in pyugrid.
 
     This should catch netCDF4 variables, etc.
@@ -71,7 +72,7 @@ def isarraylike(obj):
 
 
 def asarraylike(obj):
-    """ 
+    """
     If it satisfies the requirements of pyugrid the object is returned as is.
 
     If not, then numpy's array() will be called on it.
