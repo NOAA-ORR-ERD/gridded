@@ -83,8 +83,8 @@ def parse_time_offset(unit_str):
 
 class Time:
     _instance_count = 0
-    default_names = {"data": ["time", "ocean_time", "t"]}
-    cf_names = {"data": ["time", "ocean_time"]}
+    default_names = {"data": ["time", "ocean_time", "t", "wind_time"]}
+    cf_names = {"data": ["time", "ocean_time", "wind_time"]}
 
     def __init__(
         self,
